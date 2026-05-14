@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Prototipo V2 de mejora UX del Sistema de Admisión Escolar (SAE) con foco en transparencia algorítmica, accesibilidad y diseño mobile-first.">
+<title>SAE v2 — Sistema de Admisión Escolar (Prototipo UX Mejorado)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  /* ============================================================
+     1. CUSTOM PROPERTIES — paleta institucional + espaciado
+     Fundamento: §7 CLAUDE_v2 — variables CSS para consistencia
+  ============================================================ */
+  :root {
+    /* Paleta — tonos institucionales sobrios (revisión v2.1)
+       Criterio: autoridad académica + legibilidad + no saturación excesiva */
+    --azul:        #1E3A5F;   /* navy profundo — institucional, serio */
+    --azul-osc:    #152C47;   /* navy oscuro para gradientes y hover */
+    --azul-cl:     #EBF2F8;   /* azul muy suave para fondos de sección */
+    --azul-med:    #5B82A6;   /* azul medio para bordes y líneas */
+    --verde:       #2D6A4F;   /* verde bosque — confirmaciones */
+    --verde-cl:    #E8F2EE;   /* verde muy suave */
+    --naranja:     #B35C1E;   /* terracota apagado — alertas */
+    --naranja-cl:  #F5EDE4;   /* terracota muy suave */
+    --rojo:        #7D2027;   /* burdeos oscuro — errores */
+    --rojo-cl:     #F3E8EA;   /* burdeos muy suave */
+    --amarillo:    #E6B800;   /* ocre dorado — alto contraste (más sobrio que #FFD700) */
+    --gris:        #242B33;   /* casi negro con matiz azul — más sofisticado que #333 */
+    --gris-cl:     #F2F4F7;   /* gris frío off-white para fondos */
+    --gris-med:    #5C6673;   /* gris frío medio */
+    --gris-borde:  #C4CDD6;   /* gris frío para bordes */
+    --blanco:      #FFFFFF;
+    --negro:       #000000;
+
+    /* Espaciado */
+    --esp-xs: 4px;
+    --esp-sm: 8px;
+    --esp-md: 16px;
+    --esp-lg: 24px;
+    --esp-xl: 40px;
+
+    /* Otros */
+    --radio:    8px;
+    --radio-lg: 16px;
+    --sombra:   0 2px 8px rgba(0,0,0,0.10);
+    --sombra-lg: 0 6px 18px rgba(0,0,0,0.14);
+    --transicion: 0.2s ease;
+
+    /* Tokens semánticos (para modo alto contraste) */
+    --bg-app:       var(--blanco);
+    --bg-card:      var(--blanco);
+    --bg-soft:      var(--azul-cl);
+    --texto:        var(--gris);
+    --texto-suave:  var(--gris-med);
+    --acento:       var(--azul);
+    --acento-osc:   var(--azul-osc);
+    --borde:        var(--gris-borde);
+    --enlace:       var(--azul);
+  }
+
+  /* Modo alto contraste — WCAG AAA, fondo negro / texto blanco / acento amarillo */
+  body.high-contrast {
+    --bg-app:       var(--negro);
+    --bg-card:      #111111;
+    --bg-soft:      #1a1a1a;
+    --texto:        var(--blanco);
+    --texto-suave:  #DDDDDD;
+    --acento:       var(--amarillo);
+    --acento-osc:   var(--amarillo);
+    --borde:        var(--amarillo);
+    --enlace:       var(--amarillo);
+  }
+  body.high-contrast .navbar { background: var(--negro); border-bottom: 2px solid var(--amarillo); }
+  body.high-contrast .hero { background: var(--negro); border-bottom: 2px solid var(--amarillo); }
+  body.high-contrast .btn--primario,
+  body.high-contrast .btn--verde,
+  body.high-contrast .btn--clave {
+    background: var(--amarillo); color: var(--negro); border: 2px solid var(--amarillo);
+  }
+  body.high-contrast .btn--secundario {
+    background: var(--negro); color: var(--amarillo); border: 2px solid var(--amarillo);
+  }
+  body.high-contrast .badge,
+  body.high-contrast .chip { color: var(--negro) !important; }
+
+  /* ============================================================
+     2. RESET BÁSICO Y BASE
+  ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    color: var(--texto);
+    background: var(--bg-app);
+    line-height: 1.6;
+    transition: background var(--transicion), color var(--transicion);
+  }
+  img { max-width: 100%; display: block; }
+  a { color: var(--enlace); }
+  a:focus, button:focus, input:focus, select:focus, textarea:focus, [tabindex="0"]:focus {
+    outline: 3px solid var(--naranja);
+    outline-offset: 2px;
+  }
+  body.high-contrast a:focus,
+  body.high-contrast button:focus,
+  body.high-contrast input:focus,
+  body.high-contrast select:focus,
+  body.high-contrast textarea:focus { outline-color: var(--amarillo); }
+
+  /* Skip link — visible solo al recibir foco */
+  .skip-link {
+    position: absolute; top: -100px; left: 8px;
+    background: var(--azul); color: var(--blanco);
+    padding: 10px 16px; border-radius: var(--radio);
+    text-decoration: none; font-weight: 600; z-index: 9999;
+    transition: top var(--transicion);
+  }
+  .skip-link:focus { top: 8px; }
+
+  /* ============================================================
+     3. TIPOGRAFÍA
+  ============================================================ */
+  h1 { font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: 700; line-height: 1.2; color: var(--texto); }
+  h2 { font-size: clamp(1.2rem, 4vw, 1.7rem); font-weight: 700; color: var(--texto); margin-bottom: var(--esp-md); }
+  h3 { font-size: 1.1rem; font-weight: 600; color: var(--texto); }
+  p  { font-size: 1rem; }
+  .lead { font-size: 1.1rem; color: var(--texto-suave); }
+  .small { font-size: 0.85rem; color: var(--texto-suave); }
+
+  /* ============================================================
+     4. LAYOUT BASE
+  ============================================================ */
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 var(--esp-md); }
+  .section   { padding: var(--esp-xl) 0; }
+  .section--bg { background: var(--bg-soft); }
+
+  /* ============================================================
+     5. NAVBAR
+  ============================================================ */
+  .navbar {
+    background: var(--azul);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: var(--sombra);
+  }
+  .navbar__inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--esp-md); padding: 12px var(--esp-md);
+    max-width: 1080px; margin: 0 auto;
+  }
+  .navbar__logo {
+    color: var(--blanco); font-weight: 700; font-size: 1rem;
+    text-decoration: none; display: flex; align-items: center; gap: var(--esp-sm);
+  }
+  .navbar__logo span { font-size: 1.4rem; }
+  .navbar__nav {
+    display: flex; gap: var(--esp-xs); flex-wrap: wrap;
+    align-items: center;
+  }
+  .navbar__nav button {
+    color: var(--blanco); background: transparent; border: none;
+    padding: 6px 10px; border-radius: var(--radio);
+    font-size: 0.85rem; font-weight: 500; cursor: pointer;
+    transition: background var(--transicion);
+    font-family: inherit;
+  }
+  .navbar__nav button:hover, .navbar__nav button.active {
+    background: rgba(255,255,255,0.2);
+  }
+  .navbar__contraste {
+    background: rgba(255,255,255,0.18);
+    color: var(--blanco); border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 999px; padding: 4px 10px; font-size: 0.78rem;
+    cursor: pointer; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .navbar__contraste:hover { background: rgba(255,255,255,0.3); }
+
+  /* ============================================================
+     6. BANNER ETAPA + PRIMERA VEZ
+  ============================================================ */
+  .banner-etapa {
+    background: var(--azul-osc); color: #D8E8F4;
+    text-align: center; padding: 9px var(--esp-md);
+    font-size: 0.88rem; font-weight: 500;
+    letter-spacing: 0.01em;
+    border-bottom: 2px solid var(--azul-med);
+  }
+  .banner-primera-vez {
+    background: var(--verde-cl);
+    border-bottom: 2px solid var(--verde);
+    padding: 16px var(--esp-md);
+    display: flex; align-items: center; gap: var(--esp-md);
+    flex-wrap: wrap; justify-content: center;
+  }
+  .banner-primera-vez p { font-size: 0.95rem; color: var(--gris); margin: 0; }
+  .banner-primera-vez__cerrar {
+    background: transparent; border: none; cursor: pointer;
+    font-size: 1.2rem; color: var(--gris-med); padding: 4px 8px;
+  }
+
+  /* ============================================================
+     7. HERO
+  ============================================================ */
+  .hero {
+    background: linear-gradient(160deg, var(--azul) 55%, var(--azul-osc) 100%);
+    color: var(--blanco); padding: 52px var(--esp-md);
+    text-align: center;
+  }
+  .hero h1 { color: var(--blanco); }
+  .hero p { font-size: 1.1rem; margin: 12px auto 28px; max-width: 600px; }
+
+  /* ============================================================
+     8. BUSCADOR
+  ============================================================ */
+  .buscador {
+    background: var(--bg-card);
+    border-radius: var(--radio-lg);
+    padding: 20px;
+    box-shadow: var(--sombra);
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .buscador__titulo { color: var(--texto); font-weight: 700; margin-bottom: 12px; font-size: 1rem; }
+  .buscador__fila { display: flex; gap: var(--esp-sm); flex-wrap: wrap; }
+  .buscador__fila input,
+  .buscador__fila select {
+    flex: 1; min-width: 120px;
+    border: 2px solid var(--borde); border-radius: var(--radio);
+    padding: 10px 14px; font-size: 1rem; color: var(--texto);
+    background: var(--bg-card);
+    font-family: inherit;
+  }
+  .buscador__fila input:focus, .buscador__fila select:focus { border-color: var(--acento); }
+  .buscador__resultados {
+    margin-top: var(--esp-md);
+    text-align: left;
+    color: var(--texto);
+  }
+  .buscador__contador {
+    font-size: 0.9rem; color: var(--texto-suave);
+    margin: var(--esp-md) 0 var(--esp-sm); font-weight: 600;
+  }
+  .resultados-grid {
+    display: grid; gap: var(--esp-md);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .resultados-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ============================================================
+     9. BOTONES
+  ============================================================ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 20px; border-radius: var(--radio);
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    border: none; text-decoration: none; transition: filter var(--transicion), transform var(--transicion);
+    font-family: inherit; line-height: 1.3;
+  }
+  .btn:hover { filter: brightness(0.92); transform: translateY(-1px); }
+  .btn--primario   { background: var(--azul); color: var(--blanco); }
+  .btn--secundario { background: var(--bg-card); color: var(--azul); border: 2px solid var(--azul); }
+  .btn--verde      { background: var(--verde); color: var(--blanco); }
+  .btn--rojo       { background: var(--rojo); color: var(--blanco); }
+  .btn--grande     { padding: 14px 28px; font-size: 1.1rem; }
+  .btn--full       { width: 100%; }
+  .btn--clave {
+    position: relative; overflow: hidden;
+    background: var(--azul); color: var(--blanco);
+    padding: 14px 24px; font-size: 1.05rem; font-weight: 700;
+  }
+  .btn--clave::before {
+    content: ""; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.6s;
+  }
+  .btn--clave:hover::before { left: 100%; }
+  .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
+
+  /* ============================================================
+     10. ACCESOS RÁPIDOS
+  ============================================================ */
+  .accesos {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--esp-md); margin-top: 32px;
+  }
+  .acceso-card {
+    background: var(--bg-card); border-radius: var(--radio-lg);
+    padding: var(--esp-lg) var(--esp-md); text-align: center; text-decoration: none;
+    color: var(--texto); box-shadow: var(--sombra);
+    border-top: 4px solid var(--acento);
+    transition: transform var(--transicion), box-shadow var(--transicion);
+    display: block; cursor: pointer;
+    border-left: 0; border-right: 0; border-bottom: 0;
+    width: 100%; font-family: inherit; font-size: 1rem;
+  }
+  .acceso-card:hover { transform: translateY(-3px); box-shadow: var(--sombra-lg); }
+  .acceso-card__icono { font-size: 2.2rem; margin-bottom: var(--esp-sm); display: block; }
+  .acceso-card__titulo { font-weight: 700; font-size: 1rem; color: var(--acento); }
+  .acceso-card__desc { font-size: 0.85rem; margin-top: var(--esp-xs); color: var(--texto-suave); }
+
+  /* ============================================================
+     11. PÁGINAS NAVEGABLES (SPA)
+  ============================================================ */
+  .page { display: none; animation: fade-in 0.25s ease; }
+  .page.active { display: block; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ============================================================
+     12. MÓDULO ALGORITMO — 4 PASOS
+  ============================================================ */
+  .pasos {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--esp-md); margin: 28px 0;
+  }
+  .paso {
+    background: var(--bg-card); border-radius: var(--radio-lg);
+    padding: var(--esp-lg); text-align: center;
+    box-shadow: var(--sombra); position: relative;
+    border: 2px solid var(--borde);
+  }
+  .paso__num {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--acento); color: var(--blanco);
+    font-weight: 700; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto var(--esp-sm);
+  }
+  body.high-contrast .paso__num { color: var(--negro); }
+  .paso__icono { font-size: 2.2rem; margin-bottom: var(--esp-sm); display: block; }
+  .paso h3 { color: var(--acento); margin-bottom: var(--esp-sm); }
+  .paso p { font-size: 0.95rem; color: var(--texto-suave); }
+
+  /* ============================================================
+     13. SIMULADOR
+  ============================================================ */
+  .simulador {
+    background: var(--bg-card); border-radius: var(--radio-lg);
+    padding: 28px; box-shadow: var(--sombra); margin: 28px 0;
+    border: 2px solid var(--borde);
+  }
+  .simulador h3 { color: var(--acento); margin-bottom: var(--esp-md); font-size: 1.2rem; }
+  .sim-form { display: flex; flex-direction: column; gap: var(--esp-md); }
+  .sim-perfil {
+    background: var(--bg-soft); padding: var(--esp-md);
+    border-radius: var(--radio);
+  }
+  .sim-perfil__titulo { font-weight: 700; margin-bottom: var(--esp-sm); }
+  .sim-perfil__opciones {
+    display: flex; flex-wrap: wrap; gap: var(--esp-sm);
+  }
+  .sim-checkbox {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--bg-card); border: 2px solid var(--borde);
+    cursor: pointer; transition: all var(--transicion);
+    font-size: 0.92rem; user-select: none;
+  }
+  .sim-checkbox input { accent-color: var(--azul); }
+  .sim-checkbox:hover { border-color: var(--acento); }
+  .sim-checkbox.activo { background: var(--azul-cl); border-color: var(--acento); font-weight: 600; }
+  body.high-contrast .sim-checkbox.activo { background: rgba(255,215,0,0.25); }
+
+  .sim-colegios { display: flex; flex-direction: column; gap: var(--esp-sm); }
+  .sim-colegio {
+    border: 2px solid var(--borde); border-radius: var(--radio);
+    padding: 12px 14px; cursor: pointer; transition: all var(--transicion);
+    background: var(--bg-card);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: var(--esp-sm); flex-wrap: wrap;
+  }
+  .sim-colegio:hover { border-color: var(--acento); }
+  .sim-colegio.seleccionado { border-color: var(--acento); background: var(--azul-cl); }
+  body.high-contrast .sim-colegio.seleccionado { background: rgba(255,215,0,0.18); }
+  .sim-colegio__info { flex: 1; min-width: 0; }
+  .sim-colegio__nombre { font-weight: 700; }
+  .sim-colegio__meta { font-size: 0.82rem; color: var(--texto-suave); }
+  .sim-colegio__orden {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--acento); color: var(--blanco);
+    font-weight: 700; font-size: 0.9rem;
+    display: none; align-items: center; justify-content: center;
+  }
+  .sim-colegio.seleccionado .sim-colegio__orden { display: flex; }
+
+  .sim-resultado {
+    margin-top: var(--esp-md);
+    padding: var(--esp-lg);
+    background: var(--azul-cl); border-radius: var(--radio);
+    border-left: 4px solid var(--acento);
+    display: none;
+  }
+  .sim-resultado.activo { display: block; }
+  .sim-resultado__titulo { font-weight: 700; color: var(--acento); margin-bottom: var(--esp-sm); font-size: 1.05rem; }
+  .sim-resultado__razon { margin-bottom: var(--esp-sm); }
+  .sim-resultado__advertencia {
+    background: var(--naranja-cl); border-left: 3px solid var(--naranja);
+    padding: var(--esp-sm) 12px; border-radius: 4px; margin-top: var(--esp-sm);
+    font-size: 0.9rem;
+  }
+  body.high-contrast .sim-resultado { background: #1a1a1a; }
+  body.high-contrast .sim-resultado__advertencia { background: #2a1a00; }
+
+  .barra-prob {
+    width: 100%; height: 22px; background: var(--gris-cl);
+    border-radius: 999px; overflow: hidden; margin-top: var(--esp-sm);
+    position: relative;
+  }
+  .barra-prob__fill {
+    height: 100%; background: linear-gradient(90deg, var(--verde), #29b14a);
+    width: 0; transition: width 0.6s ease-out;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 10px; color: var(--blanco); font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .barra-prob__fill--bajo { background: linear-gradient(90deg, var(--rojo), var(--naranja)); }
+  .barra-prob__fill--medio { background: linear-gradient(90deg, var(--naranja), #FFA940); }
+
+  .sim-spinner {
+    display: inline-block; padding: 6px 12px; font-style: italic;
+    color: var(--texto-suave);
+  }
+
+  /* ============================================================
+     14. MITOS (FAQ)
+  ============================================================ */
+  .mitos { display: flex; flex-direction: column; gap: var(--esp-sm); margin-top: var(--esp-lg); }
+  .mito {
+    background: var(--bg-card); border: 2px solid var(--borde);
+    border-radius: var(--radio); overflow: hidden;
+  }
+  .mito__pregunta {
+    width: 100%; text-align: left; cursor: pointer;
+    padding: 14px var(--esp-md); border: none; background: transparent;
+    font-size: 1rem; font-weight: 600; color: var(--texto);
+    display: flex; justify-content: space-between; align-items: center; gap: var(--esp-sm);
+    font-family: inherit;
+  }
+  .mito__pregunta::after { content: "+"; font-size: 1.4rem; color: var(--acento); transition: transform var(--transicion); }
+  .mito.abierto .mito__pregunta::after { transform: rotate(45deg); }
+  .mito__respuesta {
+    padding: 0 var(--esp-md); max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    color: var(--texto-suave);
+  }
+  .mito.abierto .mito__respuesta { padding: 0 var(--esp-md) var(--esp-md); max-height: 700px; }
+
+  /* ============================================================
+     15. CALENDARIO INTERACTIVO
+  ============================================================ */
+  .timeline-wrapper { overflow-x: auto; padding: var(--esp-md) 0; }
+  .timeline {
+    display: flex; gap: var(--esp-sm);
+    min-width: 100%; padding: var(--esp-lg) 0;
+    position: relative;
+  }
+  .timeline::before {
+    content: ""; position: absolute; top: 50%; left: 3%; right: 3%;
+    height: 4px; background: var(--azul-med); border-radius: 2px;
+    transform: translateY(-50%); z-index: 0;
+  }
+  .timeline__hito {
+    flex: 1; min-width: 130px;
+    text-align: center; position: relative; z-index: 1;
+    cursor: pointer;
+    background: transparent; border: none;
+    font-family: inherit; padding: 0;
+  }
+  .timeline__circulo {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--bg-card); border: 4px solid var(--azul-med);
+    margin: 0 auto var(--esp-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; transition: all var(--transicion);
+  }
+  .timeline__hito.actual .timeline__circulo {
+    background: var(--azul); border-color: var(--azul);
+    color: var(--blanco);
+    animation: pulse 1.6s infinite;
+  }
+  body.high-contrast .timeline__hito.actual .timeline__circulo {
+    background: var(--azul-med); border-color: var(--azul-med); color: var(--blanco);
+  }
+  .timeline__hito.completado .timeline__circulo {
+    background: var(--verde); border-color: var(--verde); color: var(--blanco);
+  }
+  body.high-contrast .timeline__hito.completado .timeline__circulo { background: var(--amarillo); color: var(--negro); }
+  .timeline__fecha { font-weight: 700; font-size: 0.9rem; color: var(--acento); }
+  .timeline__nombre { font-size: 0.85rem; color: var(--texto-suave); margin-top: 2px; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(30,58,95,0.5); }
+    50%      { box-shadow: 0 0 0 16px rgba(30,58,95,0); }
+  }
+  .timeline-tooltip {
+    margin-top: var(--esp-md);
+    padding: var(--esp-md); background: var(--bg-card);
+    border-left: 4px solid var(--acento);
+    border-radius: var(--radio); box-shadow: var(--sombra);
+    display: none;
+  }
+  .timeline-tooltip.visible { display: block; }
+  .timeline-tooltip h3 { margin-bottom: var(--esp-sm); color: var(--acento); }
+
+  @media (max-width: 600px) {
+    .timeline { flex-direction: column; gap: var(--esp-md); }
+    .timeline::before { display: none; }
+    .timeline__hito {
+      display: flex; align-items: center; gap: var(--esp-md); text-align: left;
+      padding: var(--esp-sm); border: 1px solid var(--borde); border-radius: var(--radio);
+      background: var(--bg-card);
+    }
+    .timeline__circulo { margin: 0; flex-shrink: 0; }
+    .timeline__textos { flex: 1; }
+  }
+
+  /* ============================================================
+     16. TARJETA COLEGIO
+  ============================================================ */
+  .col-card {
+    background: var(--bg-card); border-radius: var(--radio-lg);
+    padding: 0; box-shadow: var(--sombra);
+    border: 1px solid var(--borde);
+    display: flex; flex-direction: column; gap: 0;
+    overflow: hidden;
+  }
+  .col-card__foto-wrap {
+    position: relative; width: 100%; height: 180px; overflow: hidden;
+    background: var(--azul-cl); flex-shrink: 0;
+  }
+  .col-card__foto {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; transition: transform 0.4s ease;
+  }
+  .col-card:hover .col-card__foto { transform: scale(1.04); }
+  .col-card__foto-fallback {
+    width: 100%; height: 100%; font-size: 4rem;
+    align-items: center; justify-content: center;
+    background: var(--azul-cl); color: var(--azul);
+  }
+  .col-card__foto-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 8px 12px;
+    background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
+    display: flex; justify-content: flex-end;
+  }
+  .col-card > div:not(.col-card__foto-wrap),
+  .col-card > p,
+  .col-card__chips,
+  .col-card__acciones {
+    padding-left: var(--esp-md);
+    padding-right: var(--esp-md);
+  }
+  .col-card__chips { padding-top: 4px; }
+  .col-card__acciones { padding-bottom: var(--esp-md); padding-top: 4px; }
+  .col-card > p.small { padding-left: var(--esp-md); padding-right: var(--esp-md); }
+  .col-card__nombre { font-size: 1.05rem; font-weight: 700; color: var(--acento); }
+  .col-card__direccion { font-size: 0.88rem; color: var(--texto-suave); }
+  .col-card__chips { display: flex; gap: var(--esp-xs); flex-wrap: wrap; margin: var(--esp-sm) 0; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--azul-cl); color: var(--azul);
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 600;
+  }
+  .chip--verde { background: var(--verde-cl); color: var(--verde); }
+  .chip--naranja { background: var(--naranja-cl); color: var(--naranja); }
+  .chip--rojo { background: var(--rojo-cl); color: var(--rojo); }
+  body.high-contrast .chip { background: rgba(255,215,0,0.2); color: var(--amarillo); }
+  .col-card__acciones { display: flex; gap: var(--esp-sm); flex-wrap: wrap; }
+  .col-card__acciones .btn { flex: 1; min-width: 130px; padding: 8px 12px; font-size: 0.9rem; }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: 0.75rem; font-weight: 700;
+  }
+  .badge--alta   { background: #EDE0E2; color: var(--rojo); border: 1px solid #C4A0A6; font-weight: 600; }
+  .badge--media  { background: #EDE8E1; color: #7A3D10; border: 1px solid #C4A882; font-weight: 600; }
+  .badge--baja   { background: #DDE8E3; color: var(--verde); border: 1px solid #9ABFB0; font-weight: 600; }
+  .badge--urgente {
+    background: var(--rojo); color: var(--blanco);
+    animation: pulse-badge 1.2s infinite;
+  }
+  @keyframes pulse-badge {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+
+  /* ============================================================
+     17. FICHA COLEGIO DINÁMICA
+  ============================================================ */
+  .ficha-selector {
+    display: flex; gap: var(--esp-sm); flex-wrap: wrap;
+    margin-bottom: var(--esp-lg);
+  }
+  .ficha-selector select {
+    flex: 1; min-width: 200px;
+    border: 2px solid var(--borde); border-radius: var(--radio);
+    padding: 10px 14px; font-size: 1rem; font-family: inherit;
+    background: var(--bg-card); color: var(--texto);
+  }
+  .ficha {
+    background: var(--bg-card); border-radius: var(--radio-lg);
+    padding: 0; box-shadow: var(--sombra);
+    border: 1px solid var(--borde);
+    overflow: hidden;
+  }
+  .ficha__foto-hero {
+    position: relative; width: 100%; height: 260px; overflow: hidden;
+    background: var(--azul-cl);
+  }
+  .ficha__foto-img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.4s ease;
+  }
+  .ficha__foto-gradiente {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 32px 24px 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+  }
+  .ficha__header {
+    padding: var(--esp-md) var(--esp-lg);
+    display: flex; gap: var(--esp-md); flex-wrap: wrap;
+    align-items: center; justify-content: space-between;
+    margin-bottom: var(--esp-md); padding-bottom: var(--esp-md);
+    border-bottom: 1px solid var(--borde);
+  }
+  .ficha__titulo { color: var(--acento); margin-bottom: 4px; }
+  .ficha__direccion { color: var(--texto-suave); font-size: 0.95rem; }
+  .ficha__grid {
+    display: grid; gap: var(--esp-md);
+    grid-template-columns: 1fr;
+    padding: 0 var(--esp-lg) var(--esp-lg);
+  }
+  @media (min-width: 768px) {
+    .ficha__grid { grid-template-columns: 1fr 1fr; }
+  }
+  .ficha-bloque {
+    background: var(--bg-soft); padding: var(--esp-md);
+    border-radius: var(--radio);
+  }
+  .ficha-bloque h3 { color: var(--acento); margin-bottom: var(--esp-sm); font-size: 1rem; }
+  .ficha-bloque ul { list-style: none; padding: 0; }
+  .ficha-bloque li {
+    padding: 4px 0; font-size: 0.9rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ficha-bloque li.si::before { content: "✅"; }
+  .ficha-bloque li.no::before { content: "❌"; }
+
+  /* Mapa SVG */
+  .mapa-svg {
+    width: 100%; height: 200px;
+    background: #e0eff5; border-radius: var(--radio);
+    margin-top: var(--esp-sm);
+  }
+  body.high-contrast .mapa-svg { background: #1a1a1a; }
+
+  /* Progress Ring SVG */
+  .progress-ring { display: flex; align-items: center; gap: var(--esp-md); }
+  .progress-ring svg { transform: rotate(-90deg); }
+  .progress-ring__circulo {
+    fill: none; stroke: var(--borde); stroke-width: 8;
+  }
+  .progress-ring__valor {
+    fill: none; stroke: var(--verde); stroke-width: 8;
+    stroke-linecap: round; transition: stroke-dashoffset 1s ease;
+  }
+  .progress-ring__texto {
+    font-weight: 700; color: var(--texto);
+  }
+
+  /* Radar */
+  .radar-wrapper {
+    background: var(--bg-card); padding: var(--esp-md);
+    border-radius: var(--radio); margin-top: var(--esp-md);
+    height: 280px; position: relative;
+  }
+
+  /* SIMCE bars */
+  .simce-comp {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-top: var(--esp-sm);
+  }
+  .simce-row {
+    display: flex; align-items: center; gap: var(--esp-sm);
+    font-size: 0.88rem;
+  }
+  .simce-row__label { width: 90px; font-weight: 600; }
+  .simce-row__bar {
+    flex: 1; height: 14px; background: var(--gris-cl); border-radius: 7px;
+    overflow: hidden; position: relative;
+  }
+  .simce-row__fill { height: 100%; background: var(--azul); }
+  .simce-row__valor { width: 60px; text-align: right; font-weight: 700; font-size: 0.85rem; }
+
+  /* ============================================================
+     18. COMPARADOR
+  ============================================================ */
+  .comp-selector {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--esp-sm); margin-bottom: var(--esp-lg);
+  }
+  .comp-check {
+    display: flex; align-items: center; gap: var(--esp-sm);
+    padding: 10px 12px; background: var(--bg-card);
+    border: 2px solid var(--borde); border-radius: var(--radio);
+    cursor: pointer; font-size: 0.92rem;
+  }
+  .comp-check:hover { border-color: var(--acento); }
+  .comp-check.activo { border-color: var(--acento); background: var(--azul-cl); }
+  body.high-contrast .comp-check.activo { background: rgba(255,215,0,0.18); }
+  .comp-check input { accent-color: var(--azul); }
+
+  .comp-tabla {
+    overflow-x: auto;
+    background: var(--bg-card); border-radius: var(--radio);
+    box-shadow: var(--sombra); padding: var(--esp-md);
+    margin-top: var(--esp-md);
+  }
+  .comp-tabla table {
+    width: 100%; border-collapse: collapse;
+  }
+  .comp-tabla th, .comp-tabla td {
+    padding: 10px var(--esp-sm); text-align: left;
+    border-bottom: 1px solid var(--borde); font-size: 0.92rem;
+  }
+  .comp-tabla th:first-child, .comp-tabla td:first-child {
+    font-weight: 700; color: var(--texto);
+  }
+  .comp-tabla th { background: var(--bg-soft); color: var(--acento); }
+
+  /* En móvil — convertir tabla en tarjetas apiladas */
+  @media (max-width: 600px) {
+    .comp-tabla table, .comp-tabla thead, .comp-tabla tbody, .comp-tabla th, .comp-tabla td, .comp-tabla tr {
+      display: block;
+    }
+    .comp-tabla thead { display: none; }
+    .comp-tabla tr { background: var(--bg-soft); margin-bottom: var(--esp-md); border-radius: var(--radio); padding: var(--esp-sm); }
+    .comp-tabla td {
+      border: none; padding: 6px 0;
+      display: flex; justify-content: space-between; gap: var(--esp-sm);
+    }
+    .comp-tabla td::before {
+      content: attr(data-label); font-weight: 700; color: var(--texto-suave);
+    }
+    .comp-tabla td:first-child {
+      font-size: 1.05rem; color: var(--acento);
+      border-bottom: 1px solid var(--borde); margin-bottom: var(--esp-sm); padding-bottom: var(--esp-sm);
+    }
+  }
+
+  /* ============================================================
+     19. POSTULACIÓN — 3 PASOS
+  ============================================================ */
+  .pasos-progreso {
+    display: flex; gap: 4px; margin-bottom: var(--esp-lg);
+  }
+  .paso-progreso {
+    flex: 1; height: 6px; background: var(--borde); border-radius: 3px;
+    transition: background var(--transicion);
+  }
+  .paso-progreso.activo { background: var(--acento); }
+  .paso-progreso.completo { background: var(--verde); }
+
+  .paso-titulo {
+    color: var(--acento); margin-bottom: var(--esp-sm); font-size: 1rem; font-weight: 700;
+  }
+  .postulacion-step { display: none; }
+  .postulacion-step.activo { display: block; animation: fade-in 0.3s; }
+
+  .lista-orden { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--esp-sm); }
+  .lista-orden li {
+    background: var(--bg-card); border: 2px solid var(--borde);
+    border-radius: var(--radio); padding: 12px 14px;
+    display: flex; align-items: center; gap: var(--esp-sm);
+    flex-wrap: wrap;
+  }
+  .lista-orden li.dragging { opacity: 0.6; }
+  .lista-orden__handle { cursor: grab; font-size: 1.2rem; color: var(--texto-suave); }
+  .lista-orden__num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--acento); color: var(--blanco);
+    font-weight: 700; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  body.high-contrast .lista-orden__num { color: var(--negro); }
+  .lista-orden__info { flex: 1; min-width: 0; }
+  .lista-orden__nombre { font-weight: 700; font-size: 0.95rem; }
+  .lista-orden__prob { font-size: 0.82rem; color: var(--texto-suave); }
+  .lista-orden__btns { display: flex; gap: 4px; }
+  .lista-orden__btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--bg-soft); border: 1px solid var(--borde);
+    cursor: pointer; font-size: 0.9rem; display: flex;
+    align-items: center; justify-content: center;
+  }
+  .lista-orden__btn:hover { background: var(--azul-cl); }
+
+  .form-error {
+    background: var(--rojo-cl); color: var(--rojo);
+    padding: 10px var(--esp-md); border-radius: var(--radio);
+    border-left: 4px solid var(--rojo);
+    margin-top: var(--esp-sm); font-size: 0.92rem;
+    display: none;
+  }
+  .form-error.visible { display: block; }
+  body.high-contrast .form-error { background: #1a0000; color: var(--amarillo); border-left-color: var(--amarillo); }
+
+  .resumen-final {
+    background: var(--verde-cl); border: 2px solid var(--verde);
+    padding: var(--esp-lg); border-radius: var(--radio);
+    margin: var(--esp-md) 0;
+  }
+  body.high-contrast .resumen-final { background: #002200; border-color: var(--amarillo); color: var(--amarillo); }
+
+  /* ============================================================
+     20. SEGUIMIENTO + TESTIMONIOS
+  ============================================================ */
+  .estado-card {
+    background: var(--bg-card); padding: var(--esp-lg); border-radius: var(--radio-lg);
+    box-shadow: var(--sombra); border-left: 5px solid var(--verde);
+    margin-bottom: var(--esp-lg);
+  }
+  .estado-card__estado {
+    display: inline-block; padding: 4px 12px;
+    background: var(--verde); color: var(--blanco);
+    border-radius: 999px; font-size: 0.85rem; font-weight: 700;
+    margin-bottom: var(--esp-sm);
+  }
+  .estado-card__resultado {
+    color: var(--acento); font-size: 1.2rem; font-weight: 700; margin: var(--esp-sm) 0;
+  }
+
+  .testimonios {
+    display: grid; gap: var(--esp-md);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .testimonios { grid-template-columns: repeat(3, 1fr); }
+  }
+  .testimonio {
+    background: var(--bg-card); padding: var(--esp-lg); border-radius: var(--radio-lg);
+    box-shadow: var(--sombra); border-top: 4px solid var(--acento);
+    display: flex; flex-direction: column; gap: var(--esp-sm);
+  }
+  .testimonio__header {
+    display: flex; align-items: center; gap: var(--esp-sm);
+  }
+  .avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--blanco); font-weight: 700; font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  body.high-contrast .avatar { color: var(--negro) !important; }
+  .testimonio__info { flex: 1; }
+  .testimonio__nombre { font-weight: 700; }
+  .testimonio__meta { font-size: 0.82rem; color: var(--texto-suave); }
+  .testimonio__cita {
+    font-style: italic; color: var(--texto-suave);
+    border-left: 3px solid var(--azul-cl);
+    padding-left: var(--esp-sm); font-size: 0.92rem; line-height: 1.5;
+  }
+  .testimonio__resultado {
+    background: var(--verde-cl); padding: var(--esp-sm); border-radius: var(--radio);
+    font-size: 0.85rem; font-weight: 600; color: var(--verde);
+  }
+  body.high-contrast .testimonio__resultado { background: #002200; color: var(--amarillo); }
+
+  /* ============================================================
+     21. TOOLTIPS CONTEXTUALES "¿Por qué está esto aquí?"
+  ============================================================ */
+  .tooltip {
+    position: relative; display: inline-block;
+    margin-left: 6px; vertical-align: middle;
+  }
+  .tooltip__trigger {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--azul-cl); color: var(--azul);
+    border: 1px solid var(--azul); cursor: help;
+    font-size: 0.78rem; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: inherit;
+  }
+  body.high-contrast .tooltip__trigger { background: var(--negro); color: var(--amarillo); border-color: var(--amarillo); }
+  .tooltip__content {
+    visibility: hidden; opacity: 0;
+    position: absolute; bottom: 130%; left: 50%;
+    transform: translateX(-50%);
+    width: 240px; padding: 10px 12px;
+    background: var(--gris); color: var(--blanco);
+    border-radius: var(--radio); font-size: 0.82rem;
+    line-height: 1.4; z-index: 50;
+    transition: opacity var(--transicion);
+    font-style: normal; font-weight: 400;
+    text-align: left;
+  }
+  body.high-contrast .tooltip__content { background: var(--amarillo); color: var(--negro); }
+  .tooltip:hover .tooltip__content,
+  .tooltip:focus-within .tooltip__content {
+    visibility: visible; opacity: 1;
+  }
+
+  /* ============================================================
+     22. NOTAS DE DISEÑO Y FOOTER
+  ============================================================ */
+  .notas-disenio {
+    background: var(--bg-soft); padding: var(--esp-lg); border-radius: var(--radio);
+    margin-top: var(--esp-xl);
+  }
+  .notas-disenio h2 { color: var(--acento); }
+  .notas-disenio details {
+    background: var(--bg-card); padding: var(--esp-sm) var(--esp-md);
+    border-radius: var(--radio); margin-bottom: var(--esp-sm);
+    border: 1px solid var(--borde);
+  }
+  .notas-disenio summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
+  .notas-disenio details[open] summary { color: var(--acento); margin-bottom: var(--esp-sm); }
+
+  footer.site-footer {
+    background: var(--azul-osc); color: var(--blanco);
+    padding: var(--esp-lg) var(--esp-md); text-align: center;
+    font-size: 0.85rem; margin-top: var(--esp-xl);
+  }
+  body.high-contrast footer.site-footer { background: var(--negro); border-top: 2px solid var(--amarillo); }
+  footer.site-footer a { color: var(--blanco); }
+  body.high-contrast footer.site-footer a { color: var(--amarillo); }
+
+  /* ============================================================
+     23. RESPONSIVE — 4 BREAKPOINTS
+     400px (móvil S) — 600px (móvil L) — 768px (tablet) — 1280px (desktop wide)
+  ============================================================ */
+  @media (max-width: 400px) {
+    .navbar__inner { flex-direction: column; align-items: stretch; gap: var(--esp-sm); }
+    .navbar__nav { justify-content: center; }
+    .hero { padding: 32px var(--esp-sm); }
+    .hero p { font-size: 1rem; }
+    .btn--grande { padding: 12px 20px; font-size: 1rem; }
+    .pasos { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 768px) {
+    .container { padding: 0 var(--esp-lg); }
+    .section { padding: 56px 0; }
+    .accesos { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 1280px) {
+    .container { max-width: 1180px; padding: 0 var(--esp-xl); }
+    body { font-size: 16.5px; }
+    .hero { padding: 64px var(--esp-md); }
+    .pasos { grid-template-columns: repeat(4, 1fr); }
+    h1 { font-size: 2.4rem; }
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Utilidades */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .text-center { text-align: center; }
+  .mt-md { margin-top: var(--esp-md); }
+  .mt-lg { margin-top: var(--esp-lg); }
+  .mb-md { margin-bottom: var(--esp-md); }
+  .flex-row { display: flex; gap: var(--esp-sm); flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+
+<!-- Skip link — accesibilidad teclado -->
+<a href="#contenido-principal" class="skip-link">Saltar al contenido principal</a>
+
+<!-- Aria-live region para anuncios dinámicos -->
+<div id="aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Banner primera vez -->
+<div id="banner-primera-vez" class="banner-primera-vez" role="region" aria-label="Bienvenida nueva persona usuaria" hidden>
+  <span style="font-size:1.6rem;" aria-hidden="true">👋</span>
+  <p><strong>¿Es tu primera vez aquí?</strong> Te mostramos cómo funciona el SAE en 3 pasos cortos.</p>
+  <button class="btn btn--verde" id="btn-tour">Empezar tour</button>
+  <button class="banner-primera-vez__cerrar" id="btn-cerrar-bienvenida" aria-label="Cerrar mensaje de bienvenida">✕</button>
+</div>
+
+<!-- NAVBAR -->
+<header>
+  <nav class="navbar" aria-label="Navegación principal">
+    <div class="navbar__inner">
+      <a href="#" class="navbar__logo" data-page="inicio">
+        <span aria-hidden="true">🎓</span> SAE
+      </a>
+      <div class="navbar__nav" role="menubar">
+        <button data-page="inicio" class="active" role="menuitem">Inicio</button>
+        <button data-page="algoritmo" role="menuitem">¿Cómo funciona?</button>
+        <button data-page="calendario" role="menuitem">El proceso</button>
+        <button data-page="colegio" role="menuitem">Ver colegio</button>
+        <button data-page="comparador" role="menuitem">Comparar</button>
+        <button data-page="postulacion" role="menuitem">Postula</button>
+        <button data-page="seguimiento" role="menuitem">Mi postulación</button>
+        <button id="toggle-contraste" class="navbar__contraste" aria-pressed="false" title="Activar modo alto contraste">
+          <span aria-hidden="true">◐</span> <span>Alto contraste</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <div class="banner-etapa" role="status" aria-label="Etapa actual del proceso SAE">
+    📅 Estamos en: <strong>Período de postulación</strong> · cierra el <strong>30 de agosto de 2026</strong>
+  </div>
+</header>
+
+<main id="contenido-principal">
+
+  <!-- ============================================================
+       SECCIÓN A — INICIO
+  ============================================================ -->
+  <section id="page-inicio" class="page active" aria-labelledby="h1-inicio">
+    <div class="hero">
+      <div class="container">
+        <h1 id="h1-inicio" tabindex="-1">Tu colegio, sin tómbolas y con reglas claras</h1>
+        <p>El Sistema de Admisión Escolar (SAE) asigna a tu hijo o hija un colegio según prioridades por ley. Aquí te explicamos cómo, paso a paso.</p>
+        <div class="buscador" role="search" aria-label="Buscador de colegios">
+          <p class="buscador__titulo">¿Buscas un colegio?</p>
+          <div class="buscador__fila">
+            <label class="sr-only" for="busc-texto">Nombre del colegio</label>
+            <input type="text" id="busc-texto" placeholder="Nombre del colegio" autocomplete="off">
+            <label class="sr-only" for="busc-comuna">Comuna</label>
+            <select id="busc-comuna">
+              <option value="">Todas las comunas</option>
+              <option>La Florida</option>
+              <option>Maipú</option>
+              <option>Puente Alto</option>
+              <option>Peñalolén</option>
+            </select>
+            <label class="sr-only" for="busc-nivel">Nivel</label>
+            <select id="busc-nivel">
+              <option value="">Todos los niveles</option>
+              <option value="Prekínder">Prekínder</option>
+              <option value="Kínder">Kínder</option>
+              <option value="Básico">Básico</option>
+              <option value="Medio">Medio</option>
+            </select>
+            <button class="btn btn--primario" id="btn-buscar" type="button">🔍 Buscar</button>
+          </div>
+          <p class="buscador__contador" id="busc-contador" aria-live="polite"></p>
+          <div id="busc-resultados" class="resultados-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section container">
+      <h2 class="text-center">Accesos rápidos</h2>
+      <div class="accesos">
+        <button class="acceso-card" data-page="algoritmo">
+          <span class="acceso-card__icono" aria-hidden="true">🧭</span>
+          <span class="acceso-card__titulo">¿Cómo te asignan un colegio?</span>
+          <span class="acceso-card__desc">Entiende el algoritmo en 4 pasos y simula tu caso.</span>
+        </button>
+        <button class="acceso-card" data-page="postulacion">
+          <span class="acceso-card__icono" aria-hidden="true">📝</span>
+          <span class="acceso-card__titulo">Postular ahora</span>
+          <span class="acceso-card__desc">Ingresa con ClaveÚnica y postula en 3 pasos.</span>
+        </button>
+        <button class="acceso-card" data-page="seguimiento">
+          <span class="acceso-card__icono" aria-hidden="true">📊</span>
+          <span class="acceso-card__titulo">Revisar mi postulación</span>
+          <span class="acceso-card__desc">Mira el estado y descarga tu comprobante.</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN B — ALGORITMO
+  ============================================================ -->
+  <section id="page-algoritmo" class="page" aria-labelledby="h1-algoritmo">
+    <div class="section container">
+      <h1 id="h1-algoritmo" tabindex="-1">¿Cómo te asignan un colegio?
+        <span class="tooltip">
+          <button class="tooltip__trigger" aria-label="¿Por qué esta sección?">?</button>
+          <span class="tooltip__content" role="tooltip">
+            La transparencia del algoritmo se incorpora con divulgación progresiva (Springer & Whittaker, 2019): primero los pasos esenciales, luego el simulador y los detalles.
+          </span>
+        </span>
+      </h1>
+      <p class="lead">El SAE no es una tómbola. Funciona con reglas claras que la ley define. Aquí te las explicamos.</p>
+
+      <div class="pasos" role="list">
+        <article class="paso" role="listitem">
+          <div class="paso__num" aria-hidden="true">1</div>
+          <span class="paso__icono" aria-hidden="true">📋</span>
+          <h3>Tú eliges</h3>
+          <p>Postulas hasta a 8 colegios. El orden importa: el primero es tu favorito.</p>
+        </article>
+        <article class="paso" role="listitem">
+          <div class="paso__num" aria-hidden="true">2</div>
+          <span class="paso__icono" aria-hidden="true">⚖️</span>
+          <h3>Cada colegio prioriza</h3>
+          <p>Por ley priorizan: hermanos, vulnerabilidad, cercanía y NEE.</p>
+        </article>
+        <article class="paso" role="listitem">
+          <div class="paso__num" aria-hidden="true">3</div>
+          <span class="paso__icono" aria-hidden="true">⚙️</span>
+          <h3>El sistema asigna</h3>
+          <p>Cruza tus preferencias con las prioridades y las vacantes disponibles.</p>
+        </article>
+        <article class="paso" role="listitem">
+          <div class="paso__num" aria-hidden="true">4</div>
+          <span class="paso__icono" aria-hidden="true">📬</span>
+          <h3>Te avisamos</h3>
+          <p>Si no quedas en tu primera opción, seguimos buscando en tu lista.</p>
+        </article>
+      </div>
+
+      <!-- Simulador Gale-Shapley -->
+      <div class="simulador" aria-labelledby="sim-titulo">
+        <h3 id="sim-titulo">🎯 Simula tu caso
+          <span class="tooltip">
+            <button class="tooltip__trigger" aria-label="Sobre el simulador">?</button>
+            <span class="tooltip__content" role="tooltip">
+              Simulador con lógica Gale-Shapley simplificada — explicabilidad contextualizada (Nefedov, 2022): la explicación se ata a tu situación, no es abstracta.
+            </span>
+          </span>
+        </h3>
+
+        <div class="sim-form">
+          <div class="sim-perfil">
+            <p class="sim-perfil__titulo">1. Cuéntanos sobre tu caso (marca lo que aplique):</p>
+            <div class="sim-perfil__opciones" id="sim-perfil-opciones">
+              <label class="sim-checkbox" data-cond="hermano">
+                <input type="checkbox" name="cond-hermano"> Tengo otro hijo/a en el colegio
+              </label>
+              <label class="sim-checkbox" data-cond="vulnerabilidad">
+                <input type="checkbox" name="cond-vul"> Vulnerabilidad acreditada (RSH)
+              </label>
+              <label class="sim-checkbox" data-cond="cercano">
+                <input type="checkbox" name="cond-cercano"> Vivo cerca (menos de 2 km)
+              </label>
+              <label class="sim-checkbox" data-cond="nee">
+                <input type="checkbox" name="cond-nee"> Mi hijo/a tiene NEE (PIE)
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <p class="sim-perfil__titulo">2. Elige tus colegios en orden de preferencia (haz clic):</p>
+            <div class="sim-colegios" id="sim-colegios"></div>
+          </div>
+
+          <button class="btn btn--primario btn--grande" id="btn-simular" type="button">Ver mi resultado simulado</button>
+        </div>
+
+        <div id="sim-resultado" class="sim-resultado" role="region" aria-live="polite"></div>
+      </div>
+
+      <!-- Mitos -->
+      <h2>Mitos frecuentes
+        <span class="tooltip">
+          <button class="tooltip__trigger" aria-label="Sobre los mitos">?</button>
+          <span class="tooltip__content" role="tooltip">
+            Gestión de expectativas (Springer & Whittaker, 2019): desmontar mitos comunes reduce la ansiedad sin negar las limitaciones del sistema.
+          </span>
+        </span>
+      </h2>
+      <div class="mitos" id="mitos-lista"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN G — CALENDARIO
+  ============================================================ -->
+  <section id="page-calendario" class="page" aria-labelledby="h1-calendario">
+    <div class="section container">
+      <h1 id="h1-calendario" tabindex="-1">El proceso, paso a paso</h1>
+      <p class="lead">Estas son las etapas del proceso SAE 2026. La actual está resaltada en naranja.</p>
+
+      <div class="timeline-wrapper">
+        <div class="timeline" role="list" id="timeline"></div>
+      </div>
+
+      <div id="timeline-tooltip" class="timeline-tooltip" role="region" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN C — FICHA COLEGIO DINÁMICA
+  ============================================================ -->
+  <section id="page-colegio" class="page" aria-labelledby="h1-colegio">
+    <div class="section container">
+      <h1 id="h1-colegio" tabindex="-1">Conoce un colegio en detalle</h1>
+      <p class="lead">Selecciona un colegio del catálogo para ver su ficha completa con SIMCE, NEE, docentes y más.</p>
+
+      <div class="ficha-selector">
+        <label class="sr-only" for="ficha-select">Elegir colegio</label>
+        <select id="ficha-select"></select>
+      </div>
+
+      <div id="ficha-contenido"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN F — COMPARADOR
+  ============================================================ -->
+  <section id="page-comparador" class="page" aria-labelledby="h1-comp">
+    <div class="section container">
+      <h1 id="h1-comp" tabindex="-1">Comparar colegios
+        <span class="tooltip">
+          <button class="tooltip__trigger" aria-label="Sobre comparar">?</button>
+          <span class="tooltip__content" role="tooltip">
+            Diseño multi-dimensional (Glazerman et al., 2018): los apoderados deciden mejor cuando ven varios indicadores juntos, no solo uno.
+          </span>
+        </span>
+      </h1>
+      <p class="lead">Marca 2 o 3 colegios para verlos lado a lado.</p>
+
+      <div class="comp-selector" id="comp-selector"></div>
+
+      <p class="small" id="comp-aviso" aria-live="polite">Selecciona al menos 2 colegios para ver la comparación.</p>
+
+      <div id="comp-tabla" class="comp-tabla" hidden></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN D — POSTULACIÓN
+  ============================================================ -->
+  <section id="page-postulacion" class="page" aria-labelledby="h1-post">
+    <div class="section container">
+      <h1 id="h1-post" tabindex="-1">Postular en 3 pasos</h1>
+
+      <div class="pasos-progreso" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3" aria-label="Progreso de postulación" id="pasos-progreso">
+        <div class="paso-progreso activo" data-paso="1"></div>
+        <div class="paso-progreso" data-paso="2"></div>
+        <div class="paso-progreso" data-paso="3"></div>
+      </div>
+
+      <!-- Paso 1: Login -->
+      <div class="postulacion-step activo" data-step="1">
+        <p class="paso-titulo">Paso 1 de 3 — Identifícate</p>
+        <h2>Ingresa con ClaveÚnica</h2>
+        <p>Es la forma más rápida y segura de identificarte ante el Estado.</p>
+        <div class="flex-row mt-md">
+          <button class="btn btn--clave" id="btn-clave-unica">
+            🔐 Ingresar con ClaveÚnica
+          </button>
+          <button class="btn btn--secundario" id="btn-crear-cuenta">Crear cuenta SAE</button>
+        </div>
+        <p class="small mt-md">¿No tienes ClaveÚnica? Solicítala gratis en <a href="https://www.claveunica.gob.cl" target="_blank" rel="noopener">claveunica.gob.cl</a>.</p>
+      </div>
+
+      <!-- Paso 2: Lista de colegios -->
+      <div class="postulacion-step" data-step="2">
+        <p class="paso-titulo">Paso 2 de 3 — Tu lista de colegios</p>
+        <h2>Agrega y ordena tus colegios</h2>
+        <p>Recuerda: el primero es tu favorito. Puedes elegir hasta 8.</p>
+
+        <div class="flex-row mt-md">
+          <label class="sr-only" for="post-add-select">Agregar colegio</label>
+          <select id="post-add-select" style="flex:1; min-width:200px; padding:10px; border-radius:8px; border:2px solid var(--borde); font-family:inherit; font-size:1rem; background:var(--bg-card); color:var(--texto);"></select>
+          <button class="btn btn--primario" id="btn-add-colegio">+ Agregar</button>
+        </div>
+
+        <div role="alert" class="form-error" id="post-error">
+          ⚠️ Debes agregar al menos un colegio antes de continuar.
+        </div>
+
+        <h3 class="mt-lg">Tu lista (arrastra o usa flechas para reordenar)</h3>
+        <ol class="lista-orden" id="post-lista" aria-describedby="post-error"></ol>
+        <p class="small mt-md">💡 La probabilidad estimada se basa en tu perfil declarado y la demanda histórica del colegio.</p>
+      </div>
+
+      <!-- Paso 3: Confirmar -->
+      <div class="postulacion-step" data-step="3">
+        <p class="paso-titulo">Paso 3 de 3 — Revisa y confirma</p>
+        <h2>Resumen de tu postulación</h2>
+        <div id="post-resumen"></div>
+
+        <div id="post-confirmado" class="resumen-final" hidden>
+          <h3 style="color:var(--verde);">✅ ¡Postulación enviada!</h3>
+          <p class="mt-md">Número de comprobante: <strong id="post-comprobante"></strong></p>
+          <p>Resultados disponibles: <strong>15 de octubre de 2026</strong></p>
+          <p class="mt-md">Te enviaremos un correo con todos los detalles.</p>
+        </div>
+      </div>
+
+      <div class="flex-row mt-lg">
+        <button class="btn btn--secundario" id="btn-paso-anterior">← Atrás</button>
+        <button class="btn btn--primario" id="btn-paso-siguiente">Siguiente →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN E + H — SEGUIMIENTO + TESTIMONIOS
+  ============================================================ -->
+  <section id="page-seguimiento" class="page" aria-labelledby="h1-seg">
+    <div class="section container">
+      <h1 id="h1-seg" tabindex="-1">Mi postulación</h1>
+
+      <div class="estado-card">
+        <span class="estado-card__estado">✅ Resultado disponible</span>
+        <p class="estado-card__resultado">Quedaste en: Colegio Los Andes</p>
+        <p>Esa fue tu <strong>1ª preferencia</strong>. Fue asignado porque tienes un hermano matriculado allí, lo que te da prioridad por ley.</p>
+        <div class="flex-row mt-md">
+          <button class="btn btn--verde">📄 Descargar comprobante</button>
+          <button class="btn btn--secundario">Ver detalle de la asignación</button>
+        </div>
+      </div>
+
+      <h2>Apoderados que pasaron por lo mismo
+        <span class="tooltip">
+          <button class="tooltip__trigger" aria-label="Sobre los testimonios">?</button>
+          <span class="tooltip__content" role="tooltip">
+            Narrativa para construir confianza: testimonios concretos refuerzan la transparencia del algoritmo y reducen la percepción de "tómbola".
+          </span>
+        </span>
+      </h2>
+      <div class="testimonios" id="testimonios"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       NOTAS DE DISEÑO
+  ============================================================ -->
+  <section class="container">
+    <div class="notas-disenio">
+      <h2>📚 Notas de diseño — Fundamentos de investigación</h2>
+      <p class="mb-md">Cada decisión de este prototipo V2 se ancla en hallazgos de la revisión de literatura sobre transparencia algorítmica (96 papers, 2017–2025) y en el informe heurístico del SAE (UChile, 2026).</p>
+
+      <details>
+        <summary>Divulgación progresiva (Springer & Whittaker, 2019–2020)</summary>
+        <p>El módulo "¿Cómo funciona?" presenta primero 4 pasos simples; el detalle del algoritmo y el simulador aparecen después. Los tooltips contextuales son una capa adicional opcional para quien quiere profundizar. La literatura muestra que la sobrecarga inicial reduce la confianza.</p>
+      </details>
+
+      <details>
+        <summary>Explicabilidad contextualizada (Nefedov, 2022)</summary>
+        <p>El simulador no explica Gale-Shapley en abstracto: explica el resultado en términos del usuario ("Quedaste aquí porque tienes un hermano matriculado"). El panel de seguimiento usa la misma lógica.</p>
+      </details>
+
+      <details>
+        <summary>Controles interactivos guiados (Kim, 2021; Feddersen, 2024)</summary>
+        <p>Todos los controles del simulador y del flujo de postulación tienen etiquetas claras y retroalimentación inmediata: la barra de probabilidad cambia al instante, las prioridades aplicadas se nombran. No hay controles "huérfanos".</p>
+      </details>
+
+      <details>
+        <summary>Diseño multi-dimensional (Glazerman et al., 2018)</summary>
+        <p>El comparador, el gráfico radar y la ficha presentan múltiples indicadores (SIMCE, NEE, seguridad, docentes, distancia) en simultáneo, porque los apoderados prefieren decidir con información visual diversa, no con un único score.</p>
+      </details>
+
+      <details>
+        <summary>Gestión de errores y expectativas (Springer & Whittaker, 2019)</summary>
+        <p>El simulador no oculta cuando la probabilidad es baja: muestra advertencia, pero acompañada de una explicación tranquilizadora ("el sistema seguirá buscando en tus opciones"). Los testimonios refuerzan esto con casos reales.</p>
+      </details>
+
+      <details>
+        <summary>Accesibilidad inclusiva (informe UChile, 2026: 0% en inclusión)</summary>
+        <p>Skip link, modo alto contraste WCAG AAA, focus management programático al cambiar de sección, aria-live regions, lenguaje sencillo (nivel 6° básico) y mobile-first con 4 breakpoints. Todo apunta a la persona arquetípica del estudio: Daniela, 35 años, móvil exclusivo, alfabetización digital básica.</p>
+      </details>
+
+      <details>
+        <summary>Interoperabilidad (informe UChile, 2026)</summary>
+        <p>El botón de ClaveÚnica es la opción primaria con efecto shimmer en hover, dada la brecha detectada de no integración con identidad digital del Estado.</p>
+      </details>
+
+      <details>
+        <summary>Mejoras sobre la V1</summary>
+        <p>V2 reemplaza simulador lineal por lógica Gale-Shapley simplificada (5 niveles de prioridad × 3 niveles de demanda), agrega comparador, calendario interactivo, testimonios, modo alto contraste, validación accesible, persistencia con sessionStorage, gráfico radar y progress ring SVG. Los textos se centralizan en un objeto TEXTOS para futuras traducciones.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <p>Prototipo V2 — Mejora UX del Sistema de Admisión Escolar (SAE) · Universidad Santa María · Mayo 2026</p>
+  <p class="mt-md">Datos ficticios con fines pedagógicos. Información real en <a href="https://www.sistemadeadmisionescolar.cl" target="_blank" rel="noopener">sistemadeadmisionescolar.cl</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   ESTADO GLOBAL — único punto de verdad de la aplicación
+   Fundamento §7 CLAUDE_v2: estado centralizado + persistencia.
+============================================================ */
+const ESTADO = {
+  pagina: 'inicio',
+  altoContraste: false,
+  perfilUsuario: { hermano: false, vulnerabilidad: false, cercano: false, nee: false },
+  simSeleccionados: [],          // ids de colegios elegidos en el simulador (en orden)
+  colegiosAgregados: [],         // ids agregados al flujo de postulación
+  pasoPostulacion: 1,
+  comparadorSeleccionados: [],   // ids para comparar
+  primeraVez: true,
+  comuna: '',
+};
+
+/* ============================================================
+   CATÁLOGO DE COLEGIOS — datos ficticios pero realistas
+   Estructura tomada literalmente de §2 CLAUDE_v2.md
+============================================================ */
+const COLEGIOS = {
+  1: { foto: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=220&fit=crop&auto=format", nombre: "Colegio Los Andes", direccion: "Av. Los Andes 1240, La Florida", comuna: "La Florida",
+       distanciaBase: 1.2,
+       niveles: ["Prekínder", "Kínder", "1° a 6° Básico", "7° a 4° Medio"],
+       vacantes: { preKinder: 12, kinder: 15, basico: 20 },
+       simce: { lectura: 268, matematica: 271, ciencias: 265, historia: 258 },
+       promedioComunal: { lectura: 255, matematica: 252, ciencias: 249, historia: 247 },
+       docentes: { titulados: 87, total: 34 }, jornada: "Completa",
+       nee: { programa: true, psicologa: true, fono: true, rampa: true },
+       seguridad: { camaras: true, porteria: true, antibullying: true, semaforo: true },
+       metodos: ["Aprendizaje por proyectos", "Inglés desde prekínder", "Robótica", "Arte y música"],
+       proyecto: "Formamos personas íntegras con énfasis en el desarrollo socioemocional, la convivencia respetuosa y las competencias del siglo XXI.",
+       demanda: "alta", prioritarios: ["hermano","cercano","nee"] },
+  2: { foto: "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=600&h=220&fit=crop&auto=format", nombre: "Colegio San Martín", direccion: "Los Aromos 450, Maipú", comuna: "Maipú",
+       distanciaBase: 3.5,
+       niveles: ["Prekínder", "Kínder", "1° a 8° Básico"],
+       vacantes: { preKinder: 24, kinder: 24, basico: 30 },
+       simce: { lectura: 252, matematica: 248, ciencias: 244, historia: 241 },
+       promedioComunal: { lectura: 250, matematica: 247, ciencias: 243, historia: 240 },
+       docentes: { titulados: 92, total: 28 }, jornada: "Completa",
+       nee: { programa: false, psicologa: true, fono: false, rampa: true },
+       seguridad: { camaras: true, porteria: false, antibullying: true, semaforo: false },
+       metodos: ["Metodología tradicional con innovación", "Talleres de teatro", "Deporte"],
+       proyecto: "Comprometidos con la excelencia académica y el desarrollo valórico, formamos ciudadanos responsables con sólidas bases en lenguaje y matemática.",
+       demanda: "media", prioritarios: ["hermano","vulnerabilidad"] },
+  3: { foto: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&h=220&fit=crop&auto=format", nombre: "Escuela República de Chile", direccion: "Calle 5 de Abril 890, La Florida", comuna: "La Florida",
+       distanciaBase: 0.8,
+       niveles: ["Prekínder", "Kínder", "1° a 6° Básico"],
+       vacantes: { preKinder: 40, kinder: 35, basico: 45 },
+       simce: { lectura: 241, matematica: 239, ciencias: 235, historia: 238 },
+       promedioComunal: { lectura: 255, matematica: 252, ciencias: 249, historia: 247 },
+       docentes: { titulados: 78, total: 22 }, jornada: "Parcial (hasta las 14:00)",
+       nee: { programa: true, psicologa: false, fono: true, rampa: true },
+       seguridad: { camaras: false, porteria: true, antibullying: true, semaforo: true },
+       metodos: ["Lectura intensiva", "Matemática concreta", "Huerto escolar"],
+       proyecto: "Escuela pública comprometida con la comunidad, con énfasis en la lectura, la naturaleza y los valores ciudadanos.",
+       demanda: "baja", prioritarios: ["hermano","cercano","nee","vulnerabilidad"] },
+  4: { foto: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=220&fit=crop&auto=format", nombre: "Liceo Técnico Simón Bolívar", direccion: "Av. Bolívar 2100, Puente Alto", comuna: "Puente Alto",
+       distanciaBase: 5.1,
+       niveles: ["7° Básico", "8° Básico", "1° a 4° Medio (Técnico-Profesional)"],
+       vacantes: { basico: 35, medio: 40 },
+       simce: { lectura: 260, matematica: 255, ciencias: 258, historia: 252 },
+       promedioComunal: { lectura: 253, matematica: 250, ciencias: 248, historia: 246 },
+       docentes: { titulados: 95, total: 41 }, jornada: "Completa",
+       nee: { programa: true, psicologa: true, fono: false, rampa: true },
+       seguridad: { camaras: true, porteria: true, antibullying: true, semaforo: false },
+       metodos: ["Formación técnica en gastronomía", "Formación técnica en electricidad", "Talleres de emprendimiento"],
+       proyecto: "Preparamos a jóvenes para el mundo laboral y la educación superior con especialidades técnicas de alta demanda y sólida formación general.",
+       demanda: "media", prioritarios: ["hermano","cercano"] },
+  5: { foto: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=220&fit=crop&auto=format", nombre: "Colegio Villa del Sol", direccion: "Pasaje Las Palmas 330, Peñalolén", comuna: "Peñalolén",
+       distanciaBase: 2.3,
+       niveles: ["Prekínder", "Kínder", "1° a 4° Medio"],
+       vacantes: { preKinder: 18, kinder: 18, basico: 25, medio: 30 },
+       simce: { lectura: 274, matematica: 278, ciencias: 270, historia: 265 },
+       promedioComunal: { lectura: 260, matematica: 258, ciencias: 255, historia: 252 },
+       docentes: { titulados: 100, total: 48 }, jornada: "Completa",
+       nee: { programa: true, psicologa: true, fono: true, rampa: true },
+       seguridad: { camaras: true, porteria: true, antibullying: true, semaforo: true },
+       metodos: ["Bilingüe español-inglés", "Aprendizaje basado en proyectos", "Educación emocional", "Tecnología e innovación"],
+       proyecto: "Comunidad educativa bilingüe y diversa que desarrolla el pensamiento crítico, la creatividad y la conciencia global en un ambiente inclusivo de excelencia.",
+       demanda: "alta", prioritarios: ["hermano","vulnerabilidad","nee"] },
+  6: { foto: "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&h=220&fit=crop&auto=format", nombre: "Escuela Básica Los Quillayes", direccion: "Los Quillayes 1550, La Florida", comuna: "La Florida",
+       distanciaBase: 1.8,
+       niveles: ["Prekínder", "Kínder", "1° a 8° Básico"],
+       vacantes: { preKinder: 30, kinder: 28, basico: 35 },
+       simce: { lectura: 249, matematica: 245, ciencias: 242, historia: 244 },
+       promedioComunal: { lectura: 255, matematica: 252, ciencias: 249, historia: 247 },
+       docentes: { titulados: 83, total: 26 }, jornada: "Completa",
+       nee: { programa: true, psicologa: true, fono: true, rampa: false },
+       seguridad: { camaras: true, porteria: false, antibullying: true, semaforo: false },
+       metodos: ["Educación ambiental", "Talleres de música", "Apoyo diferenciado en aula"],
+       proyecto: "Escuela comunitaria con fuerte vínculo con las familias y el barrio, que apuesta por la educación ambiental y el aprendizaje colaborativo.",
+       demanda: "media", prioritarios: ["hermano","cercano","nee","vulnerabilidad"] }
+};
+
+/* ============================================================
+   TEXTOS DE INTERFAZ — separados de la presentación
+   Permite traducción / actualización centralizada (§7 CLAUDE_v2)
+============================================================ */
+const TEXTOS = {
+  buscadorPlaceholder: "Nombre del colegio",
+  buscadorBtn: "🔍 Buscar",
+  prioridadLabels: {
+    1: "prioridad por hermano matriculado",
+    2: "prioridad por vulnerabilidad acreditada",
+    3: "prioridad por cercanía al domicilio",
+    4: "prioridad por NEE en colegio con programa PIE",
+    5: "sin prioridad especial (selección por sorteo público)"
+  }
+};
+
+/* Mitos — 7 según §1.1 CLAUDE_v2 */
+const MITOS = [
+  { p: "¿El SAE es una tómbola?",
+    r: "No. El SAE usa un algoritmo con reglas claras y públicas. Cada colegio prioriza por hermanos, vulnerabilidad, cercanía y NEE. El \"sorteo\" solo aparece cuando ya se aplicaron todas las prioridades y aún quedan candidatos para la misma vacante." },
+  { p: "¿Pone más colegios = más opciones?",
+    r: "Sí. Postular a 6 u 8 colegios en lugar de 1 o 2 aumenta mucho la probabilidad de quedar en uno de tu lista. Si solo postulas a tu favorito y queda lleno, te asignan uno fuera de tu lista." },
+  { p: "¿El orden importa?",
+    r: "Mucho. El sistema intenta primero el N°1, después el N°2, así sucesivamente. Pon arriba tu favorito real, no el que crees que vas a tener más fácil." },
+  { p: "¿Si tengo un hermano matriculado, quedo seguro?",
+    r: "Hermano matriculado es la prioridad más alta de la ley, así que quedas casi siempre. Pero si las vacantes son muy pocas y hay más postulantes con hermanos que vacantes, también se aplica un sorteo entre ellos." },
+  { p: "¿Qué pasa si no quedo en ninguno?",
+    r: "El sistema te asigna el colegio público o particular subvencionado más cercano con vacantes. Después puedes postular en una segunda etapa o quedarte en lista de espera." },
+  { p: "¿Cómo funciona el algoritmo Gale-Shapley?",
+    r: "Es un mecanismo matemático que toma las preferencias de las familias y las prioridades de los colegios y arma asignaciones \"estables\": ningún apoderado y colegio quedan emparejados de forma que ambos preferirían cambiar. Suena complejo, pero garantiza que el resultado es justo dadas las reglas." },
+  { p: "¿Puedo \"hacer trampa\" si pongo cerca un colegio que no me gusta?",
+    r: "No. Estrategias así suelen empeorar tu resultado. La forma óptima de postular en SAE es ordenar tus preferencias reales: el algoritmo está diseñado para que decir la verdad sea la mejor estrategia." }
+];
+
+/* ============================================================
+   CALENDARIO — 6 hitos del proceso SAE
+============================================================ */
+const HITOS = [
+  { fecha: "Julio",          nombre: "Inscripción",     icono: "🗓️", estado: "completado",
+    desc: "Familias inscriben sus datos y eligen el nivel para el que postulan. Etapa cerrada para 2026." },
+  { fecha: "Agosto",         nombre: "Postulación",     icono: "📝", estado: "actual",
+    desc: "Eliges hasta 8 colegios en orden de preferencia. Cierra el 30 de agosto. Si aún no postulas, hazlo desde la sección Postula." },
+  { fecha: "Septiembre",     nombre: "Procesamiento",   icono: "⚙️", estado: "futuro",
+    desc: "El algoritmo cruza todas las postulaciones con prioridades y vacantes. Es automático, no requiere acción de tu parte." },
+  { fecha: "15 de octubre",  nombre: "Resultados",      icono: "📬", estado: "futuro",
+    desc: "Recibes el resultado por correo y aquí mismo en \"Mi postulación\". Te dirá en qué colegio quedaste y por qué." },
+  { fecha: "Noviembre",      nombre: "Matrícula",       icono: "✅", estado: "futuro",
+    desc: "Confirmas tu matrícula en el colegio asignado. Si no lo haces, pierdes el cupo y pasas a lista de espera." },
+  { fecha: "Nov–Dic",        nombre: "Lista de espera", icono: "📋", estado: "futuro",
+    desc: "Si liberan cupos en colegios que pediste, te avisamos. Puedes postular nuevamente en una segunda etapa." }
+];
+
+/* ============================================================
+   TESTIMONIOS — §4 sección H
+============================================================ */
+const TESTIMONIOS = [
+  { iniciales: "MR", color: "#1E3A5F", nombre: "María R.", meta: "34 años · Pudahuel",
+    cita: "Yo pensé que el SAE era una lotería. Mi hijo mayor había quedado en el primero que puse, así que no entendía bien cómo funcionaba. Con el segundo hijo usé esta explicación y entendí que como vivo a 3 cuadras del colegio, tengo prioridad. Quedé en el primero de nuevo. Ya no le tengo miedo al proceso.",
+    resultado: "✅ 1ª preferencia · Motivo: cercanía al domicilio" },
+  { iniciales: "RP", color: "#2D6A4F", nombre: "Roberto P.", meta: "41 años · La Florida",
+    cita: "No quedamos en el primero. Fue frustrante al principio. Pero el sistema nos explicó por qué: ese colegio tenía más postulantes con hermanos que nosotros. Quedamos en el segundo que pusimos, que también era bueno. Ahora sé que hay que poner más opciones.",
+    resultado: "✅ 2ª preferencia · Motivo: sin prioridad especial en 1ª opción" },
+  { iniciales: "AS", color: "#5B82A6", nombre: "Ana S.", meta: "38 años · Maipú",
+    cita: "Mi hijo tiene TEA. Filtré los colegios por programa PIE y puse tres que sí tenían. Quedé en el primero. El sistema sí considera las NEE. Antes no sabía eso.",
+    resultado: "✅ 1ª preferencia · Motivo: prioridad NEE + programa PIE disponible" }
+];
+
+/* ============================================================
+   UTILIDADES
+============================================================ */
+function $(sel, ctx=document) { return ctx.querySelector(sel); }
+function $$(sel, ctx=document) { return Array.from(ctx.querySelectorAll(sel)); }
+
+/* Anuncia mensajes a lectores de pantalla — accesibilidad */
+function anunciar(msg) {
+  const live = $('#aria-live');
+  live.textContent = '';
+  setTimeout(() => { live.textContent = msg; }, 50);
+}
+
+/* Persistencia ligera con sessionStorage — mejora UX al navegar */
+function guardarEstado() {
+  try {
+    sessionStorage.setItem('sae_v2_estado', JSON.stringify({
+      altoContraste: ESTADO.altoContraste,
+      perfilUsuario: ESTADO.perfilUsuario,
+      colegiosAgregados: ESTADO.colegiosAgregados,
+      primeraVez: ESTADO.primeraVez,
+      comuna: ESTADO.comuna
+    }));
+  } catch(e) { /* sessionStorage puede estar deshabilitado */ }
+}
+function cargarEstado() {
+  try {
+    const raw = sessionStorage.getItem('sae_v2_estado');
+    if (raw) {
+      const datos = JSON.parse(raw);
+      Object.assign(ESTADO, datos);
+    }
+  } catch(e) {}
+}
+
+/* ============================================================
+   NAVEGACIÓN SPA — focus management para accesibilidad
+   Fundamento: §5 CLAUDE_v2 (focus al H1 al cambiar sección)
+============================================================ */
+function navegar(pagina) {
+  ESTADO.pagina = pagina;
+  $$('.page').forEach(p => p.classList.remove('active'));
+  const target = $('#page-' + pagina);
+  if (target) {
+    target.classList.add('active');
+    // Mover foco al H1 — patrón ARIA estándar
+    const h1 = target.querySelector('h1');
+    if (h1) {
+      h1.setAttribute('tabindex', '-1');
+      h1.focus({ preventScroll: false });
+    }
+    // Scroll al inicio
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  // Sincronizar navbar
+  $$('.navbar__nav button[data-page]').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === pagina);
+  });
+  anunciar('Sección ' + pagina + ' cargada.');
+}
+
+/* ============================================================
+   MODO ALTO CONTRASTE
+============================================================ */
+function toggleContraste() {
+  ESTADO.altoContraste = !ESTADO.altoContraste;
+  document.body.classList.toggle('high-contrast', ESTADO.altoContraste);
+  const btn = $('#toggle-contraste');
+  btn.setAttribute('aria-pressed', String(ESTADO.altoContraste));
+  anunciar('Modo alto contraste ' + (ESTADO.altoContraste ? 'activado' : 'desactivado'));
+  guardarEstado();
+}
+
+/* ============================================================
+   BUSCADOR FUNCIONAL
+============================================================ */
+function buscarColegios() {
+  const texto = $('#busc-texto').value.toLowerCase().trim();
+  const comuna = $('#busc-comuna').value;
+  const nivel = $('#busc-nivel').value;
+
+  const resultados = Object.entries(COLEGIOS).filter(([id, c]) => {
+    const matchTexto = !texto || c.nombre.toLowerCase().includes(texto) || c.comuna.toLowerCase().includes(texto);
+    const matchComuna = !comuna || c.comuna === comuna;
+    const matchNivel = !nivel || c.niveles.some(n => n.toLowerCase().includes(nivel.toLowerCase()));
+    return matchTexto && matchComuna && matchNivel;
+  });
+
+  const grid = $('#busc-resultados');
+  const contador = $('#busc-contador');
+
+  if (resultados.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:24px; color:var(--texto-suave);">No encontramos colegios con esos criterios. Prueba con otros filtros.</p>';
+    contador.textContent = 'Sin resultados';
+    return;
+  }
+  contador.textContent = resultados.length + ' colegio' + (resultados.length !== 1 ? 's' : '') + ' encontrado' + (resultados.length !== 1 ? 's' : '');
+  grid.innerHTML = resultados.map(([id, c]) => renderTarjetaColegio(parseInt(id))).join('');
+  // Re-vincular botones de tarjeta
+  vincularBotonesTarjeta();
+}
+
+/* Tarjeta de colegio reutilizable — usada en buscador */
+function renderTarjetaColegio(id) {
+  const c = COLEGIOS[id];
+  const totalVac = Object.values(c.vacantes).reduce((a,b)=>a+b, 0);
+  const urgente = Object.values(c.vacantes).some(v => v < 5);
+  const demandaClass = c.demanda === 'alta' ? 'badge--alta' : (c.demanda === 'media' ? 'badge--media' : 'badge--baja');
+  const distLabel = c.distanciaBase < 2 ? '🟢 Cerca' : (c.distanciaBase < 4 ? '🟡 Media' : '🔴 Lejos');
+
+  return `
+    <article class="col-card" data-id="${id}">
+      <div class="col-card__foto-wrap">
+        <img src="${c.foto}" alt="Fotografía de ${c.nombre}" class="col-card__foto" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="col-card__foto-fallback" style="display:none;">🏫</div>
+        <div class="col-card__foto-overlay">
+          <span class="badge ${demandaClass}" style="margin:0;">${c.demanda} demanda</span>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap; padding-top:4px;">
+        <div style="flex:1; min-width:0;">
+          <p class="col-card__nombre">${c.nombre}</p>
+          <p class="col-card__direccion">📍 ${c.direccion}</p>
+        </div>
+      </div>
+      <div class="col-card__chips">
+        <span class="chip">📏 ${c.distanciaBase} km · ${distLabel}</span>
+        <span class="chip chip--verde">🪑 ${totalVac} vacantes</span>
+        ${urgente ? '<span class="badge badge--urgente">¡Pocas vacantes!</span>' : ''}
+        ${c.nee.programa ? '<span class="chip">♿ Programa PIE</span>' : ''}
+        ${c.jornada === 'Completa' ? '<span class="chip">🕐 JEC</span>' : ''}
+      </div>
+      <p class="small">${c.proyecto.substring(0, 110)}${c.proyecto.length > 110 ? '…' : ''}</p>
+      <div class="col-card__acciones">
+        <button class="btn btn--secundario btn-ver-ficha" data-id="${id}">Ver ficha</button>
+        <button class="btn btn--primario btn-add-postulacion" data-id="${id}">+ A mi lista</button>
+      </div>
+    </article>`;
+}
+
+function vincularBotonesTarjeta() {
+  $$('.btn-ver-ficha').forEach(b => {
+    b.onclick = () => {
+      $('#ficha-select').value = b.dataset.id;
+      renderFicha(parseInt(b.dataset.id));
+      navegar('colegio');
+    };
+  });
+  $$('.btn-add-postulacion').forEach(b => {
+    b.onclick = () => {
+      const id = parseInt(b.dataset.id);
+      if (!ESTADO.colegiosAgregados.includes(id)) {
+        if (ESTADO.colegiosAgregados.length >= 8) {
+          anunciar('Has alcanzado el máximo de 8 colegios.');
+          alert('Solo puedes postular a 8 colegios como máximo.');
+          return;
+        }
+        ESTADO.colegiosAgregados.push(id);
+        guardarEstado();
+        anunciar(COLEGIOS[id].nombre + ' agregado a tu lista de postulación.');
+        b.textContent = '✓ Agregado';
+        b.classList.remove('btn--primario');
+        b.classList.add('btn--verde');
+        setTimeout(() => {
+          b.textContent = '+ A mi lista';
+          b.classList.add('btn--primario');
+          b.classList.remove('btn--verde');
+        }, 1800);
+      } else {
+        anunciar('Este colegio ya está en tu lista.');
+      }
+    };
+  });
+}
+
+/* ============================================================
+   SIMULADOR — Lógica Gale-Shapley simplificada (§3 CLAUDE_v2)
+   Niveles 1–5 de prioridad × 3 niveles de demanda
+============================================================ */
+
+/* Determina el nivel de prioridad del usuario en un colegio */
+function nivelPrioridad(perfil, colegio) {
+  if (perfil.hermano) return 1;                                // máximo
+  if (perfil.vulnerabilidad) return 2;
+  if (perfil.cercano && colegio.distanciaBase < 2) return 3;
+  if (perfil.nee && colegio.nee.programa) return 4;
+  return 5;                                                     // sorteo
+}
+
+/* Calcula la probabilidad estimada de asignación */
+function probAsignacion(nivel, demanda) {
+  const tabla = {
+    alta:  { 1: 92, 2: 88, 3: 65, 4: 60, 5: 28 },
+    media: { 1: 96, 2: 90, 3: 78, 4: 75, 5: 60 },
+    baja:  { 1: 99, 2: 98, 3: 96, 4: 96, 5: 92 }
+  };
+  return tabla[demanda][nivel];
+}
+
+/* Ejecuta el simulador con la lista actual */
+function simular() {
+  const perfil = ESTADO.perfilUsuario;
+  const lista = ESTADO.simSeleccionados;
+
+  if (lista.length === 0) {
+    return { error: 'Debes elegir al menos un colegio para simular.' };
+  }
+
+  // Iterar la lista en orden — primer colegio donde prob >= 65 = asignación
+  const detalles = lista.map((id, idx) => {
+    const c = COLEGIOS[id];
+    const nivel = nivelPrioridad(perfil, c);
+    const prob = probAsignacion(nivel, c.demanda);
+    return { id, idx: idx+1, nombre: c.nombre, demanda: c.demanda, nivel, prob };
+  });
+
+  let asignado = detalles.find(d => d.prob >= 65);
+  let advertencia = null;
+  if (!asignado) {
+    asignado = detalles.reduce((mejor, d) => d.prob > mejor.prob ? d : mejor, detalles[0]);
+    advertencia = 'Tu probabilidad estimada es baja en todos los colegios elegidos. Te recomendamos agregar más opciones (puedes postular hasta a 8) para asegurar una asignación que te acomode.';
+  }
+
+  // Construir explicación natural
+  let razon;
+  if (asignado.nivel === 5) {
+    razon = `En "${asignado.nombre}" no tienes una prioridad especial declarada, así que tu asignación depende del sorteo público. Como la demanda es ${asignado.demanda}, tu probabilidad estimada es del ${asignado.prob}%.`;
+  } else {
+    razon = `Quedaste asignado/a en "${asignado.nombre}" (tu opción N°${asignado.idx}) por ${TEXTOS.prioridadLabels[asignado.nivel]}. Como la demanda del colegio es ${asignado.demanda}, tu probabilidad estimada es del ${asignado.prob}%.`;
+  }
+
+  return {
+    asignado, detalles, razon,
+    prioridadAplicada: TEXTOS.prioridadLabels[asignado.nivel],
+    advertencia
+  };
+}
+
+/* Pinta el resultado del simulador */
+function renderResultadoSimulador() {
+  const r = simular();
+  const cont = $('#sim-resultado');
+  if (r.error) {
+    cont.classList.add('activo');
+    cont.innerHTML = `<p style="color:var(--rojo);">⚠️ ${r.error}</p>`;
+    return;
+  }
+
+  // Animación de carga breve para feedback
+  cont.classList.add('activo');
+  cont.innerHTML = '<div class="sim-spinner" aria-live="assertive">Calculando tu resultado…</div>';
+
+  setTimeout(() => {
+    const probClass = r.asignado.prob >= 80 ? '' : (r.asignado.prob >= 60 ? 'barra-prob__fill--medio' : 'barra-prob__fill--bajo');
+    cont.innerHTML = `
+      <p class="sim-resultado__titulo">🎯 Resultado simulado</p>
+      <p class="sim-resultado__razon">${r.razon}</p>
+      <div class="barra-prob" aria-label="Probabilidad estimada ${r.asignado.prob}%">
+        <div class="barra-prob__fill ${probClass}" style="width: 0%;">${r.asignado.prob}%</div>
+      </div>
+      <h4 style="margin-top:20px; color:var(--acento);">Detalle por cada colegio elegido:</h4>
+      <ul style="list-style:none; padding:0; margin-top:8px;">
+        ${r.detalles.map(d => `
+          <li style="padding:8px 0; border-bottom:1px solid var(--borde); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; align-items:center;">
+            <span><strong>${d.idx}.</strong> ${d.nombre}</span>
+            <span style="display:inline-flex; gap:6px; align-items:center;">
+              <span class="badge badge--${d.demanda}">${d.demanda}</span>
+              <span style="font-weight:700;">${d.prob}%</span>
+            </span>
+          </li>`).join('')}
+      </ul>
+      ${r.advertencia ? `<div class="sim-resultado__advertencia" role="note">⚠️ ${r.advertencia}</div>` : ''}
+      <p class="small mt-md"><em>Esta es una estimación pedagógica. La asignación real depende de la demanda total y de las prioridades de las demás familias.</em></p>
+    `;
+    // Animación de la barra
+    setTimeout(() => {
+      const bar = cont.querySelector('.barra-prob__fill');
+      if (bar) bar.style.width = r.asignado.prob + '%';
+    }, 50);
+    anunciar(`Resultado: quedaste en ${r.asignado.nombre} con ${r.asignado.prob}% de probabilidad.`);
+  }, 600);
+}
+
+/* ============================================================
+   RENDERS DE SECCIONES
+============================================================ */
+
+/* Render del simulador — opciones de colegios */
+function renderSimColegios() {
+  const cont = $('#sim-colegios');
+  cont.innerHTML = Object.entries(COLEGIOS).map(([id, c]) => {
+    const orden = ESTADO.simSeleccionados.indexOf(parseInt(id));
+    const seleccionado = orden >= 0;
+    return `
+      <div class="sim-colegio ${seleccionado ? 'seleccionado' : ''}" data-id="${id}" role="button" tabindex="0" aria-pressed="${seleccionado}">
+        <div class="sim-colegio__info">
+          <div class="sim-colegio__nombre">${c.nombre}</div>
+          <div class="sim-colegio__meta">${c.comuna} · ${c.distanciaBase} km · demanda ${c.demanda}</div>
+        </div>
+        <div class="sim-colegio__orden">${orden + 1}</div>
+      </div>`;
+  }).join('');
+
+  // Click & teclado
+  $$('.sim-colegio').forEach(el => {
+    const handle = () => {
+      const id = parseInt(el.dataset.id);
+      const idx = ESTADO.simSeleccionados.indexOf(id);
+      if (idx >= 0) {
+        ESTADO.simSeleccionados.splice(idx, 1);
+      } else {
+        if (ESTADO.simSeleccionados.length >= 6) {
+          anunciar('Máximo 6 colegios en el simulador.');
+          return;
+        }
+        ESTADO.simSeleccionados.push(id);
+      }
+      renderSimColegios();
+    };
+    el.onclick = handle;
+    el.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handle(); } };
+  });
+}
+
+/* Render mitos (acordeón accesible) */
+function renderMitos() {
+  $('#mitos-lista').innerHTML = MITOS.map((m, i) => `
+    <div class="mito" data-i="${i}">
+      <button class="mito__pregunta" aria-expanded="false" aria-controls="mito-r-${i}">
+        ${m.p}
+      </button>
+      <div class="mito__respuesta" id="mito-r-${i}" role="region">
+        <p>${m.r}</p>
+      </div>
+    </div>`).join('');
+
+  $$('.mito__pregunta').forEach(b => {
+    b.onclick = () => {
+      const mito = b.closest('.mito');
+      const abierto = mito.classList.toggle('abierto');
+      b.setAttribute('aria-expanded', String(abierto));
+    };
+  });
+}
+
+/* Render calendario */
+function renderTimeline() {
+  $('#timeline').innerHTML = HITOS.map((h, i) => `
+    <button class="timeline__hito ${h.estado}" data-i="${i}" role="listitem" aria-label="${h.nombre} - ${h.fecha} - ${h.estado === 'actual' ? 'etapa actual' : h.estado}">
+      <div class="timeline__circulo" aria-hidden="true">${h.icono}</div>
+      <div class="timeline__textos">
+        <div class="timeline__fecha">${h.fecha}</div>
+        <div class="timeline__nombre">${h.nombre}</div>
+      </div>
+    </button>`).join('');
+
+  $$('.timeline__hito').forEach(b => {
+    b.onclick = () => {
+      const i = parseInt(b.dataset.i);
+      const h = HITOS[i];
+      const tip = $('#timeline-tooltip');
+      tip.innerHTML = `<h3>${h.icono} ${h.nombre} — ${h.fecha}</h3><p>${h.desc}</p>`;
+      tip.classList.add('visible');
+      anunciar(h.nombre + ': ' + h.desc);
+    };
+  });
+}
+
+/* Render ficha de colegio dinámica */
+function renderFicha(id) {
+  const c = COLEGIOS[id];
+  if (!c) return;
+  const docPct = Math.round((c.docentes.titulados));
+  const totalVac = Object.values(c.vacantes).reduce((a,b)=>a+b, 0);
+  const urgente = Object.values(c.vacantes).some(v => v < 5);
+  const radioOffset = 251.2 - (251.2 * docPct / 100); // 2πr con r=40
+
+  // SIMCE bars
+  const dims = ['lectura','matematica','ciencias','historia'];
+  const labels = { lectura: 'Lectura', matematica: 'Matemática', ciencias: 'Ciencias', historia: 'Historia' };
+
+  const simceBars = dims.map(d => {
+    const valor = c.simce[d];
+    const comunal = c.promedioComunal[d];
+    const indicator = valor > comunal ? '↑' : (valor < comunal ? '↓' : '=');
+    const indClass = valor > comunal ? 'var(--verde)' : (valor < comunal ? 'var(--rojo)' : 'var(--gris-med)');
+    const pct = Math.min(100, (valor / 350) * 100);
+    return `
+      <div class="simce-row">
+        <span class="simce-row__label">${labels[d]}</span>
+        <div class="simce-row__bar"><div class="simce-row__fill" style="width:${pct}%;"></div></div>
+        <span class="simce-row__valor">${valor} <span style="color:${indClass};">${indicator}</span></span>
+      </div>`;
+  }).join('');
+
+  // Mapa SVG con marcadores
+  const mapaSvg = `
+    <svg class="mapa-svg" viewBox="0 0 400 200" role="img" aria-label="Mapa esquemático con ubicación del colegio">
+      <rect x="0" y="0" width="400" height="200" fill="#e0eff5"/>
+      <path d="M0,90 Q100,80 200,100 T400,110" stroke="#fff" stroke-width="14" fill="none"/>
+      <path d="M150,0 L160,200" stroke="#fff" stroke-width="10"/>
+      <circle cx="200" cy="100" r="${20 + (5 - Math.min(c.distanciaBase, 5)) * 5}" fill="#1E3A5F" fill-opacity="0.18" stroke="#1E3A5F" stroke-dasharray="4,3"/>
+      <circle cx="200" cy="100" r="9" fill="#B35C1E"/>
+      <text x="200" y="125" font-family="Arial" font-size="11" text-anchor="middle" fill="#333" font-weight="700">${c.nombre}</text>
+      <text x="200" y="180" font-family="Arial" font-size="10" text-anchor="middle" fill="#555">~${c.distanciaBase} km del domicilio de referencia</text>
+    </svg>`;
+
+  $('#ficha-contenido').innerHTML = `
+    <div class="ficha">
+      <div class="ficha__foto-hero">
+        <img src="${c.foto}" alt="Fotografía de ${c.nombre}" class="ficha__foto-img" loading="lazy" onerror="this.style.display='none'">
+        <div class="ficha__foto-gradiente">
+          <h2 class="ficha__titulo" style="color:#fff; text-shadow:0 2px 6px rgba(0,0,0,0.6); margin:0;">${c.nombre}</h2>
+          <p style="color:rgba(255,255,255,0.88); font-size:0.9rem; margin:4px 0 0;">📍 ${c.direccion} · ${c.comuna}</p>
+        </div>
+      </div>
+      <div class="ficha__header">
+        <div>
+          <div class="col-card__chips" style="margin-top:8px;">
+            <span class="badge badge--${c.demanda}">demanda ${c.demanda}</span>
+            <span class="chip">🕐 Jornada ${c.jornada}</span>
+            <span class="chip chip--verde">🪑 ${totalVac} vacantes totales</span>
+            ${urgente ? '<span class="badge badge--urgente">¡Pocas vacantes!</span>' : ''}
+          </div>
+        </div>
+        <div class="flex-row">
+          <button class="btn btn--primario btn-add-postulacion" data-id="${id}">+ A mi lista</button>
+          <button class="btn btn--secundario btn-comparar-este" data-id="${id}">Comparar</button>
+        </div>
+      </div>
+
+      <div class="ficha__grid">
+        <div class="ficha-bloque">
+          <h3>📊 SIMCE vs. promedio comunal</h3>
+          <div class="simce-comp">${simceBars}</div>
+          <p class="small mt-md"><strong>↑</strong> mayor que el promedio comunal · <strong>↓</strong> menor</p>
+        </div>
+
+        <div class="ficha-bloque">
+          <h3>📍 Ubicación</h3>
+          ${mapaSvg}
+        </div>
+
+        <div class="ficha-bloque">
+          <h3>👩‍🏫 Cuerpo docente</h3>
+          <div class="progress-ring">
+            <svg width="100" height="100" aria-label="${docPct}% de docentes titulados">
+              <circle class="progress-ring__circulo" cx="50" cy="50" r="40"/>
+              <circle class="progress-ring__valor" cx="50" cy="50" r="40"
+                stroke-dasharray="251.2" stroke-dashoffset="${radioOffset}"/>
+            </svg>
+            <div>
+              <p class="progress-ring__texto" style="font-size:1.6rem;">${docPct}%</p>
+              <p class="small">de ${c.docentes.total} docentes están titulados</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ficha-bloque">
+          <h3>♿ Apoyo a estudiantes con NEE</h3>
+          <ul>
+            <li class="${c.nee.programa ? 'si' : 'no'}">Programa de Integración Escolar (PIE)</li>
+            <li class="${c.nee.psicologa ? 'si' : 'no'}">Psicóloga/o en establecimiento</li>
+            <li class="${c.nee.fono ? 'si' : 'no'}">Fonoaudióloga/o</li>
+            <li class="${c.nee.rampa ? 'si' : 'no'}">Accesibilidad física (rampas)</li>
+          </ul>
+        </div>
+
+        <div class="ficha-bloque">
+          <h3>🛡️ Seguridad y convivencia</h3>
+          <ul>
+            <li class="${c.seguridad.camaras ? 'si' : 'no'}">Cámaras de vigilancia</li>
+            <li class="${c.seguridad.porteria ? 'si' : 'no'}">Portería con control de acceso</li>
+            <li class="${c.seguridad.antibullying ? 'si' : 'no'}">Programa antibullying activo</li>
+            <li class="${c.seguridad.semaforo ? 'si' : 'no'}">Semáforo peatonal en el frente</li>
+          </ul>
+        </div>
+
+        <div class="ficha-bloque" style="grid-column:1/-1;">
+          <h3>🔬 Métodos y proyecto educativo</h3>
+          <p>${c.proyecto}</p>
+          <div class="col-card__chips" style="margin-top:12px;">
+            ${c.metodos.map(m => '<span class="chip">' + m + '</span>').join('')}
+          </div>
+        </div>
+
+        <div class="ficha-bloque" style="grid-column:1/-1;">
+          <h3>🎯 Vista comparativa rápida (radar)</h3>
+          <div class="radar-wrapper">
+            <canvas id="radar-${id}" aria-label="Gráfico radar con SIMCE, NEE, Seguridad, Docentes y Proximidad"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Vincular acciones
+  vincularBotonesTarjeta();
+  $$('.btn-comparar-este').forEach(b => {
+    b.onclick = () => {
+      const id = parseInt(b.dataset.id);
+      if (!ESTADO.comparadorSeleccionados.includes(id)) {
+        ESTADO.comparadorSeleccionados.push(id);
+      }
+      navegar('comparador');
+      renderComparador();
+    };
+  });
+
+  // Renderizar Chart.js radar
+  setTimeout(() => renderRadar(id), 100);
+}
+
+/* Gráfico radar de Chart.js */
+function renderRadar(id) {
+  const c = COLEGIOS[id];
+  const ctx = document.getElementById('radar-' + id);
+  if (!ctx) return;
+
+  // Normalizar valores a 0-100 para el radar
+  const simceProm = (c.simce.lectura + c.simce.matematica + c.simce.ciencias + c.simce.historia) / 4;
+  const simceNorm = Math.round(((simceProm - 200) / 150) * 100);
+  const neeNorm = (c.nee.programa + c.nee.psicologa + c.nee.fono + c.nee.rampa) * 25;
+  const segNorm = (c.seguridad.camaras + c.seguridad.porteria + c.seguridad.antibullying + c.seguridad.semaforo) * 25;
+  const docNorm = c.docentes.titulados;
+  const proxNorm = Math.max(0, 100 - c.distanciaBase * 15);
+
+  if (window._radar) window._radar.destroy();
+  const colorAcento = ESTADO.altoContraste ? '#E6B800' : '#1E3A5F';
+  window._radar = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['SIMCE', 'Apoyo NEE', 'Seguridad', '% Docentes\ntitulados', 'Proximidad'],
+      datasets: [{
+        label: c.nombre,
+        data: [simceNorm, neeNorm, segNorm, docNorm, proxNorm],
+        backgroundColor: ESTADO.altoContraste ? 'rgba(255,215,0,0.25)' : 'rgba(0,87,183,0.25)',
+        borderColor: colorAcento,
+        borderWidth: 2,
+        pointBackgroundColor: colorAcento,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        r: { min: 0, max: 100,
+             ticks: { stepSize: 25, color: ESTADO.altoContraste ? '#fff' : '#666' },
+             pointLabels: { color: ESTADO.altoContraste ? '#fff' : '#333', font: { size: 12 } },
+             angleLines: { color: ESTADO.altoContraste ? '#444' : '#ccc' },
+             grid: { color: ESTADO.altoContraste ? '#444' : '#ddd' }
+           }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+/* Llenar el select de la ficha */
+function llenarFichaSelect() {
+  $('#ficha-select').innerHTML = Object.entries(COLEGIOS)
+    .map(([id, c]) => `<option value="${id}">${c.nombre} — ${c.comuna}</option>`).join('');
+  $('#ficha-select').onchange = (e) => renderFicha(parseInt(e.target.value));
+}
+
+/* ============================================================
+   COMPARADOR
+============================================================ */
+function renderComparadorSelector() {
+  $('#comp-selector').innerHTML = Object.entries(COLEGIOS).map(([id, c]) => {
+    const checked = ESTADO.comparadorSeleccionados.includes(parseInt(id));
+    return `
+      <label class="comp-check ${checked ? 'activo' : ''}">
+        <input type="checkbox" data-id="${id}" ${checked ? 'checked' : ''}>
+        <span>${c.nombre}<br><small style="color:var(--texto-suave);">${c.comuna}</small></span>
+      </label>`;
+  }).join('');
+
+  $$('.comp-check input').forEach(input => {
+    input.onchange = () => {
+      const id = parseInt(input.dataset.id);
+      const idx = ESTADO.comparadorSeleccionados.indexOf(id);
+      if (input.checked) {
+        if (ESTADO.comparadorSeleccionados.length >= 3) {
+          input.checked = false;
+          alert('Solo puedes comparar hasta 3 colegios.');
+          return;
+        }
+        ESTADO.comparadorSeleccionados.push(id);
+      } else if (idx >= 0) {
+        ESTADO.comparadorSeleccionados.splice(idx, 1);
+      }
+      input.closest('.comp-check').classList.toggle('activo', input.checked);
+      renderComparador();
+    };
+  });
+}
+
+function renderComparador() {
+  const ids = ESTADO.comparadorSeleccionados;
+  const tabla = $('#comp-tabla');
+  const aviso = $('#comp-aviso');
+  if (ids.length < 2) {
+    tabla.hidden = true;
+    aviso.textContent = `Selecciona al menos 2 colegios. (${ids.length}/3)`;
+    return;
+  }
+  aviso.textContent = `Comparando ${ids.length} colegios.`;
+  tabla.hidden = false;
+
+  const cols = ids.map(id => COLEGIOS[id]);
+  const sumNee = c => (c.nee.programa+c.nee.psicologa+c.nee.fono+c.nee.rampa);
+  const sumSeg = c => (c.seguridad.camaras+c.seguridad.porteria+c.seguridad.antibullying+c.seguridad.semaforo);
+  const totalVac = c => Object.values(c.vacantes).reduce((a,b)=>a+b,0);
+  const simceProm = c => Math.round((c.simce.lectura+c.simce.matematica+c.simce.ciencias+c.simce.historia)/4);
+  const comunalProm = c => Math.round((c.promedioComunal.lectura+c.promedioComunal.matematica+c.promedioComunal.ciencias+c.promedioComunal.historia)/4);
+
+  // Versión escritorio: tabla
+  const filas = [
+    { label: 'Comuna', valor: c => c.comuna },
+    { label: 'Distancia', valor: c => `${c.distanciaBase} km` },
+    { label: 'Total vacantes', valor: c => totalVac(c) },
+    { label: 'SIMCE promedio', valor: c => {
+        const p = simceProm(c), com = comunalProm(c);
+        const ind = p > com ? '<span style="color:var(--verde);">↑</span>' : (p < com ? '<span style="color:var(--rojo);">↓</span>' : '=');
+        return `${p} ${ind} <small style="color:var(--texto-suave);">(comunal: ${com})</small>`;
+      } },
+    { label: '% docentes titulados', valor: c => `<div style="background:var(--gris-cl); border-radius:4px; overflow:hidden; height:14px; min-width:80px; position:relative;"><div style="background:var(--verde); height:100%; width:${c.docentes.titulados}%;"></div></div><small>${c.docentes.titulados}%</small>` },
+    { label: 'Programa PIE (NEE)', valor: c => c.nee.programa ? '✅' : '❌' },
+    { label: 'Apoyo NEE total', valor: c => `${sumNee(c)}/4` },
+    { label: 'Seguridad total', valor: c => `${sumSeg(c)}/4` },
+    { label: 'Jornada', valor: c => c.jornada },
+    { label: 'Demanda', valor: c => `<span class="badge badge--${c.demanda}">${c.demanda}</span>` },
+    { label: 'Acción', valor: (c, i) => `<button class="btn btn--primario btn-add-postulacion" data-id="${ids[i]}" style="padding:6px 12px; font-size:0.85rem;">+ A mi lista</button>` }
+  ];
+
+  let html = '<table><thead><tr><th>Indicador</th>' + cols.map(c => `<th>${c.nombre}</th>`).join('') + '</tr></thead><tbody>';
+  filas.forEach(f => {
+    html += '<tr><td>' + f.label + '</td>' + cols.map((c,i) => `<td data-label="${f.label}">${f.valor(c, i)}</td>`).join('') + '</tr>';
+  });
+  html += '</tbody></table>';
+  tabla.innerHTML = html;
+  vincularBotonesTarjeta();
+}
+
+/* ============================================================
+   POSTULACIÓN — flujo de 3 pasos con validación
+============================================================ */
+function renderPostulacion() {
+  // Llenar select de "agregar"
+  $('#post-add-select').innerHTML = '<option value="">Selecciona un colegio…</option>' +
+    Object.entries(COLEGIOS)
+      .filter(([id]) => !ESTADO.colegiosAgregados.includes(parseInt(id)))
+      .map(([id, c]) => `<option value="${id}">${c.nombre} — ${c.comuna}</option>`).join('');
+
+  // Render lista ordenable
+  const lista = $('#post-lista');
+  if (ESTADO.colegiosAgregados.length === 0) {
+    lista.innerHTML = '<li style="border-style:dashed; color:var(--texto-suave); justify-content:center;"><em>Aún no has agregado colegios. Usa el selector de arriba.</em></li>';
+  } else {
+    lista.innerHTML = ESTADO.colegiosAgregados.map((id, i) => {
+      const c = COLEGIOS[id];
+      const nivel = nivelPrioridad(ESTADO.perfilUsuario, c);
+      const prob = probAsignacion(nivel, c.demanda);
+      return `
+        <li draggable="true" data-id="${id}" data-i="${i}">
+          <span class="lista-orden__handle" aria-hidden="true">⋮⋮</span>
+          <span class="lista-orden__num">${i+1}</span>
+          <div class="lista-orden__info">
+            <div class="lista-orden__nombre">${c.nombre}</div>
+            <div class="lista-orden__prob">📊 Prob. estimada: <strong>${prob}%</strong> · ${TEXTOS.prioridadLabels[nivel]}</div>
+          </div>
+          <div class="lista-orden__btns">
+            <button class="lista-orden__btn btn-mover-arriba" data-i="${i}" aria-label="Mover arriba" ${i === 0 ? 'disabled' : ''}>▲</button>
+            <button class="lista-orden__btn btn-mover-abajo" data-i="${i}" aria-label="Mover abajo" ${i === ESTADO.colegiosAgregados.length - 1 ? 'disabled' : ''}>▼</button>
+            <button class="lista-orden__btn btn-quitar" data-i="${i}" aria-label="Quitar de la lista" style="color:var(--rojo);">✕</button>
+          </div>
+        </li>`;
+    }).join('');
+  }
+
+  // Vincular botones
+  $$('.btn-mover-arriba').forEach(b => b.onclick = () => moverColegio(parseInt(b.dataset.i), -1));
+  $$('.btn-mover-abajo').forEach(b => b.onclick = () => moverColegio(parseInt(b.dataset.i), +1));
+  $$('.btn-quitar').forEach(b => b.onclick = () => quitarColegio(parseInt(b.dataset.i)));
+
+  // Drag & drop simple
+  let dragSrc = null;
+  $$('#post-lista li[draggable="true"]').forEach(li => {
+    li.addEventListener('dragstart', e => { dragSrc = li; li.classList.add('dragging'); });
+    li.addEventListener('dragend', e => li.classList.remove('dragging'));
+    li.addEventListener('dragover', e => { e.preventDefault(); });
+    li.addEventListener('drop', e => {
+      e.preventDefault();
+      if (dragSrc && dragSrc !== li) {
+        const fromI = parseInt(dragSrc.dataset.i);
+        const toI = parseInt(li.dataset.i);
+        const [moved] = ESTADO.colegiosAgregados.splice(fromI, 1);
+        ESTADO.colegiosAgregados.splice(toI, 0, moved);
+        guardarEstado();
+        renderPostulacion();
+        anunciar('Lista reordenada.');
+      }
+    });
+  });
+
+  // Render resumen del paso 3
+  renderResumenPostulacion();
+  // Sincronizar barra
+  syncProgresoPostulacion();
+}
+
+function moverColegio(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= ESTADO.colegiosAgregados.length) return;
+  [ESTADO.colegiosAgregados[i], ESTADO.colegiosAgregados[j]] = [ESTADO.colegiosAgregados[j], ESTADO.colegiosAgregados[i]];
+  guardarEstado();
+  renderPostulacion();
+  anunciar('Colegio movido a la posición ' + (j+1));
+}
+function quitarColegio(i) {
+  const c = COLEGIOS[ESTADO.colegiosAgregados[i]];
+  ESTADO.colegiosAgregados.splice(i, 1);
+  guardarEstado();
+  renderPostulacion();
+  anunciar(c.nombre + ' eliminado de tu lista.');
+}
+
+function renderResumenPostulacion() {
+  if (ESTADO.colegiosAgregados.length === 0) {
+    $('#post-resumen').innerHTML = '<p>No has agregado colegios aún.</p>';
+    return;
+  }
+  $('#post-resumen').innerHTML = `
+    <p>Estás postulando con esta lista, en este orden:</p>
+    <ol class="mt-md">
+      ${ESTADO.colegiosAgregados.map(id => {
+        const c = COLEGIOS[id];
+        const n = nivelPrioridad(ESTADO.perfilUsuario, c);
+        const p = probAsignacion(n, c.demanda);
+        return `<li style="margin:8px 0;"><strong>${c.nombre}</strong> · ${c.comuna} · prob. ${p}%</li>`;
+      }).join('')}
+    </ol>
+    <p class="mt-md">Una vez confirmes, no podrás modificar la lista hasta el cierre del proceso.</p>
+    <button class="btn btn--verde btn--grande mt-md" id="btn-confirmar-postulacion">Confirmar y enviar postulación</button>`;
+  $('#btn-confirmar-postulacion').onclick = () => {
+    $('#post-confirmado').hidden = false;
+    $('#post-comprobante').textContent = 'SAE-' + Math.floor(100000 + Math.random()*900000);
+    $('#btn-confirmar-postulacion').remove();
+    anunciar('Postulación confirmada y enviada.');
+  };
+}
+
+function syncProgresoPostulacion() {
+  $$('.paso-progreso').forEach(p => {
+    const n = parseInt(p.dataset.paso);
+    p.classList.remove('activo', 'completo');
+    if (n < ESTADO.pasoPostulacion) p.classList.add('completo');
+    if (n === ESTADO.pasoPostulacion) p.classList.add('activo');
+  });
+  $$('.postulacion-step').forEach(el => {
+    el.classList.toggle('activo', parseInt(el.dataset.step) === ESTADO.pasoPostulacion);
+  });
+  $('#pasos-progreso').setAttribute('aria-valuenow', ESTADO.pasoPostulacion);
+  $('#btn-paso-anterior').disabled = ESTADO.pasoPostulacion === 1;
+  $('#btn-paso-siguiente').textContent = ESTADO.pasoPostulacion === 3 ? 'Finalizar' : 'Siguiente →';
+}
+
+function siguientePaso() {
+  // Validación específica del paso 2
+  if (ESTADO.pasoPostulacion === 2 && ESTADO.colegiosAgregados.length === 0) {
+    $('#post-error').classList.add('visible');
+    $('#post-error').focus({ preventScroll: false });
+    anunciar('Error: debes agregar al menos un colegio antes de avanzar.');
+    return;
+  }
+  $('#post-error').classList.remove('visible');
+  if (ESTADO.pasoPostulacion < 3) {
+    ESTADO.pasoPostulacion++;
+    syncProgresoPostulacion();
+    renderResumenPostulacion();
+  }
+}
+
+function anteriorPaso() {
+  if (ESTADO.pasoPostulacion > 1) {
+    ESTADO.pasoPostulacion--;
+    syncProgresoPostulacion();
+  }
+}
+
+/* ============================================================
+   TESTIMONIOS
+============================================================ */
+function renderTestimonios() {
+  $('#testimonios').innerHTML = TESTIMONIOS.map(t => `
+    <article class="testimonio">
+      <div class="testimonio__header">
+        <div class="avatar" style="background:${t.color};" aria-hidden="true">${t.iniciales}</div>
+        <div class="testimonio__info">
+          <p class="testimonio__nombre">${t.nombre}</p>
+          <p class="testimonio__meta">${t.meta}</p>
+        </div>
+      </div>
+      <p class="testimonio__cita">"${t.cita}"</p>
+      <p class="testimonio__resultado">${t.resultado}</p>
+    </article>`).join('');
+}
+
+/* ============================================================
+   PRIMERA VEZ — banner + tour
+============================================================ */
+function inicializarPrimeraVez() {
+  if (ESTADO.primeraVez) {
+    $('#banner-primera-vez').hidden = false;
+  }
+  $('#btn-cerrar-bienvenida').onclick = () => {
+    $('#banner-primera-vez').hidden = true;
+    ESTADO.primeraVez = false;
+    guardarEstado();
+  };
+  $('#btn-tour').onclick = () => {
+    $('#banner-primera-vez').hidden = true;
+    ESTADO.primeraVez = false;
+    guardarEstado();
+    navegar('algoritmo');
+  };
+}
+
+/* ============================================================
+   CHECKBOXES PERFIL — sincronizar con estado
+============================================================ */
+function vincularPerfilUsuario() {
+  $$('#sim-perfil-opciones .sim-checkbox').forEach(label => {
+    const cond = label.dataset.cond;
+    const input = label.querySelector('input');
+    input.checked = ESTADO.perfilUsuario[cond];
+    label.classList.toggle('activo', input.checked);
+    input.onchange = () => {
+      ESTADO.perfilUsuario[cond] = input.checked;
+      label.classList.toggle('activo', input.checked);
+      guardarEstado();
+      // Re-render lista de postulación si está visible (probabilidades actualizan)
+      if (ESTADO.pagina === 'postulacion') renderPostulacion();
+    };
+  });
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  cargarEstado();
+
+  // Modo alto contraste (si estaba activo)
+  if (ESTADO.altoContraste) {
+    document.body.classList.add('high-contrast');
+    $('#toggle-contraste').setAttribute('aria-pressed', 'true');
+  }
+
+  // Navegación
+  $$('.navbar__nav button[data-page]').forEach(b => {
+    b.onclick = () => navegar(b.dataset.page);
+  });
+  $$('[data-page]').forEach(b => {
+    if (b.classList.contains('navbar__logo') || b.classList.contains('acceso-card')) {
+      b.onclick = (e) => { e.preventDefault(); navegar(b.dataset.page); };
+    }
+  });
+
+  // Toggle contraste
+  $('#toggle-contraste').onclick = toggleContraste;
+
+  // Buscador
+  $('#btn-buscar').onclick = buscarColegios;
+  ['busc-texto','busc-comuna','busc-nivel'].forEach(id => {
+    const el = $('#' + id);
+    el.addEventListener('input', buscarColegios);
+    el.addEventListener('change', buscarColegios);
+  });
+
+  // Banner primera vez
+  inicializarPrimeraVez();
+
+  // Renders iniciales
+  buscarColegios();
+  renderSimColegios();
+  vincularPerfilUsuario();
+  renderMitos();
+  renderTimeline();
+  llenarFichaSelect();
+  renderFicha(1);
+  renderComparadorSelector();
+  renderTestimonios();
+  renderPostulacion();
+
+  // Botón simular
+  $('#btn-simular').onclick = renderResultadoSimulador;
+
+  // Postulación
+  $('#btn-paso-siguiente').onclick = siguientePaso;
+  $('#btn-paso-anterior').onclick = anteriorPaso;
+  $('#btn-add-colegio').onclick = () => {
+    const sel = $('#post-add-select');
+    const id = parseInt(sel.value);
+    if (!id) return;
+    if (ESTADO.colegiosAgregados.length >= 8) {
+      alert('Máximo 8 colegios.');
+      return;
+    }
+    if (!ESTADO.colegiosAgregados.includes(id)) {
+      ESTADO.colegiosAgregados.push(id);
+      guardarEstado();
+      renderPostulacion();
+      anunciar(COLEGIOS[id].nombre + ' agregado a tu lista.');
+    }
+  };
+
+  // ClaveÚnica simulada
+  $('#btn-clave-unica').onclick = () => {
+    anunciar('Identificación con ClaveÚnica simulada.');
+    siguientePaso();
+  };
+  $('#btn-crear-cuenta').onclick = () => {
+    alert('En el sistema real, esto te llevaría a un formulario de creación de cuenta. Te recomendamos usar ClaveÚnica para mayor seguridad.');
+  };
+
+  syncProgresoPostulacion();
+});
+</script>
+
+<!-- FIN DEL PROTOTIPO -->
+</body>
+</html>

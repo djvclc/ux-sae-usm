@@ -145,34 +145,53 @@
   }
   .navbar__inner {
     display: flex; align-items: center; justify-content: space-between;
-    gap: var(--esp-md); padding: 12px var(--esp-md);
-    max-width: 1080px; margin: 0 auto;
+    gap: 8px; padding: 16px var(--esp-md);
+    max-width: 1380px; margin: 0 auto;
   }
   .navbar__logo {
-    color: var(--blanco); font-weight: 700; font-size: 1rem;
-    text-decoration: none; display: flex; align-items: center; gap: var(--esp-sm);
+    color: var(--blanco); font-weight: 700; font-size: 1.2rem;
+    text-decoration: none; display: flex; align-items: center; gap: 12px;
+    letter-spacing: 0.02em;
   }
-  .navbar__logo span { font-size: 1.4rem; }
+  .navbar__logo span { font-size: 1.7rem; }
   .navbar__nav {
-    display: flex; gap: var(--esp-xs); flex-wrap: wrap;
+    display: flex; gap: 2px; flex-wrap: nowrap;
     align-items: center;
   }
   .navbar__nav button {
     color: var(--blanco); background: transparent; border: none;
-    padding: 6px 10px; border-radius: var(--radio);
-    font-size: 0.85rem; font-weight: 500; cursor: pointer;
+    padding: 7px 11px; border-radius: var(--radio);
+    font-size: 0.95rem; font-weight: 500; cursor: pointer;
     transition: background var(--transicion);
-    font-family: inherit;
+    font-family: inherit; white-space: nowrap;
   }
   .navbar__nav button:hover, .navbar__nav button.active {
     background: rgba(255,255,255,0.2);
   }
+  .navbar__nav button[data-page="postulacion"] {
+    background: #FDE8CE;
+    color: #92400E;
+    border: 1px solid #D1A676;
+    font-weight: 700;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.16);
+  }
+  .navbar__nav button[data-page="postulacion"]:hover,
+  .navbar__nav button[data-page="postulacion"]:focus-visible,
+  .navbar__nav button[data-page="postulacion"].active {
+    background: #F5D6AD;
+    color: #7A3308;
+  }
+  body.high-contrast .navbar__nav button[data-page="postulacion"] {
+    background: var(--amarillo);
+    color: var(--negro);
+    border-color: var(--amarillo);
+  }
   .navbar__contraste {
     background: rgba(255,255,255,0.18);
     color: var(--blanco); border: 1px solid rgba(255,255,255,0.4);
-    border-radius: 999px; padding: 4px 10px; font-size: 0.78rem;
+    border-radius: 999px; padding: 5px 12px; font-size: 0.9rem;
     cursor: pointer; font-weight: 600;
-    display: inline-flex; align-items: center; gap: 4px;
+    display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
   }
   .navbar__contraste:hover { background: rgba(255,255,255,0.3); }
 
@@ -216,12 +235,12 @@
   .buscador {
     background: var(--bg-card);
     border-radius: var(--radio-lg);
-    padding: 20px;
+    padding: 28px;
     box-shadow: var(--sombra);
-    max-width: 760px;
+    max-width: 900px;
     margin: 0 auto;
   }
-  .buscador__titulo { color: var(--texto); font-weight: 700; margin-bottom: 12px; font-size: 1rem; }
+  .buscador__titulo { color: var(--texto); font-weight: 700; margin-bottom: 14px; font-size: 1.1rem; }
   .buscador__fila { display: flex; gap: var(--esp-sm); flex-wrap: wrap; }
   .buscador__fila input,
   .buscador__fila select {
@@ -469,6 +488,18 @@
     background: transparent; border: none;
     font-family: inherit; padding: 0;
   }
+  .timeline__hito .timeline__circulo {
+    transition: all var(--transicion), box-shadow 0.2s;
+  }
+  .timeline__hito:hover .timeline__circulo,
+  .timeline__hito.seleccionado .timeline__circulo {
+    box-shadow: 0 0 0 4px rgba(0,87,183,0.25), 0 0 0 8px rgba(0,87,183,0.1);
+    transform: scale(1.12);
+  }
+  .timeline__hito.seleccionado .timeline__circulo {
+    outline: 3px solid var(--azul);
+    outline-offset: 3px;
+  }
   .timeline__circulo {
     width: 56px; height: 56px; border-radius: 50%;
     background: var(--bg-card); border: 4px solid var(--azul-med);
@@ -503,6 +534,88 @@
   }
   .timeline-tooltip.visible { display: block; }
   .timeline-tooltip h3 { margin-bottom: var(--esp-sm); color: var(--acento); }
+
+  /* ============================================================
+     15b. ETAPAS DETALLE — tarjetas del calendario
+  ============================================================ */
+  #etapas-detalle { display: flex; flex-direction: column; gap: var(--esp-md); margin-top: var(--esp-lg); }
+  .etapa-card {
+    background: var(--bg-card); border-radius: var(--radio-lg);
+    border: 1px solid var(--borde); box-shadow: var(--sombra);
+    overflow: hidden;
+  }
+  .etapa-card.actual {
+    border-left: 5px solid var(--acento);
+    box-shadow: 0 0 0 3px rgba(176,92,30,0.12), var(--sombra);
+  }
+  .etapa-card.completado { opacity: 0.82; }
+  .etapa-card__header {
+    padding: var(--esp-md);
+    display: flex; align-items: flex-start; gap: var(--esp-md);
+    background: var(--azul-cl); border-bottom: 1px solid var(--borde);
+  }
+  .etapa-card.actual   .etapa-card__header { background: #FEF3E7; }
+  .etapa-card.completado .etapa-card__header { background: #EFF9F4; }
+  .etapa-card__icono { font-size: 2.2rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .etapa-card__meta { flex: 1; }
+  .etapa-card__meta h2 {
+    margin: 4px 0 0; font-size: 1.2rem; color: var(--titulo);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .etapa-card__fecha-tag {
+    font-size: 0.8rem; font-weight: 500; color: var(--texto-suave);
+    background: rgba(0,0,0,0.07); border-radius: 999px; padding: 2px 10px;
+  }
+  .etapa-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    border-radius: 999px; padding: 3px 12px; font-size: 0.78rem; font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .etapa-badge.completado { background: #D3EFE0; color: #145F2C; } /* era #1A7F37 → 4.15:1 FAIL; #145F2C → 5.57:1 ✅ */
+  .etapa-badge.actual     { background: #FDE8CE; color: #92400E; } /* era #B35C1E → 3.95:1 FAIL; #92400E → 5.94:1 ✅ */
+  .etapa-badge.futuro     { background: var(--azul-cl); color: var(--azul); border: 1px solid var(--azul-med); }
+  .etapa-card__body {
+    padding: var(--esp-md);
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.42s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
+    padding-top: 0; padding-bottom: 0;
+  }
+  .etapa-card.abierta .etapa-card__body {
+    max-height: 2400px;
+    padding-top: var(--esp-md); padding-bottom: var(--esp-md);
+  }
+  .etapa-card__body > p { margin-bottom: 10px; line-height: 1.68; }
+  .etapa-card__body > p:last-child { margin-bottom: 0; }
+  .etapa-dos-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-md);
+    margin-top: var(--esp-md); padding-top: var(--esp-md);
+    border-top: 1px solid var(--borde);
+  }
+  .etapa-dos-col h3 {
+    font-size: 0.82rem; color: var(--texto-suave); margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;
+  }
+  .etapa-dos-col ul { margin: 0; padding-left: 18px; }
+  .etapa-dos-col li { margin-bottom: 5px; font-size: 0.92rem; line-height: 1.5; }
+  .etapa-dos-col p { font-size: 0.92rem; line-height: 1.6; margin: 0; }
+  .etapa-tip {
+    background: var(--azul-cl); border-left: 3px solid var(--azul);
+    padding: 10px 14px; border-radius: 0 var(--radio) var(--radio) 0;
+    font-size: 0.9rem; margin-top: var(--esp-sm); color: var(--texto); line-height: 1.55;
+  }
+  .etapa-alerta {
+    background: #FEF3E7; border-left: 3px solid var(--acento);
+    padding: 10px 14px; border-radius: 0 var(--radio) var(--radio) 0;
+    font-size: 0.9rem; margin-top: var(--esp-sm); color: #5D3310; line-height: 1.55;
+  }
+  body.high-contrast .etapa-tip    { background: var(--negro); color: var(--amarillo); border-color: var(--amarillo); }
+  body.high-contrast .etapa-alerta { background: var(--negro); color: var(--amarillo); border-color: var(--amarillo); }
+
+  @media (max-width: 600px) {
+    .etapa-dos-col { grid-template-columns: 1fr; }
+    .etapa-card__meta h2 { font-size: 1.05rem; }
+    .etapa-card__icono { font-size: 1.8rem; }
+  }
 
   @media (max-width: 600px) {
     .timeline { flex-direction: column; gap: var(--esp-md); }
@@ -754,6 +867,38 @@
   /* ============================================================
      19. POSTULACIÓN — 3 PASOS
   ============================================================ */
+  /* Banner alumno en postulación */
+  .post-alumno-card {
+    background: var(--bg-card); border: 2px solid var(--azul-med);
+    border-radius: var(--radio-lg); padding: 14px var(--esp-md);
+    display: flex; align-items: center; gap: var(--esp-md);
+    flex-wrap: wrap; margin-bottom: var(--esp-lg);
+    box-shadow: var(--sombra);
+  }
+  .post-alumno-card--vacio {
+    border-style: dashed; border-color: var(--borde);
+    color: var(--texto-suave); font-size: 0.95rem;
+    justify-content: space-between;
+  }
+  .post-alumno-card__avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    background: var(--azul); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 700;
+  }
+  .post-alumno-card__info { flex: 1; min-width: 120px; }
+  .post-alumno-card__nombre { font-weight: 700; font-size: 1.05rem; color: var(--titulo); }
+  .post-alumno-card__nivel  { font-size: 0.88rem; color: var(--texto-suave); margin-top: 2px; }
+  .post-alumno-card__prios  { display: flex; flex-wrap: wrap; gap: 6px; }
+  .post-prio-chip {
+    background: var(--azul-cl); color: var(--azul);
+    border: 1px solid var(--azul-med);
+    border-radius: 999px; padding: 3px 10px; font-size: 0.82rem; font-weight: 600;
+  }
+  .post-prio-chip--sorteo { background: #F0F0F0; color: var(--texto-suave); border-color: var(--borde); }
+  body.high-contrast .post-alumno-card { background: var(--negro); border-color: var(--amarillo); }
+  body.high-contrast .post-prio-chip   { background: var(--negro); color: var(--amarillo); border-color: var(--amarillo); }
+
   .pasos-progreso {
     display: flex; gap: 4px; margin-bottom: var(--esp-lg);
   }
@@ -933,9 +1078,31 @@
      23. RESPONSIVE — 4 BREAKPOINTS
      400px (móvil S) — 600px (móvil L) — 768px (tablet) — 1280px (desktop wide)
   ============================================================ */
+  /* Hamburger menu — visible solo en móvil < 600px */
+  .navbar__hamburger {
+    display: none;
+    background: transparent; border: none;
+    color: var(--blanco); font-size: 1.5rem; cursor: pointer;
+    padding: 6px 10px; border-radius: var(--radio);
+    line-height: 1; font-family: inherit;
+  }
+  .navbar__hamburger:hover { background: rgba(255,255,255,0.2); }
+  body.high-contrast .navbar__hamburger { color: var(--amarillo); }
+  @media (max-width: 599px) {
+    .navbar__hamburger { display: flex; align-items: center; }
+    .navbar__inner { flex-wrap: wrap; }
+    .navbar__nav {
+      display: none; flex-direction: column;
+      width: 100%; gap: 2px;
+      padding: 6px 0;
+      background: var(--azul-osc);
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .navbar__nav.abierto { display: flex; }
+    .navbar__nav button { width: 100%; text-align: left; padding: 10px 16px; border-radius: 0; }
+    .navbar__contraste { width: 100% !important; justify-content: flex-start; border-radius: 0 !important; }
+  }
   @media (max-width: 400px) {
-    .navbar__inner { flex-direction: column; align-items: stretch; gap: var(--esp-sm); }
-    .navbar__nav { justify-content: center; }
     .hero { padding: 32px var(--esp-sm); }
     .hero p { font-size: 1rem; }
     .btn--grande { padding: 12px 20px; font-size: 1rem; }
@@ -953,6 +1120,326 @@
     .pasos { grid-template-columns: repeat(4, 1fr); }
     h1 { font-size: 2.4rem; }
   }
+
+  /* ============================================================
+     PERFIL / MIS DATOS
+  ============================================================ */
+  .perfil-form { display: flex; flex-direction: column; gap: var(--esp-lg); margin-top: var(--esp-lg); }
+  .perfil-bloque {
+    background: var(--bg-card); border: 1px solid var(--borde);
+    border-radius: var(--radio-lg); padding: var(--esp-lg);
+  }
+  .perfil-bloque h2 { margin-bottom: var(--esp-sm); font-size: 1.1rem; }
+  .perfil-campo { display: flex; flex-direction: column; gap: 6px; margin-top: var(--esp-md); }
+  .perfil-campo label { font-weight: 600; font-size: 0.95rem; }
+  .perfil-campo input, .perfil-campo select {
+    padding: 10px 14px; border: 2px solid var(--borde);
+    border-radius: var(--radio); font-size: 1rem;
+    font-family: inherit; background: var(--bg-app); color: var(--texto);
+  }
+  .perfil-campo input:focus, .perfil-campo select:focus { border-color: var(--acento); }
+
+  .criterios-grid { display: flex; flex-direction: column; gap: var(--esp-sm); margin-top: var(--esp-md); }
+  .criterio-card {
+    display: block; cursor: pointer;
+    border: 2px solid var(--borde); border-radius: var(--radio);
+    padding: var(--esp-md); transition: all var(--transicion); background: var(--bg-app);
+  }
+  .criterio-card:hover { border-color: var(--acento); }
+  .criterio-card.activo { border-color: var(--acento); background: var(--azul-cl); }
+  body.high-contrast .criterio-card.activo { background: rgba(255,215,0,0.15); border-color: var(--amarillo); }
+  .criterio-card--sorteo { opacity: 0.65; cursor: default; border-style: dashed; }
+  .criterio-card input[type="checkbox"] { display: none; }
+  .criterio-card__body { display: flex; align-items: flex-start; gap: var(--esp-md); }
+  .criterio-card__num {
+    background: var(--acento); color: var(--blanco);
+    border-radius: 999px; padding: 3px 10px;
+    font-weight: 700; font-size: 0.85rem; flex-shrink: 0; white-space: nowrap;
+  }
+  body.high-contrast .criterio-card__num { color: var(--negro); }
+  .criterio-card__titulo { font-weight: 700; margin-bottom: 2px; }
+  .criterio-card__desc { font-size: 0.88rem; color: var(--texto-suave); line-height: 1.45; }
+  .criterio-card__alerta {
+    background: var(--naranja-cl); border-left: 3px solid var(--naranja);
+    padding: 6px 10px; border-radius: 4px; margin-top: 8px;
+    font-size: 0.85rem;
+  }
+  .perfil-aviso {
+    background: var(--naranja-cl); border-left: 4px solid var(--naranja);
+    padding: var(--esp-md); border-radius: var(--radio);
+    margin-top: var(--esp-lg); font-size: 0.92rem;
+  }
+  body.high-contrast .perfil-aviso { background: #1a0d00; color: var(--amarillo); }
+  .perfil-resumen {
+    background: var(--bg-card);
+    border: 2px solid var(--verde);
+    border-radius: var(--radio-lg);
+    margin-bottom: var(--esp-lg);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+  }
+  body.high-contrast .perfil-resumen { background: #001a00; border-color: var(--amarillo); color: var(--amarillo); }
+  .perfil-resumen__header {
+    background: linear-gradient(135deg, #145F2C 0%, #1A7F37 100%); /* stops oscurecidos: blanco sobre #1A7F37 → 5.07:1 ✅ */
+    padding: 20px var(--esp-md);
+    display: flex; align-items: center; gap: var(--esp-md);
+  }
+  body.high-contrast .perfil-resumen__header { background: #001a00; border-bottom: 1px solid var(--amarillo); }
+  .perfil-resumen__avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.5);
+  }
+  .perfil-resumen__info { flex: 1; }
+  .perfil-resumen__nombre {
+    color: #fff; font-size: 1.35rem; font-weight: 700;
+    margin: 0 0 2px; line-height: 1.2;
+  }
+  .perfil-resumen__nivel {
+    color: #ffffff; font-size: 0.92rem; /* era rgba 85% opacity → ~4.46:1 FAIL sobre verde claro; opacidad completa ✅ */
+  }
+  .perfil-resumen__body {
+    padding: var(--esp-md);
+  }
+  .perfil-resumen__label {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--texto-suave); margin-bottom: 10px;
+  }
+  .perfil-resumen__prioridades {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: var(--esp-md);
+  }
+  .prio-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 999px; padding: 5px 14px;
+    font-size: 0.88rem; font-weight: 600;
+  }
+  .prio-badge--activo { background: #D3EFE0; color: #145F2C; border: 1.5px solid #145F2C; } /* era #1A7F37 → 4.15:1 FAIL; #145F2C → 5.57:1 ✅ */
+  .prio-badge--sorteo { background: #E8F0F8; color: #3A5A8A; border: 1.5px solid #90AACB; }
+  body.high-contrast .prio-badge--activo { background: var(--negro); color: var(--amarillo); border-color: var(--amarillo); }
+  body.high-contrast .prio-badge--sorteo { background: var(--negro); color: var(--amarillo); border-color: var(--amarillo); }
+  .perfil-resumen__footer {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding-top: var(--esp-sm); border-top: 1px solid var(--borde);
+    margin-top: var(--esp-sm);
+  }
+
+  /* ============================================================
+     CRITERIOS DETALLE EN ALGORITMO
+  ============================================================ */
+  .criterios-detalle {
+    background: var(--bg-soft); border-radius: var(--radio-lg);
+    padding: var(--esp-lg); margin: var(--esp-lg) 0;
+  }
+  .criterios-detalle h3 { color: var(--acento); margin-bottom: var(--esp-md); }
+  .criterio-fila {
+    display: flex; gap: var(--esp-md); align-items: flex-start;
+    padding: var(--esp-md) 0; border-bottom: 1px solid var(--borde);
+  }
+  .criterio-fila:last-child { border-bottom: none; padding-bottom: 0; }
+  .criterio-fila__num {
+    background: var(--acento); color: var(--blanco);
+    border-radius: 50%; width: 36px; height: 36px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1rem;
+  }
+  body.high-contrast .criterio-fila__num { color: var(--negro); }
+  .criterio-fila__texto { flex: 1; }
+  .criterio-fila__titulo { font-weight: 700; margin-bottom: 3px; }
+  .criterio-fila__desc { font-size: 0.9rem; color: var(--texto-suave); }
+  .criterio-fila__alerta {
+    background: var(--naranja-cl); border-left: 3px solid var(--naranja);
+    padding: 6px 10px; border-radius: 4px; margin-top: 8px; font-size: 0.85rem;
+  }
+
+  .no-quedo {
+    background: var(--azul-cl); border-radius: var(--radio-lg);
+    padding: var(--esp-lg); margin: var(--esp-lg) 0;
+    border-left: 5px solid var(--acento);
+  }
+  body.high-contrast .no-quedo { background: #0a0a0a; }
+  .no-quedo h3 { color: var(--acento); margin-bottom: var(--esp-sm); }
+  .no-quedo ol { padding-left: var(--esp-lg); display: flex; flex-direction: column; gap: 6px; }
+  .no-quedo li { font-size: 0.95rem; }
+
+  /* ============================================================
+     SEGUIMIENTO DINÁMICO
+  ============================================================ */
+  /* Stats expandible dentro del algo-log */
+  .algo-log__stats-toggle {
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 0.82rem; font-weight: 600;
+    color: var(--texto-suave); display: flex; align-items: center; gap: 4px;
+    padding: 6px 0 0; transition: color var(--transicion);
+  }
+  .algo-log__stats-toggle:hover { color: var(--acento); }
+  .algo-log__stats-toggle .chevron {
+    display: inline-block; transition: transform 0.2s;
+    font-style: normal; font-size: 0.7rem;
+  }
+  .algo-log__stats-toggle.abierto .chevron { transform: rotate(180deg); }
+  .algo-log__stats-panel {
+    display: none; margin-top: var(--esp-sm);
+    background: var(--bg-soft); border-radius: var(--radio);
+    padding: var(--esp-md);
+  }
+  .algo-log__stats-panel.visible { display: block; }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: var(--esp-sm); margin-bottom: var(--esp-sm);
+  }
+  @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+  .stats-card {
+    background: var(--bg-card); border: 1px solid var(--borde);
+    border-radius: var(--radio); padding: 8px 10px; text-align: center;
+  }
+  .stats-card__valor { font-size: 1.3rem; font-weight: 700; color: var(--acento); }
+  body.high-contrast .stats-card__valor { color: var(--amarillo); }
+  .stats-card__label { font-size: 0.75rem; color: var(--texto-suave); margin-top: 2px; }
+  .stats-card__sub { font-size: 0.82rem; font-weight: 600; margin-top: 2px; }
+  .stats-card__sub.alta   { color: var(--rojo); }
+  .stats-card__sub.media  { color: var(--naranja); }
+  .stats-card__sub.baja   { color: var(--verde); }
+  .stats-barra-wrap { margin-top: var(--esp-sm); }
+  .stats-barra-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; color: var(--texto-suave); margin-bottom: 4px;
+  }
+  .stats-barra {
+    width: 100%; height: 18px; background: var(--gris-cl);
+    border-radius: 9px; overflow: hidden; position: relative;
+  }
+  .stats-barra__fill {
+    height: 100%; border-radius: 9px;
+    transition: width 0.7s ease-out;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 0; font-size: 0; color: transparent; /* texto eliminado: blanco sobre naranja/verde = 2.1–2.5:1 FAIL; % ya está en label superior */
+  }
+  .stats-barra__fill.alta  { background: linear-gradient(90deg, var(--rojo), #e05c6a); }
+  .stats-barra__fill.media { background: linear-gradient(90deg, var(--naranja), #f0a04a); }
+  .stats-barra__fill.baja  { background: linear-gradient(90deg, var(--verde), #48b870); }
+  body.high-contrast .stats-barra__fill { background: var(--amarillo) !important; color: var(--negro); }
+  .stats-demanda-tag {
+    font-size: 0.8rem; font-weight: 600; margin-top: 6px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .stats-demanda-tag.alta  { color: var(--rojo); }   /* #7D2027 sobre #EBF2F8 → 8.81:1 ✅ */
+  .stats-demanda-tag.media { color: #92400E; }        /* era var(--naranja)=#B35C1E → 4.17:1 FAIL; #92400E → 6.27:1 ✅ */
+  .stats-demanda-tag.baja  { color: var(--verde); }
+  body.high-contrast .stats-demanda-tag { color: var(--amarillo); }
+
+  /* Log secuencial del algoritmo */
+  .algo-log { display: flex; flex-direction: column; margin-top: var(--esp-lg); }
+  .algo-log__step {
+    display: flex; gap: var(--esp-md); align-items: flex-start;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .algo-log__step.visible { opacity: 1; transform: translateY(0); }
+  .algo-log__step.no_alcanzado { opacity: 0; }
+  .algo-log__step.no_alcanzado.visible { opacity: 0.42; }
+  .algo-log__left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 44px; }
+  .algo-log__circulo {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+    border: 3px solid var(--borde); background: var(--bg-card);
+    transition: all 0.3s ease;
+  }
+  .algo-log__step.asignado .algo-log__circulo        { background: var(--verde); border-color: var(--verde); }
+  .algo-log__step.sin_cupos .algo-log__circulo       { background: var(--rojo-cl); border-color: var(--rojo); }
+  .algo-log__step.prioridad_insuficiente .algo-log__circulo { background: var(--naranja-cl); border-color: var(--naranja); }
+  .algo-log__step.no_alcanzado .algo-log__circulo    { border-style: dashed; }
+  body.high-contrast .algo-log__step.asignado .algo-log__circulo { background: var(--amarillo); border-color: var(--amarillo); }
+  .algo-log__linea {
+    width: 3px; flex: 1; min-height: 28px;
+    background: var(--borde); margin: 4px 0;
+    border-radius: 2px;
+  }
+  .algo-log__step.asignado + .algo-log__step .algo-log__linea { display: none; }
+  .algo-log__step:last-child .algo-log__linea { display: none; }
+  .algo-log__body {
+    flex: 1; min-width: 0;
+    background: var(--bg-card); border: 1px solid var(--borde);
+    border-radius: var(--radio); padding: var(--esp-md);
+    margin-bottom: var(--esp-sm);
+    transition: border-color 0.3s ease;
+  }
+  .algo-log__step.asignado .algo-log__body        { border-color: var(--verde); background: var(--verde-cl); }
+  .algo-log__step.sin_cupos .algo-log__body       { border-color: var(--rojo); }
+  .algo-log__step.prioridad_insuficiente .algo-log__body { border-color: var(--naranja); }
+  .algo-log__step.no_alcanzado .algo-log__body    { border-style: dashed; }
+  body.high-contrast .algo-log__step.asignado .algo-log__body { background: #002200; border-color: var(--amarillo); }
+  .algo-log__paso-label { font-size: 0.8rem; font-weight: 600; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.04em; }
+  .algo-log__nombre { font-weight: 700; font-size: 1rem; margin: 2px 0 4px; }
+  .algo-log__resultado { font-size: 0.9rem; font-weight: 600; }
+  .algo-log__step.asignado .algo-log__resultado        { color: var(--verde); }
+  .algo-log__step.sin_cupos .algo-log__resultado       { color: var(--rojo); }
+  .algo-log__step.prioridad_insuficiente .algo-log__resultado { color: var(--naranja); }
+  .algo-log__step.no_alcanzado .algo-log__resultado    { color: var(--gris-med); }
+  body.high-contrast .algo-log__step.asignado .algo-log__resultado { color: var(--amarillo); }
+  .algo-log__detalle { font-size: 0.85rem; color: var(--texto-suave); margin-top: 4px; line-height: 1.45; }
+
+  /* Panel de prioridades del usuario */
+  .prioridades-panel { display: flex; flex-direction: column; gap: var(--esp-sm); margin-top: var(--esp-md); }
+  .prioridad-fila {
+    display: flex; align-items: center; gap: var(--esp-md);
+    padding: 10px var(--esp-md); border-radius: var(--radio);
+    background: var(--bg-card); border: 1px solid var(--borde);
+  }
+  .prioridad-fila.cumple  { border-color: var(--verde); background: var(--verde-cl); }
+  .prioridad-fila.no_cumple { opacity: 0.6; }
+  body.high-contrast .prioridad-fila.cumple { background: #002200; border-color: var(--amarillo); }
+  .prioridad-fila__num {
+    font-size: 0.8rem; font-weight: 700; color: var(--texto-suave);
+    width: 32px; flex-shrink: 0; text-align: center;
+  }
+  .prioridad-fila__texto { flex: 1; font-size: 0.92rem; }
+  .prioridad-fila__badge {
+    font-size: 0.8rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+  }
+  .prioridad-fila.cumple .prioridad-fila__badge   { background: var(--verde); color: var(--blanco); }
+  .prioridad-fila.no_cumple .prioridad-fila__badge { background: var(--gris-cl); color: var(--gris-med); }
+  body.high-contrast .prioridad-fila.cumple .prioridad-fila__badge { background: var(--amarillo); color: var(--negro); }
+
+  /* Tabs del seguimiento */
+  .seg-tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--borde); margin: var(--esp-lg) 0 0; }
+  .seg-tab {
+    padding: 10px 16px; border: none; background: transparent;
+    font-family: inherit; font-size: 0.92rem; font-weight: 600;
+    color: var(--texto-suave); cursor: pointer; border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all var(--transicion); border-radius: var(--radio) var(--radio) 0 0;
+  }
+  .seg-tab:hover { color: var(--acento); background: var(--azul-cl); }
+  .seg-tab.activo { color: var(--acento); border-bottom-color: var(--acento); }
+  body.high-contrast .seg-tab.activo { color: var(--amarillo); border-bottom-color: var(--amarillo); }
+  .seg-tabpanel { padding: var(--esp-lg) 0; display: none; }
+  .seg-tabpanel.activo { display: block; }
+
+  .seg-lista { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--esp-sm); margin-top: var(--esp-md); }
+  .seg-item {
+    background: var(--bg-card); border: 2px solid var(--borde);
+    border-radius: var(--radio); padding: var(--esp-md);
+    display: flex; gap: var(--esp-md); align-items: flex-start; flex-wrap: wrap;
+  }
+  .seg-item.asignado { border-color: var(--verde); background: var(--verde-cl); }
+  .seg-item.sin_cupos { border-color: var(--rojo); }
+  .seg-item.prioridad_insuficiente { border-color: var(--naranja); }
+  .seg-item.no_alcanzado { opacity: 0.5; }
+  body.high-contrast .seg-item.asignado { background: #002200; border-color: var(--amarillo); }
+  .seg-item__num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--gris-cl); color: var(--texto);
+    font-weight: 700; font-size: 0.95rem; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .seg-item.asignado .seg-item__num { background: var(--verde); color: var(--blanco); }
+  body.high-contrast .seg-item.asignado .seg-item__num { color: var(--negro); }
+  .seg-item__info { flex: 1; min-width: 0; }
+  .seg-item__nombre { font-weight: 700; }
+  .seg-item__estado { font-size: 0.85rem; font-weight: 600; margin-top: 3px; }
+  .seg-item__explicacion { font-size: 0.88rem; color: var(--texto-suave); margin-top: 4px; }
 
   /* Reduce motion */
   @media (prefers-reduced-motion: reduce) {
@@ -998,14 +1485,17 @@
       <a href="#" class="navbar__logo" data-page="inicio">
         <span aria-hidden="true">🎓</span> SAE
       </a>
-      <div class="navbar__nav" role="menubar">
+      <button class="navbar__hamburger" id="hamburger-btn" aria-expanded="false" aria-label="Abrir menú de navegación" aria-controls="navbar-nav">☰</button>
+      <div class="navbar__nav" id="navbar-nav" role="menubar">
         <button data-page="inicio" class="active" role="menuitem">Inicio</button>
+        <button data-page="perfil" role="menuitem">👤 Mis datos</button>
         <button data-page="algoritmo" role="menuitem">¿Cómo funciona?</button>
         <button data-page="calendario" role="menuitem">El proceso</button>
         <button data-page="colegio" role="menuitem">Ver colegio</button>
         <button data-page="comparador" role="menuitem">Comparar</button>
         <button data-page="postulacion" role="menuitem">Postula</button>
         <button data-page="seguimiento" role="menuitem">Mi postulación</button>
+        <button data-page="notas" role="menuitem">📚 Notas</button>
         <button id="toggle-contraste" class="navbar__contraste" aria-pressed="false" title="Activar modo alto contraste">
           <span aria-hidden="true">◐</span> <span>Alto contraste</span>
         </button>
@@ -1079,6 +1569,110 @@
   </section>
 
   <!-- ============================================================
+       SECCIÓN P — MIS DATOS (PERFIL)
+  ============================================================ -->
+  <section id="page-perfil" class="page" aria-labelledby="h1-perfil">
+    <div class="section container">
+      <h1 id="h1-perfil" tabindex="-1">Mis datos</h1>
+      <p class="lead">Cuéntanos sobre tu situación. Esta información personaliza el simulador, las probabilidades y las explicaciones de resultados.</p>
+
+      <div id="perfil-resumen" class="perfil-resumen" hidden></div>
+
+      <div class="perfil-form">
+
+        <div class="perfil-bloque">
+          <h2>1. ¿Para quién postulas?</h2>
+          <div class="perfil-campo">
+            <label for="perf-nombre">Nombre del estudiante</label>
+            <input type="text" id="perf-nombre" placeholder="Ej: Sofía González" autocomplete="off">
+          </div>
+          <div class="perfil-campo">
+            <label for="perf-nivel">Nivel al que postula</label>
+            <select id="perf-nivel">
+              <option value="">Selecciona un nivel…</option>
+              <option>Prekínder</option><option>Kínder</option>
+              <option>1° Básico</option><option>2° Básico</option><option>3° Básico</option>
+              <option>4° Básico</option><option>5° Básico</option><option>6° Básico</option>
+              <option>7° Básico</option><option>8° Básico</option>
+              <option>1° Medio</option><option>2° Medio</option><option>3° Medio</option><option>4° Medio</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="perfil-bloque">
+          <h2>2. Criterios de prioridad que te aplican</h2>
+          <p class="small">La ley define 4 criterios de prioridad. <strong>Solo se aplica el de mayor jerarquía</strong>. Si no aplica ninguno, la asignación es por sorteo público transparente.</p>
+
+          <div class="criterios-grid" role="group" aria-label="Criterios de prioridad">
+
+            <label class="criterio-card" data-cond="hermano">
+              <input type="checkbox" id="perf-hermano">
+              <div class="criterio-card__body">
+                <span class="criterio-card__num">1º</span>
+                <div>
+                  <p class="criterio-card__titulo">Hermano/a matriculado/a en el mismo colegio</p>
+                  <p class="criterio-card__desc">Tienes otro hijo/a ya matriculado/a en el mismo establecimiento. Es la prioridad más alta por ley y casi siempre garantiza la asignación, salvo que las vacantes sean menores a los postulantes con hermano.</p>
+                </div>
+              </div>
+            </label>
+
+            <label class="criterio-card" data-cond="prioritario">
+              <input type="checkbox" id="perf-prioritario">
+              <div class="criterio-card__body">
+                <span class="criterio-card__num">2º</span>
+                <div>
+                  <p class="criterio-card__titulo">Estudiante prioritario (RSH u otro criterio Mineduc)</p>
+                  <p class="criterio-card__desc">El estudiante es prioritario según el Ministerio de Educación. <strong>Atención:</strong> este criterio opera solo si el colegio no ha superado el 15% de alumnos prioritarios en ese nivel. Si ya está saturado, el criterio no aplica.</p>
+                  <div class="criterio-card__alerta">⚠️ Si el nivel ya tiene el 15% o más de alumnos prioritarios, este criterio <strong>no aplica</strong> aunque seas prioritario.</div>
+                </div>
+              </div>
+            </label>
+
+            <label class="criterio-card" data-cond="funcionario">
+              <input type="checkbox" id="perf-funcionario">
+              <div class="criterio-card__body">
+                <span class="criterio-card__num">3º</span>
+                <div>
+                  <p class="criterio-card__titulo">Hijo/a de funcionario/a del establecimiento</p>
+                  <p class="criterio-card__desc">El padre, madre o guardador trabaja de forma permanente como funcionario/a en el establecimiento educativo.</p>
+                </div>
+              </div>
+            </label>
+
+            <label class="criterio-card" data-cond="exalumno">
+              <input type="checkbox" id="perf-exalumno">
+              <div class="criterio-card__body">
+                <span class="criterio-card__num">4º</span>
+                <div>
+                  <p class="criterio-card__titulo">Exalumno/a del mismo establecimiento</p>
+                  <p class="criterio-card__desc">El estudiante estuvo matriculado anteriormente en el mismo establecimiento y desea retornar. No aplica si fue expulsado/a.</p>
+                </div>
+              </div>
+            </label>
+
+            <div class="criterio-card criterio-card--sorteo">
+              <div class="criterio-card__body">
+                <span class="criterio-card__num" style="background:var(--gris-med);">5º</span>
+                <div>
+                  <p class="criterio-card__titulo">Sin prioridad especial — Sorteo público</p>
+                  <p class="criterio-card__desc">Si no aplica ninguno de los anteriores, el sistema asigna por sorteo público y transparente. El sorteo es presenciado por notario. Las probabilidades dependen de cuántos postulantes sin prioridad hay versus vacantes disponibles.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="btn btn--verde btn--grande" id="btn-guardar-perfil">✓ Guardar mis datos y personalizar simulador</button>
+      </div>
+
+      <div class="perfil-aviso" role="note">
+        <strong>💡 ¿Cómo se usan estos datos?</strong> Tu nombre y nivel personalizan los mensajes del flujo. Las condiciones de prioridad alimentan el simulador del algoritmo y las probabilidades estimadas en la lista de postulación. <strong>Nada se envía al SAE real</strong> — este es un prototipo pedagógico.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
        SECCIÓN B — ALGORITMO
   ============================================================ -->
   <section id="page-algoritmo" class="page" aria-labelledby="h1-algoritmo">
@@ -1104,7 +1698,7 @@
           <div class="paso__num" aria-hidden="true">2</div>
           <span class="paso__icono" aria-hidden="true">⚖️</span>
           <h3>Cada colegio prioriza</h3>
-          <p>Por ley priorizan: hermanos, vulnerabilidad, cercanía y NEE.</p>
+          <p>Por ley priorizan: (1) hermanos/as matriculados/as, (2) 15% de estudiantes prioritarios, (3) hijos/as de funcionarios/as y (4) exalumnos/as.</p>
         </article>
         <article class="paso" role="listitem">
           <div class="paso__num" aria-hidden="true">3</div>
@@ -1118,6 +1712,55 @@
           <h3>Te avisamos</h3>
           <p>Si no quedas en tu primera opción, seguimos buscando en tu lista.</p>
         </article>
+      </div>
+
+      <!-- Detalle completo de criterios de prioridad -->
+      <div class="criterios-detalle">
+        <h3>⚖️ Los 4 criterios de prioridad por ley — en detalle
+          <span class="tooltip">
+            <button class="tooltip__trigger" aria-label="Fuente">?</button>
+            <span class="tooltip__content" role="tooltip">Fuente: ayudamineduc.cl/criterios-de-prioridad — criterios vigentes desde la Ley 21.040 de 2017.</span>
+          </span>
+        </h3>
+        <div class="criterio-fila">
+          <div class="criterio-fila__num">1</div>
+          <div class="criterio-fila__texto">
+            <p class="criterio-fila__titulo">Hermanos/as matriculados/as en el establecimiento</p>
+            <p class="criterio-fila__desc">Aplica si tienes otro hijo/a ya matriculado/a en ese colegio al momento de postular. Es la prioridad legal más alta. Si hay más postulantes con hermano que vacantes, entre ellos también se hace un sorteo.</p>
+          </div>
+        </div>
+        <div class="criterio-fila">
+          <div class="criterio-fila__num">2</div>
+          <div class="criterio-fila__texto">
+            <p class="criterio-fila__titulo">Estudiantes prioritarios (cuota del 15%)</p>
+            <p class="criterio-fila__desc">Serás prioritario si el Mineduc te clasifica así (según RSH u otros criterios). Pero este criterio tiene un límite: solo opera mientras el porcentaje de alumnos prioritarios del nivel en ese colegio sea menor al 15%. Si ya está saturado, no hay cupo para este criterio.</p>
+            <div class="criterio-fila__alerta">⚠️ <strong>Ejemplo:</strong> Un colegio tiene 100 cupos. Ya hay 15 alumnos prioritarios continuidad + repitentes. El colegio ofrece 85 vacantes externas. Si el colegio ya supera el 15%, no hay cupo para nuevos prioritarios.</div>
+          </div>
+        </div>
+        <div class="criterio-fila">
+          <div class="criterio-fila__num">3</div>
+          <div class="criterio-fila__texto">
+            <p class="criterio-fila__titulo">Hijos/as de funcionarios/as del establecimiento</p>
+            <p class="criterio-fila__desc">El padre, madre o guardador trabaja de forma permanente como funcionario/a en el mismo establecimiento educativo.</p>
+          </div>
+        </div>
+        <div class="criterio-fila">
+          <div class="criterio-fila__num">4</div>
+          <div class="criterio-fila__texto">
+            <p class="criterio-fila__titulo">Exalumnos/as del mismo establecimiento</p>
+            <p class="criterio-fila__desc">El estudiante estudia o estuvo matriculado anteriormente en ese establecimiento y desea retornar. No aplica si fue expulsado/a.</p>
+          </div>
+        </div>
+        <div class="criterio-fila">
+          <div class="criterio-fila__num" style="background:var(--gris-med);">5</div>
+          <div class="criterio-fila__texto">
+            <p class="criterio-fila__titulo">Sin prioridad especial — Sorteo público transparente</p>
+            <p class="criterio-fila__desc">Si no aplica ninguno de los criterios anteriores, el sistema asigna por sorteo. El sorteo es público, presenciado por notario y aleatorio. Las probabilidades de quedar dependen de cuántas vacantes quedan después de aplicar todos los criterios anteriores y de cuántos postulantes sin prioridad hay.</p>
+          </div>
+        </div>
+        <div class="mt-md">
+          <button class="btn btn--secundario" onclick="navegar('perfil')">👤 Definir mis criterios de prioridad</button>
+        </div>
       </div>
 
       <!-- Simulador Gale-Shapley -->
@@ -1136,16 +1779,16 @@
             <p class="sim-perfil__titulo">1. Cuéntanos sobre tu caso (marca lo que aplique):</p>
             <div class="sim-perfil__opciones" id="sim-perfil-opciones">
               <label class="sim-checkbox" data-cond="hermano">
-                <input type="checkbox" name="cond-hermano"> Tengo otro hijo/a en el colegio
+                <input type="checkbox" name="cond-hermano"> Tengo otro hijo/a matriculado/a en ese colegio
               </label>
-              <label class="sim-checkbox" data-cond="vulnerabilidad">
-                <input type="checkbox" name="cond-vul"> Vulnerabilidad acreditada (RSH)
+              <label class="sim-checkbox" data-cond="prioritario">
+                <input type="checkbox" name="cond-prioritario"> Mi hijo/a es estudiante prioritario (RSH u otro)
               </label>
-              <label class="sim-checkbox" data-cond="cercano">
-                <input type="checkbox" name="cond-cercano"> Vivo cerca (menos de 2 km)
+              <label class="sim-checkbox" data-cond="funcionario">
+                <input type="checkbox" name="cond-funcionario"> Trabajo como funcionario/a en el establecimiento
               </label>
-              <label class="sim-checkbox" data-cond="nee">
-                <input type="checkbox" name="cond-nee"> Mi hijo/a tiene NEE (PIE)
+              <label class="sim-checkbox" data-cond="exalumno">
+                <input type="checkbox" name="cond-exalumno"> Mi hijo/a es exalumno/a del mismo colegio
               </label>
             </div>
           </div>
@@ -1171,6 +1814,18 @@
         </span>
       </h2>
       <div class="mitos" id="mitos-lista"></div>
+
+      <!-- ¿Qué pasa si no quedo en ninguno? -->
+      <div class="no-quedo">
+        <h3>🤔 ¿Qué pasa si no quedo en ninguno de mis colegios?</h3>
+        <p class="mb-md">Es una situación poco frecuente, pero si el algoritmo no logra asignarte en ningún colegio de tu lista, el sistema actúa así:</p>
+        <ol>
+          <li><strong>Asignación de oficio:</strong> el sistema te asigna automáticamente el establecimiento público o particular subvencionado más cercano a tu domicilio que tenga vacantes disponibles.</li>
+          <li><strong>Lista de espera:</strong> quedas en lista de espera para los colegios de tu preferencia. Si alguien libera un cupo, se te asigna según tu posición en la lista.</li>
+          <li><strong>Segunda etapa:</strong> el SAE abre un nuevo período de postulación donde puedes intentar nuevamente, incluso con más colegios en tu lista.</li>
+        </ol>
+        <p class="mt-md small">Por eso es importante postular a <strong>al menos 4 o 5 colegios</strong>, no solo a tu favorito. A más opciones, mayor probabilidad de quedar en uno que te acomode.</p>
+      </div>
     </div>
   </section>
 
@@ -1180,13 +1835,13 @@
   <section id="page-calendario" class="page" aria-labelledby="h1-calendario">
     <div class="section container">
       <h1 id="h1-calendario" tabindex="-1">El proceso, paso a paso</h1>
-      <p class="lead">Estas son las etapas del proceso SAE 2026. La actual está resaltada en naranja.</p>
+      <p class="lead">El SAE 2026 tiene 6 etapas. Estamos en la <strong>Postulación</strong> — cierra el 30 de agosto. El cronograma muestra el estado actual; abajo puedes leer el detalle completo de cada etapa.</p>
 
       <div class="timeline-wrapper">
         <div class="timeline" role="list" id="timeline"></div>
       </div>
 
-      <div id="timeline-tooltip" class="timeline-tooltip" role="region" aria-live="polite"></div>
+      <div id="etapas-detalle"></div>
     </div>
   </section>
 
@@ -1236,6 +1891,9 @@
   <section id="page-postulacion" class="page" aria-labelledby="h1-post">
     <div class="section container">
       <h1 id="h1-post" tabindex="-1">Postular en 3 pasos</h1>
+
+      <!-- Banner alumno postulado -->
+      <div id="post-alumno-banner"></div>
 
       <div class="pasos-progreso" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3" aria-label="Progreso de postulación" id="pasos-progreso">
         <div class="paso-progreso activo" data-paso="1"></div>
@@ -1306,17 +1964,9 @@
     <div class="section container">
       <h1 id="h1-seg" tabindex="-1">Mi postulación</h1>
 
-      <div class="estado-card">
-        <span class="estado-card__estado">✅ Resultado disponible</span>
-        <p class="estado-card__resultado">Quedaste en: Colegio Los Andes</p>
-        <p>Esa fue tu <strong>1ª preferencia</strong>. Fue asignado porque tienes un hermano matriculado allí, lo que te da prioridad por ley.</p>
-        <div class="flex-row mt-md">
-          <button class="btn btn--verde">📄 Descargar comprobante</button>
-          <button class="btn btn--secundario">Ver detalle de la asignación</button>
-        </div>
-      </div>
+      <div id="seguimiento-resultado"></div>
 
-      <h2>Apoderados que pasaron por lo mismo
+      <h2 class="mt-lg">Apoderados que pasaron por lo mismo
         <span class="tooltip">
           <button class="tooltip__trigger" aria-label="Sobre los testimonios">?</button>
           <span class="tooltip__content" role="tooltip">
@@ -1329,11 +1979,13 @@
   </section>
 
   <!-- ============================================================
-       NOTAS DE DISEÑO
+       NOTAS DE DISEÑO (vista propia)
   ============================================================ -->
-  <section class="container">
+  <section id="page-notas" class="page" aria-labelledby="h1-notas">
+  <div class="section container">
+    <h1 id="h1-notas" tabindex="-1">📚 Notas de diseño</h1>
     <div class="notas-disenio">
-      <h2>📚 Notas de diseño — Fundamentos de investigación</h2>
+      <h2>Fundamentos de investigación</h2>
       <p class="mb-md">Cada decisión de este prototipo V2 se ancla en hallazgos de la revisión de literatura sobre transparencia algorítmica (96 papers, 2017–2025) y en el informe heurístico del SAE (UChile, 2026).</p>
 
       <details>
@@ -1376,6 +2028,7 @@
         <p>V2 reemplaza simulador lineal por lógica Gale-Shapley simplificada (5 niveles de prioridad × 3 niveles de demanda), agrega comparador, calendario interactivo, testimonios, modo alto contraste, validación accesible, persistencia con sessionStorage, gráfico radar y progress ring SVG. Los textos se centralizan en un objeto TEXTOS para futuras traducciones.</p>
       </details>
     </div>
+  </div>
   </section>
 
 </main>
@@ -1393,7 +2046,9 @@
 const ESTADO = {
   pagina: 'inicio',
   altoContraste: false,
-  perfilUsuario: { hermano: false, vulnerabilidad: false, cercano: false, nee: false },
+  perfilUsuario: { hermano: false, prioritario: false, funcionario: false, exalumno: false },
+  nombrePostulante: '',
+  nivelPostulacion: '',
   simSeleccionados: [],          // ids de colegios elegidos en el simulador (en orden)
   colegiosAgregados: [],         // ids agregados al flujo de postulación
   pasoPostulacion: 1,
@@ -1418,7 +2073,8 @@ const COLEGIOS = {
        seguridad: { camaras: true, porteria: true, antibullying: true, semaforo: true },
        metodos: ["Aprendizaje por proyectos", "Inglés desde prekínder", "Robótica", "Arte y música"],
        proyecto: "Formamos personas íntegras con énfasis en el desarrollo socioemocional, la convivencia respetuosa y las competencias del siglo XXI.",
-       demanda: "alta", prioritarios: ["hermano","cercano","nee"] },
+       demanda: "alta", prioritarios: ["hermano","cercano","nee"],
+       stats: { postulantes: 487, cortePrioridadNivel: 1, cortePrioridadLabel: "Solo hermanos/as" } },
   2: { foto: "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=600&h=220&fit=crop&auto=format", nombre: "Colegio San Martín", direccion: "Los Aromos 450, Maipú", comuna: "Maipú",
        distanciaBase: 3.5,
        niveles: ["Prekínder", "Kínder", "1° a 8° Básico"],
@@ -1430,7 +2086,8 @@ const COLEGIOS = {
        seguridad: { camaras: true, porteria: false, antibullying: true, semaforo: false },
        metodos: ["Metodología tradicional con innovación", "Talleres de teatro", "Deporte"],
        proyecto: "Comprometidos con la excelencia académica y el desarrollo valórico, formamos ciudadanos responsables con sólidas bases en lenguaje y matemática.",
-       demanda: "media", prioritarios: ["hermano","vulnerabilidad"] },
+       demanda: "media", prioritarios: ["hermano","vulnerabilidad"],
+       stats: { postulantes: 312, cortePrioridadNivel: 3, cortePrioridadLabel: "Hasta funcionarios/as" } },
   3: { foto: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&h=220&fit=crop&auto=format", nombre: "Escuela República de Chile", direccion: "Calle 5 de Abril 890, La Florida", comuna: "La Florida",
        distanciaBase: 0.8,
        niveles: ["Prekínder", "Kínder", "1° a 6° Básico"],
@@ -1442,7 +2099,8 @@ const COLEGIOS = {
        seguridad: { camaras: false, porteria: true, antibullying: true, semaforo: true },
        metodos: ["Lectura intensiva", "Matemática concreta", "Huerto escolar"],
        proyecto: "Escuela pública comprometida con la comunidad, con énfasis en la lectura, la naturaleza y los valores ciudadanos.",
-       demanda: "baja", prioritarios: ["hermano","cercano","nee","vulnerabilidad"] },
+       demanda: "baja", prioritarios: ["hermano","cercano","nee","vulnerabilidad"],
+       stats: { postulantes: 134, cortePrioridadNivel: 5, cortePrioridadLabel: "Sorteo público" } },
   4: { foto: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=220&fit=crop&auto=format", nombre: "Liceo Técnico Simón Bolívar", direccion: "Av. Bolívar 2100, Puente Alto", comuna: "Puente Alto",
        distanciaBase: 5.1,
        niveles: ["7° Básico", "8° Básico", "1° a 4° Medio (Técnico-Profesional)"],
@@ -1454,7 +2112,8 @@ const COLEGIOS = {
        seguridad: { camaras: true, porteria: true, antibullying: true, semaforo: false },
        metodos: ["Formación técnica en gastronomía", "Formación técnica en electricidad", "Talleres de emprendimiento"],
        proyecto: "Preparamos a jóvenes para el mundo laboral y la educación superior con especialidades técnicas de alta demanda y sólida formación general.",
-       demanda: "media", prioritarios: ["hermano","cercano"] },
+       demanda: "media", prioritarios: ["hermano","cercano"],
+       stats: { postulantes: 268, cortePrioridadNivel: 3, cortePrioridadLabel: "Hasta funcionarios/as" } },
   5: { foto: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=220&fit=crop&auto=format", nombre: "Colegio Villa del Sol", direccion: "Pasaje Las Palmas 330, Peñalolén", comuna: "Peñalolén",
        distanciaBase: 2.3,
        niveles: ["Prekínder", "Kínder", "1° a 4° Medio"],
@@ -1466,7 +2125,8 @@ const COLEGIOS = {
        seguridad: { camaras: true, porteria: true, antibullying: true, semaforo: true },
        metodos: ["Bilingüe español-inglés", "Aprendizaje basado en proyectos", "Educación emocional", "Tecnología e innovación"],
        proyecto: "Comunidad educativa bilingüe y diversa que desarrolla el pensamiento crítico, la creatividad y la conciencia global en un ambiente inclusivo de excelencia.",
-       demanda: "alta", prioritarios: ["hermano","vulnerabilidad","nee"] },
+       demanda: "alta", prioritarios: ["hermano","vulnerabilidad","nee"],
+       stats: { postulantes: 521, cortePrioridadNivel: 1, cortePrioridadLabel: "Solo hermanos/as" } },
   6: { foto: "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&h=220&fit=crop&auto=format", nombre: "Escuela Básica Los Quillayes", direccion: "Los Quillayes 1550, La Florida", comuna: "La Florida",
        distanciaBase: 1.8,
        niveles: ["Prekínder", "Kínder", "1° a 8° Básico"],
@@ -1478,7 +2138,8 @@ const COLEGIOS = {
        seguridad: { camaras: true, porteria: false, antibullying: true, semaforo: false },
        metodos: ["Educación ambiental", "Talleres de música", "Apoyo diferenciado en aula"],
        proyecto: "Escuela comunitaria con fuerte vínculo con las familias y el barrio, que apuesta por la educación ambiental y el aprendizaje colaborativo.",
-       demanda: "media", prioritarios: ["hermano","cercano","nee","vulnerabilidad"] }
+       demanda: "media", prioritarios: ["hermano","cercano","nee","vulnerabilidad"],
+       stats: { postulantes: 241, cortePrioridadNivel: 4, cortePrioridadLabel: "Hasta exalumnos/as" } }
 };
 
 /* ============================================================
@@ -1489,18 +2150,18 @@ const TEXTOS = {
   buscadorPlaceholder: "Nombre del colegio",
   buscadorBtn: "🔍 Buscar",
   prioridadLabels: {
-    1: "prioridad por hermano matriculado",
-    2: "prioridad por vulnerabilidad acreditada",
-    3: "prioridad por cercanía al domicilio",
-    4: "prioridad por NEE en colegio con programa PIE",
-    5: "sin prioridad especial (selección por sorteo público)"
+    1: "prioridad por hermano/a matriculado/a en el mismo establecimiento",
+    2: "prioridad como estudiante prioritario (cupo del 15% por ley)",
+    3: "prioridad por ser hijo/a de funcionario/a del establecimiento",
+    4: "prioridad como exalumno/a del mismo establecimiento",
+    5: "sin prioridad especial — asignación por sorteo público transparente"
   }
 };
 
 /* Mitos — 7 según §1.1 CLAUDE_v2 */
 const MITOS = [
   { p: "¿El SAE es una tómbola?",
-    r: "No. El SAE usa un algoritmo con reglas claras y públicas. Cada colegio prioriza por hermanos, vulnerabilidad, cercanía y NEE. El \"sorteo\" solo aparece cuando ya se aplicaron todas las prioridades y aún quedan candidatos para la misma vacante." },
+    r: "No. El SAE usa un algoritmo con reglas claras definidas por ley. Cada colegio prioriza en este orden: (1) hermanos/as matriculados/as, (2) estudiantes prioritarios (hasta el 15% de las vacantes del nivel), (3) hijos/as de funcionarios/as y (4) exalumnos/as. El sorteo solo aparece cuando, aplicadas todas las prioridades, aún hay más postulantes que vacantes en el mismo nivel." },
   { p: "¿Pone más colegios = más opciones?",
     r: "Sí. Postular a 6 u 8 colegios en lugar de 1 o 2 aumenta mucho la probabilidad de quedar en uno de tu lista. Si solo postulas a tu favorito y queda lleno, te asignan uno fuera de tu lista." },
   { p: "¿El orden importa?",
@@ -1519,18 +2180,100 @@ const MITOS = [
    CALENDARIO — 6 hitos del proceso SAE
 ============================================================ */
 const HITOS = [
-  { fecha: "Julio",          nombre: "Inscripción",     icono: "🗓️", estado: "completado",
-    desc: "Familias inscriben sus datos y eligen el nivel para el que postulan. Etapa cerrada para 2026." },
-  { fecha: "Agosto",         nombre: "Postulación",     icono: "📝", estado: "actual",
-    desc: "Eliges hasta 8 colegios en orden de preferencia. Cierra el 30 de agosto. Si aún no postulas, hazlo desde la sección Postula." },
-  { fecha: "Septiembre",     nombre: "Procesamiento",   icono: "⚙️", estado: "futuro",
-    desc: "El algoritmo cruza todas las postulaciones con prioridades y vacantes. Es automático, no requiere acción de tu parte." },
-  { fecha: "15 de octubre",  nombre: "Resultados",      icono: "📬", estado: "futuro",
-    desc: "Recibes el resultado por correo y aquí mismo en \"Mi postulación\". Te dirá en qué colegio quedaste y por qué." },
-  { fecha: "Noviembre",      nombre: "Matrícula",       icono: "✅", estado: "futuro",
-    desc: "Confirmas tu matrícula en el colegio asignado. Si no lo haces, pierdes el cupo y pasas a lista de espera." },
-  { fecha: "Nov–Dic",        nombre: "Lista de espera", icono: "📋", estado: "futuro",
-    desc: "Si liberan cupos en colegios que pediste, te avisamos. Puedes postular nuevamente en una segunda etapa." }
+  {
+    fecha: "Julio", nombre: "Inscripción", icono: "🗓️", estado: "completado",
+    desc: "Familias inscriben sus datos y eligen el nivel para el que postulan. Etapa cerrada para 2026.",
+    detalle: `<p>La inscripción es el punto de partida obligatorio: tú —como apoderado o apoderada— registras los datos de tu hijo o hija en el sistema SAE y declaras para qué nivel educativo estás postulando (por ejemplo, kínder, 1° básico, 7° básico o 1° medio). Sin este registro previo, no puedes postular.</p>
+      <p>Para 2026, esta etapa <strong>ya está cerrada</strong>. Si te inscribiste en julio, tu solicitud quedó registrada y ya puedes avanzar a la postulación. En esta instancia el sistema validó tu RUT y el de tu hijo/a contra el Registro Civil, y confirmó que el nivel educativo solicitado corresponde a la edad del estudiante según los rangos legales del Mineduc.</p>
+      <p>Si no pudiste inscribirte en el período regular, algunas comunas abren un período extraordinario antes de que cierre la postulación. Consulta a la SLEP o municipalidad de tu zona para saber si aún estás a tiempo.</p>`,
+    acciones: [
+      "Esta etapa ya está cerrada para 2026.",
+      "Si tienes dudas sobre si quedaste inscrito/a, revisa tu correo electrónico o entra con ClaveÚnica a la plataforma SAE.",
+      "Si no te inscribiste, consulta con la SLEP o municipio de tu zona sobre inscripción extraordinaria."
+    ],
+    sistemaAcciones: "El Mineduc creó el registro familiar en la plataforma, validó la identidad del apoderado y del postulante contra el Registro Civil, y confirmó el nivel educativo solicitado según la edad del niño o niña. Todos los datos quedan almacenados de forma segura.",
+    alerta: null,
+    tip: "Si estás inscrito/a pero no recuerdas tus credenciales, puedes recuperar el acceso usando tu ClaveÚnica del Registro Civil. No necesitas una contraseña separada."
+  },
+  {
+    fecha: "Agosto", nombre: "Postulación", icono: "📝", estado: "actual",
+    desc: "Eliges hasta 8 colegios en orden de preferencia. Cierra el 30 de agosto. Si aún no postulas, hazlo desde la sección Postula.",
+    detalle: `<p><strong>Esta es la etapa más importante del proceso:</strong> aquí le dices al sistema qué colegios te interesan y en qué orden los prefieres. Puedes elegir hasta <strong>8 establecimientos</strong>, y el orden importa: tu primera opción es la que el sistema intenta respetar primero. Si no hay cupo disponible para ti en esa opción, pasa a la segunda, y así sucesivamente.</p>
+      <p>Un punto fundamental que mucha gente no sabe: <strong>el SAE no penaliza ser honesto con tus preferencias</strong>. Si el colegio que más te gusta es el N°1, ponlo ahí aunque parezca difícil de conseguir. El algoritmo está matemáticamente diseñado para que la mejor estrategia sea declarar tus preferencias reales. No hay ventaja en poner un colegio más "fácil" de primero para asegurarte un cupo: eso solo hace que el sistema te asigne en una opción que no era tu primera preferencia cuando sí podría haberte dado la que realmente querías.</p>
+      <p>Puedes modificar tu lista cuantas veces quieras hasta el <strong>30 de agosto a las 23:59</strong>. Después de esa fecha no hay cambios posibles. Solo puedes postular una vez por hijo o hija: el sistema no acepta dobles postulaciones para el mismo estudiante.</p>`,
+    acciones: [
+      "Entra a la plataforma con tu ClaveÚnica (sección Postula de este prototipo).",
+      "Agrega los colegios que te interesan en el orden real que prefieres: primero el que más quieres.",
+      "Verifica tus criterios de prioridad: hermano/a matriculado/a, prioridad socioeconómica (JUNAEB), funcionario/a del establecimiento, o exalumno/a.",
+      "Confirma y envía tu postulación antes del 30 de agosto.",
+      "Guarda el número de comprobante que te entrega el sistema. Es tu respaldo oficial."
+    ],
+    sistemaAcciones: "El sistema registra tu lista ordenada de preferencias y la asocia a tu perfil familiar. Valida que no superes las 8 opciones y que los establecimientos elegidos correspondan al nivel que declaraste en la inscripción. Si declaraste criterios de prioridad (hermano/a, prioridad JUNAEB, etc.), los anota para validarlos antes del procesamiento.",
+    alerta: "La fecha límite es el 30 de agosto a las 23:59. Después de esa hora no se puede modificar ni cancelar la postulación bajo ninguna circunstancia.",
+    tip: "Mientras más establecimientos incluyas en tu lista, más posibilidades tienes de quedar asignado/a. Si pones solo 1 o 2 opciones y no te asignan en ninguna, quedas sin colegio. Ponle 5 o más opciones para estar cubierto/a."
+  },
+  {
+    fecha: "Septiembre", nombre: "Procesamiento", icono: "⚙️", estado: "futuro",
+    desc: "El algoritmo cruza todas las postulaciones con prioridades y vacantes. Es automático, no requiere acción de tu parte.",
+    detalle: `<p>En septiembre, el Mineduc procesa <em>todas</em> las postulaciones del país de forma simultánea usando el algoritmo de asignación, basado en el método <strong>Gale-Shapley</strong> (también llamado «deferred acceptance» o «aceptación diferida»). Este método, utilizado en sistemas escolares de todo el mundo, tiene una propiedad matemática clave: garantiza que el resultado sea estable, es decir, que no exista ninguna familia que pudiera haber quedado en una opción mejor si el algoritmo hubiera funcionado diferente.</p>
+      <p>El proceso funciona así: el algoritmo simula múltiples rondas de asignación tentativa. En cada ronda, cada postulante es considerado para el establecimiento más preferido en que aún tiene posibilidad. Si hay más postulantes que vacantes, el establecimiento aplica sus criterios de prioridad legales para decidir quién queda en lista tentativa. Quien queda fuera pasa a su siguiente opción. Esto se repite hasta que no queden movimientos posibles. El resultado final es la asignación definitiva.</p>
+      <p>Antes de ejecutar el algoritmo, el Mineduc valida los criterios de prioridad que declaraste: comprueba en el Registro Civil si hay hermanos/as realmente matriculados en el establecimiento, en el sistema SIGE si eres funcionario/a del colegio, y en el registro de JUNAEB si corresponde prioridad socioeconómica. Los criterios declarados pero no verificados <strong>no se aplican</strong>.</p>`,
+    acciones: [
+      "No necesitas hacer nada durante esta etapa. El proceso es completamente automático.",
+      "Asegúrate de que tu correo de contacto esté actualizado en la plataforma para recibir el resultado en octubre."
+    ],
+    sistemaAcciones: "El Mineduc valida los criterios de prioridad de cada familia contra registros oficiales (Registro Civil, SIGE, JUNAEB). Luego ejecuta el algoritmo Gale-Shapley con todas las postulaciones del país. El proceso puede tomar entre 3 y 5 semanas. Los resultados se preparan con explicaciones individuales para cada familia.",
+    alerta: null,
+    tip: "No hay nada que puedas hacer para influir en el resultado durante esta etapa. El algoritmo es automático y aplica las mismas reglas para todas las familias por igual. Lo importante ya lo hiciste: declaraste tus preferencias y criterios en la postulación."
+  },
+  {
+    fecha: "15 de octubre", nombre: "Resultados", icono: "📬", estado: "futuro",
+    desc: "Recibes el resultado por correo y aquí mismo en \"Mi postulación\". Te dirá en qué colegio quedaste y por qué.",
+    detalle: `<p>El 15 de octubre el Mineduc publica los resultados. Recibirás una notificación al correo registrado y también puedes consultar el resultado en esta plataforma en la sección <strong>«Mi postulación»</strong>. El resultado no solo te dice <em>dónde</em> quedaste: también te explica <em>por qué</em>.</p>
+      <p>Por ejemplo: <em>«Quedaste asignado/a en el Colegio San Martín (tu 2ª preferencia). No fue posible asignarte en tu 1ª preferencia porque todos los cupos fueron para postulantes con hermanos/as matriculados/as, que tienen prioridad legal. En tu 2ª opción, tu nivel de prioridad fue suficiente para acceder a un cupo disponible»</em>. Esta explicación es individual, basada exactamente en tu situación.</p>
+      <p>Si quedaste asignado/a en una opción distinta a tu primera preferencia, <strong>eso no significa que fallaste</strong>: significa que el colegio N°1 tuvo más postulantes con mayor prioridad que vacantes. El sistema te asignó la mejor opción posible dentro de tu lista declarada. Puedes revisar el detalle completo, incluyendo la comparación entre tu nivel de prioridad y el del último postulante que quedó asignado en cada establecimiento.</p>`,
+    acciones: [
+      "Revisa tu correo electrónico el 15 de octubre (incluyendo la carpeta de spam).",
+      "Entra a «Mi postulación» en esta plataforma para leer la explicación detallada del resultado.",
+      "Lee la explicación: te indicará exactamente por qué quedaste donde quedaste y qué criterio fue determinante.",
+      "Descarga tu comprobante de asignación: es un documento oficial que necesitarás para la matrícula."
+    ],
+    sistemaAcciones: "El sistema envía notificaciones por correo electrónico a todas las familias con resultado. Publica los resultados individuales con explicación detallada (por qué se asignó ahí y no en otras opciones). Genera el comprobante oficial descargable y habilita el estado en el panel de seguimiento.",
+    alerta: "Revisa la carpeta de spam si no recibes el correo el 15 de octubre. Si tampoco aparece en la plataforma, comunícate con la mesa de ayuda del Mineduc antes de la fecha límite de matrícula.",
+    tip: "El comprobante de asignación es un documento oficial. Guárdalo en tu teléfono o imprímelo: lo vas a necesitar para hacer la matrícula en el colegio."
+  },
+  {
+    fecha: "Noviembre", nombre: "Matrícula", icono: "✅", estado: "futuro",
+    desc: "Confirmas tu matrícula en el colegio asignado. Si no lo haces, pierdes el cupo y pasas a lista de espera.",
+    detalle: `<p>Una vez conocido el resultado, tienes un plazo de <strong>5 días hábiles</strong> para confirmar la matrícula en el establecimiento asignado. Este trámite se hace de forma presencial en el colegio: llevas los documentos requeridos (certificado de nacimiento, libreta de vacunas, informe de notas del año anterior, comprobante de asignación SAE) y firmas la ficha de matrícula.</p>
+      <p><strong>La matrícula en establecimientos con subvención del Estado es siempre gratuita.</strong> Si el colegio te cobra algún monto para reservar el cupo, te pide dinero como condición para confirmar la matrícula, o te exige comprar útiles o uniformes obligatoriamente como parte del proceso, eso es ilegal. Puedes denunciarlo directamente al Mineduc o a la Superintendencia de Educación.</p>
+      <p>Si no confirmas dentro del plazo, <strong>pierdes el cupo de forma definitiva</strong>. El sistema lo libera automáticamente y pasa al siguiente en la lista de espera. No existe prórroga ni excepción, salvo acreditación de fuerza mayor ante el Mineduc, por lo que es fundamental actuar dentro de los 5 días hábiles indicados.</p>`,
+    acciones: [
+      "Preséntate al establecimiento asignado dentro de los 5 días hábiles del plazo de matrícula.",
+      "Lleva: certificado de nacimiento del estudiante, libreta de vacunas (PIE), informe de notas del año anterior y comprobante de asignación SAE.",
+      "Firma la ficha de matrícula. No debes pagar nada en este trámite.",
+      "Guarda la copia del formulario firmado como respaldo para cualquier consulta futura."
+    ],
+    sistemaAcciones: "El sistema registra las matrículas confirmadas en tiempo real. Los cupos no confirmados dentro del plazo quedan disponibles automáticamente para la lista de espera. El estado de tu postulación se actualiza en la plataforma tan pronto el establecimiento registra la confirmación.",
+    alerta: "Si no confirmas dentro del plazo, pierdes el cupo de forma permanente para esta ronda. No hay posibilidad de recuperarlo. Actúa dentro de los 5 días hábiles indicados en tu resultado.",
+    tip: "Si hay algún obstáculo para ir en persona dentro del plazo (viaje, trabajo, enfermedad), comunícate con el establecimiento antes de que venza el plazo. Algunos aceptan confirmación provisional por correo en casos excepcionales, luego te dan un plazo extendido para el trámite presencial."
+  },
+  {
+    fecha: "Nov–Dic", nombre: "Lista de espera", icono: "📋", estado: "futuro",
+    desc: "Si liberan cupos en colegios que pediste, te avisamos. Puedes postular nuevamente en una segunda etapa.",
+    detalle: `<p>La lista de espera funciona de forma automática: si quedaste asignado/a en una opción que no era tu primera preferencia, el sistema te mantiene en lista de espera para los establecimientos que pusiste antes en tu lista. Cuando alguien no confirma su matrícula en esos colegios, el cupo liberado puede ofrecerte una mejor asignación sin que tengas que hacer nada.</p>
+      <p>El orden en la lista de espera sigue <strong>exactamente las mismas reglas de prioridad que la asignación principal</strong>: hermanos/as primero, luego prioridad socioeconómica, luego funcionarios/as, luego exalumnos/as, y finalmente sorteo. No es «primero en llegar, primero en ser atendido». No sirve de nada llamar al colegio para «reservar un lugar» en la lista.</p>
+      <p>Adicionalmente, en enero-febrero se abre una <strong>segunda etapa extraordinaria</strong> de postulación para quienes quedaron sin asignación en ningún establecimiento, o para quienes liberaron voluntariamente su cupo. Esta segunda etapa tiene las mismas reglas pero los cupos disponibles suelen ser más limitados, ya que la mayoría de los establecimientos ya confirmaron sus matrículas. Si necesitas un colegio diferente al asignado o no quedaste en ninguno, esta es tu siguiente oportunidad.</p>`,
+    acciones: [
+      "No necesitas hacer nada: si se libera un cupo en un colegio de mayor preferencia, el sistema te notifica automáticamente al correo registrado.",
+      "Mantén tu correo electrónico actualizado en la plataforma durante noviembre y diciembre.",
+      "Si recibes una oferta de la lista de espera, tienes solo 48 horas para aceptarla. Responde rápido.",
+      "Si no quedaste asignado/a en ningún colegio, puedes postular en la segunda etapa extraordinaria en enero-febrero."
+    ],
+    sistemaAcciones: "El sistema monitorea los cupos liberados tras el proceso de matrícula y reasigna automáticamente según el orden de la lista de espera y los criterios de prioridad legales. Envía notificaciones a las familias que reciben una nueva oferta y les indica el plazo de respuesta.",
+    alerta: "Si recibes una oferta de lista de espera, tienes solo 48 horas para aceptarla. Si no respondes dentro de ese plazo, la oferta pasa al siguiente postulante en la lista y no puedes recuperarla.",
+    tip: "Estar en lista de espera no garantiza que vayas a recibir una oferta, pero sí que el sistema trabaja a tu favor automáticamente. Mantente atento/a al correo en noviembre y diciembre."
+  }
 ];
 
 /* ============================================================
@@ -1607,6 +2350,10 @@ function navegar(pagina) {
     b.classList.toggle('active', b.dataset.page === pagina);
   });
   anunciar('Sección ' + pagina + ' cargada.');
+  // Renders dinámicos por sección
+  if (pagina === 'seguimiento')  renderSeguimientoDinamico();
+  if (pagina === 'perfil')       renderResumenPerfil();
+  if (pagina === 'postulacion')  renderPostulacion();
 }
 
 /* ============================================================
@@ -1619,6 +2366,11 @@ function toggleContraste() {
   btn.setAttribute('aria-pressed', String(ESTADO.altoContraste));
   anunciar('Modo alto contraste ' + (ESTADO.altoContraste ? 'activado' : 'desactivado'));
   guardarEstado();
+  // Re-renderizar radar si la ficha está visible
+  if (ESTADO.pagina === 'colegio') {
+    const fichaId = parseInt($('#ficha-select').value);
+    if (fichaId) setTimeout(() => renderRadar(fichaId), 50);
+  }
 }
 
 /* ============================================================
@@ -1657,6 +2409,7 @@ function renderTarjetaColegio(id) {
   const urgente = Object.values(c.vacantes).some(v => v < 5);
   const demandaClass = c.demanda === 'alta' ? 'badge--alta' : (c.demanda === 'media' ? 'badge--media' : 'badge--baja');
   const distLabel = c.distanciaBase < 2 ? '🟢 Cerca' : (c.distanciaBase < 4 ? '🟡 Media' : '🔴 Lejos');
+  const yaAgregado = ESTADO.colegiosAgregados.includes(id);
 
   return `
     <article class="col-card" data-id="${id}">
@@ -1683,7 +2436,7 @@ function renderTarjetaColegio(id) {
       <p class="small">${c.proyecto.substring(0, 110)}${c.proyecto.length > 110 ? '…' : ''}</p>
       <div class="col-card__acciones">
         <button class="btn btn--secundario btn-ver-ficha" data-id="${id}">Ver ficha</button>
-        <button class="btn btn--primario btn-add-postulacion" data-id="${id}">+ A mi lista</button>
+        <button class="btn ${yaAgregado ? 'btn--verde' : 'btn--primario'} btn-add-postulacion" data-id="${id}">${yaAgregado ? '✓ En tu lista' : '+ A mi lista'}</button>
       </div>
     </article>`;
 }
@@ -1708,14 +2461,7 @@ function vincularBotonesTarjeta() {
         ESTADO.colegiosAgregados.push(id);
         guardarEstado();
         anunciar(COLEGIOS[id].nombre + ' agregado a tu lista de postulación.');
-        b.textContent = '✓ Agregado';
-        b.classList.remove('btn--primario');
-        b.classList.add('btn--verde');
-        setTimeout(() => {
-          b.textContent = '+ A mi lista';
-          b.classList.add('btn--primario');
-          b.classList.remove('btn--verde');
-        }, 1800);
+        buscarColegios(); // re-renderiza tarjetas con estado actualizado
       } else {
         anunciar('Este colegio ya está en tu lista.');
       }
@@ -1728,13 +2474,19 @@ function vincularBotonesTarjeta() {
    Niveles 1–5 de prioridad × 3 niveles de demanda
 ============================================================ */
 
-/* Determina el nivel de prioridad del usuario en un colegio */
+/* Determina el nivel de prioridad del usuario en un colegio.
+   Criterios oficiales Mineduc (ayudamineduc.cl/criterios-de-prioridad):
+   1. Hermanos/as matriculados/as en el establecimiento
+   2. 15% de estudiantes prioritarios (sujeto a cupo disponible)
+   3. Hijos/as de funcionarios/as del establecimiento
+   4. Exalumnos/as del establecimiento
+   5. Sin prioridad especial → sorteo público */
 function nivelPrioridad(perfil, colegio) {
-  if (perfil.hermano) return 1;                                // máximo
-  if (perfil.vulnerabilidad) return 2;
-  if (perfil.cercano && colegio.distanciaBase < 2) return 3;
-  if (perfil.nee && colegio.nee.programa) return 4;
-  return 5;                                                     // sorteo
+  if (perfil.hermano)     return 1;   // máxima prioridad legal
+  if (perfil.prioritario) return 2;   // sujeto al cupo del 15% por nivel
+  if (perfil.funcionario) return 3;
+  if (perfil.exalumno)    return 4;
+  return 5;                           // sorteo público transparente
 }
 
 /* Calcula la probabilidad estimada de asignación */
@@ -1761,14 +2513,34 @@ function simular() {
     const c = COLEGIOS[id];
     const nivel = nivelPrioridad(perfil, c);
     const prob = probAsignacion(nivel, c.demanda);
-    return { id, idx: idx+1, nombre: c.nombre, demanda: c.demanda, nivel, prob };
+    return { id, idx: idx+1, nombre: c.nombre, demanda: c.demanda, nivel, prob, estado: 'evaluado' };
   });
 
-  let asignado = detalles.find(d => d.prob >= 65);
-  let advertencia = null;
-  if (!asignado) {
-    asignado = detalles.reduce((mejor, d) => d.prob > mejor.prob ? d : mejor, detalles[0]);
+  const idxAsignado = detalles.findIndex(d => d.prob >= 65);
+  let asignado, advertencia = null;
+
+  if (idxAsignado === -1) {
+    // Probabilidad baja en todos — se asigna el mejor disponible
+    const mejorIdx = detalles.reduce((mi, d, i) => d.prob > detalles[mi].prob ? i : mi, 0);
+    detalles.forEach((d, i) => {
+      if (i === mejorIdx) d.estado = 'asignado';
+      else d.estado = d.nivel <= 2 ? 'sin_cupos' : 'prioridad_insuficiente';
+    });
+    asignado = detalles[mejorIdx];
     advertencia = 'Tu probabilidad estimada es baja en todos los colegios elegidos. Te recomendamos agregar más opciones (puedes postular hasta a 8) para asegurar una asignación que te acomode.';
+  } else {
+    detalles.forEach((d, i) => {
+      if (i < idxAsignado) {
+        // Colegios evaluados y no asignados — distinguir motivo
+        d.estado = d.nivel <= 2 ? 'sin_cupos' : 'prioridad_insuficiente';
+      } else if (i === idxAsignado) {
+        d.estado = 'asignado';
+      } else {
+        // Colegios que nunca se evaluaron (ya se encontró asignación)
+        d.estado = 'no_alcanzado';
+      }
+    });
+    asignado = detalles[idxAsignado];
   }
 
   // Construir explicación natural
@@ -1776,7 +2548,7 @@ function simular() {
   if (asignado.nivel === 5) {
     razon = `En "${asignado.nombre}" no tienes una prioridad especial declarada, así que tu asignación depende del sorteo público. Como la demanda es ${asignado.demanda}, tu probabilidad estimada es del ${asignado.prob}%.`;
   } else {
-    razon = `Quedaste asignado/a en "${asignado.nombre}" (tu opción N°${asignado.idx}) por ${TEXTOS.prioridadLabels[asignado.nivel]}. Como la demanda del colegio es ${asignado.demanda}, tu probabilidad estimada es del ${asignado.prob}%.`;
+    razon = `El sistema te asignaría en "${asignado.nombre}" (tu opción N°${asignado.idx}) por ${TEXTOS.prioridadLabels[asignado.nivel]}. Como la demanda del colegio es ${asignado.demanda}, tu probabilidad estimada es del ${asignado.prob}%.`;
   }
 
   return {
@@ -1810,14 +2582,31 @@ function renderResultadoSimulador() {
       </div>
       <h4 style="margin-top:20px; color:var(--acento);">Detalle por cada colegio elegido:</h4>
       <ul style="list-style:none; padding:0; margin-top:8px;">
-        ${r.detalles.map(d => `
-          <li style="padding:8px 0; border-bottom:1px solid var(--borde); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; align-items:center;">
+        ${r.detalles.map(d => {
+          let estadoLabel, estadoColor;
+          if (d.estado === 'asignado') {
+            estadoLabel = '✅ Asignado aquí';
+            estadoColor = 'var(--verde)';
+          } else if (d.estado === 'sin_cupos') {
+            estadoLabel = '❌ Sin cupos disponibles';
+            estadoColor = 'var(--rojo)';
+          } else if (d.estado === 'prioridad_insuficiente') {
+            estadoLabel = '⚠️ Prioridad insuficiente';
+            estadoColor = 'var(--naranja)';
+          } else {
+            estadoLabel = '— No evaluado';
+            estadoColor = 'var(--gris-med)';
+          }
+          return `
+          <li style="padding:8px 0; border-bottom:1px solid var(--borde); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; align-items:center; ${d.estado === 'no_alcanzado' ? 'opacity:0.55;' : ''}">
             <span><strong>${d.idx}.</strong> ${d.nombre}</span>
-            <span style="display:inline-flex; gap:6px; align-items:center;">
+            <span style="display:inline-flex; gap:6px; align-items:center; flex-wrap:wrap;">
               <span class="badge badge--${d.demanda}">${d.demanda}</span>
-              <span style="font-weight:700;">${d.prob}%</span>
+              ${d.estado !== 'no_alcanzado' ? `<span style="font-weight:700;">${d.prob}%</span>` : ''}
+              <span style="font-size:0.82rem; font-weight:600; color:${estadoColor};">${estadoLabel}</span>
             </span>
-          </li>`).join('')}
+          </li>`;
+        }).join('')}
       </ul>
       ${r.advertencia ? `<div class="sim-resultado__advertencia" role="note">⚠️ ${r.advertencia}</div>` : ''}
       <p class="small mt-md"><em>Esta es una estimación pedagógica. La asignación real depende de la demanda total y de las prioridades de las demás familias.</em></p>
@@ -1895,8 +2684,9 @@ function renderMitos() {
 
 /* Render calendario */
 function renderTimeline() {
+  // Cronograma visual — cada hito es un botón que revela su tarjeta
   $('#timeline').innerHTML = HITOS.map((h, i) => `
-    <button class="timeline__hito ${h.estado}" data-i="${i}" role="listitem" aria-label="${h.nombre} - ${h.fecha} - ${h.estado === 'actual' ? 'etapa actual' : h.estado}">
+    <button class="timeline__hito ${h.estado}" data-i="${i}" aria-expanded="${h.estado === 'actual'}" aria-controls="etapa-card-${i}" role="listitem" aria-label="${h.nombre}, ${h.fecha}, ${h.estado === 'actual' ? 'etapa actual' : h.estado === 'completado' ? 'completada' : 'próximamente'}">
       <div class="timeline__circulo" aria-hidden="true">${h.icono}</div>
       <div class="timeline__textos">
         <div class="timeline__fecha">${h.fecha}</div>
@@ -1904,14 +2694,66 @@ function renderTimeline() {
       </div>
     </button>`).join('');
 
-  $$('.timeline__hito').forEach(b => {
-    b.onclick = () => {
-      const i = parseInt(b.dataset.i);
-      const h = HITOS[i];
-      const tip = $('#timeline-tooltip');
-      tip.innerHTML = `<h3>${h.icono} ${h.nombre} — ${h.fecha}</h3><p>${h.desc}</p>`;
-      tip.classList.add('visible');
-      anunciar(h.nombre + ': ' + h.desc);
+  // Tarjetas detalladas — cuerpo colapsable por defecto
+  const badgeLabel = { completado: '✓ Completada', actual: '● En curso', futuro: '○ Próximamente' };
+  $('#etapas-detalle').innerHTML = HITOS.map((h, i) => `
+    <div class="etapa-card ${h.estado}" id="etapa-card-${i}">
+      <div class="etapa-card__header">
+        <div class="etapa-card__icono" aria-hidden="true">${h.icono}</div>
+        <div class="etapa-card__meta">
+          <span class="etapa-badge ${h.estado}">${badgeLabel[h.estado]}</span>
+          <h2>${h.nombre} <span class="etapa-card__fecha-tag">${h.fecha}</span></h2>
+        </div>
+      </div>
+      <div class="etapa-card__body">
+        ${h.detalle}
+        ${h.alerta ? `<div class="etapa-alerta">⚠️ <strong>Atención:</strong> ${h.alerta}</div>` : ''}
+        ${h.tip   ? `<div class="etapa-tip">💡 <strong>Tip:</strong> ${h.tip}</div>`     : ''}
+        <div class="etapa-dos-col">
+          <div>
+            <h3>¿Qué debes hacer tú?</h3>
+            ${h.acciones.length
+              ? '<ul>' + h.acciones.map(a => `<li>${a}</li>`).join('') + '</ul>'
+              : '<p>En esta etapa no necesitas hacer nada.</p>'}
+          </div>
+          <div>
+            <h3>¿Qué hace el sistema?</h3>
+            <p>${h.sistemaAcciones}</p>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Abrir la etapa actual por defecto y marcar su hito como seleccionado
+  const idxActual = HITOS.findIndex(h => h.estado === 'actual');
+  if (idxActual !== -1) {
+    $('#etapa-card-' + idxActual).classList.add('abierta');
+    const btnActual = $(`.timeline__hito[data-i="${idxActual}"]`);
+    if (btnActual) btnActual.classList.add('seleccionado');
+  }
+
+  // Click en hito → abrir su tarjeta, cerrar las demás
+  $$('.timeline__hito').forEach(btn => {
+    btn.onclick = () => {
+      const i = parseInt(btn.dataset.i);
+      const card = $('#etapa-card-' + i);
+      const estaAbierta = card.classList.contains('abierta');
+
+      // Cerrar todas y limpiar selección
+      $$('.etapa-card').forEach(c => c.classList.remove('abierta'));
+      $$('.timeline__hito').forEach(b => {
+        b.classList.remove('seleccionado');
+        b.setAttribute('aria-expanded', 'false');
+      });
+
+      if (!estaAbierta) {
+        card.classList.add('abierta');
+        btn.classList.add('seleccionado');
+        btn.setAttribute('aria-expanded', 'true');
+        // Scroll suave a la tarjeta
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+        anunciar(HITOS[i].nombre + ': ' + HITOS[i].desc);
+      }
     };
   });
 }
@@ -2196,7 +3038,45 @@ function renderComparador() {
    POSTULACIÓN — flujo de 3 pasos con validación
 ============================================================ */
 function renderPostulacion() {
-  // Llenar select de "agregar"
+  // Banner alumno
+  const banner = $('#post-alumno-banner');
+  if (banner) {
+    const nombre  = ESTADO.nombrePostulante;
+    const nivel   = ESTADO.nivelPostulacion;
+    const condLabels = {
+      hermano:     { icono: '👨‍👩‍👧', texto: 'Hermano/a' },
+      prioritario: { icono: '🏠',         texto: 'Prioritario' },
+      funcionario: { icono: '💼',         texto: 'Funcionario/a' },
+      exalumno:    { icono: '🎓',         texto: 'Exalumno/a' },
+    };
+    const activas = Object.entries(ESTADO.perfilUsuario)
+      .filter(([,v]) => v).map(([k]) => condLabels[k]);
+    const tieneDatos = nombre || nivel;
+    if (tieneDatos) {
+      const iniciales = nombre
+        ? nombre.trim().split(' ').slice(0,2).map(w => w[0].toUpperCase()).join('')
+        : '👤';
+      const prioBadges = activas.length > 0
+        ? activas.map(a => `<span class="post-prio-chip">${a.icono} ${a.texto}</span>`).join('')
+        : `<span class="post-prio-chip post-prio-chip--sorteo">🎲 Sorteo público</span>`;
+      banner.innerHTML = `
+        <div class="post-alumno-card">
+          <div class="post-alumno-card__avatar" aria-hidden="true">${iniciales}</div>
+          <div class="post-alumno-card__info">
+            <div class="post-alumno-card__nombre">${nombre || 'Estudiante'}</div>
+            <div class="post-alumno-card__nivel">${nivel ? '📚 ' + nivel : 'Nivel no definido'}</div>
+          </div>
+          <div class="post-alumno-card__prios">${prioBadges}</div>
+          <button class="btn btn--secundario" style="padding:5px 12px; font-size:0.85rem; white-space:nowrap;" onclick="navegar('perfil')">✏️ Editar</button>
+        </div>`;
+    } else {
+      banner.innerHTML = `
+        <div class="post-alumno-card post-alumno-card--vacio">
+          <span>👤 No ingresaste los datos del postulante.</span>
+          <button class="btn btn--secundario" style="padding:5px 12px; font-size:0.85rem;" onclick="navegar('perfil')">→ Ingresar datos</button>
+        </div>`;
+    }
+  }
   $('#post-add-select').innerHTML = '<option value="">Selecciona un colegio…</option>' +
     Object.entries(COLEGIOS)
       .filter(([id]) => !ESTADO.colegiosAgregados.includes(parseInt(id)))
@@ -2377,7 +3257,374 @@ function inicializarPrimeraVez() {
 }
 
 /* ============================================================
-   CHECKBOXES PERFIL — sincronizar con estado
+   PERFIL — MIS DATOS
+   Permite al apoderado definir su situación y sincronizar
+   con el simulador y el flujo de postulación.
+============================================================ */
+function initPerfil() {
+  const nInput = $('#perf-nombre');
+  const nvInput = $('#perf-nivel');
+  if (nInput) nInput.value = ESTADO.nombrePostulante || '';
+  if (nvInput) nvInput.value = ESTADO.nivelPostulacion || '';
+
+  // Vincular checkboxes del perfil con el estado
+  ['hermano','prioritario','funcionario','exalumno'].forEach(cond => {
+    const input = document.getElementById('perf-' + cond);
+    const card  = document.querySelector('.criterio-card[data-cond="' + cond + '"]');
+    if (!input) return;
+    input.checked = ESTADO.perfilUsuario[cond] || false;
+    if (card) card.classList.toggle('activo', input.checked);
+    input.onchange = () => {
+      ESTADO.perfilUsuario[cond] = input.checked;
+      if (card) card.classList.toggle('activo', input.checked);
+      guardarEstado();
+      syncPerfilSimulador();
+      if (ESTADO.pagina === 'postulacion') renderPostulacion();
+    };
+  });
+
+  const btnGuardar = $('#btn-guardar-perfil');
+  if (btnGuardar) {
+    btnGuardar.onclick = () => {
+      ESTADO.nombrePostulante = (nInput ? nInput.value.trim() : '');
+      ESTADO.nivelPostulacion  = (nvInput ? nvInput.value : '');
+      guardarEstado();
+      renderResumenPerfil();
+      syncPerfilSimulador();
+      if (ESTADO.pagina === 'postulacion') renderPostulacion();
+      anunciar('Datos guardados. El simulador y las probabilidades se actualizaron.');
+    };
+  }
+
+  renderResumenPerfil();
+}
+
+function renderResumenPerfil() {
+  const div = $('#perfil-resumen');
+  if (!div) return;
+  const nombre = ESTADO.nombrePostulante;
+  const nivel  = ESTADO.nivelPostulacion;
+  const condLabels = {
+    hermano:     { icono: '👨‍👩‍👧', texto: 'Hermano/a matriculado/a',  num: '1º' },
+    prioritario: { icono: '🏠',         texto: 'Estudiante prioritario',   num: '2º' },
+    funcionario: { icono: '💼',         texto: 'Hijo/a de funcionario/a', num: '3º' },
+    exalumno:    { icono: '🎓',         texto: 'Exalumno/a del colegio',  num: '4º' },
+  };
+  const activas = Object.entries(ESTADO.perfilUsuario)
+    .filter(([,v]) => v)
+    .map(([k]) => condLabels[k]);
+
+  if (!nombre && !nivel && activas.length === 0) { div.hidden = true; return; }
+  div.hidden = false;
+
+  const iniciales = nombre
+    ? nombre.trim().split(' ').slice(0,2).map(w => w[0].toUpperCase()).join('')
+    : '👤';
+
+  const prioHTML = activas.length > 0
+    ? activas.map(a => `
+        <span class="prio-badge prio-badge--activo">
+          ${a.icono} <strong>${a.num}</strong> ${a.texto}
+        </span>`).join('')
+    : `<span class="prio-badge prio-badge--sorteo">🎲 Sin prioridad especial — Sorteo público</span>`;
+
+  div.innerHTML = `
+    <div class="perfil-resumen__header">
+      <div class="perfil-resumen__avatar" aria-hidden="true">${iniciales}</div>
+      <div class="perfil-resumen__info">
+        <p class="perfil-resumen__nombre">${nombre || 'Estudiante'}</p>
+        <p class="perfil-resumen__nivel">${nivel ? '📚 Postulando a: ' + nivel : 'Nivel no definido'}</p>
+      </div>
+    </div>
+    <div class="perfil-resumen__body">
+      <p class="perfil-resumen__label">Criterios de prioridad activos</p>
+      <div class="perfil-resumen__prioridades">${prioHTML}</div>
+      <div class="perfil-resumen__footer">
+        <button class="btn btn--secundario" onclick="navegar('perfil')">✏️ Editar datos</button>
+        <button class="btn btn--primario" onclick="navegar('algoritmo')">🧭 Ir al simulador</button>
+      </div>
+    </div>
+  `;
+}
+
+function syncPerfilSimulador() {
+  $$('#sim-perfil-opciones .sim-checkbox').forEach(label => {
+    const cond  = label.dataset.cond;
+    const input = label.querySelector('input');
+    if (input && cond in ESTADO.perfilUsuario) {
+      input.checked = ESTADO.perfilUsuario[cond];
+      label.classList.toggle('activo', input.checked);
+    }
+  });
+}
+
+/* ============================================================
+   SEGUIMIENTO DINÁMICO
+   Usa colegiosAgregados + perfilUsuario para mostrar
+   el resultado estimado con explicación por colegio.
+============================================================ */
+function renderSeguimientoDinamico() {
+  const cont = $('#seguimiento-resultado');
+  if (!cont) return;
+  const perfil = ESTADO.perfilUsuario;
+  const lista  = ESTADO.colegiosAgregados;
+  const nombre = ESTADO.nombrePostulante || 'tu hijo/a';
+  const nivel  = ESTADO.nivelPostulacion || '';
+
+  if (lista.length === 0) {
+    cont.innerHTML = `
+      <div class="estado-card" style="border-left-color:var(--gris-med);">
+        <span class="estado-card__estado" style="background:var(--gris-med);">&#9203; Sin postulación registrada</span>
+        <p class="mt-md">Aún no has agregado colegios a tu lista.</p>
+        <div class="flex-row mt-md">
+          <button class="btn btn--primario" onclick="navegar('postulacion')">Ir a Postular</button>
+          <button class="btn btn--secundario" onclick="navegar('perfil')">Completar mis datos</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Calcular resultado
+  const detalles = lista.map((id, idx) => {
+    const c    = COLEGIOS[id];
+    const np   = nivelPrioridad(perfil, c);
+    const prob = probAsignacion(np, c.demanda);
+    return { id, idx: idx+1, nombre: c.nombre, comuna: c.comuna, demanda: c.demanda, np, prob, estado: 'pendiente' };
+  });
+  const idxAsig = detalles.findIndex(d => d.prob >= 65);
+  let asignado;
+  if (idxAsig === -1) {
+    const miIdx = detalles.reduce((mi,d,i) => d.prob > detalles[mi].prob ? i : mi, 0);
+    detalles.forEach((d,i) => { d.estado = i === miIdx ? 'asignado' : (d.np <= 2 ? 'sin_cupos' : 'prioridad_insuficiente'); });
+    asignado = detalles[miIdx];
+  } else {
+    detalles.forEach((d,i) => {
+      if (i < idxAsig)       d.estado = d.np <= 2 ? 'sin_cupos' : 'prioridad_insuficiente';
+      else if (i === idxAsig) d.estado = 'asignado';
+      else                   d.estado = 'no_alcanzado';
+    });
+    asignado = detalles[idxAsig];
+  }
+
+  const priLabel = {
+    1: 'hermano/a matriculado/a (mayor prioridad legal)',
+    2: 'estudiante prioritario — cuota del 15% disponible',
+    3: 'hijo/a de funcionario/a del establecimiento',
+    4: 'exalumno/a del mismo establecimiento',
+    5: 'sorteo público transparente (sin prioridad especial)'
+  };
+
+  // Íconos y textos para el log
+  const logMap = {
+    asignado: {
+      icono: '✅', iconoAlt: 'Asignado',
+      resultado: '¡Asignación exitosa!',
+      detalle: d => `Quedaste en este colegio por ${priLabel[d.np]}. Probabilidad estimada: ${d.prob}%.`
+    },
+    sin_cupos: {
+      icono: '❌', iconoAlt: 'Sin cupos',
+      resultado: 'Sin cupos disponibles',
+      detalle: d => `Los cupos del nivel se agotaron antes de llegar a tu posición. Tu criterio de prioridad (${TEXTOS.prioridadLabels[d.np]}) no fue suficiente para alcanzar las vacantes disponibles. El algoritmo continuó con el siguiente colegio de tu lista.`
+    },
+    prioridad_insuficiente: {
+      icono: '⚠️', iconoAlt: 'Prioridad insuficiente',
+      resultado: 'Prioridad insuficiente',
+      detalle: d => `Otros postulantes con mayor prioridad que la tuya (${TEXTOS.prioridadLabels[d.np]}) ocuparon todas las vacantes disponibles. El algoritmo continuó con el siguiente colegio de tu lista.`
+    },
+    no_alcanzado: {
+      icono: '—', iconoAlt: 'No evaluado',
+      resultado: 'No fue necesario evaluar',
+      detalle: () => 'Ya quedaste asignado/a en un colegio anterior. Este establecimiento no llegó a ser evaluado por el algoritmo, y no cuenta como rechazo.'
+    }
+  };
+
+  // Criterios de prioridad del perfil
+  const criteriosDef = [
+    { key:'hermano',    label:'Hermanos/as matriculados/as',        orden:'1º' },
+    { key:'prioritario',label:'Estudiante prioritario (cuota 15%)', orden:'2º' },
+    { key:'funcionario',label:'Hijo/a de funcionario/a',            orden:'3º' },
+    { key:'exalumno',   label:'Exalumno/a del establecimiento',     orden:'4º' },
+  ];
+  const priActiva = criteriosDef.find(c => perfil[c.key]);
+
+  cont.innerHTML = `
+    <!-- Hero resultado -->
+    <div class="estado-card">
+      <span class="estado-card__estado">✅ Resultado estimado</span>
+      <p class="estado-card__resultado">Asignación de <strong>${nombre}</strong>${nivel ? ` (${nivel})` : ''}: <strong>${asignado.nombre}</strong></p>
+      <p>Tu opción N°${asignado.idx}. Criterio aplicado: <strong>${priLabel[asignado.np]}</strong>.</p>
+      ${asignado.np === 5 ? `<p class="small mt-md">ℹ️ Sin prioridad especial. La asignación fue por sorteo público, en igualdad con los demás postulantes sin prioridad.</p>` : ''}
+      <div class="flex-row mt-md">
+        <button class="btn btn--verde">📄 Descargar comprobante</button>
+        <button class="btn btn--secundario" onclick="navegar('algoritmo')">¿Cómo funciona el algoritmo?</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="seg-tabs" role="tablist" aria-label="Detalles de la postulación">
+      <button class="seg-tab activo" role="tab" aria-selected="true"  aria-controls="seg-panel-proceso"   id="seg-tab-proceso">⚙️ Proceso del algoritmo</button>
+      <button class="seg-tab"        role="tab" aria-selected="false" aria-controls="seg-panel-prioridades" id="seg-tab-prioridades">🏷️ Mis prioridades</button>
+      <button class="seg-tab"        role="tab" aria-selected="false" aria-controls="seg-panel-preferencias" id="seg-tab-preferencias">📋 Mis preferencias</button>
+    </div>
+
+    <!-- Tab 1: log algoritmo -->
+    <div class="seg-tabpanel activo" id="seg-panel-proceso" role="tabpanel" aria-labelledby="seg-tab-proceso">
+      <p class="small mb-md">El algoritmo revisó tu lista en orden, colegios que no fue necesario evaluar están marcados con —.</p>
+      <div class="algo-log" id="algo-log-container">
+        ${detalles.map((d, i) => {
+          const m   = logMap[d.estado];
+          const col = COLEGIOS[d.id];
+          const st  = col.stats;
+          const totalVac = Object.values(col.vacantes).reduce((a,b)=>a+b, 0);
+          const pct = Math.min(100, Math.round((totalVac / st.postulantes) * 100));
+          const demStr = col.demanda;
+          const demLabel = { alta: 'Muy alta demanda', media: 'Alta demanda', baja: 'Demanda moderada' }[demStr];
+          const statsId = `stats-panel-${i}`;
+          const toggleId = `stats-toggle-${i}`;
+          const showStats = d.estado !== 'no_alcanzado';
+          return `
+            <div class="algo-log__step ${d.estado}" data-delay="${i * 120}">
+              <div class="algo-log__left">
+                <div class="algo-log__circulo" aria-hidden="true" title="${m.iconoAlt}">${m.icono}</div>
+                <div class="algo-log__linea"></div>
+              </div>
+              <div class="algo-log__body">
+                <p class="algo-log__paso-label">Paso ${d.idx}: Evaluación ${d.estado === 'no_alcanzado' ? 'no realizada' : 'realizada'}</p>
+                <p class="algo-log__nombre">${d.nombre} <span class="small" style="font-weight:400;">(${d.comuna})</span></p>
+                <p class="algo-log__resultado">${m.resultado}</p>
+                <p class="algo-log__detalle">${m.detalle(d)}</p>
+                ${showStats ? `
+                  <button class="algo-log__stats-toggle" id="${toggleId}" aria-expanded="false" aria-controls="${statsId}">
+                    <em class="chevron">▼</em> Estadísticas del proceso
+                  </button>
+                  <div class="algo-log__stats-panel" id="${statsId}" role="region">
+                    <div class="stats-grid">
+                      <div class="stats-card">
+                        <div class="stats-card__valor">${st.postulantes.toLocaleString('es-CL')}</div>
+                        <div class="stats-card__label">Postulantes</div>
+                      </div>
+                      <div class="stats-card">
+                        <div class="stats-card__valor">${totalVac}</div>
+                        <div class="stats-card__label">Cupos disponibles</div>
+                      </div>
+                      <div class="stats-card">
+                        <div class="stats-card__valor" style="font-size:0.95rem;">${st.cortePrioridadLabel}</div>
+                        <div class="stats-card__label">Corte de prioridad</div>
+                        <div class="stats-card__sub ${demStr}">Prioridad ${st.cortePrioridadNivel}</div>
+                      </div>
+                    </div>
+                    <div class="stats-barra-wrap">
+                      <div class="stats-barra-label">
+                        <span>Demanda vs Oferta</span>
+                        <span>${pct}% de cupos disponibles</span>
+                      </div>
+                      <div class="stats-barra" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${pct}% de cupos respecto a postulantes">
+                        <div class="stats-barra__fill ${demStr}" style="width:0%;" data-pct="${pct}">${pct}%</div>
+                      </div>
+                      <div class="stats-demanda-tag ${demStr}">📊 ${demLabel}</div>
+                    </div>
+                  </div>` : ''}
+              </div>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Tab 2: mis prioridades -->
+    <div class="seg-tabpanel" id="seg-panel-prioridades" role="tabpanel" aria-labelledby="seg-tab-prioridades">
+      <p class="small mb-md">Estos son los criterios de prioridad que el sistema evaluó para tu caso. Solo se aplica el de mayor jerarquía.</p>
+      <div class="prioridades-panel">
+        ${criteriosDef.map(c => `
+          <div class="prioridad-fila ${perfil[c.key] ? 'cumple' : 'no_cumple'}">
+            <span class="prioridad-fila__num">${c.orden}</span>
+            <span class="prioridad-fila__texto">${c.label}</span>
+            <span class="prioridad-fila__badge">${perfil[c.key] ? '✅ Cumple' : 'No cumple'}</span>
+          </div>`).join('')}
+        <div class="prioridad-fila ${!priActiva ? 'cumple' : 'no_cumple'}">
+          <span class="prioridad-fila__num">5º</span>
+          <span class="prioridad-fila__texto">Sin prioridad especial — Sorteo público</span>
+          <span class="prioridad-fila__badge">${!priActiva ? '✅ Aplica' : 'No aplica'}</span>
+        </div>
+      </div>
+      <p class="small mt-md">¿Tus datos no son correctos? <button class="btn btn--secundario" style="padding:4px 12px; font-size:0.85rem;" onclick="navegar('perfil')">Editar mis datos</button></p>
+    </div>
+
+    <!-- Tab 3: mis preferencias -->
+    <div class="seg-tabpanel" id="seg-panel-preferencias" role="tabpanel" aria-labelledby="seg-tab-preferencias">
+      <p class="small mb-md">El orden en que elegiste los colegios y el resultado de cada uno.</p>
+      <ul class="seg-lista" aria-label="Resultado por colegio">
+        ${detalles.map(d => {
+          const estadoMap = {
+            asignado:               { icon:'✅', label:'Asignado/a aquí',          color:'var(--verde)' },
+            sin_cupos:              { icon:'❌', label:'Sin cupos disponibles',     color:'var(--rojo)' },
+            prioridad_insuficiente: { icon:'⚠️', label:'Prioridad insuficiente',   color:'var(--naranja)' },
+            no_alcanzado:           { icon:'—',  label:'No evaluado (ya asignado)', color:'var(--gris-med)' }
+          };
+          const e = estadoMap[d.estado];
+          return `
+            <li class="seg-item ${d.estado}">
+              <div class="seg-item__num">${d.idx}</div>
+              <div class="seg-item__info">
+                <p class="seg-item__nombre">${d.nombre} <span class="small">(${d.comuna})</span></p>
+                <p class="seg-item__estado" style="color:${e.color};">${e.icon} ${e.label}</p>
+                ${d.estado !== 'no_alcanzado' ? `<p class="seg-item__explicacion">${TEXTOS.prioridadLabels[d.np]} · probabilidad estimada: ${d.prob}%</p>` : ''}
+              </div>
+            </li>`;
+        }).join('')}
+      </ul>
+    </div>
+
+    <div class="no-quedo mt-lg">
+      <h3>🤔 ¿Qué pasa si no quedo en ninguno?</h3>
+      <p>Si el algoritmo no logra asignarte en ningún colegio de tu lista:</p>
+      <ol>
+        <li>El sistema te asigna el establecimiento público o particular subvencionado <strong>más cercano con vacantes</strong>.</li>
+        <li>Puedes quedar en <strong>lista de espera</strong> de tus colegios preferidos.</li>
+        <li>Se abre una <strong>segunda etapa de postulación</strong> donde puedes intentar nuevamente.</li>
+      </ol>
+    </div>
+  `;
+
+  // Tabs interactivos
+  $$('.seg-tab').forEach(tab => {
+    tab.onclick = () => {
+      $$('.seg-tab').forEach(t => { t.classList.remove('activo'); t.setAttribute('aria-selected','false'); });
+      $$('.seg-tabpanel').forEach(p => p.classList.remove('activo'));
+      tab.classList.add('activo');
+      tab.setAttribute('aria-selected','true');
+      const panel = $('#' + tab.getAttribute('aria-controls'));
+      if (panel) panel.classList.add('activo');
+    };
+  });
+
+  // Animación escalonada del log
+  const steps = $$('.algo-log__step');
+  steps.forEach(step => {
+    const delay = parseInt(step.dataset.delay || 0);
+    setTimeout(() => step.classList.add('visible'), delay + 80);
+  });
+
+  // Toggles de estadísticas — expandir/colapsar
+  $$('.algo-log__stats-toggle').forEach(btn => {
+    btn.onclick = () => {
+      const panel = $('#' + btn.getAttribute('aria-controls'));
+      const isOpen = panel.classList.toggle('visible');
+      btn.classList.toggle('abierto', isOpen);
+      btn.setAttribute('aria-expanded', String(isOpen));
+      // Animar barra al abrir
+      if (isOpen) {
+        const fill = panel.querySelector('.stats-barra__fill');
+        if (fill) {
+          fill.style.width = '0%';
+          setTimeout(() => { fill.style.width = fill.dataset.pct + '%'; }, 30);
+        }
+      }
+    };
+  });
+}
+
+/* ============================================================
+   CHECKBOXES PERFIL (simulador) — sincronizar con estado
 ============================================================ */
 function vincularPerfilUsuario() {
   $$('#sim-perfil-opciones .sim-checkbox').forEach(label => {
@@ -2417,6 +3664,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Hamburger menu (móvil < 600px)
+  const hamburger = $('#hamburger-btn');
+  const navMenu = $('#navbar-nav');
+  hamburger.onclick = () => {
+    const isOpen = navMenu.classList.toggle('abierto');
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+    hamburger.textContent = isOpen ? '✕' : '☰';
+  };
+  $$('#navbar-nav button[data-page]').forEach(b => {
+    b.addEventListener('click', () => {
+      navMenu.classList.remove('abierto');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.textContent = '☰';
+    });
+  });
+
   // Toggle contraste
   $('#toggle-contraste').onclick = toggleContraste;
 
@@ -2427,6 +3690,7 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('input', buscarColegios);
     el.addEventListener('change', buscarColegios);
   });
+  $('#busc-texto').addEventListener('keydown', e => { if (e.key === 'Enter') buscarColegios(); });
 
   // Banner primera vez
   inicializarPrimeraVez();
@@ -2435,6 +3699,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buscarColegios();
   renderSimColegios();
   vincularPerfilUsuario();
+  initPerfil();
   renderMitos();
   renderTimeline();
   llenarFichaSelect();
@@ -2442,6 +3707,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderComparadorSelector();
   renderTestimonios();
   renderPostulacion();
+  renderSeguimientoDinamico();
 
   // Botón simular
   $('#btn-simular').onclick = renderResultadoSimulador;

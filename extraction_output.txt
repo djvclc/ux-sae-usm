@@ -1,0 +1,199 @@
+--- PÁGINA 36 ---
+Informe: Evaluación de calidad web del SAE 
+36 
+ 
+13. Sitio web informativo del SAE  
+a) Contenido y lenguaje claro 
+• No calzan los títulos de la sección "Información importante" de la portada con sus 
+títulos interiores. "Información para extranjeros" en realidad habla de los derechos 
+de los estudiantes. 
+• Aunque se explican, se sugiere evitar el uso de siglas poco conocidas para la 
+audiencia, como IPA o IPE:  
+ 
+• Existen rótulos a los cuales les falta contexto, como “Regularización 2025” 
+ 
+• Es posible simplificar la información, evitando siglas y conceptos técnicos que pueden 
+resultar confusos, como “género del establecimiento”. 
+ 
+• La legibilidad de los textos es mejorable: 
+
+--- PÁGINA 37 ---
+Informe: Evaluación de calidad web del SAE 
+37 
+ 
+ 
+• Hay referencias a textos legales sin decir de qué se trata (p. ej.: Ver Decreto Exento 
+N°1126). 
+b) Usabilidad 
+• El llamado a la acción más importante, "Postular", no está en todas las páginas, no se 
+alcanza a ver en el primer pantallazo y se esconde en una línea de tiempo. 
+• Ante una página no encontrada,  no hay un mensaje personalizado, solo redirige a 
+"Not Found. The requested URL was not found on this server.". 
+• Hay enlaces que no llevan a las secciones lógicas. Por ejemplo, esta card lleva a 
+Derechos del apoderado: 
+ 
+• Existe un segmento de enlace roto: 
+ 
+
+--- PÁGINA 38 ---
+Informe: Evaluación de calidad web del SAE 
+38 
+ 
+c) Accesibilidad web 
+• Los textos grises sobre fondo blanco no pasan ninguno de los niveles de contraste 
+mínimo: 
+ 
+• De los tres íconos, el que corresponde a Atención presencial figura con un texto 
+alternativo que dice "Material descargable", o sea, no guarda relación con la imagen. 
+• No es posible navegar con el teclado de manera fluida en la mayoría de sus entradas 
+informativas, como Quiénes pueden postular, Casos de postulación por cambio de 
+establecimiento, Postulación familiar y prioridad entre hermanas(os) a un mismo 
+establecimiento, Derechos y deberes del apoderado/a. En todos esos sitios, la 
+navegación de esa forma impide leer la totalidad del texto contenido en la entrada. 
+Además, la navegación mediante el teclado se entorpece en Preguntas frecuentes. 
+• Las secciones "Buscador de establecimientos", "Postula" y "Regularización 2025" 
+sacan al usuario de la navegación. 
+• El único descargable es el Decreto Exento N.º 1126 en Preguntas Frecuentes, cuya 
+evaluación figura reprobada en MAUVE++, contando con 5 de 6 fallas. 
+d) Arquitectura de información 
+• El menú global no sigue el orden de las etapas del proceso. 
+• Aparece primero "Sobre el Sistema de Admisión Escolar" que “Cómo postular”. 
+• A veces se habla de "Vitrina de establecimientos" y otra s de "Buscador de 
+establecimientos"; "Puntos de atención" y "Puntos de ayuda". 
+• El rotulado es poco preciso. Por ejemplo, “Información para extranjeros” dentro de 
+la sección “Extranjeros” no es un rótulo específico. Además, la primera opción del 
+menú de navegación queda cortada: 
+
+--- PÁGINA 39 ---
+Informe: Evaluación de calidad web del SAE 
+39 
+ 
+ 
+ 
+• Rótulos extensos: "Lo que debes saber para postular" 
+• En portada, aparece un botón llamado "Regularización 2025" sin contexto. "Puntos 
+de atención Mineduc" tampoco es  un rótulo  directo. "Información importante" y 
+"Enlaces de utilidad" son vagos. 
+• El buscador de establecimientos tiene el ícono de una casa, algo que puede confundir 
+y amerita el texto que ya tiene. Asimismo, el ícono de presencialidad no tiene mayor 
+vínculo con el texto. 
+• "¿Cómo me registro como apoderado?" , lleva a derechos del apoderado. "Consejos 
+para un proceso exitoso " y "¿Pierdo el cupo si postulo?" , llevan a cómo funciona el 
+proceso. 
+e) Búsqueda y encontrabilidad 
+• No hay buscador interno. 
+• No hay mapa del sitio. 
+• Faltan metadescripciones y falta Ministerio de Educación en el título (title). 
+ 
+
+--- PÁGINA 40 ---
+Informe: Evaluación de calidad web del SAE 
+40 
+ 
+f) Responsividad móvil 
+• Hay varios errores en el formato de la pantalla vertical de  la tablet. El menú de 
+navegación rompe su caja y el apartado de extranjeros queda a la derecha del sitio 
+web, dejando un espacio en blanco. 
+ 
+• En tablet vertical, la caja correspondiente a la sección "Extranjeros" en la barra de 
+navegación superior excede el margen del sitio web y deja un espacio en blanco, algo 
+que impide una adaptación correcta. 
+ 
+  
+
+--- PÁGINA 41 ---
+Informe: Evaluación de calidad web del SAE 
+41 
+ 
+g) Diseño e imagen institucional 
+• Falta destacar el botón "Postular" 
+• El sitio web presenta diferencias claras en colores  con la imagen corporativa del 
+Mineduc y del Gobierno de Chile , partiendo por la fuente empleada, Museo Sans, 
+distinta al Roboto recomendado a nivel oficial , ni Gobcl. Asimismo, el  color 
+#F3E60BFF empleado en el ribete no figura ni en el UI kit ni plantillas web del 
+Gobierno. Asimismo, los íconos no concuerdan con las propuestas oficiales. Eso sí, 
+concuerda la tipografía de los h2, de 24 px, con la recomendación oficial del UI kit en 
+cuanto a Heading L. O sea, se valida parcialmente.  
+• Letras grises sobre fondo blanco. El menú de navegación cuenta con palabras de 15 
+px, además de los errores en contraste mencionados en la parte de accesibilidad. 
+h) Seguridad 
+• Al acceder con el protocolo HTTP a las páginas del sitio, no se realiza la redirección a 
+la versión con protocolo HTTPS.  
+• El sitio no tiene configurada la cabecera ""X -Content-Type-Options"" con el valor 
+""nosniff". 
+i) Tecnología 
+• El sitio de inicio y sus entradas estuvieron disponibles, pero se cayó el sitio de 
+postulación al que se debe acceder con cuenta. 
+• La dirección web sin www lleva al sitio del Mineduc. 
+• Hay 27 errores y alertas según el validador de HTML de la W3C. 
+• Hay 65 errores de validación de los estilos CSS de la W3C: 
+ 
+j) Atención a la ciudadanía 
+• Falta chat de ayuda en tiempo real. 
+• No se observa oficina OIRS. 
+
+--- PÁGINA 42 ---
+Informe: Evaluación de calidad web del SAE 
+42 
+ 
+k) Audiovisualidad 
+• Faltan tutoriales en video 
+l) Enfoque de género 
+• En ¿Cómo funciona el proceso?, ¿Quiénes pueden postular al Sistema de Admisión 
+Escolar? y en las respuestas a Preguntas Frecuentes se habla de "el estudiante" o "el 
+apoderado" y se emplean solo versiones en masculino de términos como extranjeros 
+o hermano. Entonces se podría mejorar en que tales códigos se apliquen para todo 
+el sitio web. 
+• Cada vez que se hable de padre o madre, debe también indicarse apoderada/o. 
+m) Imparcialidad e igualdad de trato 
+• No se consideran funciones que integren a población que pueda requerir de fuentes 
+más grandes en la lectura ni cambios de idioma acordes con los pueblos originarios. 
+• Al ser un sitio web que permite la postulación a población extranjera en Chile, debería 
+contar con creole e inglés, por lo menos, junto a mapudungun. 
+• Aparece la dirección del Mineduc en Santiago en todas las páginas y no es un punto 
+de atención. 
+n) Inclusión 
+• No todos los colores son aptos para personas con daltonismo. Aplicado el filtro de 
+Tritán (azul), se pierde buena parte de la portada del sitio web, haciendo que los 
+elementos diferenciadores, como colores amarillos y el botón de registro, pase n 
+desapercibidos. 
+o) Promoción 
+• Existen diferentes URLs en el proceso: https://registropublicodigital.mineduc.gob.cl/ 
+y https://admision.mineduc.cl/ 
+• Hay varias entradas del SAE que cuentan con dos etiquetas h1. 
+• Para separar palabras dentro de la URL no se usa guion medio, sino bajo.  
+• Faltan metadescripciones. De hecho, dice “Descripción clara y concisa de tu landing 
+page con keywords relevantes.” 
+p) Transparencia y apertura 
+• No se observa información de transparencia, ni activa ni pasiva. 
+--- PÁGINA 43 ---
+Informe: Evaluación de calidad web del SAE 
+43 
+ 
+q) Prevención de errores 
+• Aparece una dirección física en el pie que no es ninguno de los puntos de atención: 
+ 
+• "¿Cómo me registro como apoderado?" lleva a derechos del apoderado. "Consejos 
+para un proceso exitosos" y "¿Pierdo el cupo si postulo?" llevan a cómo funciona el 
+proceso. "Regularización 2025" lleva a Anótate en la lista. 
+• Cuando se da una contraseña incorrecta en el sitio de Registro, el pop up solo dice 
+que se da un error. 
+r) Facilidad de acceso e independencia tecnológica 
+• El sitio web ni puede ser navegado con la velocidad más baja de Internet móvil. 
+• En los navegadores más utilizados se da el mismo error de responsividad, o sea, que 
+las cajas se rompen en formato de tablet vertical e, incluso, en el caso de Opera se 
+rompe la barra de navegación cuando se trata de la versión de escritorio. 
+s) Interacción y retroalimentación 
+• No queda marcada en qué sección o página del menú global se encuentra la persona 
+usuaria. 
+t) Rapidez de respuesta 
+• La portada del sitio web no se carga completamente en menos de tres segundos. 
+ 
+Sobre la base del cumplimiento en las preguntas de chequeo de cada indicador, se verifica 
+un porcentaje de 55% para el nivel imprescindible, 57% para el esperable y 22% para el 
+deseable, alcanzando un promedio general de 51%, lo que es medianamente satisfactorio.  
+Las dimensiones mejor evaluadas fueron Diseño e imagen institucional (88%), prevención de 
+errores (88%) y Promoción  (68%). A su vez, las con más oportunidad de mejora , fueron 
+Inclusión (0%), Búsqueda y encontrabilidad (4%) y Audiovisualidad (10%). 
+El detalle se puede ver en la siguiente tabla: 
+

@@ -205,6 +205,44 @@
     letter-spacing: 0.01em;
     border-bottom: 2px solid var(--azul-med);
   }
+  .barra-contexto {
+    background: #F6F9FC;
+    border-bottom: 1px solid var(--borde);
+    padding: 8px var(--esp-md);
+    font-size: 0.9rem;
+  }
+  .barra-contexto__inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    gap: var(--esp-sm);
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .barra-contexto__ruta { color: var(--texto-suave); }
+  .barra-contexto__actual { font-weight: 700; color: var(--acento); }
+  .texto-control {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+  .texto-control button {
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    background: var(--bg-card);
+    color: var(--texto);
+    padding: 2px 10px;
+    cursor: pointer;
+    font-size: 0.82rem;
+  }
+  .texto-control button.activo {
+    background: var(--azul-cl);
+    border-color: var(--acento);
+    color: var(--acento);
+    font-weight: 700;
+  }
   .banner-primera-vez {
     background: var(--verde-cl);
     border-bottom: 2px solid var(--verde);
@@ -320,6 +358,32 @@
   .acceso-card__icono { font-size: 2.2rem; margin-bottom: var(--esp-sm); display: block; }
   .acceso-card__titulo { font-weight: 700; font-size: 1rem; color: var(--acento); }
   .acceso-card__desc { font-size: 0.85rem; margin-top: var(--esp-xs); color: var(--texto-suave); }
+
+  .ayuda-ciudadania {
+    margin-top: var(--esp-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-lg);
+    box-shadow: var(--sombra);
+    padding: var(--esp-lg);
+  }
+  .ayuda-ciudadania h3 { color: var(--acento); margin-bottom: var(--esp-sm); }
+  .ayuda-grid {
+    display: grid;
+    gap: var(--esp-sm);
+    grid-template-columns: 1fr;
+    margin-top: var(--esp-md);
+  }
+  @media (min-width: 768px) {
+    .ayuda-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .ayuda-item {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 12px;
+    background: var(--bg-soft);
+  }
+  .ayuda-item strong { color: var(--acento); }
 
   /* ============================================================
      11. PÁGINAS NAVEGABLES (SPA)
@@ -1065,6 +1129,43 @@
   .notas-disenio summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
   .notas-disenio details[open] summary { color: var(--acento); margin-bottom: var(--esp-sm); }
 
+  .cumplimiento-p13 {
+    margin-top: var(--esp-lg);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+  }
+  .cumplimiento-p13 table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+  }
+  .cumplimiento-p13 th,
+  .cumplimiento-p13 td {
+    border-bottom: 1px solid var(--borde);
+    padding: 10px;
+    font-size: 0.9rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  .cumplimiento-p13 th {
+    background: var(--bg-soft);
+    color: var(--acento);
+  }
+
+  .cta-postular-flotante {
+    display: none;
+    position: fixed;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 120;
+    box-shadow: var(--sombra-lg);
+  }
+  @media (max-width: 768px) {
+    .cta-postular-flotante { display: inline-flex; }
+  }
+
   footer.site-footer {
     background: var(--azul-osc); color: var(--blanco);
     padding: var(--esp-lg) var(--esp-md); text-align: center;
@@ -1460,6 +1561,17 @@
   .mt-lg { margin-top: var(--esp-lg); }
   .mb-md { margin-bottom: var(--esp-md); }
   .flex-row { display: flex; gap: var(--esp-sm); flex-wrap: wrap; align-items: center; }
+
+  body.texto-grande { font-size: 18px; }
+  body.texto-grande p,
+  body.texto-grande li,
+  body.texto-grande .small,
+  body.texto-grande .lead,
+  body.texto-grande button,
+  body.texto-grande input,
+  body.texto-grande select {
+    font-size: 1.03em;
+  }
 </style>
 </head>
 <body>
@@ -1505,6 +1617,16 @@
   <div class="banner-etapa" role="status" aria-label="Etapa actual del proceso SAE">
     📅 Estamos en: <strong>Período de postulación</strong> · cierra el <strong>30 de agosto de 2026</strong>
   </div>
+  <div class="barra-contexto" role="status" aria-live="polite" aria-label="Ubicación actual en el sitio">
+    <div class="barra-contexto__inner">
+      <p class="barra-contexto__ruta">Estás en: <span id="seccion-actual" class="barra-contexto__actual">Inicio</span></p>
+      <div class="texto-control" aria-label="Controles de legibilidad">
+        <span>Tamaño de texto</span>
+        <button type="button" id="btn-texto-normal" class="activo" aria-pressed="true">Normal</button>
+        <button type="button" id="btn-texto-grande" aria-pressed="false">Grande</button>
+      </div>
+    </div>
+  </div>
 </header>
 
 <main id="contenido-principal">
@@ -1521,7 +1643,8 @@
           <p class="buscador__titulo">¿Buscas un colegio?</p>
           <div class="buscador__fila">
             <label class="sr-only" for="busc-texto">Nombre del colegio</label>
-            <input type="text" id="busc-texto" placeholder="Nombre del colegio" autocomplete="off">
+            <input type="text" id="busc-texto" placeholder="Nombre del colegio o comuna" autocomplete="off" list="sugerencias-colegios">
+            <datalist id="sugerencias-colegios"></datalist>
             <label class="sr-only" for="busc-comuna">Comuna</label>
             <select id="busc-comuna">
               <option value="">Todas las comunas</option>
@@ -1564,6 +1687,28 @@
           <span class="acceso-card__titulo">Revisar mi postulación</span>
           <span class="acceso-card__desc">Mira el estado y descarga tu comprobante.</span>
         </button>
+      </div>
+
+      <div class="ayuda-ciudadania" aria-labelledby="h-ayuda-ciudadania">
+        <h3 id="h-ayuda-ciudadania">¿Necesitas ayuda ahora?</h3>
+        <p class="small">Canales visibles y directos para resolver dudas, evitar errores y acompañarte durante todo el proceso.</p>
+        <div class="ayuda-grid">
+          <article class="ayuda-item">
+            <p><strong>💬 Chat de ayuda</strong></p>
+            <p class="small">Lunes a viernes, 09:00 a 18:00. Respuesta en menos de 5 minutos.</p>
+            <button class="btn btn--secundario btn--full mt-md" type="button">Abrir chat</button>
+          </article>
+          <article class="ayuda-item">
+            <p><strong>📞 Call center SAE</strong></p>
+            <p class="small">600 600 2626 · opción 2. También puedes pedir devolución de llamada.</p>
+            <button class="btn btn--secundario btn--full mt-md" type="button">Solicitar llamada</button>
+          </article>
+          <article class="ayuda-item">
+            <p><strong>🏢 Oficina OIRS</strong></p>
+            <p class="small">Ingresa un reclamo, sugerencia o consulta formal y recibe número de seguimiento.</p>
+            <button class="btn btn--secundario btn--full mt-md" type="button">Ir a OIRS</button>
+          </article>
+        </div>
       </div>
     </div>
   </section>
@@ -2027,6 +2172,27 @@
         <summary>Mejoras sobre la V1</summary>
         <p>V2 reemplaza simulador lineal por lógica Gale-Shapley simplificada (5 niveles de prioridad × 3 niveles de demanda), agrega comparador, calendario interactivo, testimonios, modo alto contraste, validación accesible, persistencia con sessionStorage, gráfico radar y progress ring SVG. Los textos se centralizan en un objeto TEXTOS para futuras traducciones.</p>
       </details>
+
+      <details open>
+        <summary>Matriz de cumplimiento del punto 13 (incisos a–t)</summary>
+        <div class="cumplimiento-p13" role="region" aria-label="Matriz de cumplimiento del punto 13">
+          <table>
+            <thead>
+              <tr><th>Inciso</th><th>Cómo se cumple en el prototipo</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>a–b</td><td>Lenguaje claro, CTA principal "Postula" siempre visible en menú y botón flotante móvil.</td></tr>
+              <tr><td>c–d</td><td>Skip link, foco por teclado, contraste alto, indicador de sección actual y estructura por tareas.</td></tr>
+              <tr><td>e–f</td><td>Buscador prominente con filtros y sugerencias predictivas; diseño mobile-first con breakpoints.</td></tr>
+              <tr><td>g–h</td><td>Identidad institucional consistente y microcopy de seguridad para ingreso con ClaveÚnica.</td></tr>
+              <tr><td>i–j</td><td>Interfaz liviana y canales de atención visibles: chat, call center y OIRS.</td></tr>
+              <tr><td>k–m</td><td>Contenido visual explicativo, enfoque de trato neutral y explicación de reglas sin sesgos.</td></tr>
+              <tr><td>n–p</td><td>Control de texto grande, apoyo NEE en ficha y notas explícitas de transparencia/apertura.</td></tr>
+              <tr><td>q–t</td><td>Validaciones con mensajes claros, feedback inmediato, estado de navegación y foco en carga rápida.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </div>
   </section>
@@ -2038,6 +2204,10 @@
   <p class="mt-md">Datos ficticios con fines pedagógicos. Información real en <a href="https://www.sistemadeadmisionescolar.cl" target="_blank" rel="noopener">sistemadeadmisionescolar.cl</a></p>
 </footer>
 
+<button class="btn btn--clave cta-postular-flotante" type="button" onclick="navegar('postulacion')" aria-label="Ir a postular ahora">
+  📝 Postular ahora
+</button>
+
 <script>
 /* ============================================================
    ESTADO GLOBAL — único punto de verdad de la aplicación
@@ -2046,6 +2216,7 @@
 const ESTADO = {
   pagina: 'inicio',
   altoContraste: false,
+  textoGrande: false,
   perfilUsuario: { hermano: false, prioritario: false, funcionario: false, exalumno: false },
   nombrePostulante: '',
   nivelPostulacion: '',
@@ -2055,6 +2226,18 @@ const ESTADO = {
   comparadorSeleccionados: [],   // ids para comparar
   primeraVez: true,
   comuna: '',
+};
+
+const NOMBRES_SECCION = {
+  inicio: 'Inicio',
+  perfil: 'Mis datos',
+  algoritmo: 'Como funciona el sistema',
+  calendario: 'El proceso',
+  colegio: 'Ver colegio',
+  comparador: 'Comparar colegios',
+  postulacion: 'Postular',
+  seguimiento: 'Mi postulacion',
+  notas: 'Notas de diseno'
 };
 
 /* ============================================================
@@ -2309,6 +2492,7 @@ function guardarEstado() {
   try {
     sessionStorage.setItem('sae_v2_estado', JSON.stringify({
       altoContraste: ESTADO.altoContraste,
+      textoGrande: ESTADO.textoGrande,
       perfilUsuario: ESTADO.perfilUsuario,
       colegiosAgregados: ESTADO.colegiosAgregados,
       primeraVez: ESTADO.primeraVez,
@@ -2316,6 +2500,53 @@ function guardarEstado() {
     }));
   } catch(e) { /* sessionStorage puede estar deshabilitado */ }
 }
+
+function actualizarSeccionActual(pagina) {
+  const el = $('#seccion-actual');
+  if (!el) return;
+  el.textContent = NOMBRES_SECCION[pagina] || 'Inicio';
+}
+
+function aplicarModoTexto() {
+  document.body.classList.toggle('texto-grande', ESTADO.textoGrande);
+  const normal = $('#btn-texto-normal');
+  const grande = $('#btn-texto-grande');
+  if (normal && grande) {
+    normal.classList.toggle('activo', !ESTADO.textoGrande);
+    grande.classList.toggle('activo', ESTADO.textoGrande);
+    normal.setAttribute('aria-pressed', String(!ESTADO.textoGrande));
+    grande.setAttribute('aria-pressed', String(ESTADO.textoGrande));
+  }
+}
+
+function activarTextoGrande() {
+  ESTADO.textoGrande = true;
+  aplicarModoTexto();
+  guardarEstado();
+  anunciar('Texto grande activado.');
+}
+
+function activarTextoNormal() {
+  ESTADO.textoGrande = false;
+  aplicarModoTexto();
+  guardarEstado();
+  anunciar('Texto normal activado.');
+}
+
+function llenarSugerenciasBuscador() {
+  const dl = $('#sugerencias-colegios');
+  if (!dl) return;
+  const sugerencias = new Set();
+  Object.values(COLEGIOS).forEach(c => {
+    sugerencias.add(c.nombre);
+    sugerencias.add(c.comuna);
+  });
+  dl.innerHTML = Array.from(sugerencias)
+    .sort((a, b) => a.localeCompare(b, 'es'))
+    .map(item => `<option value="${item}"></option>`)
+    .join('');
+}
+
 function cargarEstado() {
   try {
     const raw = sessionStorage.getItem('sae_v2_estado');
@@ -2349,6 +2580,7 @@ function navegar(pagina) {
   $$('.navbar__nav button[data-page]').forEach(b => {
     b.classList.toggle('active', b.dataset.page === pagina);
   });
+  actualizarSeccionActual(pagina);
   anunciar('Sección ' + pagina + ' cargada.');
   // Renders dinámicos por sección
   if (pagina === 'seguimiento')  renderSeguimientoDinamico();
@@ -3647,6 +3879,8 @@ function vincularPerfilUsuario() {
 ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   cargarEstado();
+  actualizarSeccionActual(ESTADO.pagina || 'inicio');
+  aplicarModoTexto();
 
   // Modo alto contraste (si estaba activo)
   if (ESTADO.altoContraste) {
@@ -3682,8 +3916,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Toggle contraste
   $('#toggle-contraste').onclick = toggleContraste;
+  $('#btn-texto-grande').onclick = activarTextoGrande;
+  $('#btn-texto-normal').onclick = activarTextoNormal;
 
   // Buscador
+  llenarSugerenciasBuscador();
   $('#btn-buscar').onclick = buscarColegios;
   ['busc-texto','busc-comuna','busc-nivel'].forEach(id => {
     const el = $('#' + id);

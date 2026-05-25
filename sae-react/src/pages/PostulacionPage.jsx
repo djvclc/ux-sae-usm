@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { colegios } from '../data/colegios'
 import { calcularResultado, prioridadLabels } from '../utils/asignacion'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const STORAGE_KEY = 'sae_react_postulacion'
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
@@ -97,116 +98,122 @@ export default function PostulacionPage() {
       </div>
 
       {paso === 1 ? (
-        <section className="card card--module">
-          <h2>Paso 1 de 3 - Identificate</h2>
-          <p>Ingresa con ClaveUnica como opcion principal.</p>
-          <div className="hero__actions">
-            <button type="button" className="btn btn--primary" onClick={() => setLoginOk(true)}>
-              Ingresar con ClaveUnica
-            </button>
-            <button type="button" className="btn btn--secondary btn--dark">
-              Crear cuenta SAE
-            </button>
-          </div>
-          {loginOk ? <p className="small-note">Ingreso exitoso. Ya puedes avanzar.</p> : null}
-        </section>
+        <Card className="card--module">
+          <CardHeader><CardTitle>Paso 1 de 3 — Identificate</CardTitle></CardHeader>
+          <CardContent>
+            <p>Ingresa con ClaveUnica como opcion principal.</p>
+            <div className="hero__actions">
+              <button type="button" className="btn btn--primary" onClick={() => setLoginOk(true)}>
+                Ingresar con ClaveUnica
+              </button>
+              <button type="button" className="btn btn--secondary btn--dark">
+                Crear cuenta SAE
+              </button>
+            </div>
+            {loginOk ? <p className="small-note">Ingreso exitoso. Ya puedes avanzar.</p> : null}
+          </CardContent>
+        </Card>
       ) : null}
 
       {paso === 2 ? (
-        <section className="card card--module">
-          <h2>Paso 2 de 3 - Agrega y ordena colegios</h2>
-          <p>Maximo 8 colegios. El orden define tus preferencias.</p>
+        <Card className="card--module">
+          <CardHeader><CardTitle>Paso 2 de 3 — Agrega y ordena colegios</CardTitle></CardHeader>
+          <CardContent>
+            <p>Maximo 8 colegios. El orden define tus preferencias.</p>
 
-          <div className="chip-row">
-            {[
-              ['hermano', 'Hermano/a'],
-              ['prioritario', 'Prioritario/a'],
-              ['funcionario', 'Hijo/a funcionario/a'],
-              ['exalumno', 'Exalumno/a'],
-            ].map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                className={`chip-btn ${perfil[key] ? 'chip-btn--on' : ''}`}
-                onClick={() => togglePerfil(key)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <div className="add-row">
-            <select value={toAdd} onChange={(e) => setToAdd(e.target.value)}>
-              <option value="">Selecciona un colegio</option>
-              {disponibles.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nombre} - {c.comuna}
-                </option>
+            <div className="chip-row">
+              {[
+                ['hermano', 'Hermano/a'],
+                ['prioritario', 'Prioritario/a'],
+                ['funcionario', 'Hijo/a funcionario/a'],
+                ['exalumno', 'Exalumno/a'],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={`chip-btn ${perfil[key] ? 'chip-btn--on' : ''}`}
+                  onClick={() => togglePerfil(key)}
+                >
+                  {label}
+                </button>
               ))}
-            </select>
-            <button type="button" className="btn btn--primary" onClick={addColegio}>
-              Agregar
-            </button>
-          </div>
+            </div>
 
-          <ul className="sim-list post-list">
-            {lista.map((id, idx) => {
-              const col = colegios.find((c) => c.id === id)
-              if (!col) return null
-              return (
-                <li key={id}>
-                  <span>
-                    {idx + 1}. {col.nombre}
-                  </span>
-                  <span className="inline-actions">
-                    <button type="button" onClick={() => mover(idx, -1)}>
-                      Subir
-                    </button>
-                    <button type="button" onClick={() => mover(idx, 1)}>
-                      Bajar
-                    </button>
-                    <button type="button" onClick={() => quitar(id)}>
-                      Quitar
-                    </button>
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        </section>
+            <div className="add-row">
+              <select value={toAdd} onChange={(e) => setToAdd(e.target.value)}>
+                <option value="">Selecciona un colegio</option>
+                {disponibles.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nombre} - {c.comuna}
+                  </option>
+                ))}
+              </select>
+              <button type="button" className="btn btn--primary" onClick={addColegio}>
+                Agregar
+              </button>
+            </div>
+
+            <ul className="sim-list post-list">
+              {lista.map((id, idx) => {
+                const col = colegios.find((c) => c.id === id)
+                if (!col) return null
+                return (
+                  <li key={id}>
+                    <span>
+                      {idx + 1}. {col.nombre}
+                    </span>
+                    <span className="inline-actions">
+                      <button type="button" onClick={() => mover(idx, -1)}>
+                        Subir
+                      </button>
+                      <button type="button" onClick={() => mover(idx, 1)}>
+                        Bajar
+                      </button>
+                      <button type="button" onClick={() => quitar(id)}>
+                        Quitar
+                      </button>
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          </CardContent>
+        </Card>
       ) : null}
 
       {paso === 3 ? (
-        <section className="card card--module">
-          <h2>Paso 3 de 3 - Revisa y confirma</h2>
-          <p>
-            Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong>
-          </p>
-          <ul className="sim-list post-list">
-            {resultado.detalles.map((d) => (
-              <li key={d.id}>
-                <span>
-                  {d.idx}. {d.nombre}
-                </span>
-                <span>{d.prob}%</span>
-              </li>
-            ))}
-          </ul>
+        <Card className="card--module">
+          <CardHeader><CardTitle>Paso 3 de 3 — Revisa y confirma</CardTitle></CardHeader>
+          <CardContent>
+            <p>
+              Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong>
+            </p>
+            <ul className="sim-list post-list">
+              {resultado.detalles.map((d) => (
+                <li key={d.id}>
+                  <span>
+                    {d.idx}. {d.nombre}
+                  </span>
+                  <span>{d.prob}%</span>
+                </li>
+              ))}
+            </ul>
 
-          {!confirmado ? (
-            <button type="button" className="btn btn--primary" onClick={confirmar}>
-              Confirmar y enviar postulacion
-            </button>
-          ) : (
-            <div className="sim-result">
-              <h3>Postulacion enviada</h3>
-              <p>
-                Comprobante: <strong>{confirmado.comprobante}</strong>
-              </p>
-              <p>Resultados estimados disponibles en la seccion Mi postulacion.</p>
-            </div>
-          )}
-        </section>
+            {!confirmado ? (
+              <button type="button" className="btn btn--primary" onClick={confirmar}>
+                Confirmar y enviar postulacion
+              </button>
+            ) : (
+              <div className="sim-result">
+                <h3>Postulacion enviada</h3>
+                <p>
+                  Comprobante: <strong>{confirmado.comprobante}</strong>
+                </p>
+                <p>Resultados estimados disponibles en la seccion Mi postulacion.</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       ) : null}
 
       <div className="hero__actions">

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios } from '../data/colegios'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 
@@ -207,35 +208,37 @@ export default function InicioPage() {
       </section>
 
       <section className="support-grid" aria-label="Atencion a la ciudadania">
-        <article className="card">
-          <h2>Chat de ayuda</h2>
-          <p>Lunes a viernes, 09:00 a 18:00. Respuesta rapida para dudas de postulacion.</p>
-        </article>
-        <article className="card">
-          <h2>Call center SAE</h2>
-          <p>600 600 2626. Tambien puedes solicitar devolucion de llamada.</p>
-        </article>
-        <article className="card">
-          <h2>Oficina OIRS</h2>
-          <p>Ingreso de reclamos, sugerencias o consultas con numero de seguimiento.</p>
-        </article>
+        <Card>
+          <CardHeader><CardTitle>Chat de ayuda</CardTitle></CardHeader>
+          <CardContent><p>Lunes a viernes, 09:00 a 18:00. Respuesta rapida para dudas de postulacion.</p></CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>Call center SAE</CardTitle></CardHeader>
+          <CardContent><p>600 600 2626. Tambien puedes solicitar devolucion de llamada.</p></CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>Oficina OIRS</CardTitle></CardHeader>
+          <CardContent><p>Ingreso de reclamos, sugerencias o consultas con numero de seguimiento.</p></CardContent>
+        </Card>
       </section>
 
-      <section className="notes card">
-        <h2>Notas de diseno</h2>
-        <p>
-          Esta home replica la jerarquia del HTML original: contexto del proceso,
-          buscador prominente, accesos rapidos, ayuda ciudadana y foco en movil.
-        </p>
-        <div className="hero__actions">
-          <Link className="btn btn--primary" to="/cumplimiento">
-            Ver cumplimiento punto 13
-          </Link>
-          <Link className="btn btn--secondary btn--dark" to="/roadmap">
-            Ver roadmap de migracion
-          </Link>
-        </div>
-      </section>
+      <Card className="notes">
+        <CardHeader><CardTitle>Notas de diseno</CardTitle></CardHeader>
+        <CardContent>
+          <p>
+            Esta home replica la jerarquia del HTML original: contexto del proceso,
+            buscador prominente, accesos rapidos, ayuda ciudadana y foco en movil.
+          </p>
+          <div className="hero__actions">
+            <Link className="btn btn--primary" to="/cumplimiento">
+              Ver cumplimiento punto 13
+            </Link>
+            <Link className="btn btn--secondary btn--dark" to="/roadmap">
+              Ver roadmap de migracion
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       <Link className="floating-cta" to="/postulacion">
         Postular ahora

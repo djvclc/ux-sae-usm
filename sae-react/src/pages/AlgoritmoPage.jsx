@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { colegios } from '../data/colegios'
 import { calcularResultado, prioridadLabels } from '../utils/asignacion'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function AlgoritmoPage() {
   const [perfil, setPerfil] = useState({
@@ -37,130 +38,135 @@ export default function AlgoritmoPage() {
       </p>
 
       <section className="pasos-grid">
-        <article className="paso-card">
+        <Card className="paso-card">
           <div className="paso-card__num">1</div>
           <div className="paso-card__icono" aria-hidden="true">📋</div>
           <h2>Tu eliges</h2>
           <p>Tu eliges hasta 8 colegios en orden de preferencia.</p>
-        </article>
-        <article className="paso-card">
+        </Card>
+        <Card className="paso-card">
           <div className="paso-card__num">2</div>
           <div className="paso-card__icono" aria-hidden="true">⚖️</div>
           <h2>Cada colegio prioriza</h2>
           <p>Cada colegio aplica prioridades definidas por ley.</p>
-        </article>
-        <article className="paso-card">
+        </Card>
+        <Card className="paso-card">
           <div className="paso-card__num">3</div>
           <div className="paso-card__icono" aria-hidden="true">⚙️</div>
           <h2>El sistema asigna</h2>
           <p>El sistema cruza preferencias, prioridades y vacantes.</p>
-        </article>
-        <article className="paso-card">
+        </Card>
+        <Card className="paso-card">
           <div className="paso-card__num">4</div>
           <div className="paso-card__icono" aria-hidden="true">📬</div>
           <h2>Te avisamos</h2>
           <p>Se informa resultado y alternativas si no quedas en la primera.</p>
-        </article>
+        </Card>
       </section>
 
-      <section className="card sim-panel">
-        <h2>Simula tu caso</h2>
-        <p className="page__lead">
-          Marca tus condiciones y elige hasta 3 colegios para estimar resultado.
-        </p>
-
-        <div className="chip-row">
-          {[
-            ['hermano', 'Hermano/a matriculado/a'],
-            ['prioritario', 'Estudiante prioritario'],
-            ['funcionario', 'Hijo/a de funcionario/a'],
-            ['exalumno', 'Exalumno/a'],
-          ].map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              className={`chip-btn ${perfil[key] ? 'chip-btn--on' : ''}`}
-              onClick={() => toggleCondicion(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="sim-school-grid">
-          {colegios.map((c) => {
-            const activo = seleccion.includes(c.id)
-            return (
+      <Card className="sim-panel">
+        <CardHeader>
+          <CardTitle>Simula tu caso</CardTitle>
+          <p className="page__lead">
+            Marca tus condiciones y elige hasta 3 colegios para estimar resultado.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="chip-row">
+            {[
+              ['hermano', 'Hermano/a matriculado/a'],
+              ['prioritario', 'Estudiante prioritario'],
+              ['funcionario', 'Hijo/a de funcionario/a'],
+              ['exalumno', 'Exalumno/a'],
+            ].map(([key, label]) => (
               <button
-                key={c.id}
+                key={key}
                 type="button"
-                className={`sim-school ${activo ? 'sim-school--on' : ''}`}
-                onClick={() => toggleColegio(c.id)}
+                className={`chip-btn ${perfil[key] ? 'chip-btn--on' : ''}`}
+                onClick={() => toggleCondicion(key)}
               >
-                <strong>{c.nombre}</strong>
-                <span>
-                  {c.comuna} - demanda {c.demanda}
-                </span>
+                {label}
               </button>
-            )
-          })}
-        </div>
-
-        {!seleccion.length ? (
-          <p className="small-note">Selecciona al menos un colegio para simular.</p>
-        ) : null}
-
-        {resultado?.asignado ? (
-          <div className="sim-result">
-            <h3>Resultado estimado</h3>
-            <p>
-              Tu mejor opcion probable es <strong>{resultado.asignado.nombre}</strong>{' '}
-              (preferencia N.{resultado.asignado.idx}) con {resultado.asignado.prob}%.
-            </p>
-            <p>
-              Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong>.
-            </p>
-
-            <ul className="sim-list">
-              {resultado.detalles.map((d) => (
-                <li key={d.id}>
-                  <span>
-                    {d.idx}. {d.nombre}
-                  </span>
-                  <span>
-                    {d.estado === 'asignado'
-                      ? 'Asignado'
-                      : d.estado === 'no_evaluado'
-                        ? 'No evaluado'
-                        : d.estado === 'sin_cupos'
-                          ? 'Sin cupos'
-                          : 'Prioridad insuficiente'}{' '}
-                    - {d.prob}%
-                  </span>
-                </li>
-              ))}
-            </ul>
+            ))}
           </div>
-        ) : null}
-      </section>
 
-      <section className="card">
-        <h2>Mitos frecuentes</h2>
-        <ul className="sim-list">
-          <li>
-            <span>Es una tombola?</span>
-            <span>No, hay prioridades por ley y luego sorteo transparente.</span>
-          </li>
-          <li>
-            <span>Importa el orden?</span>
-            <span>Si. El sistema evalua primero tu preferencia N.1.</span>
-          </li>
-          <li>
-            <span>Sirve postular a mas colegios?</span>
-            <span>Si, mejora tus opciones de asignacion.</span>
-          </li>
-        </ul>
-      </section>
+          <div className="sim-school-grid">
+            {colegios.map((c) => {
+              const activo = seleccion.includes(c.id)
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  className={`sim-school ${activo ? 'sim-school--on' : ''}`}
+                  onClick={() => toggleColegio(c.id)}
+                >
+                  <strong>{c.nombre}</strong>
+                  <span>
+                    {c.comuna} - demanda {c.demanda}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+
+          {!seleccion.length ? (
+            <p className="small-note">Selecciona al menos un colegio para simular.</p>
+          ) : null}
+
+          {resultado?.asignado ? (
+            <div className="sim-result">
+              <h3>Resultado estimado</h3>
+              <p>
+                Tu mejor opcion probable es <strong>{resultado.asignado.nombre}</strong>{' '}
+                (preferencia N.{resultado.asignado.idx}) con {resultado.asignado.prob}%.
+              </p>
+              <p>
+                Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong>.
+              </p>
+
+              <ul className="sim-list">
+                {resultado.detalles.map((d) => (
+                  <li key={d.id}>
+                    <span>
+                      {d.idx}. {d.nombre}
+                    </span>
+                    <span>
+                      {d.estado === 'asignado'
+                        ? 'Asignado'
+                        : d.estado === 'no_evaluado'
+                          ? 'No evaluado'
+                          : d.estado === 'sin_cupos'
+                            ? 'Sin cupos'
+                            : 'Prioridad insuficiente'}{' '}
+                      - {d.prob}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Mitos frecuentes</CardTitle></CardHeader>
+        <CardContent>
+          <ul className="sim-list">
+            <li>
+              <span>Es una tombola?</span>
+              <span>No, hay prioridades por ley y luego sorteo transparente.</span>
+            </li>
+            <li>
+              <span>Importa el orden?</span>
+              <span>Si. El sistema evalua primero tu preferencia N.1.</span>
+            </li>
+            <li>
+              <span>Sirve postular a mas colegios?</span>
+              <span>Si, mejora tus opciones de asignacion.</span>
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
     </main>
   )
 }

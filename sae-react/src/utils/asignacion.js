@@ -5,7 +5,7 @@ export const prioridadLabels = {
   2: 'Estudiante prioritario (15%)',
   3: 'Hijo/a de funcionario/a',
   4: 'Exalumno/a',
-  5: 'Sorteo publico transparente',
+  5: 'Sorteo público transparente',
 }
 
 export function nivelPrioridad(perfil) {

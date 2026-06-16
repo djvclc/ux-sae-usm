@@ -1,17 +1,60 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { colegios } from '../data/colegios'
+import { colegios, totalVacantes } from '../data/colegios'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import SchoolIllustration from '../components/SchoolIllustration'
+import TextSizeBar from '../components/TextSizeBar'
+import { useTextSize } from '../context/TextSizeContext'
 
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 
+const PASOS_RAPIDOS = [
+  {
+    num: 1,
+    titulo: 'Conoce cómo funciona',
+    desc: 'Entiende el proceso de asignación en 4 pasos simples. Sin tómbolas, con reglas claras.',
+    link: '/algoritmo',
+    linkText: 'Ver cómo funciona',
+    icon: '📖',
+  },
+  {
+    num: 2,
+    titulo: 'Busca y compara colegios',
+    desc: 'Explora los establecimientos disponibles, revisa sus datos y arma tu lista de preferencias.',
+    link: '#buscador',
+    linkText: 'Buscar colegios',
+    icon: '🔎',
+    hash: true,
+  },
+  {
+    num: 3,
+    titulo: 'Postula con ClaveÚnica',
+    desc: 'Ingresa con tu ClaveÚnica, ordena tus opciones y confirma tu postulación en minutos.',
+    link: '/postulacion',
+    linkText: 'Ir a postulación',
+    icon: '✅',
+  },
+]
+
 export default function InicioPage() {
   const [showWelcome, setShowWelcome] = useState(true)
-  const [textoGrande, setTextoGrande] = useState(false)
+  const { textoGrande } = useTextSize()
   const [texto, setTexto] = useState('')
   const [comuna, setComuna] = useState('')
   const [nivel, setNivel] = useState('')
   const [listaDraft, setListaDraft] = useState([])
+  const [buscadorAbierto, setBuscadorAbierto] = useState(true)
+  const [showSugerencias, setShowSugerencias] = useState(false)
+
+  const sugerencias = useMemo(() => {
+    if (!texto || texto.length < 2) return []
+    return colegios
+      .filter((c) =>
+        c.nombre.toLowerCase().includes(texto.toLowerCase()) ||
+        c.comuna.toLowerCase().includes(texto.toLowerCase())
+      )
+      .slice(0, 5)
+  }, [texto])
 
   useEffect(() => {
     const raw = localStorage.getItem(DRAFT_LIST_KEY)
@@ -21,9 +64,7 @@ export default function InicioPage() {
       if (Array.isArray(parsed)) {
         setListaDraft(parsed.filter((id) => Number.isInteger(id)))
       }
-    } catch {
-      // Si el storage tiene datos corruptos, se ignoran y se parte limpio.
-    }
+    } catch { /* ignore */ }
   }, [])
 
   useEffect(() => {
@@ -37,7 +78,7 @@ export default function InicioPage() {
         c.nombre.toLowerCase().includes(texto.toLowerCase()) ||
         c.comuna.toLowerCase().includes(texto.toLowerCase())
       const matchComuna = !comuna || c.comuna === comuna
-      const matchNivel = !nivel || c.niveles.includes(nivel)
+      const matchNivel = !nivel || c.niveles.some((n) => n.toLowerCase().includes(nivel.toLowerCase()))
       return matchTexto && matchComuna && matchNivel
     })
   }, [texto, comuna, nivel])
@@ -51,16 +92,23 @@ export default function InicioPage() {
     })
   }
 
+  const scrollToBuscador = () => {
+    setBuscadorAbierto(true)
+    setTimeout(() => {
+      document.getElementById('buscador')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }
+
   return (
     <main className={`page page--inicio ${textoGrande ? 'page--texto-grande' : ''}`}>
-      {showWelcome ? (
+      {showWelcome && (
         <div className="welcome-banner" role="region" aria-label="Bienvenida primera vez">
           <div className="welcome-banner__inner">
             <span className="welcome-banner__msg">
-              👋 Es tu primera vez aqui? Te mostramos como funciona el SAE en 3 pasos cortos.
+              Es tu primera vez aquí? Te mostramos cómo funciona el SAE en 3 pasos cortos.
             </span>
             <div className="welcome-banner__actions">
-              <Link className="btn btn--green" to="/algoritmo">
+              <Link className="btn btn--primary btn--mini" to="/algoritmo">
                 Empezar tour
               </Link>
               <button type="button" className="welcome-banner__close" onClick={() => setShowWelcome(false)}>
@@ -69,178 +117,227 @@ export default function InicioPage() {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
 
-      <div className="stage-banner" role="status">
-        <div className="stage-banner__inner">
-          Estamos en: <strong>Periodo de postulacion</strong> - cierra el{' '}
-          <strong>30 de agosto de 2026</strong>
-        </div>
-      </div>
+      <TextSizeBar pageName="Inicio" />
 
-      <div className="context-bar" role="status" aria-live="polite">
-        <div className="context-bar__inner">
-          <p>
-            Estas en: <strong>Inicio</strong>
-          </p>
-          <div className="context-bar__text-size">
-            <span>Tamano de texto</span>
-            <button
-              type="button"
-              className={!textoGrande ? 'is-on' : ''}
-              onClick={() => setTextoGrande(false)}
-            >
-              Normal
-            </button>
-            <button
-              type="button"
-              className={textoGrande ? 'is-on' : ''}
-              onClick={() => setTextoGrande(true)}
-            >
-              Grande
-            </button>
-          </div>
-        </div>
-      </div>
-
+      {/* ── HERO: Etapa actual del proceso ── */}
       <section className="hero hero--sae">
-        <p className="hero__eyebrow">Sistema de Admision Escolar</p>
-        <h1>Tu colegio, sin tombolas y con reglas claras</h1>
-        <p>
-          El SAE asigna a tu hijo o hija segun prioridades por ley. Aqui te
-          explicamos como funciona y te ayudamos a postular paso a paso.
-        </p>
-
-        <div className="search-box" role="search" aria-label="Buscador de colegios">
-          <p className="search-box__title">Buscador de colegios</p>
-          <div className="search-grid">
-            <input
-              type="text"
-              value={texto}
-              onChange={(e) => setTexto(e.target.value)}
-              placeholder="Nombre del colegio o comuna"
-              aria-label="Nombre del colegio o comuna"
-            />
-            <select
-              value={comuna}
-              onChange={(e) => setComuna(e.target.value)}
-              aria-label="Filtrar por comuna"
-            >
-              <option value="">Todas las comunas</option>
-              {comunas.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-            <select
-              value={nivel}
-              onChange={(e) => setNivel(e.target.value)}
-              aria-label="Filtrar por nivel"
-            >
-              <option value="">Todos los niveles</option>
-              <option value="Prekinder">Prekinder</option>
-              <option value="Kinder">Kinder</option>
-              <option value="Basico">Basico</option>
-              <option value="Medio">Medio</option>
-            </select>
-            <button type="button" className="btn btn--search">
-              🔎 Buscar
-            </button>
-          </div>
-
-          <p className="result-count">
-            {resultados.length} colegio{resultados.length !== 1 ? 's' : ''} encontrado
-            {resultados.length !== 1 ? 's' : ''}
+        <div className="hero-stage">
+          <span className="hero-stage__badge">Etapa actual</span>
+          <h1>Estamos en período de postulación</h1>
+          <p className="hero-stage__date">
+            Tienes hasta el <strong>30 de agosto de 2026</strong> para postular a los colegios que prefieras.
           </p>
-          <div className="school-grid">
-            {resultados.map((c) => (
-              <article key={c.id} className="school-card">
-                <div className="school-card__hero">
-                  <span className="school-card__img" aria-hidden="true">
-                    🏫
-                  </span>
-                  <span className={`demand-chip demand-chip--${c.demanda}`}>{c.demanda} demanda</span>
-                </div>
-                <h3>{c.nombre}</h3>
-                <p>
-                  {c.direccion}, {c.comuna}
-                </p>
-                <p className="school-card__meta">
-                  {c.vacantes} vacantes - demanda {c.demanda} - {c.distanciaKm} km
-                </p>
-                <div className="school-card__tags">
-                  {c.pie ? <span>PIE</span> : <span>Sin PIE</span>}
-                  <span>{c.niveles.join(' / ')}</span>
-                </div>
-                <div className="school-card__actions">
-                  <Link className="btn btn--secondary btn--mini" to={`/colegio?id=${c.id}`}>
-                    Ver ficha
-                  </Link>
-                  <button
-                    type="button"
-                    className={`btn btn--mini ${listaDraft.includes(c.id) ? 'btn--green' : 'btn--primary'}`}
-                    onClick={() => agregarALista(c.id)}
-                    disabled={!listaDraft.includes(c.id) && listaDraft.length >= 8}
-                  >
-                    {listaDraft.includes(c.id) ? '✓ En tu lista' : '+ A mi lista'}
-                  </button>
-                </div>
-              </article>
-            ))}
+          <div className="hero__actions" style={{ justifyContent: 'center' }}>
+            <Link className="btn btn--primary btn--grande" to="/postulacion">
+              Postular ahora
+            </Link>
+            <Link className="btn btn--secondary" to="/calendario">
+              Ver calendario completo
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="quick-links" aria-label="Accesos rapidos">
+      {/* ── MINI-GUÍA: 3 pasos rápidos ── */}
+      <section className="pasos-inicio" aria-label="Cómo funciona en 3 pasos">
+        <h2 className="pasos-inicio__titulo">¿Cómo postular? 3 pasos simples</h2>
+        <div className="pasos-inicio__grid">
+          {PASOS_RAPIDOS.map((paso) => (
+            <div key={paso.num} className="paso-inicio">
+              <span className="paso-inicio__icon">{paso.icon}</span>
+              <span className="paso-inicio__num">Paso {paso.num}</span>
+              <h3 className="paso-inicio__titulo">{paso.titulo}</h3>
+              <p className="paso-inicio__desc">{paso.desc}</p>
+              {paso.hash ? (
+                <button
+                  type="button"
+                  className="btn btn--secondary btn--mini"
+                  onClick={scrollToBuscador}
+                >
+                  {paso.linkText}
+                </button>
+              ) : (
+                <Link className="btn btn--secondary btn--mini" to={paso.link}>
+                  {paso.linkText}
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── ACCESOS RÁPIDOS ── */}
+      <section className="quick-links" aria-label="Accesos rápidos">
         <Link className="quick-card" to="/algoritmo">
-          <strong>Como te asignan un colegio</strong>
-          <p>Entiende el algoritmo en 4 pasos y simula tu caso.</p>
-        </Link>
-        <Link className="quick-card" to="/postulacion">
-          <strong>Postular ahora</strong>
-          <p>Ingresa con ClaveUnica y completa el flujo en 3 pasos.</p>
+          <strong>¿Cómo te asignan un colegio?</strong>
+          <p>Entiende el proceso en 4 pasos y simula tu caso.</p>
         </Link>
         <Link className="quick-card" to="/seguimiento">
-          <strong>Revisar mi postulacion</strong>
-          <p>Consulta estado, resultado y comprobante.</p>
+          <strong>Revisar mi postulación</strong>
+          <p>Consulta el estado, el resultado y descarga tu comprobante.</p>
+        </Link>
+        <Link className="quick-card" to="/perfil">
+          <strong>Mis datos y prioridades</strong>
+          <p>Revisa tus criterios de prioridad antes de postular.</p>
         </Link>
       </section>
 
-      <section className="support-grid" aria-label="Atencion a la ciudadania">
+      {/* ── BUSCADOR DE COLEGIOS (colapsable) ── */}
+      <section id="buscador" className="buscador-section">
+        <div className="buscador-header">
+          <h2>Busca colegios</h2>
+        </div>
+
+            <div className="search-box" role="search" aria-label="Buscador de colegios">
+              <div className="search-grid">
+                <div className="autocomplete-wrap">
+                  <input
+                    type="text"
+                    value={texto}
+                    onChange={(e) => { setTexto(e.target.value); setShowSugerencias(true) }}
+                    onFocus={() => setShowSugerencias(true)}
+                    onBlur={() => setTimeout(() => setShowSugerencias(false), 200)}
+                    placeholder="Nombre del colegio o comuna"
+                    aria-label="Nombre del colegio o comuna"
+                    aria-autocomplete="list"
+                    aria-expanded={showSugerencias && sugerencias.length > 0}
+                    autoComplete="off"
+                  />
+                  {showSugerencias && sugerencias.length > 0 && (
+                    <ul className="autocomplete-list" role="listbox" aria-label="Sugerencias de colegios">
+                      {sugerencias.map((c) => (
+                        <li
+                          key={c.id}
+                          role="option"
+                          className="autocomplete-item"
+                          onMouseDown={() => { setTexto(c.nombre); setShowSugerencias(false) }}
+                        >
+                          <strong>{c.nombre}</strong>
+                          <span>{c.comuna} · {c.demanda} demanda</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <select
+                  value={comuna}
+                  onChange={(e) => setComuna(e.target.value)}
+                  aria-label="Filtrar por comuna"
+                >
+                  <option value="">Todas las comunas</option>
+                  {comunas.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <select
+                  value={nivel}
+                  onChange={(e) => setNivel(e.target.value)}
+                  aria-label="Filtrar por nivel"
+                >
+                  <option value="">Todos los niveles</option>
+                  <option value="Prekínder">Prekínder</option>
+                  <option value="Kínder">Kínder</option>
+                  <option value="Básico">Básico</option>
+                  <option value="Medio">Medio</option>
+                </select>
+              </div>
+
+              <p className="result-count">
+                {resultados.length} colegio{resultados.length !== 1 ? 's' : ''} encontrado
+                {resultados.length !== 1 ? 's' : ''}
+                {listaDraft.length > 0 && (
+                  <span> · <strong>{listaDraft.length} en tu lista</strong></span>
+                )}
+              </p>
+            </div>
+
+            <div className="school-grid">
+              {resultados.map((c) => {
+                const vac = totalVacantes(c)
+                const dist = c.distanciaBase
+                const distLabel = dist < 2 ? 'Cerca' : dist < 4 ? 'Media distancia' : 'Lejos'
+                return (
+                  <article key={c.id} className="school-card">
+                    <div className="school-card__hero">
+                      <SchoolIllustration colegioId={c.id} demanda={c.demanda} />
+                      <span
+                        className={`demand-chip demand-chip--${c.demanda}`}
+                        aria-label={`Demanda ${c.demanda}`}
+                      >
+                        {c.demanda} demanda
+                      </span>
+                    </div>
+                    <div className="school-card__body">
+                      <h3>{c.nombre}</h3>
+                      <p className="school-card__addr">{c.direccion}, {c.comuna}</p>
+                      <p className="school-card__meta">
+                        {dist} km · {distLabel} — {vac} vacantes
+                      </p>
+                      <div className="school-card__tags">
+                        {c.nee.programa
+                          ? <span><abbr title="Programa de Integración Escolar">PIE</abbr> incluido</span>
+                          : <span>Sin programa PIE</span>}
+                        <span>{c.jornada === 'Completa' ? 'Jornada completa' : 'Jornada parcial'}</span>
+                      </div>
+                      <div className="school-card__actions">
+                        <Link
+                          className="btn btn--secondary btn--mini"
+                          to={`/colegio?id=${c.id}`}
+                          aria-label={`Ver ficha completa de ${c.nombre}`}
+                        >
+                          Ver ficha
+                        </Link>
+                        <button
+                          type="button"
+                          className={`btn btn--mini ${listaDraft.includes(c.id) ? 'btn--green' : 'btn--primary'}`}
+                          onClick={() => agregarALista(c.id)}
+                          disabled={!listaDraft.includes(c.id) && listaDraft.length >= 8}
+                        >
+                          {listaDraft.includes(c.id) ? '✓ En tu lista' : '+ A mi lista'}
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+      </section>
+
+      {/* ── SOPORTE ── */}
+      <section className="support-grid" aria-label="Atención a la ciudadanía">
         <Card>
           <CardHeader><CardTitle>Chat de ayuda</CardTitle></CardHeader>
-          <CardContent><p>Lunes a viernes, 09:00 a 18:00. Respuesta rapida para dudas de postulacion.</p></CardContent>
+          <CardContent>
+            <p>Lunes a viernes, 09:00 a 18:00. Respuesta rápida para dudas de postulación.</p>
+          </CardContent>
         </Card>
         <Card>
           <CardHeader><CardTitle>Call center SAE</CardTitle></CardHeader>
-          <CardContent><p>600 600 2626. Tambien puedes solicitar devolucion de llamada.</p></CardContent>
+          <CardContent>
+            <p>
+              Llama directamente:{' '}
+              <a href="tel:6006002626" className="tel-link" aria-label="Llamar al call center SAE">
+                600 600 2626
+              </a>
+            </p>
+          </CardContent>
         </Card>
         <Card>
           <CardHeader><CardTitle>Oficina OIRS</CardTitle></CardHeader>
-          <CardContent><p>Ingreso de reclamos, sugerencias o consultas con numero de seguimiento.</p></CardContent>
+          <CardContent>
+            <p>
+              Ingresa reclamos, sugerencias o consultas.{' '}
+              <a href="https://www.mineduc.cl/oirs/" className="tel-link" target="_blank" rel="noopener noreferrer">
+                Ir a la OIRS
+              </a>
+            </p>
+          </CardContent>
         </Card>
       </section>
 
-      <Card className="notes">
-        <CardHeader><CardTitle>Notas de diseno</CardTitle></CardHeader>
-        <CardContent>
-          <p>
-            Esta home replica la jerarquia del HTML original: contexto del proceso,
-            buscador prominente, accesos rapidos, ayuda ciudadana y foco en movil.
-          </p>
-          <div className="hero__actions">
-            <Link className="btn btn--primary" to="/cumplimiento">
-              Ver cumplimiento punto 13
-            </Link>
-            <Link className="btn btn--secondary btn--dark" to="/roadmap">
-              Ver roadmap de migracion
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Link className="floating-cta" to="/postulacion">
+      <Link className="floating-cta" to="/postulacion" aria-label="Ir a postulación">
         Postular ahora
       </Link>
     </main>

@@ -58,7 +58,7 @@ const SeguimientoPage  = lazy(() => import('./pages/SeguimientoPage'))
 const CumplimientoPage = lazy(() => import('./pages/CumplimientoPage'))
 const RoadmapPage      = lazy(() => import('./pages/RoadmapPage'))
 const ColegioPage      = lazy(() => import('./pages/ColegioPage'))
-const PlaceholderPage  = lazy(() => import('./pages/PlaceholderPage'))
+const ComparadorPage   = lazy(() => import('./pages/ComparadorPage'))
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'))
 
 /* SEO por ruta — título + meta description + Open Graph (S14-t, S14-o, S5-2)
@@ -98,6 +98,11 @@ const seoData = {
     title: 'Mi postulación — SAE',
     desc: 'Consulta el estado de tu postulación, revisa el resultado de asignación y descarga tu comprobante.',
     og: 'Mi postulación — SAE',
+  },
+  '/comparador': {
+    title: 'Comparar colegios — SAE',
+    desc: 'Compara hasta 3 colegios lado a lado: SIMCE, vacantes, docentes, programa NEE y nivel de demanda.',
+    og: 'Compara colegios del SAE — Sistema de Admisión Escolar',
   },
 }
 
@@ -155,15 +160,7 @@ function App() {
                 <Route path="/algoritmo"    element={<AlgoritmoPage />} />
                 <Route path="/calendario"   element={<CalendarioPage />} />
                 <Route path="/colegio"      element={<ColegioPage />} />
-                <Route
-                  path="/comparador"
-                  element={
-                    <PlaceholderPage
-                      title="Comparar colegios"
-                      description="Comparador visual entre colegios para decidir mejor — proximamente."
-                    />
-                  }
-                />
+                <Route path="/comparador"   element={<ComparadorPage />} />
                 <Route path="/postulacion"  element={<PostulacionPage />} />
                 <Route path="/seguimiento"  element={<SeguimientoPage />} />
                 <Route path="/cumplimiento" element={<CumplimientoPage />} />

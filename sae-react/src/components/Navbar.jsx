@@ -8,6 +8,7 @@ const links = [
   { to: '/algoritmo',   label: '¿Cómo funciona?' },
   { to: '/calendario',  label: 'Calendario' },
   { to: '/#buscador',   label: '🔎 Colegios',     hash: true },
+  { to: '/comparador',  label: 'Comparar' },
   { to: '/postulacion', label: 'Postular',         cta: true },
   { to: '/perfil',      label: 'Mis datos' },
   { to: '/seguimiento', label: 'Mi postulación' },

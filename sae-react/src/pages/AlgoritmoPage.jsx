@@ -1,9 +1,85 @@
 import { useMemo, useState } from 'react'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+import { Bar } from 'react-chartjs-2'
 import { colegios } from '../data/colegios'
 import { calcularResultado, prioridadLabels } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
+
+/* Datos ficticios de resultados de años anteriores (punto 15.2 del plan) */
+const historialAnios = ['2022', '2023', '2024']
+
+const historialAsignacion = {
+  labels: historialAnios,
+  datasets: [
+    {
+      label: '1.ª preferencia',
+      data: [72, 74, 76],
+      backgroundColor: '#0057B7',
+      borderRadius: 6,
+    },
+    {
+      label: '2.ª preferencia',
+      data: [16, 15, 14],
+      backgroundColor: '#4d94d4',
+      borderRadius: 6,
+    },
+    {
+      label: '3.ª preferencia o más',
+      data: [8, 7, 7],
+      backgroundColor: '#a0c4e8',
+      borderRadius: 6,
+    },
+    {
+      label: 'Segunda etapa',
+      data: [4, 4, 3],
+      backgroundColor: '#e2e8f0',
+      borderRadius: 6,
+    },
+  ],
+}
+
+const opcionesGrafico = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'bottom',
+      labels: { font: { size: 13 }, padding: 16 },
+    },
+    tooltip: {
+      callbacks: {
+        label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`,
+      },
+    },
+  },
+  scales: {
+    x: { stacked: true, grid: { display: false } },
+    y: {
+      stacked: true,
+      max: 100,
+      ticks: { callback: (v) => `${v}%` },
+      grid: { color: '#e2e8f0' },
+    },
+  },
+}
+
+const kpis = [
+  { valor: '76%', etiqueta: 'quedó en su 1.ª preferencia en 2024', color: '#0057B7' },
+  { valor: '97%', etiqueta: 'quedó asignado en alguno de sus colegios', color: '#16a34a' },
+  { valor: '4,7', etiqueta: 'colegios en promedio por postulante', color: '#ea580c' },
+  { valor: '3%', etiqueta: 'requirió segunda etapa de asignación', color: '#374151' },
+]
 
 /* Datos de los 4 pasos — separados para mantener el JSX limpio */
 const pasos = [
@@ -298,6 +374,41 @@ export default function AlgoritmoPage() {
               </ul>
             </div>
           ) : null}
+        </CardContent>
+      </Card>
+
+      {/* ══ ESTADÍSTICAS HISTÓRICAS — punto 15.2 ══ */}
+      <Card style={{ marginTop: 16 }}>
+        <CardHeader>
+          <CardTitle>Resultados de años anteriores</CardTitle>
+          <p className="page__lead" style={{ margin: '6px 0 0' }}>
+            Datos del proceso SAE a nivel nacional (ficticios, representativos del sistema real).
+          </p>
+        </CardHeader>
+        <CardContent>
+          {/* KPIs de cifras clave */}
+          <div className="hist-kpis" aria-label="Cifras clave del proceso SAE">
+            {kpis.map((k) => (
+              <div key={k.etiqueta} className="hist-kpi" style={{ '--kpi-color': k.color }}>
+                <span className="hist-kpi__valor" aria-hidden="true">{k.valor}</span>
+                <span className="hist-kpi__label">{k.etiqueta}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Gráfico de barras apiladas */}
+          <div className="hist-grafico" role="img" aria-label="Gráfico de barras apiladas: distribución de asignaciones por preferencia entre 2022 y 2024">
+            <p style={{ fontWeight: 600, marginBottom: 8, fontSize: '0.95rem' }}>
+              ¿En qué preferencia quedaron asignados los estudiantes?
+            </p>
+            <div style={{ height: 260 }}>
+              <Bar data={historialAsignacion} options={opcionesGrafico} />
+            </div>
+          </div>
+
+          <p className="form-hint" style={{ marginTop: 10 }}>
+            ⚠ Datos ficticios basados en tendencias del proceso SAE. En el sitio real se publicarán los resultados oficiales del Mineduc.
+          </p>
         </CardContent>
       </Card>
 

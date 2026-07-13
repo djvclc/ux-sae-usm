@@ -117,6 +117,75 @@ const pasos = [
   },
 ]
 
+/* Escenarios predefinidos para cargar el simulador con un caso real (S4-3) */
+const ESCENARIOS = [
+  {
+    id: 'daniela',
+    icono: '👩',
+    label: 'Caso Daniela',
+    desc: 'Sin prioridades especiales. Prefiere 3 colegios en La Florida.',
+    perfil: { hermano: false, prioritario: false, funcionario: false, exalumno: false },
+    colegios: [3, 6, 1],
+  },
+  {
+    id: 'con-hermano',
+    icono: '👨‍👧',
+    label: 'Con hermano en Los Andes',
+    desc: 'Su hijo mayor estudia ahí: prioridad máxima por ley.',
+    perfil: { hermano: true, prioritario: false, funcionario: false, exalumno: false },
+    colegios: [1, 6, 3],
+  },
+  {
+    id: 'prioritaria',
+    icono: '📋',
+    label: 'Estudiante prioritaria (SEP)',
+    desc: 'Con designación SEP — segunda prioridad más alta.',
+    perfil: { hermano: false, prioritario: true, funcionario: false, exalumno: false },
+    colegios: [1, 5, 2],
+  },
+]
+
+/* Sistemas de asignación en el mundo — referencia académica (S4-4) */
+const CONTEXTO_MUNDIAL = [
+  {
+    flag: '🇺🇸',
+    ciudad: 'Nueva York',
+    pais: 'EE. UU.',
+    desde: '2003',
+    logro: 'Redujo de 34.000 a menos de 3.000 los estudiantes que terminaban sin colegio asignado.',
+    diferencia: 'Permite pruebas de admisión en escuelas selectivas junto al algoritmo.',
+    color: '#1e3a5f',
+  },
+  {
+    flag: '🇬🇧',
+    ciudad: 'Londres',
+    pais: 'Reino Unido',
+    desde: '2004',
+    logro: 'Primer país de Europa en aplicar Gale-Shapley a escala de toda una ciudad.',
+    diferencia: 'Cada municipio (borough) administra su propio proceso con el mismo algoritmo.',
+    color: '#8B0000',
+  },
+  {
+    flag: '🇳🇱',
+    ciudad: 'Ámsterdam',
+    pais: 'Países Bajos',
+    desde: '2015',
+    logro: 'Redujo la segregación escolar y aumentó la movilidad social entre comunas.',
+    diferencia: 'Integra automáticamente la distancia del hogar como criterio de prioridad.',
+    color: '#c95200',
+  },
+  {
+    flag: '🇨🇱',
+    ciudad: 'Chile — SAE',
+    pais: 'Chile',
+    desde: '2016',
+    logro: 'Primer país de América Latina en implementarlo a nivel nacional, con más de 300.000 postulantes anuales.',
+    diferencia: 'Incluye criterio de equidad para estudiantes prioritarios (SEP) y opera en todas las regiones.',
+    color: '#0057B7',
+    destacado: true,
+  },
+]
+
 /* Videotutoriales — contenido simulado representativo */
 const tutoriales = [
   {
@@ -160,6 +229,12 @@ export default function AlgoritmoPage() {
     () => (seleccion.length ? calcularResultado(seleccion, perfil) : null),
     [seleccion, perfil],
   )
+
+  const cargarEscenario = (esc) => {
+    setPerfil(esc.perfil)
+    setSeleccion(esc.colegios)
+    setPasoExpandido(null)
+  }
 
   const toggleCondicion = (key) => {
     setPerfil((prev) => ({ ...prev, [key]: !prev[key] }))
@@ -292,7 +367,29 @@ export default function AlgoritmoPage() {
           </p>
         </CardHeader>
         <CardContent>
-          <p style={{ fontWeight: 600, marginBottom: 4 }}>
+          {/* ── Escenarios predefinidos ── */}
+          <div className="sim-escenarios" aria-labelledby="sim-escenarios-titulo">
+            <p id="sim-escenarios-titulo" className="sim-escenarios__titulo">
+              💡 Prueba con un caso real:
+            </p>
+            <div className="sim-escenarios__grid">
+              {ESCENARIOS.map((esc) => (
+                <button
+                  key={esc.id}
+                  type="button"
+                  className="esc-btn"
+                  onClick={() => cargarEscenario(esc)}
+                  aria-label={`Cargar escenario: ${esc.label}`}
+                >
+                  <span className="esc-btn__icono" aria-hidden="true">{esc.icono}</span>
+                  <span className="esc-btn__label">{esc.label}</span>
+                  <span className="esc-btn__desc">{esc.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <p style={{ fontWeight: 600, marginBottom: 4, marginTop: 20 }}>
             ¿Tienes alguna de estas condiciones de prioridad?
           </p>
           <span className="form-hint" style={{ marginBottom: 8 }}>
@@ -408,6 +505,55 @@ export default function AlgoritmoPage() {
 
           <p className="form-hint" style={{ marginTop: 10 }}>
             ⚠ Datos ficticios basados en tendencias del proceso SAE. En el sitio real se publicarán los resultados oficiales del Mineduc.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* ══ CONTEXTO MUNDIAL ══ */}
+      <Card style={{ marginTop: 16 }}>
+        <CardHeader>
+          <CardTitle>El SAE en el mundo: no estás sola/o</CardTitle>
+          <p className="page__lead" style={{ margin: '6px 0 0' }}>
+            El mismo algoritmo que usa el SAE —<strong>Gale-Shapley</strong>— es usado por ciudades en todo el
+            mundo. Sus creadores ganaron el{' '}
+            <strong>Premio Nobel de Economía en 2012</strong> por demostrarlo justo y eficiente.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="mundo-grid" role="list" aria-label="Países que usan el mismo sistema de asignación escolar">
+            {CONTEXTO_MUNDIAL.map((p) => (
+              <article
+                key={p.ciudad}
+                className={`mundo-card${p.destacado ? ' mundo-card--destacado' : ''}`}
+                style={{ '--mundo-color': p.color }}
+                role="listitem"
+              >
+                <div className="mundo-card__head">
+                  <span className="mundo-card__flag" aria-hidden="true">{p.flag}</span>
+                  <div>
+                    <p className="mundo-card__ciudad">{p.ciudad}</p>
+                    <p className="mundo-card__pais">{p.pais}</p>
+                  </div>
+                  <span className="mundo-card__desde" aria-label={`Desde ${p.desde}`}>desde {p.desde}</span>
+                </div>
+                <div className="mundo-card__body">
+                  <p className="mundo-card__logro">
+                    <strong>Logro clave:</strong> {p.logro}
+                  </p>
+                  <p className="mundo-card__diferencia">
+                    <strong>Diferencia con el SAE:</strong> {p.diferencia}
+                  </p>
+                </div>
+                {p.destacado && (
+                  <div className="mundo-card__badge-destacado" aria-label="Este es el sistema chileno">
+                    🇨🇱 Tú estás aquí
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+          <p className="form-hint" style={{ marginTop: 12 }}>
+            Fuentes: Abdulkadiroğlu & Sönmez (2003); Roth & Sotomayor (2012); Ministerio de Educación Chile (2016).
           </p>
         </CardContent>
       </Card>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
+import { useTour } from '../context/TourContext'
 
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 
@@ -39,6 +40,7 @@ const PASOS_RAPIDOS = [
 export default function InicioPage() {
   const [showWelcome, setShowWelcome] = useState(true)
   const { textoGrande } = useTextSize()
+  const { startTour } = useTour()
   const [texto, setTexto] = useState('')
   const [comuna, setComuna] = useState('')
   const [nivel, setNivel] = useState('')
@@ -108,9 +110,13 @@ export default function InicioPage() {
               Es tu primera vez aquí? Te mostramos cómo funciona el SAE en 3 pasos cortos.
             </span>
             <div className="welcome-banner__actions">
-              <Link className="btn btn--primary btn--mini" to="/algoritmo">
-                Empezar tour
-              </Link>
+              <button
+                type="button"
+                className="btn btn--primary btn--mini"
+                onClick={() => { setShowWelcome(false); startTour() }}
+              >
+                Iniciar tour guiado
+              </button>
               <button type="button" className="welcome-banner__close" onClick={() => setShowWelcome(false)}>
                 ✕
               </button>

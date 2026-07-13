@@ -2,8 +2,19 @@ import { Component, lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import { TextSizeProvider } from './context/TextSizeContext'
+import { TextSizeProvider, useTextSize } from './context/TextSizeContext'
+import { TourProvider } from './context/TourContext'
+import GuidedTour from './components/GuidedTour'
 import ChatAyuda from './components/ChatAyuda'
+
+/* Escala global de fuente — cambia font-size en html para que todos los rem escalen (S13-g) */
+function GlobalFontSize() {
+  const { textoGrande } = useTextSize()
+  useEffect(() => {
+    document.documentElement.style.fontSize = textoGrande ? '18px' : ''
+  }, [textoGrande])
+  return null
+}
 
 /* Error Boundary - contiene fallos de runtime sin romper toda la app (S9-2) */
 class ErrorBoundary extends Component {
@@ -148,6 +159,9 @@ function App() {
   return (
     <BrowserRouter>
       <TextSizeProvider>
+        <TourProvider>
+          <GlobalFontSize />
+          <GuidedTour />
         <div className="app-shell">
           <Navbar />
           <PageMeta />
@@ -173,6 +187,7 @@ function App() {
           <Footer />
           <ChatAyuda />
         </div>
+        </TourProvider>
       </TextSizeProvider>
     </BrowserRouter>
   )

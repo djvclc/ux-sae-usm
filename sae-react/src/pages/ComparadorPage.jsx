@@ -4,6 +4,8 @@ import { colegios } from '../data/colegios'
 import { useTextSize } from '../context/TextSizeContext'
 import TextSizeBar from '../components/TextSizeBar'
 
+const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
+
 const demandaLabel = { alta: 'Alta', media: 'Media', baja: 'Baja' }
 const demandaClass = { alta: 'demand-chip--alta', media: 'demand-chip--media', baja: 'demand-chip--baja' }
 
@@ -46,7 +48,12 @@ function FilaTabla({ label, celdas }) {
 export default function ComparadorPage() {
   const { textoGrande } = useTextSize()
   const [seleccionados, setSeleccionados] = useState([])
-  const [postulados, setPostulados] = useState([])
+  const [postulados, setPostulados] = useState(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_LIST_KEY)
+      return raw ? JSON.parse(raw).filter(Number.isInteger) : []
+    } catch { return [] }
+  })
 
   const toggleColegio = (id) => {
     setSeleccionados((prev) => {
@@ -57,7 +64,17 @@ export default function ComparadorPage() {
   }
 
   const agregarPostulacion = (id) => {
-    setPostulados((prev) => (prev.includes(id) ? prev : [...prev, id]))
+    setPostulados((prev) => {
+      if (prev.includes(id)) return prev
+      const nueva = [...prev, id]
+      try {
+        const raw = localStorage.getItem(DRAFT_LIST_KEY)
+        const actual = raw ? JSON.parse(raw) : []
+        const merged = [...new Set([...(Array.isArray(actual) ? actual : []), id])].slice(0, 8)
+        localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(merged))
+      } catch { /* noop */ }
+      return nueva
+    })
   }
 
   const cols = seleccionados.map((id) => colegios.find((c) => c.id === id)).filter(Boolean)

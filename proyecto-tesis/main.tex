@@ -1,0 +1,124 @@
+\documentclass[12pt,a4paper]{report}
+
+% ============================================================
+%  CODIFICACIÓN E IDIOMA
+% ============================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+
+% ============================================================
+%  MATEMÁTICAS
+% ============================================================
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ============================================================
+%  GRÁFICOS Y TABLAS
+% ============================================================
+\usepackage{graphicx}
+\usepackage{booktabs}
+\graphicspath{{imagenes/}}
+
+% ============================================================
+%  BIBLIOGRAFÍA (natbib + bibtex)
+% ============================================================
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{plainnat}
+
+% ============================================================
+%  HIPERVÍNCULOS (cargar al final del preámbulo)
+%  plainpages=false + pdfpagelabels=true evitan el conflicto de destinos
+%  duplicados que genera hyperref al pasar de numeración romana a arábiga.
+% ============================================================
+\usepackage[hidelinks,plainpages=false,pdfpagelabels=true]{hyperref}
+
+% ============================================================
+%  DATOS DE PORTADA
+%  Título e institución tomados del artículo base del proyecto
+%  ("Mitigación de Sesgos en IA: Análisis del Sistema de Admisión
+%  Escolar en Chile"). Esta tesis tiene un único autor.
+%  \gradoTesis y \directorTesis quedan como placeholders porque no
+%  se cuenta con esa información confirmada — complétala tú.
+% ============================================================
+\newcommand{\tituloTesis}{Mitigación de Sesgos en IA: Análisis del Sistema de Admisión Escolar en Chile}
+% \autorTesis se usa en la portada (texto plano).
+\newcommand{\autorTesis}{Diego Villegas Cisternas}
+\newcommand{\institucionTesis}{Universidad Técnica Federico Santa María}
+\newcommand{\facultadTesis}{Departamento de Informática}
+\newcommand{\carreraTesis}{[Nombre de la carrera]}       % PLACEHOLDER — completar
+\newcommand{\gradoTesis}{[Grado académico o título]}     % PLACEHOLDER — completar
+\newcommand{\directorTesis}{[Nombre del profesor(a) guía]} % PLACEHOLDER — completar
+\newcommand{\fechaTesis}{\today}
+\newcommand{\ciudadTesis}{Santiago, Chile}
+
+\title{\tituloTesis}
+\author{Diego Villegas Cisternas}
+\date{\fechaTesis}
+
+\begin{document}
+
+% ============================================================
+%  PORTADA + ÍNDICE (numeración romana)
+%  Todo el preliminar (portada + índice) se envuelve con pageanchor=false
+%  para que hyperref no genere destinos "page.N" que luego choquen con los
+%  de la numeración arábiga cuando el contador de página se reinicia
+%  (evita el warning de "destino duplicado").
+% ============================================================
+\begingroup
+\hypersetup{pageanchor=false}
+
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+
+    {\large \institucionTesis \par}
+    {\large \facultadTesis \par}
+
+    \vspace{2.5cm}
+
+    {\Huge \bfseries \tituloTesis \par}
+
+    \vspace{2.5cm}
+
+    {\large \autorTesis \par}
+
+    \vspace{1.5cm}
+
+    {\normalsize Tesis presentada para optar al \gradoTesis \ en \carreraTesis \par}
+
+    \vspace{1.5cm}
+
+    {\normalsize Profesor(a) guía: \directorTesis \par}
+
+    \vfill
+
+    {\large \ciudadTesis \par}
+    {\large \fechaTesis \par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+
+\endgroup
+\pagenumbering{arabic}
+
+% ============================================================
+%  CAPÍTULOS
+%  (cada archivo contiene únicamente un \chapter{...} placeholder)
+% ============================================================
+\input{capitulos/00_resumen}
+\input{capitulos/01_introduccion}
+\input{capitulos/02_marco_teorico}
+\input{capitulos/03_metodologia}
+\input{capitulos/04_resultados}
+\input{capitulos/05_discusion}
+\input{capitulos/06_conclusiones}
+
+% ============================================================
+%  BIBLIOGRAFÍA
+% ============================================================
+\bibliography{referencias}
+
+\end{document}

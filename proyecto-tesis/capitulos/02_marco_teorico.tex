@@ -1,0 +1,90 @@
+\chapter{Marco Teórico}
+
+\section{Diseño ético en experiencias impulsadas por IA}
+
+El diseño ético de UX se entiende como la práctica de tomar decisiones de diseño de manera consciente, con el objetivo de beneficiar a los usuarios y actuar con responsabilidad social \citep{keepcoding2024etica}. Un aspecto central de esta práctica es la prevención activa de los \emph{patrones oscuros} (\emph{dark patterns}): elementos de diseño implementados deliberadamente para inducir a los usuarios a realizar acciones no deseadas o tomar decisiones que no los benefician \citep{checkealos2024etica}. Estas prácticas no solo erosionan la confianza del usuario, sino que han motivado respuestas regulatorias concretas, como las multas de la \emph{Federal Trade Commission} de Estados Unidos a empresas como Epic Games y Amazon por el uso indebido de patrones oscuros \citep{checkealos2024etica}. El diseño ético, por contraste, prioriza el bienestar del usuario y garantiza que sus necesidades se atiendan de forma justa y respetuosa, en lugar de explotar vulnerabilidades cognitivas para obtener beneficios de corto plazo.
+
+Esta idea conecta directamente con un principio más amplio de la disciplina de interacción humano-computador: el \textbf{diseño centrado en el usuario} (\emph{user-centered design}), que postula que las decisiones de un sistema interactivo deben fundamentarse en las necesidades, capacidades y contexto real de las personas que lo usarán, y no únicamente en la lógica interna del sistema o en la conveniencia de quien lo construye. Una de las herramientas más difundidas de este enfoque es la construcción de \emph{personas}: arquetipos de usuario, construidos a partir de datos reales de caracterización, que sintetizan un perfil representativo del segmento objetivo y sirven como referencia constante durante el proceso de diseño. En el Capítulo~3 se describe cómo esta técnica se aplicó concretamente en este trabajo mediante el arquetipo ``Daniela González''.
+
+\section{Transparencia, explicabilidad e interpretabilidad}
+
+La literatura distingue tres conceptos que suelen usarse de manera intercambiable pero que tienen alcances distintos \citep{ibm2024transparencia}:
+
+\begin{itemize}
+    \item \textbf{Transparencia}: se refiere al contexto y la metodología usada para desarrollar el modelo (qué datos se usaron, bajo qué criterios se diseñó).
+    \item \textbf{Explicabilidad}: es la capacidad del sistema para justificar sus decisiones mediante explicaciones claras y contextualizadas a un caso específico.
+    \item \textbf{Interpretabilidad}: es la capacidad del modelo para presentar una lógica de decisión comprensible en términos generales, más allá de un caso puntual.
+\end{itemize}
+
+El incumplimiento de estos tres aspectos intensifica desigualdades sociales existentes, al reforzar y amplificar sesgos previos: puede derivar en decisiones incorrectas, exposición de información sensible, y discriminación por raza o género \citep{unir2024sesgo}. Casos ampliamente documentados ilustran esta consecuencia: el sistema COMPAS en Estados Unidos, criticado por predicciones judiciales sesgadas, o el algoritmo BOSCO en España, que enfrentó desafíos legales al denegar beneficios sociales de forma no transparente \citep{legalprod,wikipedia_transparencia}.
+
+\subsection{Sesgos algorítmicos}
+
+Los sesgos algorítmicos pueden introducir desigualdades o reforzar estereotipos existentes, afectando negativamente a determinados grupos demográficos. La literatura distingue al menos tres mecanismos de origen \citep{skillnest_sesgo,ibm_iaresponsable}:
+
+\begin{itemize}
+    \item \textbf{Sesgo en los datos de entrenamiento}: surge cuando los datos usados para entrenar un modelo contienen prejuicios raciales, de género o socioeconómicos preexistentes.
+    \item \textbf{Sesgo algorítmico propiamente tal}: se origina en el diseño o implementación del algoritmo, cuando quienes lo desarrollan magnifican, consciente o inconscientemente, sesgos ya existentes.
+    \item \textbf{Sesgo por retroalimentación}: ocurre cuando resultados ya sesgados se reintroducen al sistema como nuevos datos de entrada, reforzando un ciclo de discriminación.
+\end{itemize}
+
+En el ámbito de la salud, por ejemplo, se ha documentado cómo sistemas de IA han reproducido sistemáticamente desigualdades de acceso y tratamiento médico, lo que subraya una responsabilidad ética compartida entre quienes diseñan y quienes regulan estos sistemas \citep{rivas2024transparency}. Estos casos son relevantes para el SAE porque ilustran que un algoritmo puede ser técnicamente correcto y, aun así, producir efectos percibidos como injustos si el proceso que lo rodea no es comprensible ni auditable por las personas afectadas.
+
+\subsection{Marcos regulatorios}
+
+En respuesta a estos desafíos, distintas entidades internacionales han desarrollado marcos normativos que enfatizan la transparencia y la equidad en sistemas de IA. Entre los más relevantes destacan el \emph{NIST AI Risk Management Framework 1.0}, que define prácticas de gestión de riesgo mediante cuatro funciones —gobernar, mapear, medir y gestionar— \citep{nist2023airmf}; la norma \emph{ISO/IEC 42001:2023}, que propone un sistema integral de gestión de IA centrado en gobernanza, gestión de riesgos y trazabilidad de las decisiones algorítmicas \citep{iso2023aims}; y los principios actualizados de la OCDE, que recalcan la transparencia, la robustez técnica, la equidad y la rendición de cuentas como pilares de una adopción sostenible de IA. Ninguno de estos marcos exige o prohíbe un algoritmo de asignación específico; todos, en cambio, ponen el énfasis en la \emph{comunicación} de su funcionamiento hacia las personas afectadas, que es exactamente el problema que aborda esta memoria.
+
+\section{Revisión sistemática: transparencia algorítmica con evaluación de usuarios finales}
+
+Como base empírica adicional para el diseño del prototipo, se sistematizó una revisión de \textbf{96 publicaciones académicas} sobre transparencia algorítmica que incluyen evaluación con usuarios finales, cubriendo el período 2017--2025 y consultando cuatro bases de datos (SciSpace, SciSpace Texto Completo, Google Scholar y ArXiv). Esta revisión —independiente del artículo base del proyecto— permite contrastar los hallazgos generales del campo con el caso específico del SAE.
+
+\subsection{Qué funciona}
+
+La evidencia converge de manera consistente en cinco enfoques de diseño efectivos:
+
+\begin{itemize}
+    \item \textbf{Divulgación progresiva}: mostrar primero información esencial y revelar el detalle técnico solo si el usuario lo solicita, evitando la fijación temprana en errores o detalles irrelevantes \citep{springerwhittaker2019,springerwhittaker2020}.
+    \item \textbf{Explicabilidad contextualizada}: explicaciones ligadas a la situación específica del usuario son más efectivas que las descripciones abstractas del funcionamiento general del sistema, especialmente en contextos de decisión pública como trámites de visado o beneficios sociales \citep{nefedov2022}.
+    \item \textbf{Controles interactivos con retroalimentación}: permitir que el usuario explore el sistema (simuladores, ajustes, comparadores) aumenta la sensación de agencia y reduce la percepción de arbitrariedad, siempre que existan etiquetas claras y retroalimentación inmediata \citep{kim2021recommender,feddersen2024forecasting}.
+    \item \textbf{Presentación multidimensional}: combinar gráficos con cifras mejora la comprensión y la calidad de la decisión del usuario, frente a la presentación de un único indicador agregado \citep{glazerman2018multidim}.
+    \item \textbf{Reportes y explicaciones co-diseñadas con usuarios no expertos}: los formatos de explicación diseñados junto a los propios usuarios finales —en lugar de derivados solo de consideraciones técnicas— se ajustan mejor a sus necesidades reales de información \citep{peng2023codesign,bobek2024xai}.
+\end{itemize}
+
+\subsection{Qué no funciona}
+
+La literatura también documenta con igual claridad los enfoques que fallan o que pueden ser contraproducentes:
+
+\begin{itemize}
+    \item La \textbf{transparencia técnica sin filtro} —mostrar código, ecuaciones o el detalle interno completo del algoritmo— reduce la confianza en usuarios no técnicos en lugar de aumentarla \citep{springerwhittaker2019}.
+    \item El \textbf{exceso de información en una sola pantalla} genera parálisis decisional y peores evaluaciones de satisfacción.
+    \item Las \textbf{explicaciones globales} (``así funciona el sistema para todos'') son sistemáticamente menos efectivas que las \textbf{explicaciones locales} (``así funcionó en tu caso específico'').
+    \item Otorgar a usuarios sin entrenamiento \textbf{control de grano fino} sobre componentes complejos del sistema puede producir ajustes peores que los del sistema automático \citep{feddersen2024forecasting}.
+    \item Distintos métodos técnicos de explicación (por ejemplo, mapas de saliencia o atribuciones locales) pueden producir niveles de comprensión humana similares entre sí, lo que sugiere que la evaluación debería centrarse en el ajuste a la tarea del usuario y no solo en la novedad del método \citep{dawoud2023comparative}.
+\end{itemize}
+
+\subsection{Relevancia para el caso SAE}
+
+El Sistema de Admisión Escolar presenta características que amplifican estos hallazgos: sus usuarios son, en su mayoría, apoderados con baja o media alfabetización digital; la decisión tiene un alto impacto emocional (la educación de un hijo o hija); y el algoritmo subyacente tiene aspectos contraintuitivos —por ejemplo, que la posición de un colegio en la lista de preferencias no garantiza por sí sola la asignación—. Esto convierte el diseño orientado a la transparencia en un requisito funcional, no en un elemento cosmético, y confirma la pertinencia de aplicar al SAE los mismos principios (divulgación progresiva, explicabilidad contextualizada, controles interactivos) que la literatura identifica como efectivos en otros dominios de alto impacto, como la administración pública \citep{nefedov2022}, la salud \citep{rivas2024transparency} y los sistemas de recomendación \citep{masciari2024systematic}.
+
+\section{El algoritmo del Sistema de Admisión Escolar}
+
+El SAE utiliza un algoritmo basado en el mecanismo de \emph{Aceptación Diferida} (\emph{Deferred Acceptance}, DA), propuesto originalmente por \citet{galeshapley1962} para el problema del emparejamiento estable entre dos conjuntos de agentes. Aunque su formulación original resolvía el problema del emparejamiento uno a uno, el modelo fue extendido a problemas de asignación \emph{muchos a uno}, que es precisamente el caso de la admisión escolar, donde cada colegio tiene capacidad para recibir a múltiples estudiantes.
+
+El mecanismo opera de forma iterativa \citep{epstein2017mecanismos}:
+
+\begin{enumerate}
+    \item \textbf{Postulación}: las familias envían un listado ordenado de los colegios de su preferencia.
+    \item \textbf{Primera ronda}: cada estudiante postula a su primera preferencia. Los colegios revisan a sus postulantes y, según sus criterios de prioridad, aceptan tentativamente a los estudiantes hasta llenar sus vacantes; los no aceptados quedan rechazados.
+    \item \textbf{Rondas sucesivas}: los estudiantes rechazados en la ronda anterior postulan al siguiente colegio de su lista. Los colegios reevalúan a sus nuevos postulantes junto con los ya aceptados tentativamente, conservando siempre a los de mayor prioridad.
+    \item \textbf{Finalización}: el proceso termina cuando todos los estudiantes han sido asignados a un establecimiento (o agotan su lista de preferencias).
+\end{enumerate}
+
+En Chile, este mecanismo está regido por la Ley de Inclusión Escolar N.\textsuperscript{o}~20.845 y considera cuatro criterios de prioridad: tener un hermano matriculado en el establecimiento, pertenecer al 15\,\% de estudiantes prioritarios, ser hijo o hija de un funcionario del colegio, y ser exalumno que no haya sido expulsado \citep{mineduc_sae}. Es importante notar que, si bien el SAE no tiene su código fuente públicamente disponible, existe documentación oficial y trabajos académicos —como la tesis de \citet{epstein2017mecanismos}— que permiten reconstruir su lógica interna y sus criterios de priorización. La falta de acceso completo al código limita, sin embargo, la posibilidad de una auditoría exhaustiva por parte de terceros, lo que refuerza la necesidad de una capa de comunicación explicativa dirigida al usuario final, que es precisamente el problema que aborda esta memoria.
+
+\section{Accesibilidad web como condición de transparencia}
+
+Un sistema no puede considerarse transparente si una parte relevante de sus usuarios no puede, en la práctica, acceder a su contenido. Por ello, este trabajo adopta como referencia las \emph{Web Content Accessibility Guidelines} (WCAG) del World Wide Web Consortium, en particular los criterios de nivel AA: contraste mínimo de 4.5:1 entre texto y fondo, posibilidad de navegar todo el sitio exclusivamente con teclado, texto alternativo descriptivo en imágenes funcionales, y tamaños de fuente legibles en dispositivos móviles. Estos criterios no son un añadido secundario en el contexto del SAE: el diagnóstico heurístico de la Universidad de Chile encontró una dimensión de \emph{inclusión} con 0\,\% de cumplimiento en el sitio informativo real, lo que confirma que la accesibilidad es, en este caso concreto, una de las brechas más urgentes y no solo un ideal de buenas prácticas.
+
+\section{Prototipado iterativo asistido por herramientas de IA generativa}
+
+Un aspecto metodológico propio de este trabajo —y que se detalla en el Capítulo~3— es que el prototipo se construyó mediante un proceso iterativo de \emph{research through design} apoyado en un agente de inteligencia artificial generativa (Claude, de Anthropic, operado a través de su interfaz de desarrollo Claude Code) como herramienta de programación asistida. Este tipo de flujo de trabajo, cada vez más habitual en el desarrollo de software y en la construcción de prototipos de investigación, no reemplaza las decisiones de diseño ni la evaluación crítica de quien dirige el proyecto: el agente ejecuta instrucciones de diseño explícitas, redactadas por el autor en documentos de especificación (descritos en el Capítulo~3), y el resultado de cada iteración fue revisado, corregido y redirigido antes de avanzar a la siguiente. Documentar este proceso con honestidad —incluyendo sus herramientas— es, en sí mismo, coherente con el principio de transparencia que esta memoria defiende para el propio SAE.

@@ -1,0 +1,44 @@
+\chapter{Resultados}
+
+Este capítulo reporta únicamente resultados verificables de forma independiente a la fecha de esta memoria: el diagnóstico del SAE real, el estado objetivo de implementación del prototipo, y una comparación del prototipo con el estado actual del sitio oficial. \textbf{No se incluyen aquí resultados de validación con usuarios del prototipo desarrollado en este trabajo}, porque esa validación —descrita como plan en la Sección~3.5— aún no se ha ejecutado. Los resultados de un estudio de usabilidad previo, realizado sobre un artefacto distinto (una maqueta estática centrada solo en el módulo de explicación del resultado), se mencionan exclusivamente como antecedente en el Capítulo~3 y no se presentan en este capítulo como hallazgos propios.
+
+\section{Diagnóstico heurístico del SAE real}
+
+La evaluación heurística de calidad web aplicada al SAE real \citep{moralesvargas2026informe} arrojó un cumplimiento de \textbf{51\,\%} en el sitio informativo y de \textbf{61\,\%} en la plataforma de postulación, ambos con un desglose de 55\,\% en indicadores imprescindibles, 57\,\% en esperables y 22\,\% en deseables. Entre las brechas más críticas identificadas destacan:
+
+\begin{itemize}
+    \item \textbf{Transparencia y apertura} (0\,\% en el sitio informativo): no existe ninguna sección que explique públicamente el algoritmo de asignación, sus criterios o sus resultados agregados.
+    \item \textbf{Inclusión} (0\,\%): sin opciones para necesidades educativas especiales ni lenguaje simplificado en el sitio informativo.
+    \item \textbf{Búsqueda y encontrabilidad}: sin buscador interno ni mapa del sitio.
+    \item \textbf{Audiovisualidad}: ausencia total de videotutoriales o infografías explicativas del proceso.
+    \item \textbf{Interoperabilidad}: la contraseña de apoderado se crea de forma separada, sin integración con ClaveÚnica, pese a que esta ya contiene los datos requeridos en el registro (RUT, fecha de nacimiento, correo, teléfono).
+    \item \textbf{Legibilidad}: el sitio informativo obtuvo un índice de legibilidad Spaulding de 120{,}43 (``difícil''), muy por sobre el nivel 6.\textsuperscript{o} básico recomendado para el público objetivo.
+\end{itemize}
+
+Este diagnóstico —detallado en veinte dimensiones para cada componente del SAE— constituye el \emph{baseline} cuantitativo que orientó las decisiones de diseño descritas en el Capítulo~3, y contra el cual debe compararse la reevaluación pendiente del prototipo (Sección~3.5).
+
+\section{Estado de implementación del prototipo}
+
+A partir del historial de desarrollo reconstruido en la Tabla~3.1, el prototipo evolucionó de un archivo HTML autocontenido de una sola página (Iteración~1) a una segunda versión HTML más completa (Iteración~2), y de ahí a una aplicación web construida con React, Vite y Tailwind CSS que cubre las cinco secciones exigidas por el diagnóstico original: página de inicio con buscador, módulo ``¿Cómo funciona el algoritmo?'' con simulador interactivo, ficha de colegio ampliada, flujo de postulación de tres pasos con inicio de sesión simulado vía ClaveÚnica, y panel de seguimiento de postulación con explicación contextualizada del resultado. Durante el desarrollo se agregaron además un comparador de colegios, un tour guiado de \emph{onboarding} y una página de ``Notas de diseño'' con la trazabilidad completa entre literatura y componentes, ninguno de ellos exigido explícitamente por el diagnóstico pero identificados como oportunidades de mejora durante el proceso iterativo.
+
+Una verificación interna de trazabilidad frente a la matriz de problemas del diagnóstico (organizada en 20 categorías y aproximadamente 62 puntos de verificación) registra un cumplimiento de \textbf{61 de 62 puntos (98\,\%)} a nivel de código, incluyendo la totalidad de los puntos de prioridad alta y media. El único punto pendiente corresponde a una mejora de prioridad baja (sección de estadísticas históricas de asignación con datos ficticios), y un punto adicional de cabeceras HTTP de seguridad no aplica al prototipo por depender de la configuración de un servidor de producción.
+
+Se insiste en que esta cifra es una \textbf{autoevaluación de implementación de código}, verificable revisando el propio prototipo, pero \textbf{no constituye} evidencia de que el prototipo mejore efectivamente la comprensión, la confianza o la percepción de justicia de usuarios reales: esa es precisamente la pregunta que el plan de validación de la Sección~3.5 busca responder, y que a la fecha de esta memoria permanece abierta.
+
+\section{Estado actual del sitio oficial del SAE}
+
+Como parte de esta investigación se realizó, adicionalmente, una revisión del estado vigente del sitio oficial del SAE (\texttt{sistemadeadmisionescolar.cl} y la plataforma de postulación en \texttt{admision.mineduc.cl}), con el fin de determinar si alguna de las brechas del diagnóstico original había sido cerrada de forma independiente por el Ministerio de Educación desde la evaluación de marzo de 2026. Se encontró que:
+
+\begin{itemize}
+    \item La \textbf{búsqueda y encontrabilidad} mejoró de forma concreta: existe ahora una ``Vitrina de Establecimientos'' con filtros por región, comuna, nivel educativo y nombre de establecimiento, con vistas de lista y mapa.
+    \item La \textbf{inclusión} avanzó parcialmente: la vitrina indica explícitamente si un colegio cuenta con Programa de Integración Escolar (PIE), mediante un ícono dedicado.
+    \item La \textbf{transparencia del algoritmo} mejoró solo de forma incremental: existen ahora páginas y preguntas frecuentes que describen los cuatro criterios de prioridad y desmienten mitos comunes (por ejemplo, que postular el primer día otorga ventaja), pero la explicación sigue siendo genérica y no contextualizada al caso particular del apoderado, y no existe ningún simulador interactivo.
+    \item La \textbf{interoperabilidad con ClaveÚnica} no se resolvió: el acceso a la plataforma sigue requiriendo una cuenta separada con RUT/IPA y contraseña propia.
+    \item La \textbf{audiovisualidad} tampoco se resolvió: no se encontraron videos ni infografías embebidas en el sitio informativo.
+\end{itemize}
+
+En síntesis, de las seis brechas prioritarias del diagnóstico original, el sitio oficial cerró de forma parcial dos (búsqueda e inclusión) y no ha resuelto las restantes cuatro al momento de esta revisión. Esta comparación es un resultado propio y verificable de esta memoria —a diferencia de la validación de usabilidad del prototipo, que permanece pendiente— y se retoma en el Capítulo~5 únicamente en la medida en que no depende de datos de usuarios aún no recolectados.
+
+\section{Resultados pendientes}
+
+Quedan explícitamente pendientes, y no se reportan en este capítulo: (a) la reevaluación del prototipo con el instrumento heurístico SISIB descrita en la Sección~3.5; (b) la prueba de usabilidad del prototipo completo con usuarios reales; y (c) cualquier comparación cuantitativa entre el desempeño del prototipo y el \emph{baseline} del SAE real que dependa de datos de usuarios. Estos resultados se incorporarán en una versión posterior de esta memoria, junto con la discusión y las conclusiones correspondientes (Capítulos~5 y~6).

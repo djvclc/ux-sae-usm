@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 /**
  * Footer global del SAE
  * Cumple S10-2 (OIRS visible), S14-f (tel: clicable en móvil), S5-1 (dirección física).
@@ -113,6 +115,15 @@ export default function Footer() {
               >
                 Ley de Inclusión Escolar
               </a>
+            </li>
+            <li>
+              <Link
+                to="/notas"
+                className="site-footer__link"
+                aria-label="Ver las notas de diseño del prototipo"
+              >
+                Notas de diseño del prototipo
+              </Link>
             </li>
           </ul>
         </div>

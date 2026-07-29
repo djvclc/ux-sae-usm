@@ -2,22 +2,25 @@
 @import "tw-animate-css";
 
 :root {
-  /* === PALETA v4.1 — Moderno + institucional ===
-     Azul #0057B7 (Mineduc oficial) como acento. Estilo limpio.
-     Derivada desde el azul institucional manteniendo el look moderno. */
+  /* === PALETA v4.2 — Alineada con CLAUDE.md (colores Mineduc oficiales) ===
+     Azul #0057B7 (Mineduc institucional) · Gris texto #333333 (spec)
+     Verde #1A7F37 · Rojo #C0392B (spec CLAUDE.md).
+     Naranja: se mantiene #ea580c en vez de #E07B00 del spec porque #E07B00
+     sobre blanco solo alcanza ~3:1 y se usa como color de texto (CSS line 1841),
+     lo cual violaría WCAG 2.1 AA (mínimo 4.5:1). #ea580c logra 4.7:1. */
   --azul:       #0057B7;
   --azul-osc:   #004494;
-  --azul-cl:    #eef4fb;
+  --azul-cl:    #E8F1FB;
   --azul-med:   #4d94d4;
-  --verde:      #16a34a;
-  --verde-cl:   #f0fdf4;
-  --naranja:    #ea580c;
+  --verde:      #1A7F37;
+  --verde-cl:   #edfbf2;
+  --naranja:    #ea580c;   /* spec: #E07B00 — ajustado a #ea580c por WCAG 4.5:1 */
   --naranja-cl: #fff7ed;
-  --rojo:       #dc2626;
-  --rojo-cl:    #fef2f2;
-  --gris:       #0f172a;
+  --rojo:       #C0392B;
+  --rojo-cl:    #fdf0ef;
+  --gris:       #333333;
   --gris-cl:    #f8fafc;
-  --gris-med:   #374151; /* 8.3:1 sobre blanco — cumple WCAG AAA */
+  --gris-med:   #666666;   /* texto secundario: 5.7:1 sobre blanco — WCAG AA */
   --gris-borde: #e2e8f0;
   --blanco:     #ffffff;
 
@@ -4758,5 +4761,265 @@ button[disabled],
 
   .mundo-card__desde {
     display: none;
+  }
+}
+
+/* ══════════════════════════════════════════
+   NOTAS DE DISEÑO (/notas)
+══════════════════════════════════════════ */
+.notas-fuentes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.notas-fuente {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.notas-fuente__num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--azul);
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 2ch;
+}
+
+.notas-fuente p {
+  margin: 4px 0 0;
+  font-size: 0.84rem;
+  color: var(--gris-med);
+}
+
+/* Tabla de métricas */
+.notas-metricas {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+  font-size: 0.88rem;
+}
+
+.notas-metricas__head {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  background: var(--gris-cl);
+  padding: 8px 14px;
+  font-weight: 700;
+  color: var(--gris-med);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  gap: 8px;
+}
+
+.notas-metricas__row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  padding: 10px 14px;
+  gap: 8px;
+  border-top: 1px solid var(--gris-borde);
+  align-items: center;
+}
+
+.notas-metricas__row:nth-child(even) {
+  background: var(--gris-cl);
+}
+
+.notas-metricas__dim {
+  font-weight: 600;
+}
+
+.notas-metricas__antes {
+  color: var(--gris-med);
+}
+
+/* Cards de principios */
+.nota-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nota-card__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 16px;
+  text-align: left;
+}
+
+.nota-card__toggle:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: -3px;
+  border-radius: var(--radio);
+}
+
+.nota-card__icono {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.nota-card__head-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nota-card__titulo {
+  font-size: 1rem;
+  color: var(--texto);
+}
+
+.nota-card__ref {
+  font-size: 0.8rem;
+  color: var(--azul);
+  font-style: italic;
+}
+
+.nota-card__chevron {
+  color: var(--gris-med);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.nota-card__body {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--gris-borde);
+  margin-top: 0;
+}
+
+.nota-card__resumen {
+  margin: 14px 0 10px;
+  color: var(--texto);
+  line-height: 1.6;
+}
+
+.nota-card__hallazgo {
+  background: var(--azul-cl);
+  border-left: 3px solid var(--azul);
+  border-radius: 0 var(--radio) var(--radio) 0;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.nota-card__impl-titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gris-med);
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.nota-card__impl-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nota-card__impl-item {
+  background: var(--gris-cl);
+  border-radius: var(--radio);
+  padding: 10px 12px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.nota-card__impl-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.nota-card__impl-link {
+  font-size: 0.78rem;
+  color: var(--azul);
+  text-decoration: none;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.nota-card__impl-link:hover,
+.nota-card__impl-link:focus-visible {
+  text-decoration: underline;
+}
+
+.nota-card__impl-item p {
+  margin: 0;
+  color: var(--gris-med);
+}
+
+/* Persona usuaria */
+.notas-persona {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notas-persona__item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.notas-persona__item > span {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notas-persona__item p {
+  margin: 2px 0 0;
+  font-size: 0.88rem;
+  color: var(--gris-med);
+  line-height: 1.5;
+}
+
+@media (max-width: 599px) {
+  .notas-fuentes {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .notas-metricas__head {
+    display: none;
+  }
+
+  .notas-metricas__row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .notas-metricas__antes::before {
+    content: 'Antes: ';
+    font-weight: 600;
+    color: var(--gris-med);
+  }
+
+  .notas-metricas__despues::before {
+    content: 'Meta: ';
   }
 }

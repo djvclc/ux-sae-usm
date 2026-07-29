@@ -1,0 +1,29 @@
+# Carpeta de salida de compilación (pdf, aux, log, synctex, etc.)
+build/
+
+# Archivos auxiliares de LaTeX (por si alguno se genera fuera de build/)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.lof
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex.gz(busy)
+*.toc
+*.idx
+*.ilg
+*.ind
+*.nav
+*.snm
+*.vrb
+
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
+*.bak

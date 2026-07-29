@@ -1,0 +1,38 @@
+\chapter{Introducción}
+
+El avance acelerado y la creciente integración de la inteligencia artificial (IA) en diversos sectores han transformado el diseño y la experiencia de productos y servicios digitales, desde la salud y las finanzas hasta la logística y la atención ciudadana \citep{strobel2019aspects}. Esta integración generalizada eleva el diseño ético de la experiencia de usuario (UX) de una característica deseable a una necesidad fundamental: la ética en UX implica tomar decisiones de diseño conscientes para beneficiar a los usuarios y actuar con responsabilidad social \citep{keepcoding2024etica}, evitando activamente los llamados ``patrones oscuros'' —elementos de interfaz que inducen a los usuarios a tomar decisiones que no los benefician \citep{checkealos2024etica}.
+
+Un componente central de ese diseño ético es la \emph{transparencia algorítmica}: la capacidad de un sistema de IA para que su proceso de toma de decisiones, la lógica subyacente y los resultados generados sean interpretables y comprensibles para las personas \citep{ibm2024transparencia,transparenciaalgoritmica}. La ausencia de transparencia no es un problema meramente estético; puede derivar en decisiones incorrectas, filtraciones de información, discriminación por raza o género, y una pérdida generalizada de confianza institucional \citep{unir2024sesgo,skillnest_sesgo,agoro2019case}.
+
+En Chile, el \textbf{Sistema de Admisión Escolar (SAE)} es un caso paradigmático de esta tensión. El SAE es la plataforma del Ministerio de Educación que asigna estudiantes a establecimientos públicos y particulares subvencionados mediante un algoritmo basado en el mecanismo de \emph{Aceptación Diferida} (\emph{Deferred Acceptance}), formulado originalmente por \citet{galeshapley1962} y adaptado al problema de asignación ``muchos a uno'' que caracteriza la admisión escolar. En Chile, este mecanismo está regido por la Ley de Inclusión Escolar N.\textsuperscript{o}~20.845 y considera criterios de prioridad definidos legalmente: hermanos matriculados en el establecimiento, pertenencia al 15\,\% de estudiantes prioritarios, hijos de funcionarios del colegio y condición de exalumno \citep{mineduc_sae,epstein2017mecanismos}.
+
+El algoritmo del SAE es, en ese sentido, formalmente correcto: implementa un mecanismo matemáticamente probado y aplicado en sistemas de admisión escolar de ciudades como Boston, Nueva York, Singapur y París, entre otros. Sin embargo, el sistema no comunica esta lógica a las familias que lo usan. El resultado es una percepción extendida de arbitrariedad —el SAE es descrito coloquialmente como una ``tómbola''— que erosiona la confianza pública incluso cuando los resultados de asignación son objetivamente justos según los criterios legales vigentes. Esta brecha fue confirmada empíricamente por la evaluación heurística de calidad web realizada por el equipo del proyecto Fondecyt N.\textsuperscript{o}~1250492 de la Universidad de Chile en marzo de 2026 \citep{moralesvargas2026informe}, que encontró un cumplimiento de apenas 51\,\% en el sitio informativo del SAE y 61\,\% en su plataforma de postulación, con la dimensión de \emph{transparencia y apertura} entre las peor evaluadas del sitio informativo (0\,\% de cumplimiento): no existe ninguna sección que explique públicamente el funcionamiento del algoritmo, sus criterios de asignación o sus resultados agregados.
+
+Esta brecha es abordable desde el diseño: no requiere modificar el algoritmo ni la legislación vigente, sino intervenir en la capa de presentación e interacción para hacer visible una lógica que hoy permanece oculta para el usuario final. Es precisamente en ese punto donde converge la evidencia de la literatura internacional sobre transparencia algorítmica con evaluación de usuarios finales: enfoques como la divulgación progresiva, la explicabilidad contextualizada y los controles interactivos han demostrado, en decenas de estudios empíricos, que es posible aumentar la comprensión y la confianza del usuario sin exponer los detalles técnicos del algoritmo ni sobrecargar cognitivamente la interfaz.
+
+\section*{Problema de investigación}
+\addcontentsline{toc}{section}{Problema de investigación}
+
+¿Es posible diseñar una interfaz de usuario que, sin alterar el algoritmo de asignación del SAE, mejore significativamente la comprensión, la confianza y la percepción de justicia de las familias respecto del proceso de admisión escolar, aplicando principios de transparencia algorítmica validados por la literatura científica?
+
+\section*{Objetivo general}
+\addcontentsline{toc}{section}{Objetivo general}
+
+Diseñar, construir y evaluar un prototipo de interfaz de usuario que mejore la transparencia y la experiencia de usuario del Sistema de Admisión Escolar chileno, fundamentado en evidencia de la literatura sobre transparencia algorítmica y en un diagnóstico heurístico del sistema real.
+
+\section*{Objetivos específicos}
+\addcontentsline{toc}{section}{Objetivos específicos}
+
+\begin{enumerate}
+    \item Sistematizar la evidencia científica disponible sobre transparencia algorítmica con evaluación de usuarios finales, identificando qué enfoques de diseño funcionan y cuáles no.
+    \item Diagnosticar, mediante un instrumento de evaluación heurística de calidad web, las brechas específicas del sitio informativo y de la plataforma de postulación del SAE.
+    \item Diseñar un caso de estudio representativo y un perfil de usuario objetivo (persona) que guíen las decisiones de diseño del prototipo.
+    \item Construir un prototipo de interfaz —primero como maqueta de alta fidelidad y posteriormente como aplicación web funcional— que aborde las brechas prioritarias detectadas, con énfasis en el módulo explicativo del algoritmo de asignación.
+    \item Evaluar el prototipo mediante pruebas de usabilidad con usuarios reales, midiendo claridad, confianza y utilidad percibida.
+    \item Discutir los resultados obtenidos a la luz de la literatura revisada y proponer recomendaciones para una eventual implementación institucional.
+\end{enumerate}
+
+\section*{Estructura de la tesis}
+\addcontentsline{toc}{section}{Estructura de la tesis}
+
+El Capítulo~2 presenta el marco teórico: los fundamentos de diseño ético en IA, la distinción entre transparencia, explicabilidad e interpretabilidad, los sesgos algorítmicos y los marcos regulatorios vigentes, además de la síntesis de la revisión sistemática de 96 publicaciones sobre transparencia algorítmica con evaluación de usuarios finales. El Capítulo~3 describe la metodología aplicada, en dos frentes complementarios: el diagnóstico heurístico del SAE real y el proceso de diseño, construcción y validación del prototipo. El Capítulo~4 reporta los resultados obtenidos, tanto del diagnóstico como de las pruebas de usabilidad. El Capítulo~5 discute estos resultados en relación con la literatura y con el estado actual del sitio oficial del SAE. Finalmente, el Capítulo~6 presenta las conclusiones y las líneas de trabajo futuro.

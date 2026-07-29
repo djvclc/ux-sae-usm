@@ -1,0 +1,72 @@
+\chapter{Metodología}
+
+Esta investigación emplea una metodología de \textbf{diseño aplicado} (\emph{research through design}), en la que el propio acto de diseñar, construir y refinar un artefacto —en este caso, un prototipo de interfaz— constituye una forma de generar conocimiento sobre el problema abordado. El proceso se organiza en cuatro fases: diagnóstico del sistema real, síntesis de evidencia investigativa, construcción iterativa del prototipo, y un plan de validación que, como se explicita en este capítulo, se encuentra actualmente en etapa de diseño y ejecución pendiente.
+
+\section{Fase 1 — Diagnóstico heurístico del SAE}
+
+La primera fase consistió en diagnosticar el estado real del SAE mediante el instrumento de evaluación heurística de calidad web desarrollado por SISIB (Universidad de Chile), aplicado en marzo de 2026 por el equipo del proyecto Fondecyt N.\textsuperscript{o}~1250492 \citep{moralesvargas2026informe} sobre dos componentes del sistema: el sitio web informativo (\texttt{sistemadeadmisionescolar.cl}) y la plataforma transaccional de postulación.
+
+El instrumento combina veinte dimensiones generales de calidad web —contenido y lenguaje claro, usabilidad, accesibilidad, arquitectura de información, búsqueda y encontrabilidad, responsividad móvil, diseño e imagen institucional, seguridad, tecnología, atención a la ciudadanía, audiovisualidad, enfoque de género, inclusión, promoción, transparencia y apertura, prevención de errores, facilidad de acceso, interacción y retroalimentación, y rapidez de respuesta, entre otras— con un bloque adicional de catorce factores específicos para plataformas de selección escolar. Cada dimensión se descompone en indicadores de chequeo asociados a tres niveles de cumplimiento —\emph{imprescindible}, \emph{esperable} y \emph{deseable}—, y el puntaje final se calcula como el porcentaje de indicadores cumplidos sobre el total de indicadores aplicables, ponderado por nivel.
+
+Este diagnóstico entregó el \emph{baseline} cuantitativo (51\,\% en el sitio informativo, 61\,\% en la plataforma de postulación) que se usó como insumo directo para priorizar las decisiones de diseño de la Fase~3, y que —según se detalla en la Sección~3.5— debe usarse también como referencia de comparación en la validación pendiente del prototipo.
+
+\section{Fase 2 — Revisión sistemática de literatura}
+
+En paralelo, se realizó una revisión sistemática de 96 publicaciones académicas sobre transparencia algorítmica con evaluación de usuarios finales (2017--2025), mediante búsqueda en cuatro fuentes —SciSpace (búsqueda semántica), SciSpace de texto completo, Google Scholar (consulta booleana con palabras clave dirigidas) y ArXiv (\emph{preprints} de ciencias de la computación e interacción humano-computador)—. Los resultados de las cuatro fuentes fueron fusionados, deduplicados y reordenados por relevancia, priorizando los estudios más pertinentes para el problema de investigación. Los criterios de inclusión favorecieron estudios que implementaran algún mecanismo de transparencia algorítmica \emph{y} lo evaluaran empíricamente con usuarios reales, descartando propuestas puramente teóricas sin evaluación. Esta revisión, descrita en el Capítulo~2, aportó los principios de diseño que fundamentan las decisiones de la Fase~3.
+
+Como antecedente directo y motivación inicial de este trabajo, cabe mencionar que un estudio previo del mismo equipo autor —centrado específicamente en el módulo de explicación del resultado de asignación y construido como maqueta estática en Figma— fue sometido a una prueba de usabilidad con diez personas, con resultados favorables en comprensión y confianza percibida. Ese estudio, sin embargo, corresponde a un artefacto y a una instancia de evaluación \textbf{distintos} de los abordados en esta memoria: se cita aquí únicamente como antecedente que motivó la decisión de profundizar y ampliar el prototipo al resto del flujo del SAE, no como resultado propio de este trabajo. La evaluación del prototipo desarrollado en esta memoria (Fase~3) queda descrita como pendiente en la Sección~3.5.
+
+\section{Fase 3 — Diseño y construcción iterativa del prototipo}
+
+\subsection{Caso de estudio y persona}
+
+Para guiar las primeras decisiones de diseño se definió un caso de estudio hipotético (un perfil de estudiante ficticio, una lista ordenada de preferencias de colegios, y un estado de vacantes definido para cada uno) y un arquetipo de usuario objetivo, \textbf{Daniela González}: 35 años, educación media completa, alfabetización digital básica-intermedia, acceso a internet principalmente por teléfono móvil, que postula a un máximo de tres colegios y valora la seguridad, la cercanía y el prestigio del establecimiento. Su frustración principal —documentada en el informe Fondecyt— es percibir el SAE como una ``tómbola'' que no explica sus reglas. De este perfil se derivaron implicancias de diseño concretas: interfaz mobile-first con 375~px como referencia primaria, nivel de lectura objetivo de 6.\textsuperscript{o} básico, flujo de postulación en un máximo de tres pasos, y explicaciones del algoritmo concretas y personalizadas al caso del usuario.
+
+\subsection{Cronología real de las iteraciones}
+
+A diferencia de un desarrollo de software convencional con un único entregable final, este prototipo se construyó como una sucesión de iteraciones documentadas, cada una guiada por un documento de especificación explícito redactado por el autor y ejecutada con apoyo de un agente de IA generativa como herramienta de programación asistida (ver Capítulo~2, Sección~2.6). La Tabla~\ref{tab:iteraciones} resume esta cronología, reconstruida a partir del historial de control de versiones del proyecto.
+
+\begin{table}[h]
+\centering
+\caption{Cronología de iteraciones del prototipo (mayo--julio de 2026).}
+\label{tab:iteraciones}
+\small
+\begin{tabular}{p{2.2cm}p{9.5cm}}
+\toprule
+\textbf{Fecha} & \textbf{Hito} \\
+\midrule
+Mayo (semana 1) & Redacción de \texttt{CLAUDE.md} (especificación base del proyecto) y construcción de la \textbf{Iteración~1}: prototipo HTML autocontenido de una sola página (\texttt{prototipo\_SAE\_mejora.html}), que cubre las cinco secciones mínimas exigidas por el diagnóstico (inicio, módulo de algoritmo, ficha de colegio, flujo de postulación, panel de seguimiento). \\
+Mayo (semana 2) & Redacción de \texttt{CLAUDE\_v2.md} (especificación de mejoras) e incorporación de los documentos de investigación de soporte (revisión de literatura, informe heurístico, plan de metodología). Construcción de la \textbf{Iteración~2}: segunda versión HTML (\texttt{prototipo\_SAE\_v2.html}) que corrige limitaciones técnicas de la V1 (responsividad limitada a dos \emph{breakpoints}, buscador no funcional, simulador con lógica simplificada) y agrega funcionalidades nuevas: comparador de colegios, calendario interactivo, y una lógica de simulación más cercana al mecanismo de Aceptación Diferida. \\
+Mayo (semana 3) & \textbf{Migración de arquitectura}: el prototipo HTML monolítico se reescribe como aplicación \textbf{React + Vite}, con el objetivo de pasar de un archivo estático a una arquitectura de componentes mantenible y extensible. El contenido textual de la versión HTML se extrae programáticamente para no perder el trabajo de redacción ya validado. \\
+Mayo (semana 4) & Se incorpora \emph{shadcn/ui} como sistema de componentes base y se reconstruyen sobre React las páginas de algoritmo, inicio, postulación y seguimiento. \\
+Junio (semana 3) & Se documentan formalmente las brechas del diagnóstico en \texttt{feedback\_sae\_problemas.md} y se construye \texttt{plan\_mejora\_sae.md}: una matriz de trazabilidad de aproximadamente 62 puntos que vincula cada problema detectado con la decisión de diseño correspondiente y su estado de implementación. Los prototipos HTML anteriores se archivan como \emph{baseline} histórico. \\
+Junio (semana 4) & Se redacta \texttt{CONTEXTO\_CLAUDE\_CODE.md} como documento de continuidad del proyecto, y se implementa el \textbf{Comparador de colegios} (\texttt{ComparadorPage.jsx}), identificado como la funcionalidad significativa pendiente de mayor prioridad. \\
+Julio (commit del 12/07) & Se incorporan un \textbf{tour guiado} de \emph{onboarding} (\texttt{GuidedTour.jsx}) y una reescritura sustancial del flujo de postulación (validación de RUT, análisis de probabilidad de asignación por colegio en la propia lista de preferencias). \\
+Julio (trabajo posterior, aún sin registrar en control de versiones) & Se construye \texttt{NotasPage.jsx}: una página dedicada de ``Notas de diseño'' que documenta los seis principios de investigación aplicados en el prototipo, cada uno con su referencia bibliográfica, el hallazgo empírico que lo respalda y los componentes concretos donde se implementó, cerrando así el requisito de trazabilidad visible exigido por \texttt{CLAUDE.md}. Se enlaza la nueva ruta \texttt{/notas} desde el pie de página del sitio. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Nota:} la última fila de la Tabla~\ref{tab:iteraciones} corresponde a cambios ya presentes en el código del prototipo pero que, a la fecha de esta memoria, aún no han sido registrados como \emph{commit} en el historial de control de versiones del proyecto.
+
+Este historial es relevante metodológicamente por dos razones. Primero, confirma que el prototipo no es un artefacto estático sino el resultado de sucesivas correcciones guiadas por el propio diagnóstico y por la literatura revisada, lo que es coherente con el carácter iterativo del \emph{research through design}. Segundo, dado que cada iteración fue ejecutada con apoyo de un agente de IA a partir de instrucciones explícitas del autor, este trabajo documenta también —de forma honesta y verificable a través del propio historial de control de versiones— el uso de esa herramienta como parte del proceso metodológico, y no únicamente el resultado final.
+
+\subsection{Estado actual del prototipo}
+
+Al cierre de la última iteración registrada, el prototipo cubre las cinco secciones exigidas por el diagnóstico original (inicio, módulo del algoritmo con simulador funcional, ficha de colegio, flujo de postulación en tres pasos con inicio de sesión simulado vía ClaveÚnica, y panel de seguimiento), además de tres funcionalidades adicionales no exigidas explícitamente por el diagnóstico pero incorporadas durante el desarrollo: un comparador de colegios, un tour guiado de \emph{onboarding}, y una página de ``Notas de diseño'' que documenta explícitamente la trazabilidad entre cada principio de la revisión de literatura (Capítulo~2) y su implementación concreta en el código. Una verificación interna de trazabilidad frente a la matriz de \texttt{plan\_mejora\_sae.md} registra 61 de 62 puntos abordados en el código —cifra que, con la incorporación de la página de notas de diseño, alcanza en la práctica el 100\,\% de los puntos de esa matriz—; se trata, sin embargo, de una \textbf{autoevaluación de implementación}, no de una validación externa con usuarios ni de una reevaluación formal con el instrumento heurístico del Capítulo 1 de este apartado. Ambas validaciones son, precisamente, el objeto de la fase siguiente.
+
+\section{Fase 4 — Plan de validación (pendiente de ejecución)}
+
+A la fecha de redacción de esta memoria, el prototipo \textbf{no ha sido validado} con usuarios reales ni reevaluado formalmente con el instrumento heurístico SISIB. Se cuenta, en cambio, con un plan de validación ya diseñado, que se ejecutará en el trabajo posterior a este capítulo y cuyos resultados se incorporarán en las secciones de Resultados, Discusión y Conclusiones. El plan contempla cinco fases:
+
+\begin{enumerate}
+    \item \textbf{Preparación del instrumento}: construir una rúbrica que replique las preguntas de chequeo del instrumento SISIB-UChile para las veinte dimensiones generales y los catorce factores específicos de selección escolar, con una hoja de cálculo que compute automáticamente el porcentaje de cumplimiento por dimensión y el puntaje global, siguiendo la misma fórmula del informe original (indicadores cumplidos sobre indicadores aplicables, por cien).
+    \item \textbf{Aplicación al prototipo}: recorrer las secciones del prototipo aplicando cada indicador mediante cuatro tipos de evidencia —validadores automáticos (W3C, axe-core, Lighthouse, contraste WCAG), inspección visual en tres \emph{viewports} (375, 768 y 1280~px), inspección de código para indicadores estructurales, y pruebas funcionales manuales del simulador y del flujo de postulación completo—, incluyendo navegación exclusivamente por teclado y con lector de pantalla.
+    \item \textbf{Análisis comparativo}: construir una tabla y gráficos que comparen el puntaje del prototipo contra el \emph{baseline} de la Fase~1, dimensión por dimensión, e identificar si las brechas críticas declaradas (inclusión, búsqueda, audiovisualidad, interoperabilidad) quedan efectivamente resueltas.
+    \item \textbf{Redacción del informe}: documentar los hallazgos en un informe ejecutivo, con evidencia por indicador y un anexo de capturas de pantalla.
+    \item \textbf{Triangulación con un segundo evaluador}: aplicar el mismo instrumento de forma independiente con una segunda persona evaluadora, y calcular un coeficiente de acuerdo entre evaluadores para mitigar el sesgo de autoevaluación.
+\end{enumerate}
+
+De manera complementaria, y siguiendo el precedente metodológico del estudio previo mencionado en la Sección~3.2, se planea una prueba de usabilidad con usuarios reales sobre el prototipo completo —no solo sobre el módulo de explicación del resultado—, replicando el esquema de tareas dirigidas y cuestionario de percepción en escala Likert utilizado en ese estudio previo, de modo que sus resultados sean comparables con los ya obtenidos para esa iteración anterior, además de evaluables contra el \emph{baseline} heurístico del sistema real.
+
+Los resultados de esta fase, una vez ejecutada, permitirán responder con evidencia propia si el prototipo efectivamente mejora la comprensión, la confianza y la percepción de justicia de las familias respecto del proceso de admisión escolar —que es la pregunta de investigación planteada en el Capítulo~1— en lugar de inferirlo únicamente a partir del cumplimiento de una matriz de trazabilidad interna o de un estudio previo sobre un artefacto distinto.

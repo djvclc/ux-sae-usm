@@ -1,0 +1,31 @@
+\chapter{Discusión}
+
+\emph{Capítulo pendiente de desarrollo.} La discusión completa de este trabajo depende de los resultados de validación descritos como pendientes en la Sección~3.5 y en la Sección~4.4: la reevaluación heurística del prototipo y la prueba de usabilidad con usuarios reales sobre la aplicación completa. Sin esos datos, no corresponde todavía discutir si el prototipo mejora efectivamente la comprensión, la confianza o la percepción de justicia de las familias, que es la pregunta de investigación central de esta memoria (Capítulo~1).
+
+Lo que sí puede discutirse en este punto, por estar basado en resultados ya obtenidos y verificables (Capítulo~4), es lo siguiente.
+
+\section{Por qué el sitio oficial cerró solo dos de las seis brechas prioritarias}
+
+La comparación entre el prototipo y el estado actual del sitio oficial del SAE (Sección~4.3) muestra un patrón que vale la pena anotar como hipótesis a discutir con más evidencia una vez completada la validación: las brechas que el sitio oficial cerró de forma independiente —búsqueda y encontrabilidad, e inclusión parcial mediante el indicador de Programa de Integración Escolar— corresponden a mejoras principalmente informativas y de bajo acoplamiento interactivo, mientras que las que permanecen abiertas —transparencia algorítmica contextualizada, controles interactivos e interoperabilidad con ClaveÚnica— exigen precisamente el tipo de intervención que la literatura revisada en el Capítulo~2 identifica como más efectiva pero también más costosa de implementar: explicaciones locales personalizadas por caso, controles interactivos con retroalimentación inmediata \citep{kim2021recommender,feddersen2024forecasting}, e integración de sistemas de autenticación externos. Esta observación es preliminar y debe tratarse con cautela: compara un diagnóstico de marzo de 2026 con una revisión no sistemática del sitio realizada en julio de 2026, y no controla por otros cambios que el Ministerio de Educación pueda haber implementado fuera de las páginas revisadas.
+
+\section{Qué preguntas deberá responder la discusión completa}
+
+Una vez ejecutado el plan de validación de la Sección~3.5, este capítulo deberá abordar, como mínimo:
+
+\begin{enumerate}
+    \item Si el puntaje heurístico del prototipo, reevaluado con el mismo instrumento SISIB del diagnóstico original, efectivamente cierra las brechas críticas identificadas (transparencia, inclusión, búsqueda, audiovisualidad, interoperabilidad), y en qué magnitud respecto del \emph{baseline} de 51\,\%/61\,\%.
+    \item Si los resultados de la prueba de usabilidad sobre el prototipo completo son consistentes con los del estudio previo mencionado en la Sección~3.2 —realizado sobre un artefacto más acotado—, en particular respecto de si la explicabilidad contextualizada mejora la comprensión y la confianza sin necesariamente resolver la percepción de justicia del resultado, tal como sugiere la literatura sobre gestión de expectativas \citep{springerwhittaker2019,springerwhittaker2020}.
+    \item Qué brechas, si las hubiera, persisten pese al rediseño, y si esas brechas son atribuibles a limitaciones de diseño, a limitaciones inherentes a un prototipo de datos ficticios, o a aspectos del problema que exceden el alcance de una intervención de interfaz (por ejemplo, la interoperabilidad real con ClaveÚnica, que requiere integración de backend no simulable en un prototipo estático).
+    \item Qué relación existe entre los hallazgos obtenidos y las condiciones de un despliegue real en producción, dado que la literatura revisada en el Capítulo~2 advierte explícitamente sobre la escasez de estudios de campo frente a estudios de laboratorio.
+\end{enumerate}
+
+\section{Limitaciones ya identificables}
+
+Aun sin los resultados de validación, es posible anticipar limitaciones metodológicas que la discusión completa deberá considerar:
+
+\begin{itemize}
+    \item \textbf{Datos ficticios}: el catálogo de colegios y los perfiles de usuario del prototipo son ficticios pero representativos del contexto chileno; no se han usado datos reales de postulantes ni de establecimientos.
+    \item \textbf{Persona única}: el diseño se validó conceptualmente contra un solo arquetipo de usuario (Daniela González); otros perfiles de apoderados —por ejemplo, familias de estudiantes con necesidades educativas especiales o usuarios migrantes— podrían revelar necesidades de diseño no cubiertas por este trabajo.
+    \item \textbf{Alcance del algoritmo}: el prototipo no modifica ni audita el algoritmo de asignación real del SAE, cuyo código fuente no es público; el trabajo se limita a la capa de comunicación de sus resultados.
+    \item \textbf{Comparación con el sitio oficial}: la revisión de la Sección~4.3 es una inspección puntual, no un nuevo diagnóstico heurístico completo con el instrumento SISIB; su alcance es más limitado que el del \emph{baseline} original.
+\end{itemize}

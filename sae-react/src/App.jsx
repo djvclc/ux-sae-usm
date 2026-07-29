@@ -68,6 +68,7 @@ const PostulacionPage  = lazy(() => import('./pages/PostulacionPage'))
 const SeguimientoPage  = lazy(() => import('./pages/SeguimientoPage'))
 const CumplimientoPage = lazy(() => import('./pages/CumplimientoPage'))
 const RoadmapPage      = lazy(() => import('./pages/RoadmapPage'))
+const NotasPage        = lazy(() => import('./pages/NotasPage'))
 const ColegioPage      = lazy(() => import('./pages/ColegioPage'))
 const ComparadorPage   = lazy(() => import('./pages/ComparadorPage'))
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'))
@@ -114,6 +115,11 @@ const seoData = {
     title: 'Comparar colegios — SAE',
     desc: 'Compara hasta 3 colegios lado a lado: SIMCE, vacantes, docentes, programa NEE y nivel de demanda.',
     og: 'Compara colegios del SAE — Sistema de Admisión Escolar',
+  },
+  '/notas': {
+    title: 'Notas de diseño — SAE',
+    desc: 'Principios de investigación sobre transparencia algorítmica que respaldan cada decisión de UX del prototipo.',
+    og: 'Notas de diseño — SAE prototipo UX',
   },
 }
 
@@ -177,6 +183,7 @@ function App() {
                 <Route path="/comparador"   element={<ComparadorPage />} />
                 <Route path="/postulacion"  element={<PostulacionPage />} />
                 <Route path="/seguimiento"  element={<SeguimientoPage />} />
+                <Route path="/notas"        element={<NotasPage />} />
                 <Route path="/cumplimiento" element={<CumplimientoPage />} />
                 <Route path="/roadmap"      element={<RoadmapPage />} />
                 <Route path="*"             element={<NotFoundPage />} />

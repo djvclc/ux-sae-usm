@@ -1,6 +1,6 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-06-23  
-**Estado del proyecto:** v4.2 — 98% implementado  
+**Fecha:** 2026-07-29 (actualizado tras commits del 21 y 28 de julio + reorganización del repo)  
+**Estado del proyecto:** v4.2 — 62/62 puntos aplicables implementados (100%)  
 **Directorio principal:** `USM/sae-react/`
 
 ---
@@ -35,15 +35,18 @@ sae-react/
 │   │   ├── CumplimientoPage.jsx # Página interna: matriz de estado del plan (no mostrar al usuario)
 │   │   ├── RoadmapPage.jsx      # Página interna: roadmap de migración (no mostrar al usuario)
 │   │   ├── NotFoundPage.jsx     # 404 personalizado
-│   │   └── PlaceholderPage.jsx  # Pantalla temporal para rutas sin implementar
+│   │   ├── ComparadorPage.jsx   # Comparador de 2-3 colegios (tabla desktop / cards móvil)
+│   │   └── NotasPage.jsx        # Página interna: trazabilidad diseño ↔ literatura (96 papers)
 │   ├── components/
 │   │   ├── Navbar.jsx           # Navegación + hamburger mobile + NavLink activo
 │   │   ├── Footer.jsx           # Canales de contacto SAE + OIRS
 │   │   ├── ChatAyuda.jsx        # Chat flotante con 8 FAQ predefinidas
+│   │   ├── GuidedTour.jsx       # Tour guiado paso a paso por la interfaz
 │   │   ├── SchoolIllustration.jsx # SVG generado por nombre (reemplaza fotos)
 │   │   └── TextSizeBar.jsx      # Control global Normal/Grande de tamaño de fuente
 │   ├── context/
-│   │   └── TextSizeContext.jsx  # Provider de tamaño de texto global
+│   │   ├── TextSizeContext.jsx  # Provider de tamaño de texto global
+│   │   └── TourContext.jsx      # Estado y pasos del tour guiado
 │   ├── data/
 │   │   ├── colegios.js          # Catálogo de 6 colegios ficticios (esquema completo)
 │   │   └── incisos.js           # Datos de cumplimiento del plan (CumplimientoPage)
@@ -65,40 +68,22 @@ sae-react/
 
 ---
 
-## 3. Estado actual — 61/62 puntos implementados (98%)
+## 3. Estado actual — 62/62 puntos aplicables implementados (100%)
 
 El plan completo está en `plan_mejora_sae.md`. Resumen de lo que YA está hecho:
 
 ✅ **Completado (61 puntos):** buscador con autocompletado predictivo, módulo de algoritmo con simulador interactivo, ficha de colegio ampliada, flujo de postulación 3 pasos con ClaveÚnica, panel de seguimiento con resultado y comprobante descargable, chat de ayuda FAQ, control de tamaño de texto global, navegación accesible, SEO dinámico + Open Graph por ruta, contraste WCAG AAA, hamburger menu mobile, barras SIMCE adaptadas a móvil, ErrorBoundary, lazy loading en 11 rutas.
 
-❌ **Pendiente (1 punto — prioridad baja):**
-- **15.2** — Sección "Resultados de años anteriores" con estadísticas ficticias en `AlgoritmoPage.jsx`
+✅ **15.2 cerrado (2026-07-21):** sección "Resultados de años anteriores" con estadísticas ficticias y gráfico Chart.js en `AlgoritmoPage.jsx`. Con esto no quedan puntos pendientes.
 
 ⚠️ **No aplica al prototipo:**
 - **8.2** — Cabeceras HTTP de seguridad (producción/Nginx, no afecta el prototipo local)
 
 ---
 
-## 4. Funcionalidad FALTANTE más importante: `/comparador`
+## 4. `/comparador` — IMPLEMENTADO (2026-07-21)
 
-La ruta `/comparador` existe en `App.jsx` pero renderiza un `PlaceholderPage`. Es la única funcionalidad significativa sin implementar.
-
-**Qué debe hacer:**
-- Seleccionar 2-3 colegios del catálogo (`src/data/colegios.js`) con checkboxes
-- Tabla comparativa dinámica con estas filas:
-  - Distancia estimada
-  - Vacantes por nivel
-  - SIMCE vs. promedio comunal (con indicador ↑/↓)
-  - % docentes titulados (barra visual)
-  - Programa NEE (✅/❌)
-  - Jornada escolar
-  - Nivel de demanda (badge de color)
-- Botón "Agregar a mi postulación" por columna
-- En móvil (<600px): tabla → tarjetas apiladas por colegio
-
-**La ruta ya existe en App.jsx** — solo falta crear `src/pages/ComparadorPage.jsx` y reemplazar el `PlaceholderPage` en la ruta `/comparador`.
-
-El navbar también tiene un enlace `🔎 Colegios` que hace scroll al buscador de InicioPage — si se quiere, se puede añadir "Comparar" al menú de Navbar.jsx.
+`src/pages/ComparadorPage.jsx` existe y está conectado en `App.jsx`. Permite seleccionar 2-3 colegios del catálogo y muestra tabla comparativa (distancia, vacantes, SIMCE vs. promedio comunal, docentes, NEE, jornada, demanda) con vista de cards apiladas en móvil. En el mismo ciclo se agregaron el **tour guiado** (`GuidedTour.jsx` + `TourContext.jsx`) y la página interna `/notas` (`NotasPage.jsx`, trazabilidad diseño ↔ literatura), y se rediseñó el flujo de `PostulacionPage.jsx`. `PlaceholderPage.jsx` quedó sin uso y fue movida a `archivo/sae-react-muertos/` (2026-07-29) junto con otros archivos sin referencias (App.css, ui/button.jsx, assets de plantilla, public/icons.svg).
 
 ---
 
@@ -154,7 +139,7 @@ probAsignacion(nivel, demanda) // tabla: alta/media/baja × nivel 1-5 → porcen
 calcularResultado(listaIds, perfil) // simula asignación: retorna { asignado, detalles, nivel, prioridadLabel, error }
 ```
 
-El simulador ya está funcional en `AlgoritmoPage.jsx`. Si se implementa el comparador, puede reutilizar `nivelPrioridad` y `probAsignacion`.
+El simulador está funcional en `AlgoritmoPage.jsx` y el comparador (`ComparadorPage.jsx`) reutiliza `nivelPrioridad` y `probAsignacion`.
 
 ---
 
@@ -172,30 +157,23 @@ El simulador ya está funcional en `AlgoritmoPage.jsx`. Si se implementa el comp
 
 ## 10. Próximos pasos recomendados (en orden de prioridad)
 
-### Prioridad ALTA
-1. **Implementar `/comparador`** — crear `src/pages/ComparadorPage.jsx` y conectarlo en `App.jsx` (reemplazar PlaceholderPage). Es la única funcionalidad significativa faltante.
+Los puntos del plan están todos cerrados (62/62 aplicables). Queda trabajo de pulido opcional:
 
-### Prioridad MEDIA
-2. **Agregar estadísticas históricas en AlgoritmoPage** (punto 15.2) — una sección con datos ficticios de resultados de años anteriores: % asignados en 1ª preferencia, promedio de opciones usadas, etc. Usar Chart.js (ya instalado).
-
-### Prioridad BAJA
-3. **Documentar cabeceras HTTP** en `vite.config.js` como comentario de producción (Nginx) — punto 8.2.
-4. **Migrar CumplimientoPage y RoadmapPage** fuera de las rutas públicas o marcarlas con `noindex` meta tag (son páginas internas de trabajo, no parte del prototipo público).
-
-### Mejoras opcionales (si hay tiempo)
-5. **Sección de testimonios** en SeguimientoPage — 3 historias ficticias de apoderados (descritas en `archivo/CLAUDE_v2.md` sección 4H)
-6. **Gráfico radar** en ColegioPage con Chart.js — SIMCE, NEE, Seguridad, Docentes, Proximidad en un pentágono
-7. **Progress ring SVG** para % docentes titulados en ColegioPage
-
----
+1. **Documentar cabeceras HTTP** en `vite.config.js` como comentario de producción (Nginx) — punto 8.2 (no aplica al prototipo, solo documentación).
+2. **Marcar páginas internas** (`/cumplimiento`, `/roadmap`, `/notas`) con meta `noindex` — no son parte del flujo público.
+3. **Sección de testimonios** en SeguimientoPage — 3 historias ficticias (ver `archivo/CLAUDE_v2.md` sección 4H).
+4. **Gráfico radar** en ColegioPage con Chart.js (SIMCE, NEE, Seguridad, Docentes, Proximidad).
+5. **Progress ring SVG** para % docentes titulados en ColegioPage.
+6. **Corregir 15 errores de lint preexistentes** (variables sin usar y similares en 12 archivos; detectados 2026-07-29).
 
 ## 11. Cómo correr el proyecto
 
 ```bash
 cd sae-react
-pnpm install   # o npm install
-pnpm dev       # abre en localhost:5173
-pnpm build     # build de producción en dist/
+npm install
+npm run dev    # abre en localhost:5173
+npm run build  # build de producción en dist/
+npm run lint   # validación obligatoria junto con build
 ```
 
 ---
@@ -204,9 +182,10 @@ pnpm build     # build de producción en dist/
 
 | Archivo | Qué contiene |
 |---------|-------------|
-| `CLAUDE.md` | Instrucciones base del proyecto (contexto, persona, brechas, principios) |
-| `plan_mejora_sae.md` | Matriz completa de 62 puntos con estado de cada uno |
-| `feedback_sae_problemas.md` | Problemas originales extraídos del informe de calidad |
+| `CLAUDE.md` | Instrucciones base del repo (subproyectos, reglas globales, agentes) |
+| `.claude/agents/` | Agentes: `code-agent` (sae-react) y `writing-agent` (proyecto-tesis) |
+| `docs/planificacion/plan_mejora_sae.md` | Matriz completa de 62 puntos con estado de cada uno |
+| `docs/investigacion/feedback_sae_problemas.md` | Problemas originales extraídos del informe de calidad |
 | `archivo/CLAUDE_v2.md` | Instrucciones para funcionalidades avanzadas (comparador, testimonios, radar) |
 | `archivo/prototipo_SAE_mejora.html` | V1 HTML monolítico (baseline superado) |
 | `archivo/prototipo_SAE_v2.html` | V2 HTML monolítico (baseline secundario) |

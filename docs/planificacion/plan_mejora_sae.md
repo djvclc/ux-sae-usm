@@ -194,7 +194,7 @@
 | # | Problema | Acción | Estado | Archivo(s) |
 |---|---|---|---|---|
 | 15.1 | Sin información del algoritmo | Módulo completo: 4 pasos interactivos + detalle expandible + simulador con perfil real | ✅ | `AlgoritmoPage.jsx` |
-| 15.2 | Sin estadísticas de resultados públicas | Agregar sección "Resultados de años anteriores" con datos ficticios representativos | ❌ 🟢 | `AlgoritmoPage.jsx` |
+| 15.2 | Sin estadísticas de resultados públicas | Agregar sección "Resultados de años anteriores" con datos ficticios representativos | ✅ 🟢 | `AlgoritmoPage.jsx` |
 | 15.3 | Sin explicación contextualizada del resultado | `generarExplicacion()` en `SeguimientoPage`: "Quedaste en X porque tienes hermano/a ahí" | ✅ | `SeguimientoPage.jsx` |
 | 15.4 | Sin visibilidad del proceso de asignación | Timeline horizontal de 4 etapas (Postulación → Validación → Asignación → Resultado) con estados visuales | ✅ | `SeguimientoPage.jsx`, `index.css` |
 | 15.5 | Sin acción sobre la oferta de matrícula | Botones "Aceptar asignación" / "Rechazar y pasar a lista de espera" con feedback contextual | ✅ | `SeguimientoPage.jsx`, `index.css` |
@@ -259,9 +259,11 @@
 
 ## Resumen de estado por prioridad
 
-### ✅ Aplicados — 61 de 62 puntos (98%)
+### ✅ Aplicados — 62 de 62 puntos aplicables (100%)
 
-Todos los puntos de prioridad 🔴 alta y 🟡 media están implementados. La actualización v4.2 cerró los 2 últimos puntos funcionales: autocompletado predictivo (5.3) y chat de ayuda simulado (10.1).
+Todos los puntos de prioridad 🔴 alta y 🟡 media están implementados. La actualización v4.2 cerró autocompletado predictivo (5.3) y chat de ayuda simulado (10.1). El 2026-07-21 se cerró el último punto pendiente, 15.2 (sección "Resultados de años anteriores" con Chart.js en `AlgoritmoPage.jsx`).
+
+> ✅ **Sincronización con la memoria (2026-07-29):** capítulos 00, 04 y 06 actualizados a "100 % (62/62 aplicables)"; compilación verificada sin errores.
 
 ### ⚠️ No aplica al prototipo — 1 punto
 

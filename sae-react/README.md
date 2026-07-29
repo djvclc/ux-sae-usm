@@ -1,16 +1,28 @@
-# React + Vite
+# sae-react — Prototipo de mejora UX del SAE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación React que prototipa una mejora de experiencia de usuario del Sistema de Admisión Escolar (SAE) del Mineduc Chile, con foco en transparencia algorítmica, accesibilidad y diseño mobile-first. Fundamentos, plan de mejora y trazabilidad: ver `../CLAUDE.md` y `../docs/`.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+React 19 · Vite 8 · React Router DOM 7 · Tailwind CSS v4 (config en `src/index.css` con `@theme`, sin `tailwind.config.js`) · shadcn/ui (base-nova) · Chart.js · lucide-react. JavaScript/JSX, sin TypeScript.
 
-## React Compiler
+## Comandos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install       # primera vez
+npm run dev       # servidor de desarrollo
+npm run lint      # ESLint (validación obligatoria)
+npm run build     # build de producción (validación obligatoria)
+```
 
-## Expanding the ESLint configuration
+No hay suite de tests: la validación es lint + build + revisión manual.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Estructura
+
+- `src/pages/` — una página por ruta (Inicio, Algoritmo, Colegio, Comparador, Postulación, Seguimiento, etc.; internas: Cumplimiento, Roadmap, Notas).
+- `src/components/` — Navbar, Footer, ChatAyuda, GuidedTour, SchoolIllustration, TextSizeBar; `ui/` (shadcn).
+- `src/data/colegios.js` — catálogo ficticio de 6 colegios; `src/data/incisos.js` — matriz de cumplimiento.
+- `src/utils/asignacion.js` — lógica del simulador de asignación (prioridades legales del SAE).
+- `src/index.css` — todos los estilos (custom properties, mobile-first 375px).
+
+Los comentarios usan códigos de trazabilidad `S<sección>-<inciso>` que remiten a `../docs/planificacion/plan_mejora_sae.md`.

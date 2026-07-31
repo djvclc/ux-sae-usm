@@ -9,12 +9,6 @@ const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 const demandaLabel = { alta: 'Alta', media: 'Media', baja: 'Baja' }
 const demandaClass = { alta: 'demand-chip--alta', media: 'demand-chip--media', baja: 'demand-chip--baja' }
 
-const nivelLabel = {
-  preKinder: 'PreKínder',
-  kinder: 'Kínder',
-  basico: 'Básico',
-  medio: 'Medio',
-}
 
 function simcePromedio(c) {
   return Math.round((c.simce.lectura + c.simce.matematica) / 2)
@@ -146,16 +140,18 @@ export default function ComparadorPage() {
                 />
                 <FilaTabla
                   label="🕐 Jornada"
-                  celdas={cols.map((c) => <td key={c.id}>{c.jornada}</td>)}
+                  celdas={cols.map((c) => <td key={c.id}>{c.vacantes[0]?.jornada ?? 'No especificada'}</td>)}
                 />
                 <FilaTabla
                   label="🪑 Vacantes por nivel"
                   celdas={cols.map((c) => (
                     <td key={c.id}>
-                      {Object.entries(c.vacantes).map(([niv, n]) => (
-                        <span key={niv} style={{ display: 'block', fontSize: '0.82rem', lineHeight: 1.6 }}>
-                          {nivelLabel[niv] ?? niv}: <strong>{n}</strong>
-                        </span>
+                      {/* S16-1: vacantes como array con rango min–max */}
+                      {c.vacantes.map((v) => (
+                        <div key={v.nivel} className="comp-vacante-row">
+                          <span className="comp-vacante-row__nivel">{v.label}</span>
+                          <span className="comp-vacante-row__rango">{v.min}–{v.max}</span>
+                        </div>
                       ))}
                     </td>
                   ))}
@@ -245,7 +241,7 @@ export default function ComparadorPage() {
                     </li>
                     <li>
                       <span>🕐 Jornada</span>
-                      <strong>{c.jornada}</strong>
+                      <strong>{c.vacantes[0]?.jornada ?? 'No especificada'}</strong>
                     </li>
                     <li>
                       <span>📊 SIMCE</span>

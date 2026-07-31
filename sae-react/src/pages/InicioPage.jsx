@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios, totalVacantes } from '../data/colegios'
+// S16-1: ordenamiento del buscador (investigacion_vitrina_sae.md)
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
@@ -12,25 +13,25 @@ const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 const PASOS_RAPIDOS = [
   {
     num: 1,
-    titulo: 'Conoce cómo funciona',
-    desc: 'Entiende el proceso de asignación en 4 pasos simples. Sin tómbolas, con reglas claras.',
+    titulo: 'Entiende cómo te asignan un colegio',
+    desc: 'El SAE no es una tómbola: hay reglas claras y transparentes. Te explicamos el proceso en 4 pasos cortos — cuándo importa el orden de tu lista y cuáles son tus prioridades.',
     link: '/algoritmo',
-    linkText: 'Ver cómo funciona',
+    linkText: 'Leer cómo funciona el sistema',
     icon: '📖',
   },
   {
     num: 2,
-    titulo: 'Busca y compara colegios',
-    desc: 'Explora los establecimientos disponibles, revisa sus datos y arma tu lista de preferencias.',
+    titulo: 'Explora y compara colegios',
+    desc: 'Busca establecimientos por nombre o comuna, revisa sus datos (SIMCE, vacantes, jornada) y compáralos antes de armar tu lista definitiva.',
     link: '#buscador',
-    linkText: 'Buscar colegios',
+    linkText: 'Ver colegios disponibles',
     icon: '🔎',
     hash: true,
   },
   {
     num: 3,
     titulo: 'Postula con ClaveÚnica',
-    desc: 'Ingresa con tu ClaveÚnica, ordena tus opciones y confirma tu postulación en minutos.',
+    desc: 'Cuando tengas tu lista lista, el proceso de postulación toma menos de 10 minutos. Solo necesitas tu ClaveÚnica del Estado chileno.',
     link: '/postulacion',
     linkText: 'Ir a postulación',
     icon: '✅',
@@ -47,6 +48,7 @@ export default function InicioPage() {
   const [listaDraft, setListaDraft] = useState([])
   const [buscadorAbierto, setBuscadorAbierto] = useState(true)
   const [showSugerencias, setShowSugerencias] = useState(false)
+  const [sortBy, setSortBy] = useState('default')
 
   const sugerencias = useMemo(() => {
     if (!texto || texto.length < 2) return []
@@ -84,6 +86,21 @@ export default function InicioPage() {
       return matchTexto && matchComuna && matchNivel
     })
   }, [texto, comuna, nivel])
+
+  // S16-1: ordenamiento del buscador por criterio seleccionado
+  const ordenados = useMemo(() => {
+    const arr = [...resultados]
+    const demandaNum = { alta: 2, media: 1, baja: 0 }
+    if (sortBy === 'simce') return arr.sort((a, b) => {
+      const sa = Math.round((a.simce.lectura + a.simce.matematica + a.simce.ciencias + a.simce.historia) / 4)
+      const sb = Math.round((b.simce.lectura + b.simce.matematica + b.simce.ciencias + b.simce.historia) / 4)
+      return sb - sa
+    })
+    if (sortBy === 'vacantes')  return arr.sort((a, b) => totalVacantes(b) - totalVacantes(a))
+    if (sortBy === 'distancia') return arr.sort((a, b) => a.distanciaBase - b.distanciaBase)
+    if (sortBy === 'demanda')   return arr.sort((a, b) => demandaNum[a.demanda] - demandaNum[b.demanda])
+    return arr
+  }, [resultados, sortBy])
 
   const comunas = [...new Set(colegios.map((c) => c.comuna))].sort()
 
@@ -139,61 +156,68 @@ export default function InicioPage() {
             <Link className="btn btn--primary btn--grande" to="/postulacion">
               Postular ahora
             </Link>
-            <Link className="btn btn--secondary" to="/calendario">
-              Ver calendario completo
-            </Link>
           </div>
+          <p className="hero-stage__hint">¿Primera vez aquí? Baja y te explicamos todo el proceso.</p>
         </div>
       </section>
 
-      {/* ── MINI-GUÍA: 3 pasos rápidos ── */}
-      <section className="pasos-inicio" aria-label="Cómo funciona en 3 pasos">
-        <h2 className="pasos-inicio__titulo">¿Cómo postular? 3 pasos simples</h2>
-        <div className="pasos-inicio__grid">
-          {PASOS_RAPIDOS.map((paso) => (
-            <div key={paso.num} className="paso-inicio">
-              <span className="paso-inicio__icon">{paso.icon}</span>
-              <span className="paso-inicio__num">Paso {paso.num}</span>
-              <h3 className="paso-inicio__titulo">{paso.titulo}</h3>
-              <p className="paso-inicio__desc">{paso.desc}</p>
-              {paso.hash ? (
-                <button
-                  type="button"
-                  className="btn btn--secondary btn--mini"
-                  onClick={scrollToBuscador}
-                >
-                  {paso.linkText}
-                </button>
-              ) : (
-                <Link className="btn btn--secondary btn--mini" to={paso.link}>
-                  {paso.linkText}
-                </Link>
-              )}
+      {/* ── GUÍA VERTICAL 3 PASOS ── */}
+      <section className="guia-pasos" aria-label="Proceso de postulación en 3 pasos">
+        <h2 className="guia-pasos__titulo">¿Cómo funciona la postulación?</h2>
+        <p className="guia-pasos__subtitulo">
+          Sigue los pasos en orden — cada uno toma unos minutos y te acerca al colegio que prefieres.
+        </p>
+        <div className="guia-pasos__lista">
+          {PASOS_RAPIDOS.map((paso, idx) => (
+            <div key={paso.num} className="guia-item">
+              <div className="guia-item__izq" aria-hidden="true">
+                <span className="guia-item__num">{paso.num}</span>
+                {idx < PASOS_RAPIDOS.length - 1 && <span className="guia-item__linea" />}
+              </div>
+              <div className="guia-item__cuerpo">
+                <div className="guia-item__head">
+                  <span className="guia-item__icon">{paso.icon}</span>
+                  <h3 className="guia-item__titulo">{paso.titulo}</h3>
+                </div>
+                <p className="guia-item__desc">{paso.desc}</p>
+                {paso.hash ? (
+                  <button type="button" className="guia-item__link" onClick={scrollToBuscador}>
+                    {paso.linkText} ↓
+                  </button>
+                ) : (
+                  <Link className="guia-item__link" to={paso.link}>
+                    {paso.linkText} →
+                  </Link>
+                )}
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── ACCESOS RÁPIDOS ── */}
-      <section className="quick-links" aria-label="Accesos rápidos">
-        <Link className="quick-card" to="/algoritmo">
-          <strong>¿Cómo te asignan un colegio?</strong>
-          <p>Entiende el proceso en 4 pasos y simula tu caso.</p>
-        </Link>
-        <Link className="quick-card" to="/seguimiento">
-          <strong>Revisar mi postulación</strong>
-          <p>Consulta el estado, el resultado y descarga tu comprobante.</p>
-        </Link>
-        <Link className="quick-card" to="/perfil">
-          <strong>Mis datos y prioridades</strong>
-          <p>Revisa tus criterios de prioridad antes de postular.</p>
-        </Link>
-      </section>
-
-      {/* ── BUSCADOR DE COLEGIOS (colapsable) ── */}
+      {/* ── BUSCADOR DE COLEGIOS ── */}
       <section id="buscador" className="buscador-section">
-        <div className="buscador-header">
-          <h2>Busca colegios</h2>
+        <div className="buscador-intro">
+          <h2 className="buscador-intro__titulo">Busca colegios</h2>
+          <p className="buscador-intro__desc">Busca por nombre o comuna y agrega los que te interesen a tu lista.</p>
+        </div>
+
+        {/* S16-1: selector de orden del buscador */}
+        <div className="buscador-sort">
+          <label htmlFor="sort-colegios" className="buscador-sort__label">Ordenar por:</label>
+          <select
+            id="sort-colegios"
+            className="form-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            style={{ maxWidth: 220 }}
+          >
+            <option value="default">Relevancia (defecto)</option>
+            <option value="simce">Mayor SIMCE</option>
+            <option value="vacantes">Más vacantes</option>
+            <option value="distancia">Menor distancia</option>
+            <option value="demanda">Menor demanda</option>
+          </select>
         </div>
 
             <div className="search-box" role="search" aria-label="Buscador de colegios">
@@ -260,7 +284,7 @@ export default function InicioPage() {
             </div>
 
             <div className="school-grid">
-              {resultados.map((c) => {
+              {ordenados.map((c) => {
                 const vac = totalVacantes(c)
                 const dist = c.distanciaBase
                 const distLabel = dist < 2 ? 'Cerca' : dist < 4 ? 'Media distancia' : 'Lejos'
@@ -285,7 +309,7 @@ export default function InicioPage() {
                         {c.nee.programa
                           ? <span><abbr title="Programa de Integración Escolar">PIE</abbr> incluido</span>
                           : <span>Sin programa PIE</span>}
-                        <span>{c.jornada === 'Completa' ? 'Jornada completa' : 'Jornada parcial'}</span>
+                        <span>{c.vacantes[0]?.jornada === 'Completa' ? 'Jornada completa' : 'Jornada parcial'}</span>
                       </div>
                       <div className="school-card__actions">
                         <Link
@@ -343,9 +367,6 @@ export default function InicioPage() {
         </Card>
       </section>
 
-      <Link className="floating-cta" to="/postulacion" aria-label="Ir a postulación">
-        Postular ahora
-      </Link>
     </main>
   )
 }

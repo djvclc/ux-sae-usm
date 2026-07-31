@@ -81,39 +81,39 @@ const kpis = [
   { valor: '3%', etiqueta: 'requirió segunda etapa de asignación', color: '#374151' },
 ]
 
-/* Datos de los 4 pasos — separados para mantener el JSX limpio */
+/* Datos de los 4 pasos — texto ampliado para lectura en scroll (S4-1) */
 const pasos = [
   {
     num: 1,
     icon: '📋',
-    titulo: 'Tú eliges',
-    desc: 'Eliges hasta 8 colegios en orden de preferencia. El primero es el que más quieres.',
-    detalle: 'Puedes cambiar el orden antes de confirmar. Pon el colegio que más quieres primero.',
-    color: '#1e3a5f',
+    titulo: 'Tú eliges tu lista',
+    desc: 'Durante el período de postulación, tú armas una lista con los colegios que te interesan — hasta 8 establecimientos — y los ordenas de mayor a menor preferencia. El primero de tu lista es el que más quieres conseguir.',
+    detalle: 'Puedes cambiar el orden y agregar o quitar colegios todas las veces que necesites antes de la fecha límite. No te apresures: tomarte el tiempo para investigar y comparar vale la pena.',
+    color: '#0057B7',
   },
   {
     num: 2,
     icon: '⚖️',
-    titulo: 'Cada colegio prioriza',
-    desc: 'La ley define el orden: hermanos/as primero, luego estudiantes prioritarios/as, funcionarios/as y exalumnos/as.',
-    detalle: 'Si no tienes ninguna prioridad, participas en el sorteo junto a otros postulantes sin prioridad.',
-    color: '#2d6a4f',
+    titulo: 'Cada colegio tiene un orden de prioridad',
+    desc: 'La ley define quién tiene preferencia en cada establecimiento. El orden es: primero, quienes tienen un hermano o hermana matriculado/a en ese colegio. Después, estudiantes prioritarios/as (con designación SEP). Luego, hijos/as de funcionarios/as del colegio. Y finalmente, exalumnos/as del establecimiento.',
+    detalle: 'Si no tienes ninguna de estas condiciones, participas en el sorteo público junto a otros postulantes sin prioridad especial. Ese sorteo es transparente, certificado por el MINEDUC y completamente aleatorio.',
+    color: '#1A7F37',
   },
   {
     num: 3,
     icon: '⚙️',
-    titulo: 'El sistema asigna',
-    desc: 'Se cruzan tus preferencias con las prioridades y los cupos disponibles.',
-    detalle: 'Si hay empate entre postulantes con la misma prioridad, el sistema hace un sorteo público certificado.',
-    color: '#7b3f96',
+    titulo: 'El algoritmo cruza las listas',
+    desc: 'Usando el método de Gale-Shapley — el mismo que usan Nueva York, Londres y Ámsterdam — el sistema cruza la lista de todos los postulantes con las prioridades y los cupos de cada colegio. Cada estudiante queda asignado al mejor colegio posible según su posición en la lista y sus condiciones de prioridad.',
+    detalle: 'El algoritmo es "strategy-proof": no tiene sentido "jugar estratégicamente" poniendo primero un colegio de menos demanda esperando tener más opciones. Siempre conviene poner primero el colegio que realmente quieres.',
+    color: '#6d3b9e',
   },
   {
     num: 4,
     icon: '📬',
-    titulo: 'Te avisamos',
-    desc: 'Recibes el resultado. Si no quedas en tu primera opción, el sistema sigue revisando tu lista en orden.',
-    detalle: 'Tienes un plazo para aceptar o rechazar el colegio asignado antes de que se ofrezca a otro postulante.',
-    color: '#b35c1e',
+    titulo: 'Recibes tu resultado',
+    desc: 'En la fecha de resultados recibes una notificación con el colegio al que quedaste asignado/a. El sistema siempre va de tu primera preferencia hacia abajo: si no hay cupo en la N.°1 con tu prioridad, revisa la N.°2, después la N.°3, y así sucesivamente.',
+    detalle: 'Si no quedas en ninguno de los colegios de tu lista, el sistema activa una segunda etapa donde se te asigna el establecimiento más cercano con vacantes disponibles para el nivel que buscas. No quedas sin colegio.',
+    color: '#C0392B',
   },
 ]
 
@@ -223,7 +223,6 @@ export default function AlgoritmoPage() {
     exalumno: false,
   })
   const [seleccion, setSeleccion] = useState([])
-  const [pasoExpandido, setPasoExpandido] = useState(null)
 
   const resultado = useMemo(
     () => (seleccion.length ? calcularResultado(seleccion, perfil) : null),
@@ -233,7 +232,6 @@ export default function AlgoritmoPage() {
   const cargarEscenario = (esc) => {
     setPerfil(esc.perfil)
     setSeleccion(esc.colegios)
-    setPasoExpandido(null)
   }
 
   const toggleCondicion = (key) => {
@@ -277,38 +275,37 @@ export default function AlgoritmoPage() {
   return (
     <main className={`page page--module${textoGrande ? ' page--texto-grande' : ''}`}>
       <TextSizeBar pageName="¿Cómo funciona?" />
-      <h1>¿Cómo te asignan un colegio?</h1>
+      <h1>El Sistema de Admisión Escolar</h1>
       <p className="page__lead">
-        El SAE no es una tómbola. Funciona con reglas claras y prioridades definidas por ley.
-        Simula tu caso para ver una explicación personalizada.
+        Más de 300.000 familias pasan por este proceso cada año en Chile. Acá te explicamos
+        paso a paso cómo funciona el algoritmo, cuáles son tus prioridades y qué puedes
+        hacer para postular con confianza.
       </p>
 
-      {/* ══ INFOGRAFÍA 4 PASOS ══ */}
+      {/* ══ 4 PASOS EN FORMATO SCROLL / TIMELINE ══ */}
       <section className="algo-pasos" aria-label="Los 4 pasos del proceso SAE">
-        <div className="algo-pasos__grid">
+        <h2 className="algo-pasos__subtitulo">¿Cómo te asignan un colegio?</h2>
+        <div className="algo-timeline">
           {pasos.map((paso, idx) => (
-            <div key={paso.num} className="algo-paso" style={{ '--paso-color': paso.color }}>
-              {/* Flecha conectora — oculta en móvil */}
-              {idx < pasos.length - 1 && (
-                <div className="algo-paso__flecha" aria-hidden="true">→</div>
-              )}
-              <div className="algo-paso__header">
-                <span className="algo-paso__num" aria-hidden="true">{paso.num}</span>
-                <span className="algo-paso__icon" aria-hidden="true">{paso.icon}</span>
+            <div
+              key={paso.num}
+              className="algo-timeline__item"
+              style={{ '--paso-color': paso.color }}
+            >
+              <div className="algo-timeline__izq" aria-hidden="true">
+                <span className="algo-timeline__num">{paso.num}</span>
+                {idx < pasos.length - 1 && (
+                  <span className="algo-timeline__linea" />
+                )}
               </div>
-              <h2 className="algo-paso__titulo">{paso.titulo}</h2>
-              <p className="algo-paso__desc">{paso.desc}</p>
-              <button
-                type="button"
-                className="algo-paso__mas"
-                aria-expanded={pasoExpandido === paso.num}
-                onClick={() => setPasoExpandido(pasoExpandido === paso.num ? null : paso.num)}
-              >
-                {pasoExpandido === paso.num ? '▲ Menos detalle' : '▼ Más detalle'}
-              </button>
-              {pasoExpandido === paso.num && (
-                <p className="algo-paso__detalle" role="note">{paso.detalle}</p>
-              )}
+              <div className="algo-timeline__contenido">
+                <div className="algo-timeline__header">
+                  <span className="algo-timeline__icon">{paso.icon}</span>
+                  <h3 className="algo-timeline__titulo">{paso.titulo}</h3>
+                </div>
+                <p className="algo-timeline__desc">{paso.desc}</p>
+                <p className="algo-timeline__detalle">{paso.detalle}</p>
+              </div>
             </div>
           ))}
         </div>

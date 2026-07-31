@@ -1,5 +1,5 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-07-29 (actualizado tras commits del 21 y 28 de julio + reorganización del repo)  
+**Fecha:** 2026-07-30 (actualizado tras refactor vitrina SAE — investigacion_vitrina_sae.md)  
 **Estado del proyecto:** v4.2 — 62/62 puntos aplicables implementados (100%)  
 **Directorio principal:** `USM/sae-react/`
 
@@ -127,7 +127,9 @@ El plan completo está en `plan_mejora_sae.md`. Resumen de lo que YA está hecho
 | 5 | Colegio Villa del Sol | Peñalolén | Alta |
 | 6 | Escuela Básica Los Quillayes | La Florida | Media |
 
-Cada colegio tiene: nombre, dirección, comuna, distanciaBase, niveles, vacantes, simce, promedioComunal, docentes, jornada, nee, seguridad, metodos, proyecto, demanda, prioritarios.
+Cada colegio tiene (esquema v2 — 2026-07-30): nombre, rbd, director, dependencia, orientacion, dirección, comuna, distanciaBase, niveles, vacantes (array con { nivel, label, min, max, postulantesAnterior, jornada, copago }), simce, simceAnio, promedioComunal, gseComparacion, gseNumColegios, categoriaDesempeno, categoriaAnio, docentes, nee, seguridad, metodos, proyecto, demanda, prioritarios.
+
+ATENCIÓN: el campo `jornada` ya NO es global; está por nivel dentro de `vacantes[n].jornada`. Para acceder a la jornada en páginas que solo muestran un valor, usar `c.vacantes[0]?.jornada`. El campo `totalVacantes()` ahora suma `v.max` (antes sumaba valores directos del objeto).
 
 ---
 

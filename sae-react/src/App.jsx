@@ -69,6 +69,7 @@ const SeguimientoPage  = lazy(() => import('./pages/SeguimientoPage'))
 const CumplimientoPage = lazy(() => import('./pages/CumplimientoPage'))
 const RoadmapPage      = lazy(() => import('./pages/RoadmapPage'))
 const NotasPage        = lazy(() => import('./pages/NotasPage'))
+const RegistroPage     = lazy(() => import('./pages/RegistroPage'))
 const ColegioPage      = lazy(() => import('./pages/ColegioPage'))
 const ComparadorPage   = lazy(() => import('./pages/ComparadorPage'))
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'))
@@ -87,9 +88,9 @@ const seoData = {
     og: 'Mis datos — SAE',
   },
   '/algoritmo': {
-    title: '¿Cómo funciona? — SAE',
-    desc: 'Entiende el algoritmo de asignación del SAE en 4 pasos simples. Simula tu postulación y conoce tus prioridades.',
-    og: '¿Cómo funciona el SAE? Entiende el proceso en 4 pasos',
+    title: 'El sistema SAE — Cómo funciona la admisión escolar',
+    desc: 'Entiende el algoritmo de asignación del SAE: los 4 pasos del proceso, tus prioridades, el simulador y el contexto internacional.',
+    og: 'El Sistema de Admisión Escolar — cómo funciona y cuáles son tus prioridades',
   },
   '/calendario': {
     title: 'El proceso y el calendario — SAE',
@@ -120,6 +121,11 @@ const seoData = {
     title: 'Notas de diseño — SAE',
     desc: 'Principios de investigación sobre transparencia algorítmica que respaldan cada decisión de UX del prototipo.',
     og: 'Notas de diseño — SAE prototipo UX',
+  },
+  '/registro': {
+    title: 'Crear cuenta — SAE',
+    desc: 'Regístrate en el SAE con tu RUN chileno para postular a colegios sin ClaveÚnica.',
+    og: 'Crear cuenta — Sistema de Admisión Escolar',
   },
 }
 
@@ -184,6 +190,7 @@ function App() {
                 <Route path="/postulacion"  element={<PostulacionPage />} />
                 <Route path="/seguimiento"  element={<SeguimientoPage />} />
                 <Route path="/notas"        element={<NotasPage />} />
+                <Route path="/registro"    element={<RegistroPage />} />
                 <Route path="/cumplimiento" element={<CumplimientoPage />} />
                 <Route path="/roadmap"      element={<RoadmapPage />} />
                 <Route path="*"             element={<NotFoundPage />} />

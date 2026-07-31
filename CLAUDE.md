@@ -41,7 +41,10 @@ El prototipo demuestra cómo aplicar transparencia algorítmica al SAE; la memor
 
 ## Estado del proyecto (julio 2026)
 
-- Prototipo: v4.2, todas las rutas implementadas (incluido `/comparador` y tour guiado) y plan al 100 % (62/62 aplicables). Páginas internas: `/cumplimiento`, `/roadmap`, `/notas`.
+- Prototipo: v4.3, todas las rutas implementadas (incluido `/comparador` y tour guiado) y plan al 100 % (62/62 aplicables). Páginas internas: `/cumplimiento`, `/roadmap`, `/notas`.
 - Sincronización código↔memoria: cifra de trazabilidad actualizada a 100 % (62/62) en capítulos 00, 04 y 06 el 2026-07-29; PDF compilado y verificado.
 - Memoria: Capítulos 0–4 redactados; Capítulos 5 y 6 **pendientes por diseño** hasta ejecutar la validación (Sección 3.5). No completarlos sin datos de validación.
 - Detalle histórico de especificaciones del prototipo HTML v1: `archivo/CLAUDE_v2.md` (solo referencia).
+- Refactor vitrina colegios (2026-07-30): `colegios.js` migrado a esquema v2 (vacantes como array con rango min/max, postulantesAnterior, jornada, copago por nivel; nuevos campos rbd, director, dependencia, orientacion, categoriaDesempeno, categoriaAnio, simceAnio, gseComparacion, gseNumColegios). `ColegioPage.jsx` actualizado con identidad institucional en hero, tabla de vacantes rica, sección "Categoría de desempeño" con escala 4 pasos, comparación SIMCE GSE con badge, nota de procedencia + descargables simbólicos. `InicioPage` añade selector "Ordenar por" (SIMCE/vacantes/distancia/demanda). `ComparadorPage` y `SeguimientoPage` actualizados para schema v2. Build limpio post-refactor.
+- Nueva investigación (2026-07-30): `docs/investigacion/investigacion_vitrina_sae.md` — recorrido en vivo de la vitrina oficial (Admisión 2027): flujos, inventario de información de la ficha y feedback accionable para `InicioPage`/`ColegioPage` (adoptar: postulantes año anterior, rangos de vacantes, categoría de desempeño, pago por nivel; conservar: CTA integrada, comparador, secciones simultáneas).
+- Nueva investigación (2026-07-30): `docs/investigacion/investigacion_algoritmo_sae.md` — funcionamiento detallado del algoritmo DA del SAE (paper Correa et al.), argumentos de implementación, cifras 2018 y debate/reforma 2026. Fuente de respaldo para memoria y prototipo.

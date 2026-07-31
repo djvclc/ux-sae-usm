@@ -373,7 +373,7 @@ export default function SeguimientoPage() {
                   {detalleAbierto === d.id && col && (
                     <div className="seg-pref-item__detail">
                       <p>📍 {col.direccion}, {col.comuna}</p>
-                      <p>🕐 Jornada {col.jornada?.toLowerCase() ?? 'no especificada'}</p>
+                      <p>🕐 Jornada {col.vacantes?.[0]?.jornada?.toLowerCase() ?? 'no especificada'}</p>
                       <p>{col.nee?.programa ? '♿ Con programa PIE' : 'Sin programa PIE'}</p>
                       <Link
                         className="btn btn--secondary btn--mini"

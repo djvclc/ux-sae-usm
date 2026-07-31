@@ -7,20 +7,7 @@ import { useTextSize } from '../context/TextSizeContext'
 
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 
-const nivelLabel = {
-  preKinder: 'Prekínder',
-  kinder:    'Kínder',
-  basico:    '1.° – 8.° Básico',
-  medio:     '1.° – 4.° Medio',
-}
-
-const nivelColor = {
-  preKinder: '#e8f4fd',
-  kinder:    '#fef3e2',
-  basico:    '#e8f2ee',
-  medio:     '#f0edf8',
-}
-
+// S16-1: identidad institucional y datos enriquecidos (vitrina SAE)
 const prioritarioLabel = {
   hermano:        'Hermano/a matriculado/a',
   cercano:        'Residencia cercana',
@@ -30,6 +17,59 @@ const prioritarioLabel = {
 
 function simcePct(val) {
   return Math.round(((val - 150) / (350 - 150)) * 100)
+}
+
+/* ── Caja de información contextual (local — S13-g) ── */
+function InfoBox({ icono = 'ℹ️', titulo, tipo = 'info', className = '', children }) {
+  const tipoClass = { info: 'tut-info', alerta: 'tut-alerta', exito: 'tut-exito', neutro: 'tut-neutro' }
+  return (
+    <div className={`tut-box ${tipoClass[tipo] ?? 'tut-info'} ${className}`} role={tipo === 'alerta' ? 'alert' : 'note'}>
+      {(icono || titulo) && (
+        <div className="tut-box__head">
+          {icono && <span className="tut-box__icon" aria-hidden="true">{icono}</span>}
+          {titulo && <strong className="tut-box__titulo">{titulo}</strong>}
+        </div>
+      )}
+      <div className="tut-box__body">{children}</div>
+    </div>
+  )
+}
+
+/* ── Escala de categoría de desempeño (Agencia de Calidad — S16-1) ── */
+const CATEGORIAS_ORDEN = ['Insuficiente', 'Medio-Bajo', 'Medio', 'Alto']
+const CAT_COLOR = {
+  'Alto':        '#1A7F37',
+  'Medio':       '#0057B7',
+  'Medio-Bajo':  '#ea580c',
+  'Insuficiente':'#C0392B',
+}
+const CAT_EXPLICACION = {
+  'Alto':        'Este establecimiento tiene resultados y condiciones de desempeño destacados respecto a colegios de contexto socioeconómico similar.',
+  'Medio':       'Este establecimiento tiene resultados y condiciones adecuados. Está en la franja más común de los colegios chilenos.',
+  'Medio-Bajo':  'Este establecimiento presenta algunos aspectos por mejorar. La Agencia de Calidad le entrega apoyo y seguimiento.',
+  'Insuficiente':'Este establecimiento presenta resultados bajo lo esperado y recibe apoyo prioritario del Ministerio de Educación.',
+}
+
+function CategoriaDesempeno({ categoria, anio }) {
+  return (
+    <div>
+      <div className="cat-escala" role="list" aria-label="Escala de categorías de desempeño">
+        {CATEGORIAS_ORDEN.map((cat) => (
+          <div
+            key={cat}
+            role="listitem"
+            className={`cat-paso ${cat === categoria ? 'cat-paso--activo' : ''}`}
+            style={cat === categoria ? { '--cat-color': CAT_COLOR[cat] } : {}}
+            aria-current={cat === categoria ? 'true' : undefined}
+          >
+            {cat}
+          </div>
+        ))}
+      </div>
+      <p className="cat-explicacion">{CAT_EXPLICACION[categoria]}</p>
+      <p className="cat-fuente">Fuente: Agencia de Calidad de la Educación · medición {anio}</p>
+    </div>
+  )
 }
 
 /* ── Barra SIMCE ── */
@@ -115,6 +155,7 @@ export default function ColegioPage() {
     )
   }
 
+  // S16-1: suma de máximos del array de vacantes
   const vac           = totalVacantes(colegio)
   const pctTitulados  = colegio.docentes.titulados
   const simcePromedio = Math.round(
@@ -125,6 +166,11 @@ export default function ColegioPage() {
      colegio.promedioComunal.ciencias + colegio.promedioComunal.historia) / 4
   )
   const simceSobre = simcePromedio >= comunalPromedio
+
+  // S16-1: clase de comparación GSE para badge
+  const gseClass = colegio.gseComparacion === 'Más alto' ? 'pos'
+    : colegio.gseComparacion === 'Más bajo' ? 'neg'
+    : 'neu'
 
   return (
     <main className={`page ficha-page${textoGrande ? ' page--texto-grande' : ''}`}>
@@ -165,14 +211,22 @@ export default function ColegioPage() {
               <span className={`fh-chip ${simceSobre ? 'fh-chip--sobre' : 'fh-chip--bajo'}`}>
                 {simceSobre ? '📈' : '📉'} SIMCE {simcePromedio} pts
               </span>
-              <span className="fh-chip fh-chip--jornada">
-                {colegio.jornada === 'Completa' ? '🕐 Jornada completa' : '⏱ Jornada parcial'}
-              </span>
             </div>
             <h1 className="ficha-hero__nombre">{colegio.nombre}</h1>
             <p className="ficha-hero__dir">
               <span aria-hidden="true">📍</span>{' '}
               {colegio.direccion}, {colegio.comuna}
+            </p>
+            {/* S16-1: identidad institucional (RBD, dependencia, orientación, director) */}
+            <p className="ficha-hero__identidad">
+              <span>RBD {colegio.rbd}</span>
+              <span aria-hidden="true"> · </span>
+              <span>{colegio.dependencia}</span>
+              <span aria-hidden="true"> · </span>
+              <span>{colegio.orientacion}</span>
+            </p>
+            <p className="ficha-hero__director">
+              <span aria-hidden="true">👤</span> Dir.: {colegio.director}
             </p>
             <p className="ficha-hero__niveles">
               {colegio.niveles.map(n => (
@@ -198,12 +252,13 @@ export default function ColegioPage() {
       </section>
 
       {/* ══ QUICK STATS ══ */}
+      {/* S16-1: vacantes muestra suma de max del array */}
       <div className="ficha-quickbar" role="list" aria-label="Indicadores clave del establecimiento">
         {[
-          { icon: '🪑', num: vac,                      lbl: 'vacantes disponibles',     color: '#1e3a5f' },
-          { icon: '👩‍🏫', num: `${pctTitulados}%`,       lbl: 'docentes titulados/as',   color: '#2d6a4f' },
-          { icon: '📍', num: `${colegio.distanciaBase} km`, lbl: 'de distancia base',    color: '#7b3f96' },
-          { icon: '🏫', num: colegio.docentes.total,   lbl: 'docentes en total',         color: '#b35c1e' },
+          { icon: '🪑', num: vac,                           lbl: 'vacantes disponibles',   color: '#1e3a5f' },
+          { icon: '👩‍🏫', num: `${pctTitulados}%`,            lbl: 'docentes titulados/as', color: '#2d6a4f' },
+          { icon: '📍', num: `${colegio.distanciaBase} km`, lbl: 'de distancia base',       color: '#7b3f96' },
+          { icon: '🏫', num: colegio.docentes.total,        lbl: 'docentes en total',       color: '#b35c1e' },
         ].map(({ icon, num, lbl, color }) => (
           <div key={lbl} className="qs-card" role="listitem" style={{ '--qs-color': color }}>
             <span className="qs-card__icon" aria-hidden="true">{icon}</span>
@@ -251,22 +306,62 @@ export default function ColegioPage() {
       {/* ══ GRID PRINCIPAL ══ */}
       <div className="ficha-grid">
 
-        {/* ── Vacantes por nivel ── */}
+        {/* ── Vacantes por nivel (tabla enriquecida — S16-1) ── */}
         <section className="ficha-section ficha-section--vacantes" aria-labelledby="vacantes-titulo">
           <h2 className="ficha-section__title" id="vacantes-titulo">
             <span className="ficha-section__icon" aria-hidden="true">🪑</span>
             Vacantes por nivel
           </h2>
           <p className="form-hint" style={{ marginBottom: 14 }}>
-            Estimación. El número definitivo se publica al inicio del proceso.
+            Estimación referencial — el número definitivo se publica al inicio del proceso.
           </p>
-          <div className="vacantes-grid">
-            {Object.entries(colegio.vacantes).map(([nivel, cantidad]) => (
-              <div key={nivel} className="vacante-card" style={{ background: nivelColor[nivel] ?? '#f2f4f7' }}>
-                <span className="vacante-card__num">{cantidad}</span>
-                <span className="vacante-card__nivel">{nivelLabel[nivel] ?? nivel}</span>
-              </div>
-            ))}
+          {/* S16-1: tabla con rango, postulantes año anterior, jornada y pago */}
+          <div className="vacantes-tabla-wrap">
+            <table className="vacantes-tabla" aria-label="Vacantes por nivel">
+              <thead>
+                <tr>
+                  <th scope="col">Nivel</th>
+                  <th scope="col">Vacantes</th>
+                  <th scope="col">Postulantes año anterior</th>
+                  <th scope="col">Jornada</th>
+                  <th scope="col">Pago</th>
+                </tr>
+              </thead>
+              <tbody>
+                {colegio.vacantes.map((v) => {
+                  const presion = v.postulantesAnterior / v.max
+                  const presionClass = presion >= 2.5 ? 'alta' : presion >= 1.2 ? 'media' : 'baja'
+                  return (
+                    <tr key={v.nivel}>
+                      <td className="vacantes-tabla__nivel">{v.label}</td>
+                      <td className="vacantes-tabla__rango">{v.min}–{v.max}</td>
+                      <td>
+                        <span className={`demand-chip demand-chip--${presionClass}`}>
+                          {v.postulantesAnterior}
+                        </span>
+                      </td>
+                      <td className="vacantes-tabla__jornada">{v.jornada}</td>
+                      <td className="vacantes-tabla__pago">
+                        {v.copago === 0 ? (
+                          <span className="vacantes-tabla__gratuito">Gratuito</span>
+                        ) : (
+                          <span>${v.copago.toLocaleString('es-CL')}/mes</span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          {/* S16-1: conexión con el algoritmo */}
+          <div className="vacantes-infobox">
+            <InfoBox tipo="info" icono="🔗">
+              <p>
+                ¿Cuánto importa este número? La relación entre vacantes y postulantes anteriores muestra qué tan competida es cada plaza.{' '}
+                <Link to="/algoritmo" className="link-inline">Ver cómo funciona la asignación →</Link>
+              </p>
+            </InfoBox>
           </div>
         </section>
 
@@ -274,7 +369,9 @@ export default function ColegioPage() {
         <section className="ficha-section ficha-section--simce" aria-labelledby="simce-titulo">
           <h2 className="ficha-section__title" id="simce-titulo">
             <span className="ficha-section__icon" aria-hidden="true">📊</span>
-            Resultados <abbr title="Sistema de Medición de la Calidad de la Educación">SIMCE</abbr>
+            Resultados{' '}
+            <abbr title="Sistema de Medición de la Calidad de la Educación">SIMCE</abbr>{' '}
+            <span className="ficha-section__anio">({colegio.simceAnio})</span>
           </h2>
 
           {/* Resumen general */}
@@ -299,6 +396,29 @@ export default function ColegioPage() {
             <SimceBar icon="🔬" label="Ciencias"   valor={colegio.simce.ciencias}    comunal={colegio.promedioComunal.ciencias} />
             <SimceBar icon="🌎" label="Historia"   valor={colegio.simce.historia}    comunal={colegio.promedioComunal.historia} />
           </div>
+
+          {/* S16-1: comparación con colegios de GSE similar */}
+          <div className="simce-gse">
+            <span className="simce-gse__label">vs. colegios de contexto socioeconómico similar:</span>
+            <span className={`simce-gse__badge simce-gse__badge--${gseClass}`}>
+              {colegio.gseComparacion}
+            </span>
+            <span className="simce-gse__footnote">
+              ({colegio.gseNumColegios} colegios comparados · medición {colegio.simceAnio})
+            </span>
+          </div>
+        </section>
+
+        {/* ── Categoría de desempeño (nueva sección — S16-1) ── */}
+        <section className="ficha-section ficha-section--categoria" aria-labelledby="cat-titulo">
+          <h2 className="ficha-section__title" id="cat-titulo">
+            <span className="ficha-section__icon" aria-hidden="true">🏅</span>
+            Categoría de desempeño
+          </h2>
+          <CategoriaDesempeno
+            categoria={colegio.categoriaDesempeno}
+            anio={colegio.categoriaAnio}
+          />
         </section>
 
         {/* ── Docentes ── */}
@@ -349,10 +469,10 @@ export default function ColegioPage() {
             Inclusión y <abbr title="Necesidades Educativas Especiales">NEE</abbr>
           </h2>
           <div className="ind-grid" role="list" aria-label="Indicadores de inclusión y NEE">
-            <Indicador activo={colegio.nee.programa} icon="♿" label="Programa PIE" labelNo="Sin Programa PIE"       color="#2d6a4f" />
-            <Indicador activo={colegio.nee.psicologa} icon="🧠" label="Psicóloga/o" labelNo="Sin psicóloga/o propio" color="#2d6a4f" />
-            <Indicador activo={colegio.nee.fono}     icon="🗣️" label="Fonoaudióloga/o" labelNo="Sin fonoaudióloga/o" color="#2d6a4f" />
-            <Indicador activo={colegio.nee.rampa}    icon="🚪" label="Acceso universal" labelNo="Sin rampas"         color="#2d6a4f" />
+            <Indicador activo={colegio.nee.programa}  icon="♿"  label="Programa PIE"       labelNo="Sin Programa PIE"       color="#2d6a4f" />
+            <Indicador activo={colegio.nee.psicologa} icon="🧠" label="Psicóloga/o"         labelNo="Sin psicóloga/o propio" color="#2d6a4f" />
+            <Indicador activo={colegio.nee.fono}      icon="🗣️" label="Fonoaudióloga/o"     labelNo="Sin fonoaudióloga/o"    color="#2d6a4f" />
+            <Indicador activo={colegio.nee.rampa}     icon="🚪" label="Acceso universal"    labelNo="Sin rampas"             color="#2d6a4f" />
           </div>
         </section>
 
@@ -363,10 +483,10 @@ export default function ColegioPage() {
             Seguridad
           </h2>
           <div className="ind-grid" role="list" aria-label="Medidas de seguridad del establecimiento">
-            <Indicador activo={colegio.seguridad.camaras}     icon="📹" label="Cámaras de seguridad"     labelNo="Sin cámaras"         color="#1e3a5f" />
-            <Indicador activo={colegio.seguridad.porteria}    icon="🚪" label="Portería controlada"      labelNo="Sin portería"         color="#1e3a5f" />
-            <Indicador activo={colegio.seguridad.antibullying} icon="🛡️" label="Protocolo anti-bullying" labelNo="Sin protocolo"        color="#1e3a5f" />
-            <Indicador activo={colegio.seguridad.semaforo}    icon="🚦" label="Semáforo peatonal"        labelNo="Sin semáforo"         color="#1e3a5f" />
+            <Indicador activo={colegio.seguridad.camaras}      icon="📹" label="Cámaras de seguridad"     labelNo="Sin cámaras"       color="#1e3a5f" />
+            <Indicador activo={colegio.seguridad.porteria}     icon="🚪" label="Portería controlada"      labelNo="Sin portería"       color="#1e3a5f" />
+            <Indicador activo={colegio.seguridad.antibullying} icon="🛡️" label="Protocolo anti-bullying"  labelNo="Sin protocolo"      color="#1e3a5f" />
+            <Indicador activo={colegio.seguridad.semaforo}     icon="🚦" label="Semáforo peatonal"        labelNo="Sin semáforo"       color="#1e3a5f" />
           </div>
         </section>
 
@@ -398,6 +518,22 @@ export default function ColegioPage() {
         </section>
 
       </div>{/* /ficha-grid */}
+
+      {/* S16-1: nota de procedencia y descargables simbólicos */}
+      <div className="ficha-procedencia">
+        <p className="ficha-procedencia__texto">
+          <span aria-hidden="true">📋</span>{' '}
+          La información de esta ficha fue entregada por el establecimiento a través del SIGE y la Agencia de Calidad de la Educación. Los datos de vacantes son referenciales.
+        </p>
+        <div className="ficha-procedencia__links">
+          <button type="button" className="ficha-descargable">
+            <span aria-hidden="true">📄</span> Proyecto Educativo Institucional (PDF)
+          </button>
+          <button type="button" className="ficha-descargable">
+            <span aria-hidden="true">📄</span> Reglamento Interno (PDF)
+          </button>
+        </div>
+      </div>
 
       {/* ══ CTA FINAL ══ */}
       <div className="ficha-footer-cta">

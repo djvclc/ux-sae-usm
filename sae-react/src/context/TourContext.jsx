@@ -39,11 +39,11 @@ export const tourPasos = [
   {
     id: 'algoritmo-pasos',
     page: '/algoritmo',
-    selector: '.algo-pasos__grid',
-    titulo: '⚙️ El algoritmo funciona con 4 reglas claras',
+    selector: '.algo-timeline',
+    titulo: '⚙️ 4 pasos — lee como un artículo',
     contenido:
-      'El SAE no es una tómbola. Usa el mismo algoritmo que ciudades como Nueva York, Ámsterdam y Helsinki: tú dices qué colegios quieres (en orden), el sistema cruza eso con las prioridades y las vacantes.',
-    tip: '🌍 El algoritmo de Gale-Shapley que usa el SAE ganó el Premio Nobel de Economía en 2012. Está diseñado para ser justo.',
+      'Esta sección explica el proceso completo en 4 pasos con más texto del habitual. No necesitas hacer clic para ver más — todo el contenido está a la vista. Léelo de arriba a abajo como si fuera un artículo de revista.',
+    tip: '🌍 El algoritmo de Gale-Shapley que usa el SAE ganó el Premio Nobel de Economía en 2012. Nueva York, Londres y Ámsterdam usan el mismo método.',
   },
   {
     id: 'prioridades',

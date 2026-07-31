@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { colegios, totalVacantes } from '../data/colegios'
 import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridad } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -192,6 +193,11 @@ export default function PostulacionPage() {
   const [confirmado, setConfirmado] = useState(null)
   const [modoTutorial, setModoTutorial] = useState(true)
   const [prioridadAbierta, setPrioridadAbierta] = useState(null)
+  const [mostrarRut, setMostrarRut] = useState(false)
+  const [alumnoRut, setAlumnoRut]       = useState('')
+  const [alumnoNombre, setAlumnoNombre] = useState('')
+  const [alumnoNivel, setAlumnoNivel]   = useState('')
+  const [alumnoOk, setAlumnoOk]         = useState(false)
 
   useEffect(() => {
     const raw = localStorage.getItem(DRAFT_LIST_KEY)
@@ -230,7 +236,7 @@ export default function PostulacionPage() {
   const quitar = (id) => setLista((prev) => prev.filter((item) => item !== id))
 
   const siguiente = () => {
-    if (paso === 1 && (!loginOk || !region)) return
+    if (paso === 1 && (!loginOk || !region || !alumnoOk)) return
     if (paso === 2 && !lista.length) return
     setPaso((prev) => Math.min(prev + 1, 3))
   }
@@ -284,73 +290,136 @@ export default function PostulacionPage() {
         </InfoBox>
       )}
 
-      {/* ── Barra de progreso ── */}
-      <div className="stepper" role="progressbar" aria-valuenow={paso} aria-valuemin={1} aria-valuemax={3} aria-label={`Paso ${paso} de 3`}>
-        {[1, 2, 3].map((n) => (
-          <span key={n} className={`stepper__item ${paso >= n ? 'stepper__item--on' : ''}`} aria-hidden="true" />
+      {/* ── Barra de progreso con etiquetas ── */}
+      <nav className="stepper" aria-label={`Progreso de postulación: paso ${paso} de 3`}>
+        {[
+          { n: 1, label: 'Identifícate' },
+          { n: 2, label: 'Tus colegios' },
+          { n: 3, label: 'Confirma' },
+        ].map(({ n, label }, i) => (
+          <Fragment key={n}>
+            <div
+              className={`stepper__step${paso > n ? ' stepper__step--done' : ''}${paso === n ? ' stepper__step--active' : ''}`}
+              aria-current={paso === n ? 'step' : undefined}
+            >
+              <span className="stepper__num" aria-hidden="true">
+                {paso > n ? '✓' : n}
+              </span>
+              <span className="stepper__label">{label}</span>
+            </div>
+            {i < 2 && <span className="stepper__linea" aria-hidden="true" />}
+          </Fragment>
         ))}
-      </div>
-      <p className="form-hint" style={{ marginBottom: 12 }}>Estás en el paso {paso} de 3.</p>
+      </nav>
 
       {/* ══════════════ PASO 1: IDENTIFICACIÓN ══════════════ */}
       {paso === 1 && (
         <Card className="card--module">
           <CardHeader>
-            <CardTitle>Paso 1 de 3 — Identifícate</CardTitle>
+            <CardTitle>Identifícate</CardTitle>
+            <p className="page__lead" style={{ margin: '4px 0 0' }}>
+              Usamos <strong>ClaveÚnica</strong> para verificar que eres el/la apoderado/a legal.
+            </p>
           </CardHeader>
           <CardContent>
-            {modoTutorial && (
-              <InfoBox icono="🔐" titulo="¿Por qué necesitas identificarte?" tipo="neutro">
-                <p>El SAE necesita verificar que eres el/la apoderado/a legal del estudiante. Esto garantiza que solo tú puedes postular en nombre de tu hijo/a y evita postulaciones duplicadas o fraudulentas.</p>
-              </InfoBox>
+            {/* Acción principal: ClaveÚnica */}
+            {!loginOk && (
+              <div className="post-clave-block">
+                <div className="post-clave-icon" aria-hidden="true">🔑</div>
+                <div className="post-clave-texto">
+                  <strong>Ingresar con ClaveÚnica</strong>
+                  <p>La clave del Estado chileno. No necesitas crear otra contraseña. Tu clave nunca se comparte con el SAE.</p>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn--primary btn--grande"
+                  onClick={() => setLoginOk(true)}
+                >
+                  Ingresar con ClaveÚnica
+                </button>
+
+                {/* RUT como opción secundaria colapsada */}
+                {!mostrarRut ? (
+                  <button
+                    type="button"
+                    className="btn--text-link"
+                    onClick={() => setMostrarRut(true)}
+                  >
+                    ¿No tengo ClaveÚnica? Ingresar con RUT
+                  </button>
+                ) : (
+                  <div className="post-rut-fallback">
+                    <label htmlFor="rut-input" className="form-label">
+                      RUT del apoderado/a
+                    </label>
+                    <input
+                      id="rut-input"
+                      type="text"
+                      inputMode="numeric"
+                      value={rut}
+                      onChange={(e) => setRut(formatearRut(e.target.value))}
+                      onBlur={() => setRutTocado(true)}
+                      placeholder="12.345.678-9"
+                      maxLength={12}
+                      aria-describedby="rut-hint rut-error"
+                      aria-invalid={rutError ? 'true' : undefined}
+                      className="form-input"
+                    />
+                    <span id="rut-hint" className="form-hint">Formato: 12.345.678-9</span>
+                    {rutError && (
+                      <span id="rut-error" className="field-error" role="alert">⚠ {rutError}</span>
+                    )}
+                    {rutValido(rut) && (
+                      <button
+                        type="button"
+                        className="btn btn--primary"
+                        style={{ marginTop: 10 }}
+                        onClick={() => setLoginOk(true)}
+                      >
+                        Continuar con RUT
+                      </button>
+                    )}
+                    {modoTutorial && (
+                      <InfoBox tipo="alerta" className="tut-box--sm">
+                        <p>Si no tienes ClaveÚnica puedes obtenerla gratis en <strong>claveunica.gob.cl</strong> o en cualquier oficina del Registro Civil. Es lo más recomendable.</p>
+                      </InfoBox>
+                    )}
+                  </div>
+                )}
+
+                <p className="post-registro-hint">
+                  ¿Aún no tienes cuenta?{' '}
+                  <Link to="/registro" className="link-inline">
+                    Regístrate aquí
+                  </Link>
+                </p>
+              </div>
             )}
 
-            <p style={{ marginTop: modoTutorial ? 14 : 0 }}>
-              Ingresa con <strong>ClaveÚnica</strong> para cargar tus datos automáticamente.
-              Es la forma más rápida y segura.
-            </p>
-
-            {modoTutorial && (
-              <InfoBox icono="🛡" titulo="¿Qué es ClaveÚnica?" tipo="info">
-                <p><strong>ClaveÚnica</strong> es el sistema de identidad digital del Gobierno de Chile. Con ella puedes acceder a todos los trámites del Estado sin crear contraseñas nuevas. Tu contraseña <strong>nunca se comparte</strong> con el SAE — el sistema solo recibe confirmación de que eres tú.</p>
-                <p style={{ marginTop: 6 }}>Si no tienes ClaveÚnica, puedes obtenerla en <strong>claveunica.gob.cl</strong> o en cualquier oficina del Registro Civil.</p>
-              </InfoBox>
-            )}
-
-            <div className="hero__actions" style={{ marginTop: 14 }}>
-              <button type="button" className="btn btn--primary" onClick={() => setLoginOk(true)}>
-                Ingresar con ClaveÚnica
-              </button>
-              <button type="button" className="btn btn--secondary btn--dark">
-                Crear cuenta SAE
-              </button>
-            </div>
-
-            {loginOk ? (
+            {/* Estado: ingreso exitoso */}
+            {loginOk && (
               <div>
-                <p className="small-note" role="status" aria-live="polite">
+                <p className="small-note post-login-ok" role="status" aria-live="polite">
                   ✅ Ingreso exitoso. Tus datos fueron cargados desde ClaveÚnica.
                 </p>
 
-                <div style={{ marginTop: 20 }}>
-                  <label htmlFor="select-region" style={{ display: 'block', marginBottom: 4, fontWeight: 600, fontSize: '0.95rem' }}>
-                    ¿En qué región vives? <span aria-hidden="true" style={{ color: 'var(--rojo)' }}>*</span>
+                <div className="post-region-block">
+                  <label htmlFor="select-region" className="form-label">
+                    ¿En qué región vives?{' '}
+                    <span aria-hidden="true" style={{ color: 'var(--rojo)' }}>*</span>
                   </label>
-
                   {modoTutorial && (
-                    <InfoBox tipo="neutro">
-                      <p>Tu región determina qué colegios puedes ver y postular. Solo puedes postular a establecimientos de tu región de residencia, según el registro de dirección del estudiante en el MINEDUC.</p>
-                    </InfoBox>
+                    <p className="form-hint">
+                      Tu región determina qué establecimientos puedes ver. Solo puedes postular a colegios de la región donde vive el/la estudiante.
+                    </p>
                   )}
-
-                  <span className="form-hint" style={{ marginBottom: 6 }}>Selecciona tu región para ver colegios cercanos.</span>
                   <select
                     id="select-region"
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     aria-required="true"
                     aria-label="Selecciona tu región"
-                    style={{ display: 'block', marginTop: 4 }}
+                    className="form-select"
                   >
                     <option value="">Selecciona tu región…</option>
                     {REGIONES.map((r) => (
@@ -358,48 +427,106 @@ export default function PostulacionPage() {
                     ))}
                   </select>
                   {!region && (
-                    <span className="form-hint" style={{ color: 'var(--rojo)', marginTop: 4 }}>
-                      Debes seleccionar una región para continuar.
+                    <span className="form-hint" style={{ color: 'var(--rojo)' }} role="alert">
+                      Selecciona tu región para continuar.
                     </span>
                   )}
                 </div>
-              </div>
-            ) : (
-              <div style={{ marginTop: 20 }}>
-                <p style={{ marginBottom: 8, fontWeight: 600, fontSize: '0.95rem' }}>
-                  ¿No puedes usar ClaveÚnica? Ingresa tu RUT:
-                </p>
-                <label htmlFor="rut-input" style={{ display: 'block', marginBottom: 4, fontSize: '0.9rem', fontWeight: 600 }}>
-                  RUT del apoderado/a
-                </label>
-                <input
-                  id="rut-input"
-                  type="text"
-                  inputMode="numeric"
-                  value={rut}
-                  onChange={(e) => setRut(formatearRut(e.target.value))}
-                  onBlur={() => setRutTocado(true)}
-                  placeholder="12.345.678-9"
-                  maxLength={12}
-                  aria-describedby="rut-hint rut-error"
-                  aria-invalid={rutError ? 'true' : undefined}
-                  style={{
-                    border: `2px solid ${rutError ? 'var(--rojo)' : 'var(--borde)'}`,
-                    borderRadius: 'var(--radio)',
-                    padding: '10px 14px',
-                    fontSize: '1rem',
-                    fontFamily: 'inherit',
-                    width: '100%',
-                    maxWidth: 280,
-                    display: 'block',
-                  }}
-                />
-                <span id="rut-hint" className="form-hint">Escribe tu RUT en formato 12.345.678-9.</span>
-                {rutError && <span id="rut-error" className="field-error" role="alert">⚠ {rutError}</span>}
-                {rutValido(rut) && (
-                  <button type="button" className="btn btn--primary" style={{ marginTop: 12 }} onClick={() => setLoginOk(true)}>
-                    Continuar con RUT
-                  </button>
+
+                {/* ── Vinculación de estudiante ── */}
+                {region && !alumnoOk && (
+                  <div className="post-alumno-block">
+                    <div className="post-alumno-block__header">
+                      <span className="post-alumno-block__icono" aria-hidden="true">🎒</span>
+                      <div>
+                        <h3 className="post-alumno-block__titulo">¿Para quién vas a postular?</h3>
+                        <p className="post-alumno-block__sub">
+                          Ingresa los datos del estudiante que va a participar en el proceso SAE.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="rg-campo">
+                      <label className="form-label" htmlFor="alum-run">RUN del estudiante</label>
+                      <input
+                        id="alum-run"
+                        type="text"
+                        inputMode="numeric"
+                        className="form-input rg-input"
+                        value={alumnoRut}
+                        onChange={(e) => setAlumnoRut(formatearRut(e.target.value))}
+                        placeholder="Ej. 25.123.456-7"
+                        maxLength={12}
+                      />
+                    </div>
+
+                    <div className="rg-campo">
+                      <label className="form-label" htmlFor="alum-nombre">Nombre completo del estudiante</label>
+                      <input
+                        id="alum-nombre"
+                        type="text"
+                        className="form-input rg-input"
+                        value={alumnoNombre}
+                        onChange={(e) => setAlumnoNombre(e.target.value)}
+                        placeholder="Ej. Martina González"
+                        autoCapitalize="words"
+                      />
+                    </div>
+
+                    <div className="rg-campo">
+                      <label className="form-label" htmlFor="alum-nivel">Nivel al que postula</label>
+                      <select
+                        id="alum-nivel"
+                        className="form-select"
+                        value={alumnoNivel}
+                        onChange={(e) => setAlumnoNivel(e.target.value)}
+                        style={{ maxWidth: '100%' }}
+                      >
+                        <option value="">Selecciona un nivel…</option>
+                        <option value="Prekínder">Prekínder</option>
+                        <option value="Kínder">Kínder</option>
+                        {[1,2,3,4,5,6,7,8].map(n => (
+                          <option key={n} value={`${n}° básico`}>{n}° básico</option>
+                        ))}
+                        {[1,2,3,4].map(n => (
+                          <option key={n} value={`${n}° medio`}>{n}° medio</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {modoTutorial && (
+                      <InfoBox tipo="info" icono="ℹ️">
+                        <p>Puedes vincular un solo estudiante por postulación. Si tienes más de un hijo/a en el proceso, deberás hacer una postulación separada para cada uno/a.</p>
+                      </InfoBox>
+                    )}
+
+                    <button
+                      type="button"
+                      className="btn btn--primary"
+                      disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel}
+                      onClick={() => setAlumnoOk(true)}
+                    >
+                      Vincular estudiante
+                    </button>
+                  </div>
+                )}
+
+                {/* Estudiante vinculado — tarjeta de confirmación */}
+                {region && alumnoOk && (
+                  <div className="post-alumno-card" role="status" aria-live="polite">
+                    <span className="post-alumno-card__icono" aria-hidden="true">🎒</span>
+                    <div className="post-alumno-card__info">
+                      <strong className="post-alumno-card__nombre">{alumnoNombre}</strong>
+                      <span className="post-alumno-card__meta">{alumnoNivel} · RUN {alumnoRut}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn--text-link post-alumno-card__editar"
+                      onClick={() => setAlumnoOk(false)}
+                    >
+                      Editar
+                    </button>
+                  </div>
                 )}
               </div>
             )}
@@ -465,76 +592,136 @@ export default function PostulacionPage() {
               </InfoBox>
             )}
 
-            {/* Agregar colegios */}
-            <p style={{ marginTop: 20, fontWeight: 600, fontSize: '0.95rem' }}>
-              Agrega colegios a tu lista (máximo 8):
-            </p>
+            {/* ── Selector visual de colegios ── */}
+            <div className="post-picker-wrap" style={{ marginTop: 20 }}>
+              <div className="post-picker-header">
+                <p className="post-picker-titulo">
+                  Elige tus colegios:
+                  <span className="post-picker-count" aria-live="polite">
+                    {lista.length}/8 seleccionados
+                  </span>
+                </p>
+                {modoTutorial && (
+                  <p className="post-picker-hint">
+                    📌 <strong>El orden importa:</strong> el sistema evalúa primero tu opción N.°1. Ponla siempre el colegio que <em>más quieres</em>, no el que crees que te van a dar.
+                  </p>
+                )}
+              </div>
 
-            {modoTutorial && (
-              <InfoBox icono="📌" titulo="El orden importa" tipo="alerta">
-                <p>El sistema evalúa tu lista <strong>en el orden que la escribes</strong>. Si tienes cupo en el N.°1, quedas ahí y listo. Si no, pasa al N.°2, etc. Por eso: pon siempre primero el colegio que más quieres, no el que crees que te van a dar.</p>
-              </InfoBox>
-            )}
-
-            <div className="add-row" style={{ marginTop: 12 }}>
-              <select
-                id="select-colegio"
-                value={toAdd}
-                onChange={(e) => setToAdd(e.target.value)}
-                aria-label="Selecciona un colegio para agregar"
+              {/* Grid de tarjetas de colegios */}
+              <div
+                className="post-school-picker"
+                role="list"
+                aria-label="Colegios disponibles para agregar a tu postulación"
               >
-                <option value="">Selecciona un colegio…</option>
-                {disponibles.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nombre} — {c.comuna} ({c.demanda} demanda)
-                  </option>
-                ))}
-              </select>
-              <button type="button" className="btn btn--primary" onClick={addColegio} disabled={!toAdd} aria-label="Agregar colegio seleccionado">
-                Agregar
-              </button>
-            </div>
-            <span className="form-hint">{lista.length} de 8 colegios agregados. Usa ↑ ↓ para reordenar.</span>
-
-            {/* Lista con análisis por colegio */}
-            <ul className="sim-list post-list" aria-label="Tu lista de colegios en orden de preferencia">
-              {lista.map((id, idx) => {
-                const col = colegios.find((c) => c.id === id)
-                if (!col) return null
-                const vac = totalVacantes(col)
-                return (
-                  <li key={id} className="post-list__item-wrap">
-                    <div className="post-list__fila">
-                      <span>
-                        <strong>{idx + 1}.</strong> {col.nombre}
-                        <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--texto-suave)' }}>
-                          {col.comuna} · {vac} vacantes · demanda {col.demanda}
+                {colegios.map((c) => {
+                  const enLista = lista.includes(c.id)
+                  const orden   = lista.indexOf(c.id) + 1
+                  const llena   = lista.length >= 8
+                  return (
+                    <div
+                      key={c.id}
+                      className={`post-school-card${enLista ? ' post-school-card--added' : ''}${!enLista && llena ? ' post-school-card--bloq' : ''}`}
+                      role="listitem"
+                    >
+                      {enLista && (
+                        <span className="post-school-card__badge" aria-hidden="true">{orden}</span>
+                      )}
+                      <div className="post-school-card__info">
+                        <strong className="post-school-card__nombre">{c.nombre}</strong>
+                        <span className="post-school-card__meta">
+                          {c.comuna}
+                          <span className={`demand-chip demand-chip--${c.demanda}`} style={{ position: 'static', marginLeft: 6 }}>
+                            {c.demanda}
+                          </span>
                         </span>
-                      </span>
-                      <span className="inline-actions">
-                        <button type="button" onClick={() => mover(idx, -1)} disabled={idx === 0} aria-label={`Subir ${col.nombre}`}>↑ Subir</button>
-                        <button type="button" onClick={() => mover(idx, 1)} disabled={idx === lista.length - 1} aria-label={`Bajar ${col.nombre}`}>↓ Bajar</button>
-                        <button type="button" onClick={() => quitar(id)} aria-label={`Quitar ${col.nombre}`} style={{ color: 'var(--rojo)' }}>Quitar</button>
-                      </span>
+                      </div>
+                      {enLista ? (
+                        <button
+                          type="button"
+                          className="post-school-card__btn post-school-card__btn--quitar"
+                          onClick={() => quitar(c.id)}
+                          aria-label={`Quitar ${c.nombre} de tu lista (opción ${orden})`}
+                        >
+                          ✓ Quitar
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="post-school-card__btn post-school-card__btn--agregar"
+                          onClick={() => { if (!llena) setLista((prev) => [...prev, c.id]) }}
+                          disabled={llena}
+                          aria-label={`Agregar ${c.nombre} a tu postulación`}
+                        >
+                          + Agregar
+                        </button>
+                      )}
                     </div>
-                    {modoTutorial && (
-                      <ColegioAnalisis colegio={col} orden={idx + 1} perfil={perfil} />
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* ── Lista ordenada de colegios seleccionados ── */}
+            {lista.length > 0 && (
+              <div className="post-order-wrap">
+                <p className="post-order-titulo">
+                  Tu lista en orden de preferencia:
+                  <span className="form-hint" style={{ display: 'block', fontWeight: 400 }}>
+                    Usa los botones para reordenar. El 1 es el que más quieres.
+                  </span>
+                </p>
+                <ul className="post-order-list" aria-label="Tu lista de colegios en orden de preferencia">
+                  {lista.map((id, idx) => {
+                    const col = colegios.find((c) => c.id === id)
+                    if (!col) return null
+                    const vac = totalVacantes(col)
+                    return (
+                      <li key={id} className="post-item">
+                        <span className="post-item__num" aria-hidden="true">{idx + 1}</span>
+                        <div className="post-item__body">
+                          <strong className="post-item__nombre">{col.nombre}</strong>
+                          <span className="post-item__meta">{col.comuna} · {vac} vacantes · {col.demanda} demanda</span>
+                          {modoTutorial && (
+                            <ColegioAnalisis colegio={col} orden={idx + 1} perfil={perfil} />
+                          )}
+                        </div>
+                        <div className="post-item__acciones">
+                          <button
+                            type="button"
+                            className="post-item__btn"
+                            onClick={() => mover(idx, -1)}
+                            disabled={idx === 0}
+                            aria-label={`Subir ${col.nombre} en la lista`}
+                          >
+                            ↑
+                          </button>
+                          <button
+                            type="button"
+                            className="post-item__btn"
+                            onClick={() => mover(idx, 1)}
+                            disabled={idx === lista.length - 1}
+                            aria-label={`Bajar ${col.nombre} en la lista`}
+                          >
+                            ↓
+                          </button>
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+                {modoTutorial && lista.length >= 2 && (
+                  <InfoBox tipo="exito" className="tut-box--sm">
+                    <p>Tienes {lista.length} colegios. Más opciones = más probabilidades. Puedes agregar hasta 8.</p>
+                  </InfoBox>
+                )}
+              </div>
+            )}
 
             {!lista.length && (
-              <p className="form-hint" role="status">
-                Aún no has agregado colegios. Selecciona uno arriba y haz clic en "Agregar".
+              <p className="form-hint" role="status" style={{ marginTop: 8 }}>
+                Toca "+ Agregar" en los colegios que te interesen para armar tu lista.
               </p>
-            )}
-
-            {modoTutorial && lista.length >= 3 && (
-              <InfoBox tipo="exito">
-                <p>✅ Tienes {lista.length} colegios. Recuerda que puedes agregar hasta 8 — más opciones = más posibilidades de quedar en alguno que te guste.</p>
-              </InfoBox>
             )}
           </CardContent>
         </Card>
@@ -552,6 +739,14 @@ export default function PostulacionPage() {
                 <p>Esta es tu postulación final. Una vez que hagas clic en "Confirmar", el sistema registra tu lista. <strong>Podrás modificarla durante el período de postulación</strong> antes de la fecha límite (30 de agosto). Después de esa fecha, la lista queda fija.</p>
               </InfoBox>
             )}
+
+            <div className="post-alumno-card post-alumno-card--resumen" aria-label="Estudiante vinculado">
+              <span className="post-alumno-card__icono" aria-hidden="true">🎒</span>
+              <div className="post-alumno-card__info">
+                <strong className="post-alumno-card__nombre">{alumnoNombre}</strong>
+                <span className="post-alumno-card__meta">{alumnoNivel} · RUN {alumnoRut}</span>
+              </div>
+            </div>
 
             <p>Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong></p>
 
@@ -630,10 +825,11 @@ export default function PostulacionPage() {
             type="button"
             className="btn btn--primary"
             onClick={siguiente}
-            disabled={(paso === 1 && (!loginOk || !region)) || (paso === 2 && !lista.length)}
+            disabled={(paso === 1 && (!loginOk || !region || !alumnoOk)) || (paso === 2 && !lista.length)}
             title={
               paso === 1 && !loginOk ? 'Primero debes ingresar con ClaveÚnica o con tu RUT'
               : paso === 1 && !region ? 'Debes seleccionar tu región para continuar'
+              : paso === 1 && !alumnoOk ? 'Debes vincular al estudiante para continuar'
               : paso === 2 && !lista.length ? 'Debes agregar al menos un colegio para continuar'
               : undefined
             }

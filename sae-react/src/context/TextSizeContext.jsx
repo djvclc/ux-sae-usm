@@ -24,6 +24,7 @@ export function TextSizeProvider({ children }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook compartido junto al provider por diseño
 export function useTextSize() {
   return useContext(TextSizeContext)
 }

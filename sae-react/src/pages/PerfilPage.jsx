@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
 
@@ -45,28 +45,22 @@ const niveles = [
 
 export default function PerfilPage() {
   const { textoGrande } = useTextSize()
-  const [nombre, setNombre] = useState('')
-  const [nivel, setNivel] = useState('')
-  const [condiciones, setCondiciones] = useState({
+  // Carga perezosa del perfil guardado (evita setState dentro del efecto)
+  const perfilInicial = (() => {
+    try {
+      const raw = localStorage.getItem(PERFIL_KEY)
+      return raw ? JSON.parse(raw) : {}
+    } catch { return {} }
+  })()
+  const [nombre, setNombre] = useState(perfilInicial.nombre ?? '')
+  const [nivel, setNivel] = useState(perfilInicial.nivel ?? '')
+  const [condiciones, setCondiciones] = useState(perfilInicial.condiciones ?? {
     hermano: false,
     prioritario: false,
     funcionario: false,
     exalumno: false,
   })
   const [guardado, setGuardado] = useState(false)
-
-  // Cargar perfil guardado
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(PERFIL_KEY)
-      if (raw) {
-        const p = JSON.parse(raw)
-        if (p.nombre) setNombre(p.nombre)
-        if (p.nivel) setNivel(p.nivel)
-        if (p.condiciones) setCondiciones(p.condiciones)
-      }
-    } catch { /* ignorar errores de parseo */ }
-  }, [])
 
   const toggleCondicion = (key) => {
     setCondiciones((prev) => ({ ...prev, [key]: !prev[key] }))

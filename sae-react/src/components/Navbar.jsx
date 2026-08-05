@@ -5,6 +5,7 @@ import { NavLink, useLocation } from 'react-router-dom'
    hash:true → se renderiza como <a> con scroll suave si ya estamos en "/" */
 const links = [
   { to: '/',            label: 'Inicio',          end: true },
+  { to: '/proceso',     label: 'El proceso' },
   { to: '/algoritmo',   label: 'El sistema' },
   { to: '/calendario',  label: 'Calendario' },
   { to: '/#buscador',   label: '🔎 Colegios',     hash: true },

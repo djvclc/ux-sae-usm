@@ -64,7 +64,8 @@ export default function ComparadorPage() {
       try {
         const raw = localStorage.getItem(DRAFT_LIST_KEY)
         const actual = raw ? JSON.parse(raw) : []
-        const merged = [...new Set([...(Array.isArray(actual) ? actual : []), id])].slice(0, 8)
+        // S22-2 (corrige E2): sin tope de 8 — el SAE no limita el número de colegios
+        const merged = [...new Set([...(Array.isArray(actual) ? actual : []), id])]
         localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(merged))
       } catch { /* noop */ }
       return nueva

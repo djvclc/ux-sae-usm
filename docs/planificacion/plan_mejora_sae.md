@@ -1,7 +1,7 @@
 # Plan de Mejora UX — Prototipo React del SAE
 **Basado en:** Informe de Evaluación de calidad web SAE — Morales-Vargas et al., Universidad de Chile, Fondecyt N.º 1250492, marzo 2026  
 **Aplicado a:** `sae-react` — Prototipo React + Vite + Tailwind v4  
-**Última actualización:** 2026-06-09 (v4.2 — autocompletado + chat FAQ + 98% del plan cerrado)
+**Última actualización:** 2026-08-04 (v4.5 — rediseño del flujo de postulación: sección S22, 15 puntos)
 
 ---
 
@@ -257,11 +257,52 @@
 
 ---
 
+## 21. Vista "Proceso paso a paso"
+**Fuente:** investigacion_paso_a_paso_sae.md (2026-08-04)
+
+| # | Tarea | Estado | Archivo(s) |
+|---|---|---|---|
+| 21-a | Ruta /proceso con línea de tiempo vertical de 5 etapas | ✅ | `ProcesoPage.jsx` |
+| 21-b | Estado calculado por fecha (completada/activa/futura) | ✅ | `ProcesoPage.jsx` |
+| 21-c | Divulgación progresiva: resumen de una línea + detalle expandible por etapa | ✅ | `ProcesoPage.jsx` |
+| 21-d | Calendario Admisión 2027 como tabla HTML accesible (nunca como imagen) | ✅ | `ProcesoPage.jsx` |
+| 21-e | Avisos visuales de 5 reglas de alto riesgo (aceptado por omisión, rechazar, lista de espera, matrícula, no contactar) | ✅ | `ProcesoPage.jsx` |
+| 21-f | Enlace a /algoritmo desde etapa Asignación; formulación técnica de prioridades (3 prioridades legales + cuota 15 %) | ✅ | `ProcesoPage.jsx` |
+| 21-g | Enlace a SeguimientoPage desde etapa Resultados | ✅ | `ProcesoPage.jsx` |
+| 21-h | Tabla comparativa Principal vs. Complementario + asignación por cercanía | ✅ | `ProcesoPage.jsx` |
+| 21-i | Checklist de documentos de matrícula con nota sobre documentación complementaria | ✅ | `ProcesoPage.jsx` |
+| 21-j | Enlace a /proceso en Navbar (entre "Inicio" y "El sistema"); paso de tour guiado | ✅ | `Navbar.jsx`, `TourContext.jsx` |
+
+---
+
+## 22. Rediseño del flujo de postulación
+**Fuente:** analisis_flujo_postulacion.md (2026-08-04); fechas y reglas de investigacion_paso_a_paso_sae.md (§2.1 y §3)
+
+| # | Tarea | Estado | Archivo(s) |
+|---|---|---|---|
+| 22-1 | E1: región como filtro de exploración; nota "puedes postular a colegios de otras comunas y regiones" | ✅ | `PostulacionPage.jsx` |
+| 22-2 | E2: sin tope de 8 colegios; recomendación visible de al menos 6 con refuerzo positivo al alcanzarlos (corregido también en Inicio, Ficha, Comparador, Algoritmo, Calendario, ChatAyuda y tour) | ✅ | `PostulacionPage.jsx`, `InicioPage.jsx`, `ColegioPage.jsx`, `ComparadorPage.jsx`, `AlgoritmoPage.jsx`, `CalendarioPage.jsx`, `ChatAyuda.jsx`, `TourContext.jsx` |
+| 22-3 | E3: cierre real del Periodo Principal 2027 — 27 de agosto, 14:00 (corregido también en Inicio, Calendario y tour) | ✅ | `PostulacionPage.jsx`, `InicioPage.jsx`, `CalendarioPage.jsx`, `TourContext.jsx` |
+| 22-4 | E4: rango real de la etapa de Resultados (15–21 de octubre de 2026) en vez de "5 días hábiles" | ✅ | `PostulacionPage.jsx` |
+| 22-5 | E5: desempate aleatorio por colegio (lotería independiente por establecimiento), sin "certificado por MINEDUC" (corregido también en Algoritmo) | ✅ | `PostulacionPage.jsx`, `AlgoritmoPage.jsx` |
+| 22-6 | E6: prioridades según procesamiento real (PIE → hermanos → 15 % prioritarios → funcionario → exalumno); el 15 % explicado como reserva de asientos | ✅ | `PostulacionPage.jsx` |
+| 22-7 | Comprobante descargable simulado (.txt con folio, lista ordenada y fechas siguientes) + aviso "tu postulación es válida cuando descargas el comprobante" | ✅ | `PostulacionPage.jsx` |
+| 22-8 | Reordenamiento drag-and-drop nativo + botones ↑↓ y anuncio `aria-live` del nuevo orden | ✅ | `PostulacionPage.jsx`, `index.css` |
+| 22-9 | Guardado visible del borrador ("Borrador guardado") + aviso de reanudación al volver | ✅ | `PostulacionPage.jsx`, `index.css` |
+| 22-10 | Paso 3 con enlaces "Editar" por sección (identificación, prioridades, lista) sin perder estado | ✅ | `PostulacionPage.jsx` |
+| 22-11 | ColegioAnalisis con postulantes del año anterior y vacantes por nivel (esquema v2) como fundamento del % estimado | ✅ | `PostulacionPage.jsx` |
+| 22-12 | Confirmación explícita del nivel al vincular estudiante ("Verifica el curso: es el error más frecuente…") | ✅ | `PostulacionPage.jsx` |
+| 22-13 | Opción "¿Postulas a hermanos?" con explicación de la postulación familiar en bloque y simulación del reordenamiento automático | ✅ | `PostulacionPage.jsx`, `index.css` |
+| 22-14 | Consejo estratégico en paso 2 (ordenar por preferencia real) + aviso de lista corta con todas las opciones de alta demanda | ✅ | `PostulacionPage.jsx` |
+| 22-15 | Bloque "¿Y si no quedo en ninguna?" en paso 3 con los dos casos (con/sin colegio de origen) y enlaces a /proceso | ✅ | `PostulacionPage.jsx` |
+
+---
+
 ## Resumen de estado por prioridad
 
-### ✅ Aplicados — 62 de 62 puntos aplicables (100%)
+### ✅ Aplicados — 87 de 87 puntos aplicables (100%) — sección S22 (15 puntos) añadida el 2026-08-04
 
-Todos los puntos de prioridad 🔴 alta y 🟡 media están implementados. La actualización v4.2 cerró autocompletado predictivo (5.3) y chat de ayuda simulado (10.1). El 2026-07-21 se cerró el último punto pendiente, 15.2 (sección "Resultados de años anteriores" con Chart.js en `AlgoritmoPage.jsx`).
+Todos los puntos de prioridad 🔴 alta y 🟡 media están implementados. La actualización v4.2 cerró autocompletado predictivo (5.3) y chat de ayuda simulado (10.1). El 2026-07-21 se cerró el último punto pendiente del informe original, 15.2 (sección "Resultados de años anteriores" con Chart.js en `AlgoritmoPage.jsx`). El 2026-08-04 se añadieron y cerraron S21 (10 puntos, vista /proceso) y S22 (15 puntos, rediseño del flujo de postulación con correcciones de fidelidad E1–E6).
 
 > ✅ **Sincronización con la memoria (2026-07-29):** capítulos 00, 04 y 06 actualizados a "100 % (62/62 aplicables)"; compilación verificada sin errores.
 
@@ -312,4 +353,4 @@ Todos los puntos de prioridad 🔴 alta y 🟡 media están implementados. La ac
 
 ---
 
-*Plan actualizado el 2026-06-09 (v4.2). Cambios v4.2: autocompletado predictivo en buscador, chat de ayuda simulado con 8 FAQ. Cambios v4.1: paleta institucional #0057B7, ilustraciones SVG, hero con etapa actual, contraste AAA, metadescripciones + OG dinámicos. Cambios v3: rediseño SeguimientoPage. 61/62 puntos cerrados (98%). Referencia: feedback_sae_problemas.md — Morales-Vargas et al., 2026.*
+*Plan actualizado el 2026-08-04 (v4.5). Cambios v4.5: sección S22 — rediseño del flujo de postulación (correcciones de fidelidad E1–E6, comprobante descargable, drag-and-drop accesible, borrador visible, edición desde confirmación, datos v2 en el análisis por colegio, verificación de nivel, postulación en bloque, consejo estratégico, bloque "¿y si no quedo?"). Cambios v4.4: sección S21 — vista /proceso. Cambios v4.2: autocompletado predictivo en buscador, chat de ayuda simulado con 8 FAQ. Cambios v4.1: paleta institucional #0057B7, ilustraciones SVG, hero con etapa actual, contraste AAA, metadescripciones + OG dinámicos. Cambios v3: rediseño SeguimientoPage. 87/87 puntos cerrados (100%). Referencia: feedback_sae_problemas.md — Morales-Vargas et al., 2026.*

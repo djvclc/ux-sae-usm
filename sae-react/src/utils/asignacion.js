@@ -54,7 +54,7 @@ export function calcularResultado(listaIds = [], perfil = {}) {
     .filter(Boolean)
 
   const idxAsignado = detalles.findIndex((d) => d.prob >= 65)
-  let asignado = null
+  let asignado
 
   if (idxAsignado === -1) {
     const mejorIdx = detalles.reduce(

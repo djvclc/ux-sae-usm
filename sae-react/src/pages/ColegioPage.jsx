@@ -112,7 +112,7 @@ function Indicador({ activo, icon, iconNo, label, labelNo, color }) {
       <span className="ind-card__icon" aria-hidden="true">{activo ? icon : iconNo ?? icon}</span>
       <span className="ind-card__label">{activo ? label : labelNo ?? label}</span>
       <span className={`ind-card__badge ${activo ? 'ind-card__badge--si' : 'ind-card__badge--no'}`}>
-        {activo ? 'Sí' : 'No'}
+        {activo ? '✓ Sí' : '✗ No'}
       </span>
     </div>
   )
@@ -123,21 +123,26 @@ export default function ColegioPage() {
   const [params]    = useSearchParams()
   const id          = Number(params.get('id'))
   const colegio     = colegiosById[id]
-  const [lista, setLista]   = useState([])
+  // Carga perezosa del borrador guardado (evita setState dentro del efecto)
+  const [lista, setLista]   = useState(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_LIST_KEY)
+      if (raw) { const p = JSON.parse(raw); if (Array.isArray(p)) return p }
+    } catch { /* noop */ }
+    return []
+  })
   const [agregado, setAgregado] = useState(false)
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(DRAFT_LIST_KEY)
-      if (raw) { const p = JSON.parse(raw); if (Array.isArray(p)) setLista(p) }
-    } catch { /* noop */ }
-  }, [])
+    window.scrollTo(0, 0)
+  }, [id])
+
 
   const yaEsta    = lista.includes(id)
-  const listaLlena = lista.length >= 8
 
+  // S22-2 (corrige E2): sin tope de 8 — el SAE no limita el número de colegios
   const agregarALista = () => {
-    if (yaEsta || listaLlena) return
+    if (yaEsta) return
     const nueva = [...lista, id]
     setLista(nueva)
     localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(nueva))
@@ -278,11 +283,6 @@ export default function ColegioPage() {
               <Link to="/postulacion" className="ficha-cta-zone__link"> Ver mi lista →</Link>
             </div>
           </div>
-        ) : listaLlena ? (
-          <div className="ficha-cta-zone__llena" role="status">
-            <span aria-hidden="true">⚠</span> Tu lista ya tiene 8 colegios (el máximo).{' '}
-            <Link to="/postulacion" className="tel-link">Quita alguno en Postulación</Link> para agregar este.
-          </div>
         ) : (
           <div className="ficha-cta-zone__add">
             <button
@@ -293,7 +293,8 @@ export default function ColegioPage() {
             >
               + Agregar a mi lista de postulación
             </button>
-            <span className="form-hint">{lista.length} de 8 colegios en tu lista.</span>
+            {/* S22-2 (corrige E2): sin límite; recomendación oficial de al menos 6 */}
+            <span className="form-hint">{lista.length} {lista.length === 1 ? 'colegio' : 'colegios'} en tu lista · se recomiendan al menos 6.</span>
           </div>
         )}
         {agregado ? (
@@ -541,7 +542,7 @@ export default function ColegioPage() {
           <Link className="btn btn--green btn--grande" to="/postulacion">
             ✅ Ya en tu lista — Ir a postulación
           </Link>
-        ) : !listaLlena ? (
+        ) : (
           <button
             type="button"
             className="btn btn--primary btn--grande"
@@ -550,7 +551,7 @@ export default function ColegioPage() {
           >
             + Agregar a mi lista de postulación
           </button>
-        ) : null}
+        )}
         <Link className="btn btn--secondary" to="/">
           ← Seguir explorando colegios
         </Link>

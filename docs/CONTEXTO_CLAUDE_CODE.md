@@ -1,6 +1,6 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-07-30 (actualizado tras refactor vitrina SAE — investigacion_vitrina_sae.md)  
-**Estado del proyecto:** v4.2 — 62/62 puntos aplicables implementados (100%)  
+**Fecha:** 2026-08-04 (actualizado tras rediseño del flujo de postulación — S22)  
+**Estado del proyecto:** v4.5 — 87/87 puntos aplicables implementados (100%)  
 **Directorio principal:** `USM/sae-react/`
 
 ---
@@ -68,13 +68,19 @@ sae-react/
 
 ---
 
-## 3. Estado actual — 62/62 puntos aplicables implementados (100%)
+## 3. Estado actual — 87/87 puntos aplicables implementados (100%)
 
 El plan completo está en `plan_mejora_sae.md`. Resumen de lo que YA está hecho:
 
-✅ **Completado (61 puntos):** buscador con autocompletado predictivo, módulo de algoritmo con simulador interactivo, ficha de colegio ampliada, flujo de postulación 3 pasos con ClaveÚnica, panel de seguimiento con resultado y comprobante descargable, chat de ayuda FAQ, control de tamaño de texto global, navegación accesible, SEO dinámico + Open Graph por ruta, contraste WCAG AAA, hamburger menu mobile, barras SIMCE adaptadas a móvil, ErrorBoundary, lazy loading en 11 rutas.
+✅ **Completado (matriz original, 62 puntos):** buscador con autocompletado predictivo, módulo de algoritmo con simulador interactivo, ficha de colegio ampliada, flujo de postulación 3 pasos con ClaveÚnica, panel de seguimiento con resultado y comprobante descargable, chat de ayuda FAQ, control de tamaño de texto global, navegación accesible, SEO dinámico + Open Graph por ruta, contraste WCAG AAA, hamburger menu mobile, barras SIMCE adaptadas a móvil, ErrorBoundary, lazy loading en 11 rutas.
 
-✅ **15.2 cerrado (2026-07-21):** sección "Resultados de años anteriores" con estadísticas ficticias y gráfico Chart.js en `AlgoritmoPage.jsx`. Con esto no quedan puntos pendientes.
+✅ **15.2 cerrado (2026-07-21):** sección "Resultados de años anteriores" con estadísticas ficticias y gráfico Chart.js en `AlgoritmoPage.jsx`.
+
+✅ **S21 cerrada (2026-08-04, 10 puntos):** vista `/proceso` (`ProcesoPage.jsx`) con las 5 etapas del proceso, calendario 2027 accesible y reglas de alto riesgo.
+
+✅ **S22 cerrada (2026-08-04, 15 puntos):** rediseño del flujo de postulación (`PostulacionPage.jsx` reescrita): correcciones de fidelidad E1–E6 (región como filtro, sin tope de 8 colegios — recomendación de al menos 6 —, cierre 27 de agosto 14:00, resultados 15–21 de octubre, desempate aleatorio por colegio, orden real de prioridades PIE → hermanos → 15 % reserva → funcionario → exalumno), comprobante .txt descargable con folio/lista/fechas, drag-and-drop nativo + botones ↑↓ con `aria-live`, borrador visible con aviso de reanudación, enlaces "Editar" por sección en paso 3, análisis por colegio con postulantes del año anterior y vacantes por nivel (esquema v2), confirmación explícita del nivel, postulación en bloque simulada, consejo estratégico y bloque "¿Y si no quedo en ninguna?". El tope de 8 y las fechas erróneas se corrigieron también en `InicioPage`, `ColegioPage`, `ComparadorPage`, `AlgoritmoPage`, `CalendarioPage`, `ChatAyuda` y `TourContext`.
+
+✅ **Lint saneado (2026-08-04):** los 15 errores preexistentes de ESLint fueron corregidos (inicializadores perezosos de `useState` para cargas de localStorage, supresiones justificadas de react-refresh, `import.meta.dirname` en `vite.config.js`, variables sin uso eliminadas). `npm run lint`: 0 errores, 0 warnings.
 
 ⚠️ **No aplica al prototipo:**
 - **8.2** — Cabeceras HTTP de seguridad (producción/Nginx, no afecta el prototipo local)
@@ -153,20 +159,20 @@ El simulador está funcional en `AlgoritmoPage.jsx` y el comparador (`Comparador
 - **Textos:** tuteo informal pero respetuoso. "el/la apoderado/a", "la o el estudiante" (lenguaje inclusivo)
 - **Siglas:** siempre con `<abbr title="...">` la primera vez que aparecen (PIE, SEP, NEE, SIMCE)
 - **Imágenes:** `alt` descriptivo en funcionales, `alt=""` en decorativas
-- **No usar `localStorage`** — el proyecto usa estado de React (no hay persistencia entre sesiones por diseño)
+- **`localStorage` sí se usa** (corregido 2026-08-04; esta nota decía lo contrario y estaba desactualizada): claves `sae_react_postulacion` (postulación confirmada), `sae_react_postulacion_draft_list` (borrador de lista compartido entre Inicio/Ficha/Comparador/Postulación), perfil y preferencia de tamaño de texto. Las cargas iniciales se hacen con inicializadores perezosos de `useState`, no con efectos.
 
 ---
 
 ## 10. Próximos pasos recomendados (en orden de prioridad)
 
-Los puntos del plan están todos cerrados (62/62 aplicables). Queda trabajo de pulido opcional:
+Los puntos del plan están todos cerrados (87/87 aplicables). Queda trabajo de pulido opcional:
 
 1. **Documentar cabeceras HTTP** en `vite.config.js` como comentario de producción (Nginx) — punto 8.2 (no aplica al prototipo, solo documentación).
 2. **Marcar páginas internas** (`/cumplimiento`, `/roadmap`, `/notas`) con meta `noindex` — no son parte del flujo público.
 3. **Sección de testimonios** en SeguimientoPage — 3 historias ficticias (ver `archivo/CLAUDE_v2.md` sección 4H).
 4. **Gráfico radar** en ColegioPage con Chart.js (SIMCE, NEE, Seguridad, Docentes, Proximidad).
 5. **Progress ring SVG** para % docentes titulados en ColegioPage.
-6. **Corregir 15 errores de lint preexistentes** (variables sin usar y similares en 12 archivos; detectados 2026-07-29).
+6. ~~Corregir 15 errores de lint preexistentes~~ — **hecho el 2026-08-04** (lint en 0 errores / 0 warnings).
 
 ## 11. Cómo correr el proyecto
 
@@ -186,7 +192,7 @@ npm run lint   # validación obligatoria junto con build
 |---------|-------------|
 | `CLAUDE.md` | Instrucciones base del repo (subproyectos, reglas globales, agentes) |
 | `.claude/agents/` | Agentes: `code-agent` (sae-react) y `writing-agent` (proyecto-tesis) |
-| `docs/planificacion/plan_mejora_sae.md` | Matriz completa de 62 puntos con estado de cada uno |
+| `docs/planificacion/plan_mejora_sae.md` | Matriz completa de 87 puntos con estado de cada uno |
 | `docs/investigacion/feedback_sae_problemas.md` | Problemas originales extraídos del informe de calidad |
 | `archivo/CLAUDE_v2.md` | Instrucciones para funcionalidades avanzadas (comparador, testimonios, radar) |
 | `archivo/prototipo_SAE_mejora.html` | V1 HTML monolítico (baseline superado) |

@@ -27,7 +27,8 @@ const PREGUNTAS = [
   },
   {
     q: '¿Cuántos colegios puedo elegir?',
-    a: 'Puedes postular a un mínimo de 1 y un máximo de 8 colegios. Te recomendamos agregar varios — mientras más opciones incluyas, más posibilidades tienes de quedar en uno que te guste.',
+    // S22-2 (corrige E2): sin límite de colegios; recomendación oficial de al menos 6
+    a: 'No hay límite en el número de colegios a los que puedes postular. El SAE recomienda incluir al menos 6 — mientras más opciones incluyas, más posibilidades tienes de quedar en uno que te guste.',
   },
   {
     q: '¿El SAE es una tómbola?',

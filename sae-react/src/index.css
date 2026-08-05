@@ -484,13 +484,20 @@ select:focus {
 .search-grid input,
 .search-grid select,
 .add-row select {
-  border: 2px solid var(--borde);
+  border: 2px solid #b5c1cf;
   border-radius: var(--radio);
   padding: 10px 14px;
   font-size: 1rem;
   color: var(--texto);
   background: var(--bg-card);
   font-family: inherit;
+}
+
+.search-grid input:focus,
+.search-grid select:focus {
+  outline: none;
+  border-color: var(--azul);
+  box-shadow: 0 0 0 3px var(--azul-cl);
 }
 
 .result-count {
@@ -1623,7 +1630,8 @@ select:focus {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.ficha-hero__nombre {
+/* Especificidad (0,2,0) supera a .page h1 (0,1,1) para que el blanco gane la cascada */
+.ficha-hero .ficha-hero__nombre {
   font-size: clamp(1.4rem, 4vw, 2.1rem);
   font-weight: 800;
   color: var(--blanco);
@@ -2173,6 +2181,10 @@ select:focus {
   color: var(--texto-suave);
 }
 
+.ind-card--off .ind-card__icon {
+  opacity: 0.28;
+}
+
 .ind-card__badge {
   display: inline-block;
   border-radius: 999px;
@@ -2187,8 +2199,8 @@ select:focus {
 }
 
 .ind-card__badge--no {
-  background: #dde1e6;
-  color: var(--gris-med);
+  background: #fce8e8;
+  color: #971010;
 }
 
 /* ─── Métodos ─── */
@@ -3346,7 +3358,9 @@ button[disabled],
   margin-left: 8px;
 }
 
-.seg-hero-name {
+/* Selector con elemento para superar la especificidad de `.page h2`,
+   que pintaba el título oscuro sobre el fondo azul (contraste WCAG) */
+h2.seg-hero-name {
   font-size: clamp(1.5rem, 4vw, 2.2rem);
   font-weight: 800;
   margin: 8px 0 4px;
@@ -5183,7 +5197,7 @@ button[disabled],
 
 .form-select {
   display: block;
-  border: 2px solid var(--gris-borde);
+  border: 2px solid #b5c1cf;
   border-radius: var(--radio);
   padding: 10px 14px;
   font-size: 0.95rem;
@@ -6138,4 +6152,687 @@ button[disabled],
 .comp-vacante-row__rango {
   font-weight: 700;
   color: var(--azul);
+}
+
+/* ============================================================
+   TUT-BOX — modificadores de color (S13-g, usados en ColegioPage y ProcesoPage)
+   Los usa InfoBox local con tipo='info'|'alerta'|'exito'|'neutro'
+============================================================ */
+
+.tut-box__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.tut-box__icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.tut-box__titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.tut-box__body {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: inherit;
+}
+
+.tut-box__body p {
+  margin: 4px 0 0;
+}
+
+/* tipo info (azul) */
+.tut-info {
+  background: var(--azul-cl);
+  border: 1px solid #b8d0ef;
+  color: #1a3a6e;
+}
+
+/* tipo alerta (naranja/rojo) */
+.tut-alerta {
+  background: #fff8f0;
+  border: 1px solid #f5c884;
+  color: #7a3800;
+}
+
+/* tipo exito (verde) */
+.tut-exito {
+  background: var(--verde-cl);
+  border: 1px solid #a3d4b2;
+  color: #145f2c;
+}
+
+/* tipo neutro (gris) */
+.tut-neutro {
+  background: var(--gris-cl);
+  border: 1px solid var(--gris-borde);
+  color: var(--texto-suave);
+}
+
+/* ============================================================
+   PROCESOPAGE — Línea de tiempo paso a paso (S21)
+============================================================ */
+
+.page--proceso {
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+/* Hero */
+.proceso-hero {
+  padding: var(--esp-lg) 0 var(--esp-md);
+}
+
+.proceso-hero h1 {
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+  font-weight: 800;
+  color: var(--texto);
+  margin: 0 0 var(--esp-sm);
+}
+
+.proceso-hero__lead {
+  font-size: 1.05rem;
+  color: var(--texto-suave);
+  line-height: 1.6;
+  max-width: 680px;
+  margin: 0;
+}
+
+/* Sección de alertas */
+.proceso-alertas {
+  background: #fff8f0;
+  border: 1.5px solid #f5d5a8;
+  border-radius: var(--radio-lg);
+  padding: var(--esp-lg);
+  margin: var(--esp-lg) 0;
+}
+
+.proceso-alertas__titulo {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #7a3800;
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.proceso-alertas__sub {
+  font-size: 0.9rem;
+  color: #7a3800;
+  margin: 0 0 var(--esp-md);
+  opacity: 0.85;
+}
+
+.proceso-alertas__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-sm);
+}
+
+.proc-regla {
+  display: flex;
+  gap: var(--esp-sm);
+  padding: 10px 14px;
+  background: #fff;
+  border-radius: var(--radio);
+  border: 1px solid #f5d5a8;
+}
+
+.proc-regla__icono {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.proc-regla__titulo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--texto);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.proc-regla__desc {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Timeline */
+.proceso-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: var(--esp-lg) 0;
+}
+
+.proc-etapa {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 0 var(--esp-md);
+  --etapa-color: var(--azul);
+}
+
+/* Columna izquierda: número + línea */
+.proc-etapa__izq {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.proc-etapa__num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--etapa-color);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+
+.proc-etapa--futura .proc-etapa__num {
+  background: var(--gris-cl);
+  color: var(--gris-med);
+  border: 2px solid var(--gris-borde);
+}
+
+.proc-etapa--activa .proc-etapa__num {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--etapa-color) 20%, white);
+}
+
+.proc-etapa__linea {
+  flex: 1;
+  width: 2px;
+  background: var(--gris-borde);
+  margin: 4px 0;
+  min-height: 24px;
+}
+
+.proc-etapa--completada .proc-etapa__linea {
+  background: var(--verde);
+}
+
+/* Columna derecha: contenido */
+.proc-etapa__der {
+  padding-bottom: var(--esp-lg);
+}
+
+.proc-etapa__header {
+  width: 100%;
+  text-align: left;
+  background: var(--bg-card);
+  border: 1.5px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+  padding: var(--esp-md) var(--esp-lg);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.proc-etapa--activa .proc-etapa__header {
+  border-color: var(--etapa-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--etapa-color) 12%, transparent);
+}
+
+.proc-etapa__header:hover {
+  border-color: var(--etapa-color);
+}
+
+.proc-etapa__titulo-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.proc-etapa__icono {
+  font-size: 1.2rem;
+}
+
+.proc-etapa__nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--texto);
+  flex: 1;
+}
+
+.proc-estado {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.proc-estado--activa {
+  background: color-mix(in srgb, var(--etapa-color) 15%, white);
+  color: var(--etapa-color);
+}
+
+.proc-estado--completada {
+  background: var(--verde-cl);
+  color: var(--verde);
+}
+
+.proc-estado--futura {
+  background: var(--gris-cl);
+  color: var(--gris-med);
+}
+
+.proc-etapa__fecha {
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.proc-etapa--futura .proc-etapa__fecha {
+  color: var(--gris-med);
+}
+
+.proc-etapa__resumen {
+  font-size: 0.92rem;
+  color: var(--texto);
+  margin: 0 0 var(--esp-sm);
+  line-height: 1.5;
+}
+
+.proc-etapa--futura .proc-etapa__resumen {
+  color: var(--texto-suave);
+}
+
+.proc-etapa__toggle {
+  font-size: 0.78rem;
+  color: var(--azul);
+  font-weight: 600;
+}
+
+/* Detalle expandible */
+.proc-etapa__detalle {
+  border: 1.5px solid var(--gris-borde);
+  border-top: none;
+  border-radius: 0 0 var(--radio-lg) var(--radio-lg);
+  padding: var(--esp-md) var(--esp-lg);
+  background: var(--blanco);
+}
+
+.proc-etapa__header + .proc-etapa__detalle {
+  margin-top: -6px;
+}
+
+/* Listas en el detalle */
+.proc-ol,
+.proc-ul {
+  padding-left: 1.4rem;
+  margin: var(--esp-sm) 0 var(--esp-md);
+  line-height: 1.7;
+}
+
+.proc-ol li,
+.proc-ul li {
+  font-size: 0.92rem;
+  color: var(--texto);
+  margin-bottom: 6px;
+}
+
+/* CTA dentro del detalle */
+.proc-detalle-cta {
+  margin-top: var(--esp-md);
+}
+
+/* Nota sobre cambio de respuesta (Resultados) */
+.proc-nota-cambio {
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+  margin: var(--esp-sm) 0;
+  padding: 8px 12px;
+  background: var(--gris-cl);
+  border-radius: var(--radio);
+}
+
+/* Opciones de resultado (Resultados) */
+.proc-opciones-res {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-sm);
+  margin: var(--esp-sm) 0 var(--esp-md);
+}
+
+.proc-opcion {
+  padding: 10px 14px;
+  border-radius: var(--radio);
+  border-left: 3px solid;
+  background: var(--gris-cl);
+  font-size: 0.9rem;
+}
+
+.proc-opcion p {
+  margin: 4px 0 0;
+  color: var(--texto-suave);
+  font-size: 0.86rem;
+}
+
+.proc-opcion--ok {
+  border-left-color: var(--verde);
+}
+
+.proc-opcion--lista {
+  border-left-color: var(--azul);
+}
+
+.proc-opcion--rech {
+  border-left-color: var(--rojo);
+}
+
+/* Prioridades en Asignación */
+.proc-prioridades {
+  margin: var(--esp-md) 0;
+}
+
+.proc-prioridades__titulo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gris-med);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--esp-sm);
+}
+
+.proc-prio-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gris-cl);
+}
+
+.proc-prio-item:last-child {
+  border-bottom: none;
+}
+
+.proc-prio-item__badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--azul-cl);
+  color: var(--azul);
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.proc-prio-item__badge--cuota {
+  background: #e8f5ee;
+  color: #145f2c;
+}
+
+.proc-prio-item__texto {
+  font-size: 0.88rem;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+/* Tabla comparativa Complementario */
+.proc-tabla-comp-wrap {
+  overflow-x: auto;
+  border-radius: var(--radio);
+  border: 1px solid var(--gris-borde);
+  margin: var(--esp-md) 0;
+}
+
+.proc-tabla-comp {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.proc-tabla-comp th {
+  background: var(--gris-cl);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gris-med);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--gris-borde);
+  white-space: nowrap;
+}
+
+.proc-tabla-comp td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--gris-cl);
+  vertical-align: top;
+}
+
+.proc-tabla-comp tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.proc-tabla-comp td:first-child {
+  font-weight: 600;
+  color: var(--texto);
+  white-space: nowrap;
+}
+
+/* Checklist de matrícula */
+.proc-checklist {
+  list-style: none;
+  padding: 0;
+  margin: var(--esp-sm) 0;
+}
+
+.proc-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  color: var(--texto);
+  border-bottom: 1px solid var(--gris-cl);
+}
+
+.proc-checklist li:last-child {
+  border-bottom: none;
+}
+
+.proc-checklist li::before {
+  content: '□';
+  color: var(--azul);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.proc-checklist__grupo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gris-med);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 12px 0 4px;
+  border-bottom: 1px solid var(--gris-borde);
+  margin: var(--esp-sm) 0 0;
+}
+
+/* Calendario */
+.proceso-calendario {
+  margin: var(--esp-xl) 0 var(--esp-lg);
+}
+
+.proceso-calendario__titulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--texto);
+  margin: 0 0 var(--esp-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.proceso-calendario__nota {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 0 0 var(--esp-md);
+}
+
+.proceso-calendario__wrap {
+  overflow-x: auto;
+  border-radius: var(--radio);
+  border: 1px solid var(--gris-borde);
+}
+
+.proc-cal-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.proc-cal-tabla th {
+  background: var(--gris-cl);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gris-med);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--gris-borde);
+}
+
+.proc-cal-tabla td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--gris-cl);
+  vertical-align: middle;
+  color: var(--texto);
+}
+
+.proc-cal-tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.proc-cal-tabla__tr--dest td {
+  background: var(--azul-cl);
+  font-weight: 600;
+}
+
+.proc-cal-tabla__fecha {
+  font-weight: 600;
+  color: var(--azul);
+  white-space: nowrap;
+}
+
+.proceso-calendario__fuente {
+  font-size: 0.78rem;
+  color: var(--gris-med);
+  margin: var(--esp-sm) 0 0;
+}
+
+/* CTA final */
+.proceso-footer-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-sm);
+  justify-content: center;
+  padding: var(--esp-xl) 0;
+  border-top: 1px solid var(--gris-borde);
+  margin-top: var(--esp-lg);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .proceso-alertas {
+    padding: var(--esp-md);
+  }
+
+  .proc-etapa__header,
+  .proc-etapa__detalle {
+    padding: var(--esp-md);
+  }
+
+  .proc-etapa__num {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+
+  .proc-etapa {
+    grid-template-columns: 36px 1fr;
+    gap: 0 var(--esp-sm);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   S22 — Rediseño del flujo de postulación
+   (docs/investigacion/analisis_flujo_postulacion.md, 2026-08-04)
+   ══════════════════════════════════════════════════════════ */
+
+/* S22-9: indicador visible de borrador guardado */
+.post-draft-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--verde-cl);
+  color: #145f2c;
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* S22-8: arrastrar y soltar en la lista de preferencias */
+.post-item--draggable {
+  cursor: grab;
+}
+
+.post-item--dragging {
+  opacity: 0.5;
+}
+
+.post-item--dragover {
+  outline: 2px dashed var(--azul);
+  outline-offset: 2px;
+  background: var(--azul-cl);
+}
+
+.post-item__grip {
+  align-self: center;
+  color: var(--gris-med);
+  font-size: 1rem;
+  flex-shrink: 0;
+  cursor: grab;
+  padding: 0 2px;
+}
+
+/* S22-13: checkbox de postulación a hermanos/as */
+.post-hermanos-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.post-hermanos-check input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--azul);
+  flex-shrink: 0;
 }

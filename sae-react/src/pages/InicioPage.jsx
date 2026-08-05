@@ -45,8 +45,15 @@ export default function InicioPage() {
   const [texto, setTexto] = useState('')
   const [comuna, setComuna] = useState('')
   const [nivel, setNivel] = useState('')
-  const [listaDraft, setListaDraft] = useState([])
-  const [buscadorAbierto, setBuscadorAbierto] = useState(true)
+  // Carga perezosa del borrador guardado (evita setState dentro del efecto)
+  const [listaDraft, setListaDraft] = useState(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_LIST_KEY)
+      if (!raw) return []
+      const parsed = JSON.parse(raw)
+      return Array.isArray(parsed) ? parsed.filter((id) => Number.isInteger(id)) : []
+    } catch { return [] }
+  })
   const [showSugerencias, setShowSugerencias] = useState(false)
   const [sortBy, setSortBy] = useState('default')
 
@@ -59,17 +66,6 @@ export default function InicioPage() {
       )
       .slice(0, 5)
   }, [texto])
-
-  useEffect(() => {
-    const raw = localStorage.getItem(DRAFT_LIST_KEY)
-    if (!raw) return
-    try {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed)) {
-        setListaDraft(parsed.filter((id) => Number.isInteger(id)))
-      }
-    } catch { /* ignore */ }
-  }, [])
 
   useEffect(() => {
     localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(listaDraft))
@@ -104,15 +100,15 @@ export default function InicioPage() {
 
   const comunas = [...new Set(colegios.map((c) => c.comuna))].sort()
 
+  // S22-2 (corrige E2): sin tope de 8 — el SAE no limita el número de colegios
   const agregarALista = (id) => {
     setListaDraft((prev) => {
-      if (prev.includes(id) || prev.length >= 8) return prev
+      if (prev.includes(id)) return prev
       return [...prev, id]
     })
   }
 
   const scrollToBuscador = () => {
-    setBuscadorAbierto(true)
     setTimeout(() => {
       document.getElementById('buscador')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 100)
@@ -150,7 +146,8 @@ export default function InicioPage() {
           <span className="hero-stage__badge">Etapa actual</span>
           <h1>Estamos en período de postulación</h1>
           <p className="hero-stage__date">
-            Tienes hasta el <strong>30 de agosto de 2026</strong> para postular a los colegios que prefieras.
+            {/* S22-3 (corrige E3): cierre real del Periodo Principal 2027 */}
+            Tienes hasta el <strong>27 de agosto de 2026 a las 14:00</strong> para postular a los colegios que prefieras.
           </p>
           <div className="hero__actions" style={{ justifyContent: 'center' }}>
             <Link className="btn btn--primary btn--grande" to="/postulacion">
@@ -323,7 +320,6 @@ export default function InicioPage() {
                           type="button"
                           className={`btn btn--mini ${listaDraft.includes(c.id) ? 'btn--green' : 'btn--primary'}`}
                           onClick={() => agregarALista(c.id)}
-                          disabled={!listaDraft.includes(c.id) && listaDraft.length >= 8}
                         >
                           {listaDraft.includes(c.id) ? '✓ En tu lista' : '+ A mi lista'}
                         </button>

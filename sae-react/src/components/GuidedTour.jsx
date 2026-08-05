@@ -70,7 +70,10 @@ export default function GuidedTour() {
     }
   }, [isActive, currentStep]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* Buscar el elemento objetivo en el DOM (con reintentos tras navegación) */
+  /* Buscar el elemento objetivo en el DOM (con reintentos tras navegación).
+     El reinicio síncrono del spotlight al cambiar de paso es deliberado:
+     sincroniza el estado con el DOM externo (polling con querySelector). */
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!isActive || !paso) return
 
@@ -109,7 +112,8 @@ export default function GuidedTour() {
     }, 100)
 
     return () => clearInterval(pollRef.current)
-  }, [isActive, currentStep, pathname]) // re-ejecuta cuando cambia la página
+  }, [isActive, currentStep, pathname]) // eslint-disable-line react-hooks/exhaustive-deps -- re-ejecuta cuando cambia la página
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   /* Recalcular spotlight en scroll y resize — el elemento se mueve con la página */
   useEffect(() => {

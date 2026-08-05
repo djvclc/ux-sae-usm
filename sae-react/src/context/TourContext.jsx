@@ -7,6 +7,7 @@ import { createContext, useCallback, useContext, useState } from 'react'
    - titulo, contenido, tip: textos explicativos
    - centrado: fuerza el tooltip al centro de la pantalla
 */
+// eslint-disable-next-line react-refresh/only-export-components -- datos del tour compartidos junto al provider por diseño
 export const tourPasos = [
   {
     id: 'bienvenida',
@@ -17,6 +18,15 @@ export const tourPasos = [
     contenido:
       'Te voy a mostrar cómo funciona este sistema en menos de 2 minutos. No necesitas saber nada técnico — solo seguir los pasos.',
     tip: null,
+  },
+  {
+    id: 'proceso',
+    page: '/proceso',
+    selector: '.proceso-timeline',
+    titulo: '📋 Las 5 etapas del proceso',
+    contenido:
+      'Antes de buscar colegios, conviene conocer el proceso completo: cuándo postular, cuándo sale el resultado, qué hacer si no quedas en ningún colegio y cuándo matricularte. Hay 5 reglas importantes que conviene leer antes de actuar.',
+    tip: '⚠ La más crítica: si no ingresas durante la etapa de Resultados, tu asignación se acepta automáticamente.',
   },
   {
     id: 'buscador',
@@ -34,7 +44,8 @@ export const tourPasos = [
     titulo: '3 pasos para postular',
     contenido:
       'El proceso de postulación tiene solo 3 etapas: primero entender cómo funciona el sistema, después buscar y comparar colegios, y finalmente postular con tu ClaveÚnica del Gobierno.',
-    tip: '💡 Tienes hasta el 30 de agosto. Puedes guardar tu progreso y volver cuando quieras.',
+    // S22-3 (corrige E3): cierre real del Periodo Principal 2027
+    tip: '💡 Tienes hasta el 27 de agosto a las 14:00. Puedes guardar tu progreso y volver cuando quieras.',
   },
   {
     id: 'algoritmo-pasos',
@@ -61,7 +72,8 @@ export const tourPasos = [
     titulo: '🏫 El orden en que pones los colegios importa',
     contenido:
       'El sistema evalúa primero tu opción N.° 1. Si no hay cupo con tu nivel de prioridad, pasa a la N.° 2, y así. Por eso siempre debes poner primero el colegio que MÁS quieres, no el que crees que te van a dar.',
-    tip: '💡 En la postulación real puedes elegir hasta 8 colegios. Mientras más agregues, mayor es tu probabilidad de quedar en alguno.',
+    // S22-2 (corrige E2): sin límite de colegios; se recomiendan al menos 6
+    tip: '💡 En la postulación real no hay límite de colegios: se recomienda incluir al menos 6. Mientras más agregues, mayor es tu probabilidad de quedar en alguno.',
   },
   {
     id: 'simulador',
@@ -155,6 +167,7 @@ export function TourProvider({ children }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook compartido junto al provider por diseño
 export function useTour() {
   return useContext(TourContext)
 }

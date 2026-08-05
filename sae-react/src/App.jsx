@@ -72,6 +72,7 @@ const NotasPage        = lazy(() => import('./pages/NotasPage'))
 const RegistroPage     = lazy(() => import('./pages/RegistroPage'))
 const ColegioPage      = lazy(() => import('./pages/ColegioPage'))
 const ComparadorPage   = lazy(() => import('./pages/ComparadorPage'))
+const ProcesoPage      = lazy(() => import('./pages/ProcesoPage'))
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'))
 
 /* SEO por ruta — título + meta description + Open Graph (S14-t, S14-o, S5-2)
@@ -126,6 +127,11 @@ const seoData = {
     title: 'Crear cuenta — SAE',
     desc: 'Regístrate en el SAE con tu RUN chileno para postular a colegios sin ClaveÚnica.',
     og: 'Crear cuenta — Sistema de Admisión Escolar',
+  },
+  '/proceso': {
+    title: 'El proceso paso a paso — SAE',
+    desc: 'Las 5 etapas del proceso de admisión escolar 2027: postulación, asignación, resultados, periodo complementario y matrícula.',
+    og: 'El proceso SAE paso a paso — Admisión Escolar 2027',
   },
 }
 
@@ -191,6 +197,7 @@ function App() {
                 <Route path="/seguimiento"  element={<SeguimientoPage />} />
                 <Route path="/notas"        element={<NotasPage />} />
                 <Route path="/registro"    element={<RegistroPage />} />
+                <Route path="/proceso"     element={<ProcesoPage />} />
                 <Route path="/cumplimiento" element={<CumplimientoPage />} />
                 <Route path="/roadmap"      element={<RoadmapPage />} />
                 <Route path="*"             element={<NotFoundPage />} />

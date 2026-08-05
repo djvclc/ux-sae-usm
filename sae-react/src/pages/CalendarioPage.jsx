@@ -18,8 +18,9 @@ const etapas = [
     nombre: 'Postulación',
     fecha: 'Agosto 2026',
     estado: 'actual',
-    desc: 'Las familias eligen hasta 8 colegios en orden de preferencia y los declaran en el sistema. El orden importa: el sistema evalúa primero tu primera opción.',
-    quéHacer: '📌 Estás aquí. Agrega tus colegios preferidos, ordénalos y confirma antes del 30 de agosto.',
+    // S22-2 y S22-3 (corrigen E2 y E3): sin límite de colegios; cierre 27 de agosto, 14:00
+    desc: 'Las familias eligen sus colegios en orden de preferencia y los declaran en el sistema (sin límite; se recomiendan al menos 6). El orden importa: el sistema evalúa primero tu primera opción.',
+    quéHacer: '📌 Estás aquí. Agrega tus colegios preferidos, ordénalos y confirma antes del 27 de agosto a las 14:00.',
   },
   {
     id: 3,
@@ -74,9 +75,10 @@ export default function CalendarioPage() {
       <TextSizeBar pageName="Calendario" />
       <h1 tabIndex={-1}>El proceso, paso a paso</h1>
       <p className="page__lead">
+        {/* S22-3 (corrige E3): cierre real del Periodo Principal 2027 */}
         El SAE 2026 tiene 6 etapas. Estamos en la <strong>Postulación</strong>{' '}
-        — cierra el 30 de agosto. Selecciona una etapa para ver el detalle y
-        qué deberías hacer ahora.
+        — cierra el 27 de agosto a las 14:00. Selecciona una etapa para ver el
+        detalle y qué deberías hacer ahora.
       </p>
 
       {/* Timeline horizontal */}

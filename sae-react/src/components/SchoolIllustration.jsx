@@ -16,7 +16,7 @@ function getPalette(id) {
   return PALETTES[(id - 1) % PALETTES.length]
 }
 
-export default function SchoolIllustration({ colegioId = 1, demanda, width = '100%', height = 170 }) {
+export default function SchoolIllustration({ colegioId = 1, width = '100%', height = 170 }) {
   const p = getPalette(colegioId)
 
   return (

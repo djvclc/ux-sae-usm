@@ -87,7 +87,8 @@ const pasos = [
     num: 1,
     icon: '📋',
     titulo: 'Tú eliges tu lista',
-    desc: 'Durante el período de postulación, tú armas una lista con los colegios que te interesan — hasta 8 establecimientos — y los ordenas de mayor a menor preferencia. El primero de tu lista es el que más quieres conseguir.',
+    // S22-2 (corrige E2): sin límite de establecimientos; se recomiendan al menos 6
+    desc: 'Durante el período de postulación, tú armas una lista con los colegios que te interesan — sin límite de establecimientos, se recomiendan al menos 6 — y los ordenas de mayor a menor preferencia. El primero de tu lista es el que más quieres conseguir.',
     detalle: 'Puedes cambiar el orden y agregar o quitar colegios todas las veces que necesites antes de la fecha límite. No te apresures: tomarte el tiempo para investigar y comparar vale la pena.',
     color: '#0057B7',
   },
@@ -96,7 +97,8 @@ const pasos = [
     icon: '⚖️',
     titulo: 'Cada colegio tiene un orden de prioridad',
     desc: 'La ley define quién tiene preferencia en cada establecimiento. El orden es: primero, quienes tienen un hermano o hermana matriculado/a en ese colegio. Después, estudiantes prioritarios/as (con designación SEP). Luego, hijos/as de funcionarios/as del colegio. Y finalmente, exalumnos/as del establecimiento.',
-    detalle: 'Si no tienes ninguna de estas condiciones, participas en el sorteo público junto a otros postulantes sin prioridad especial. Ese sorteo es transparente, certificado por el MINEDUC y completamente aleatorio.',
+    // S22-5 (corrige E5): desempate aleatorio por colegio, sin "certificado por MINEDUC"
+    detalle: 'Si no tienes ninguna de estas condiciones, participas en el desempate aleatorio junto a otros postulantes sin prioridad especial: cada colegio realiza su propio sorteo (una lotería independiente por establecimiento) cuando hay más postulantes que vacantes.',
     color: '#1A7F37',
   },
   {
@@ -451,7 +453,6 @@ export default function AlgoritmoPage() {
               <h3>Resultado estimado</h3>
               {/* Explicación contextualizada — no solo un número (S4-2) */}
               {explicacionSim ? (
-                /* eslint-disable-next-line react/no-danger */
                 <p dangerouslySetInnerHTML={{ __html: explicacionSim }} style={{ marginBottom: 8 }} />
               ) : null}
               <p>
@@ -567,9 +568,10 @@ export default function AlgoritmoPage() {
                 <span aria-hidden="true">❓</span> ¿El SAE es una tómbola?
               </p>
               <p className="mito-item__respuesta">
-                No. El sistema aplica prioridades definidas por ley y solo realiza un sorteo cuando
-                varios postulantes tienen exactamente las mismas condiciones. El sorteo es público y
-                certificado por el Ministerio de Educación.
+                {/* S22-5 (corrige E5): desempate aleatorio por colegio, sin "certificado por MINEDUC" */}
+                No. El sistema aplica prioridades definidas por ley y solo realiza un desempate
+                aleatorio cuando varios postulantes tienen exactamente las mismas condiciones:
+                cada colegio hace su propio sorteo, independiente del resto.
               </p>
             </li>
             <li className="mito-item">
@@ -588,7 +590,7 @@ export default function AlgoritmoPage() {
               </p>
               <p className="mito-item__respuesta">
                 Sí. Postular a más colegios mejora tus posibilidades de quedar asignado/a en
-                alguno de tus preferidos. Puedes agregar hasta 8.
+                alguno de tus preferidos. No hay límite de colegios; el SAE recomienda incluir al menos 6.
               </p>
             </li>
             <li className="mito-item">

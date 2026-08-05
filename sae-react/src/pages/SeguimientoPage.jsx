@@ -98,7 +98,7 @@ export default function SeguimientoPage() {
 
   const descargarComprobante = () => {
     if (!data) return
-    const { comprobante, resultado, perfil } = data
+    const { comprobante, resultado } = data
     const asignado = resultado?.asignado
     const txt = [
       '══════════════════════════════════════════',

@@ -1,6 +1,9 @@
+// PostulacionPage — flujo de postulación en 3 pasos
+// S22: rediseño de fidelidad y flujo según docs/investigacion/analisis_flujo_postulacion.md (2026-08-04)
+// Fechas y reglas: investigacion_paso_a_paso_sae.md (§2.1 y §3) — calendario oficial Admisión 2027
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { colegios, totalVacantes } from '../data/colegios'
+import { colegios, colegiosById, totalVacantes } from '../data/colegios'
 import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridad } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
@@ -28,44 +31,47 @@ const REGIONES = [
   { value: 'XII',  label: 'Magallanes',            full: 'Región de Magallanes y de la Antártica Chilena' },
 ]
 
-/* ── Datos de prioridades con explicaciones completas ── */
+/* ── Datos de prioridades con explicaciones completas ──
+   S22-6 (corrige E6): títulos y textos según el orden real de procesamiento
+   (PIE → hermanos → 15 % prioritarios → funcionario → exalumno); el 15 % es
+   una reserva de asientos, no un puesto en una fila. */
 const PRIORIDADES_INFO = {
   hermano: {
     label: 'Hermano/a matriculado/a',
-    titulo: 'Prioridad 1 — La más alta por ley',
+    titulo: 'Hermano/a matriculado/a — se revisa primero (después de los cupos PIE)',
     icono: '👨‍👩‍👧',
     que_es: 'Tu hijo/a tiene un hermano o hermana que está actualmente matriculado/a en ese colegio.',
-    que_implica: 'El colegio debe darte preferencia por sobre todos los demás postulantes que no tienen esta condición. El sistema revisará primero a quienes tienen hermanos antes de asignar los cupos restantes.',
+    que_implica: 'Después de llenar los cupos del Programa de Integración Escolar (PIE), el sistema revisa primero a quienes tienen hermanos/as en el colegio, antes de asignar los asientos restantes.',
     ejemplo: 'Si Daniela quiere postular a su segundo hijo al Colegio Los Andes, donde ya está su hija mayor, tiene un 92% de probabilidad de quedar asignada (en vez del 28% sin esta prioridad).',
     advertencia: 'Solo aplica si el hermano/a continuará matriculado/a en el mismo colegio el año escolar siguiente. Si el hermano/a egresa, esta prioridad ya no corresponde.',
     color: 'var(--verde)',
   },
   prioritario: {
     label: 'Estudiante prioritario/a',
-    titulo: 'Prioridad 2 — Estudiante con SEP',
+    titulo: 'Reserva del 15 % — asientos guardados para estudiantes prioritarios/as',
     icono: '🏫',
     que_es: 'El/la estudiante es considerado/a prioritario/a según la Ley de Subvención Escolar Preferencial (SEP). Esto incluye situaciones de vulnerabilidad socioeconómica verificadas por el MINEDUC.',
-    que_implica: 'Tienes la segunda prioridad más alta. El Estado identifica automáticamente a estos estudiantes — no necesitas postular a esta condición. Si el MINEDUC ya te notificó, puedes marcarla.',
+    que_implica: 'No es un puesto en una fila: cada colegio guarda el 15 % de sus asientos para estudiantes prioritarios/as. Si perteneces a este grupo, compites por esos asientos reservados además de los generales. El Estado identifica automáticamente a estos estudiantes — no necesitas postular a esta condición.',
     ejemplo: 'Los estudiantes SEP tienen entre 88-98% de probabilidad de asignación según el nivel de demanda del colegio.',
     advertencia: 'Esta condición la verifica el sistema automáticamente. Marcarla sin serlo puede anular tu postulación.',
     color: 'var(--azul)',
   },
   funcionario: {
     label: 'Hijo/a de funcionario/a',
-    titulo: 'Prioridad 3 — Funcionario/a del establecimiento',
+    titulo: 'Hijo/a de funcionario/a — se revisa después de la reserva del 15 %',
     icono: '👔',
     que_es: 'El/la apoderado/a trabaja como funcionario/a (docente, asistente de educación u otro cargo) en el establecimiento al que postulas.',
-    que_implica: 'Tienes preferencia sobre postulantes sin prioridad especial. Esta condición la verifica el colegio directamente con el MINEDUC a través de los registros de dotación docente.',
+    que_implica: 'Tienes preferencia sobre postulantes sin prioridad especial, una vez asignados los cupos PIE, los hermanos/as y la reserva del 15 %. Esta condición la verifica el colegio directamente con el MINEDUC a través de los registros de dotación docente.',
     ejemplo: 'Si trabajas como profesora en el Colegio Los Andes y quieres matricular a tu hijo/a ahí, tienes un 65% de probabilidad (versus 28% sin prioridad).',
     advertencia: 'Aplica solo en el establecimiento donde trabajas. No sirve para postular a un colegio distinto al de tu empleo.',
     color: 'var(--naranja)',
   },
   exalumno: {
     label: 'Exalumno/a del establecimiento',
-    titulo: 'Prioridad 4 — Exalumno/a',
+    titulo: 'Exalumno/a — la última prioridad antes del desempate aleatorio',
     icono: '🎓',
     que_es: 'El/la apoderado/a es exalumno/a del mismo establecimiento al que postulas.',
-    que_implica: 'Tienes la cuarta prioridad. En la práctica, esta condición tiene impacto solo cuando hay muchos postulantes con las mismas condiciones anteriores agotadas.',
+    que_implica: 'Es la última condición que revisa el sistema antes del desempate aleatorio. En la práctica, tiene impacto solo cuando quedan asientos después de las condiciones anteriores.',
     ejemplo: 'Si fuiste alumna del Colegio Los Andes y quieres que tu hijo/a estudie ahí, tienes un 60% de probabilidad en colegios de alta demanda.',
     advertencia: 'Algunos establecimientos no aplican esta prioridad. Verifica en la ficha del colegio si está habilitada.',
     color: 'var(--gris-med)',
@@ -99,7 +105,7 @@ function InfoBox({ icono, titulo, children, tipo = 'info', className = '' }) {
 }
 
 /* ── Panel de explicación de una prioridad ── */
-function PrioridadDetalle({ clave, perfil }) {
+function PrioridadDetalle({ clave }) {
   const info = PRIORIDADES_INFO[clave]
   if (!info) return null
   return (
@@ -121,11 +127,24 @@ function PrioridadDetalle({ clave, perfil }) {
   )
 }
 
+/* ── S22-11: tramo de vacantes del esquema v2 según el nivel del estudiante ── */
+function vacantesDeNivel(colegio, nivelAlumno) {
+  if (!nivelAlumno) return null
+  let clave = null
+  if (nivelAlumno === 'Prekínder') clave = 'preKinder'
+  else if (nivelAlumno === 'Kínder') clave = 'kinder'
+  else if (nivelAlumno.includes('básico')) clave = 'basico'
+  else if (nivelAlumno.includes('medio')) clave = 'medio'
+  return colegio.vacantes.find((v) => v.nivel === clave) ?? null
+}
+
 /* ── Mini-análisis de un colegio en la lista ── */
-function ColegioAnalisis({ colegio, orden, perfil }) {
+function ColegioAnalisis({ colegio, orden, perfil, nivelAlumno }) {
   const nivel = nivelPrioridad(perfil)
   const prob  = probAsignacion(nivel, colegio.demanda)
   const vac   = totalVacantes(colegio)
+  // S22-11: postulantes del año anterior y vacantes por nivel como fundamento del % estimado
+  const vacNivel = vacantesDeNivel(colegio, nivelAlumno)
 
   const probClass = prob >= 80 ? 'alta' : prob >= 60 ? 'media' : 'baja'
   const demandaTexto = { alta: 'Muchos postulantes compiten por pocas vacantes.', media: 'Competencia moderada por las vacantes.', baja: 'Pocas personas postulando — más fácil de conseguir.' }
@@ -143,10 +162,30 @@ function ColegioAnalisis({ colegio, orden, perfil }) {
           <strong>{colegio.demanda}</strong>
           <span className="tut-hint"> — {demandaTexto[colegio.demanda]}</span>
         </li>
-        <li>
-          <span>Vacantes totales:</span>
-          <strong>{vac}</strong>
-        </li>
+        {vacNivel ? (
+          <>
+            <li>
+              <span>Vacantes en {vacNivel.label}:</span>
+              <strong>entre {vacNivel.min} y {vacNivel.max}</strong>
+            </li>
+            <li>
+              <span>Postulantes el año pasado:</span>
+              <strong>{vacNivel.postulantesAnterior}</strong>
+            </li>
+            <li className="tut-colegio-info__tip">
+              📊 El {prob}% estimado nace de estos datos: el año pasado postularon {vacNivel.postulantesAnterior} personas a un máximo de {vacNivel.max} cupos en {vacNivel.label}, más tu condición de prioridad.
+            </li>
+          </>
+        ) : nivelAlumno ? (
+          <li className="tut-colegio-info__tip">
+            ⚠ Este colegio no publica vacantes para {nivelAlumno}. Revisa su ficha antes de postular.
+          </li>
+        ) : (
+          <li>
+            <span>Vacantes totales:</span>
+            <strong>{vac}</strong>
+          </li>
+        )}
         <li>
           <span>Tu prioridad:</span>
           <strong>{prioridadLabels[nivel]}</strong>
@@ -179,6 +218,16 @@ function rutValido(rut) {
   return /^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/.test(rut)
 }
 
+/* S22-9: carga perezosa del borrador guardado (sin tope de 8 — corrige E2) */
+function cargarBorradorInicial() {
+  try {
+    const raw = localStorage.getItem(DRAFT_LIST_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed.filter((id) => Number.isInteger(id)) : []
+  } catch { return [] }
+}
+
 /* ── Componente principal ── */
 export default function PostulacionPage() {
   const { textoGrande } = useTextSize()
@@ -188,8 +237,7 @@ export default function PostulacionPage() {
   const [rut, setRut]           = useState('')
   const [rutTocado, setRutTocado] = useState(false)
   const [perfil, setPerfil]     = useState({ hermano: false, prioritario: false, funcionario: false, exalumno: false })
-  const [lista, setLista]       = useState([])
-  const [toAdd, setToAdd]       = useState('')
+  const [lista, setLista]       = useState(cargarBorradorInicial)
   const [confirmado, setConfirmado] = useState(null)
   const [modoTutorial, setModoTutorial] = useState(true)
   const [prioridadAbierta, setPrioridadAbierta] = useState(null)
@@ -198,42 +246,54 @@ export default function PostulacionPage() {
   const [alumnoNombre, setAlumnoNombre] = useState('')
   const [alumnoNivel, setAlumnoNivel]   = useState('')
   const [alumnoOk, setAlumnoOk]         = useState(false)
+  const [confirmandoNivel, setConfirmandoNivel] = useState(false)   // S22-12
+  const [postulaHermanos, setPostulaHermanos]   = useState(false)   // S22-13
+  const [borradorGuardado, setBorradorGuardado] = useState(false)   // S22-9
+  const [anuncioOrden, setAnuncioOrden]         = useState('')      // S22-8
+  const [dragIdx, setDragIdx]           = useState(null)            // S22-8
+  const [dragOverIdx, setDragOverIdx]   = useState(null)            // S22-8
+  const [comprobanteDescargado, setComprobanteDescargado] = useState(false) // S22-7
 
+  // S22-9: aviso de reanudación si llegamos con un borrador guardado (fijado al primer render)
+  const [borradorCargado] = useState(lista.length > 0)
+
+  // S22-9: persistencia del borrador; el indicador visible se activa en cada acción del usuario
   useEffect(() => {
-    const raw = localStorage.getItem(DRAFT_LIST_KEY)
-    if (!raw) return
-    try {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed)) setLista(parsed.filter((id) => Number.isInteger(id)).slice(0, 8))
-    } catch { /* ignora */ }
-  }, [])
+    localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(lista))
+  }, [lista])
 
-  useEffect(() => { localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(lista)) }, [lista])
-
-  const resultado   = useMemo(() => calcularResultado(lista, perfil), [lista, perfil])
-  const disponibles = colegios.filter((c) => !lista.includes(c.id))
+  const resultado = useMemo(() => calcularResultado(lista, perfil), [lista, perfil])
 
   const togglePerfil = (key) => {
     setPerfil((prev) => ({ ...prev, [key]: !prev[key] }))
     setPrioridadAbierta((prev) => (prev === key ? null : key))
   }
 
-  const addColegio = () => {
-    const id = Number(toAdd)
-    if (!id || lista.includes(id) || lista.length >= 8) return
-    setLista((prev) => [...prev, id])
-    setToAdd('')
-  }
-
-  const mover = (idx, delta) => {
-    const next = idx + delta
-    if (next < 0 || next >= lista.length) return
+  /* S22-8: reordenamiento compartido por botones ↑↓ y arrastrar/soltar,
+     con anuncio del nuevo orden para lectores de pantalla */
+  const reordenar = (desde, hasta) => {
+    if (desde == null || hasta == null || desde === hasta) return
+    if (desde < 0 || hasta < 0 || desde >= lista.length || hasta >= lista.length) return
     const copia = [...lista]
-    ;[copia[idx], copia[next]] = [copia[next], copia[idx]]
+    const [movido] = copia.splice(desde, 1)
+    copia.splice(hasta, 0, movido)
     setLista(copia)
+    setBorradorGuardado(true) // S22-9
+    const col = colegiosById[movido]
+    setAnuncioOrden(`${col ? col.nombre : 'Colegio'} ahora es tu opción número ${hasta + 1} de ${copia.length}.`)
   }
 
-  const quitar = (id) => setLista((prev) => prev.filter((item) => item !== id))
+  const mover = (idx, delta) => reordenar(idx, idx + delta)
+
+  const agregar = (id) => {
+    setLista((prev) => (prev.includes(id) ? prev : [...prev, id]))
+    setBorradorGuardado(true) // S22-9
+  }
+
+  const quitar = (id) => {
+    setLista((prev) => prev.filter((item) => item !== id))
+    setBorradorGuardado(true) // S22-9
+  }
 
   const siguiente = () => {
     if (paso === 1 && (!loginOk || !region || !alumnoOk)) return
@@ -247,12 +307,55 @@ export default function PostulacionPage() {
     const payload = {
       fecha: new Date().toISOString(),
       comprobante: `SAE-${Math.floor(100000 + Math.random() * 900000)}`,
+      alumno: { nombre: alumnoNombre, run: alumnoRut, nivel: alumnoNivel },
       perfil,
       lista,
       resultado,
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
     setConfirmado(payload)
+  }
+
+  /* S22-7: comprobante descargable simulado — folio, lista ordenada y fechas siguientes.
+     Fechas: calendario oficial Admisión 2027 (investigacion_paso_a_paso_sae.md §3). */
+  const descargarComprobante = () => {
+    if (!confirmado) return
+    const lineas = [
+      '══════════════════════════════════════════',
+      '     COMPROBANTE DE POSTULACIÓN SAE',
+      '     Sistema de Admisión Escolar (prototipo)',
+      '══════════════════════════════════════════',
+      '',
+      `Folio: ${confirmado.comprobante}`,
+      `Fecha de envío: ${new Date(confirmado.fecha).toLocaleString('es-CL')}`,
+      `Estudiante: ${alumnoNombre} (RUN ${alumnoRut})`,
+      `Nivel al que postula: ${alumnoNivel}`,
+      `Prioridad aplicada: ${prioridadLabels[resultado.nivel]}`,
+      '',
+      '── LISTA EN ORDEN DE PREFERENCIA ──',
+      ...lista.map((id, i) => {
+        const c = colegiosById[id]
+        return `${i + 1}. ${c ? `${c.nombre} — ${c.comuna}` : 'Colegio'}`
+      }),
+      '',
+      '── PRÓXIMAS FECHAS (ADMISIÓN 2027) ──',
+      'Cierre del Periodo Principal: 27 de agosto de 2026, 14:00',
+      'Resultados del Periodo Principal: 15 al 21 de octubre de 2026',
+      'Resultados de listas de espera: 28 y 29 de octubre de 2026',
+      'Postulación Periodo Complementario: 10 al 17 de noviembre de 2026',
+      'Matrícula presencial: 9 al 22 de diciembre de 2026',
+      '',
+      'Tu postulación es válida cuando descargas este comprobante.',
+      'Documento simulado con fines de prototipo.',
+    ]
+    const blob = new Blob([lineas.join('\n')], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `comprobante_${confirmado.comprobante}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+    setComprobanteDescargado(true)
   }
 
   const rutError =
@@ -262,9 +365,17 @@ export default function PostulacionPage() {
 
   const hayPrioridad = Object.values(perfil).some(Boolean)
 
+  // S22-14: aviso de lista corta con todas las opciones de alta demanda
+  const listaColegios = lista.map((id) => colegiosById[id]).filter(Boolean)
+  const listaCortaYAlta =
+    listaColegios.length > 0 && listaColegios.length < 6 && listaColegios.every((c) => c.demanda === 'alta')
+
   return (
     <main className={`page page--module${textoGrande ? ' page--texto-grande' : ''}`}>
       <TextSizeBar pageName="Postulación" />
+
+      {/* S22-8: anuncio del nuevo orden para lectores de pantalla */}
+      <p className="sr-only" role="status" aria-live="polite">{anuncioOrden}</p>
 
       {/* ── Encabezado con toggle de tutorial ── */}
       <div className="post-header">
@@ -287,6 +398,16 @@ export default function PostulacionPage() {
       {modoTutorial && (
         <InfoBox icono="💡" titulo="Modo tutorial activado" tipo="info">
           <p>En cada paso verás explicaciones de lo que significa cada decisión y qué implica para tu postulación. Puedes desactivarlo con el botón de arriba.</p>
+        </InfoBox>
+      )}
+
+      {/* S22-9: aviso de reanudación al volver con un borrador guardado */}
+      {borradorCargado && !confirmado && (
+        <InfoBox icono="📂" titulo="Retomaste tu borrador" tipo="info">
+          <p>
+            Guardamos tu lista con {lista.length} {lista.length === 1 ? 'colegio' : 'colegios'} la última vez.
+            Puedes seguir donde quedaste: tu avance se guarda automáticamente en este dispositivo.
+          </p>
         </InfoBox>
       )}
 
@@ -408,11 +529,10 @@ export default function PostulacionPage() {
                     ¿En qué región vives?{' '}
                     <span aria-hidden="true" style={{ color: 'var(--rojo)' }}>*</span>
                   </label>
-                  {modoTutorial && (
-                    <p className="form-hint">
-                      Tu región determina qué establecimientos puedes ver. Solo puedes postular a colegios de la región donde vive el/la estudiante.
-                    </p>
-                  )}
+                  {/* S22-1 (corrige E1): la región es solo un filtro de exploración, no una restricción */}
+                  <p className="form-hint">
+                    Usamos tu región para mostrarte primero los colegios cercanos. Puedes postular a colegios de otras comunas y regiones si así lo deseas.
+                  </p>
                   <select
                     id="select-region"
                     value={region}
@@ -479,7 +599,7 @@ export default function PostulacionPage() {
                         id="alum-nivel"
                         className="form-select"
                         value={alumnoNivel}
-                        onChange={(e) => setAlumnoNivel(e.target.value)}
+                        onChange={(e) => { setAlumnoNivel(e.target.value); setConfirmandoNivel(false) }}
                         style={{ maxWidth: '100%' }}
                       >
                         <option value="">Selecciona un nivel…</option>
@@ -494,20 +614,71 @@ export default function PostulacionPage() {
                       </select>
                     </div>
 
-                    {modoTutorial && (
-                      <InfoBox tipo="info" icono="ℹ️">
-                        <p>Puedes vincular un solo estudiante por postulación. Si tienes más de un hijo/a en el proceso, deberás hacer una postulación separada para cada uno/a.</p>
+                    {/* S22-13: postulación familiar en bloque */}
+                    <div className="rg-campo">
+                      <label className="form-label post-hermanos-check" htmlFor="check-hermanos">
+                        <input
+                          id="check-hermanos"
+                          type="checkbox"
+                          checked={postulaHermanos}
+                          onChange={(e) => setPostulaHermanos(e.target.checked)}
+                        />
+                        ¿Postulas también a un hermano o una hermana?
+                      </label>
+                    </div>
+
+                    {postulaHermanos && (
+                      <InfoBox icono="👨‍👩‍👧‍👦" titulo="Postulación familiar en bloque" tipo="info">
+                        <p>Cuando postulas a dos o más hermanos/as, puedes pedir la <strong>postulación en bloque</strong>: el sistema intenta dejarlos en el mismo colegio.</p>
+                        <p>Si tu hijo/a mayor queda admitido/a, el sistema <strong>reordena automáticamente</strong> la lista del menor y pone primero el colegio del mayor. Así se ve la simulación:</p>
+                        <p>
+                          Lista del menor antes: <strong>1. Colegio San Martín · 2. Colegio Los Andes</strong><br />
+                          El mayor queda en Colegio Los Andes ➜ lista del menor ahora: <strong>1. Colegio Los Andes · 2. Colegio San Martín</strong>
+                        </p>
+                        <p>En este prototipo simulamos una postulación a la vez. En el sistema real marcas esta opción al postular a cada hermano/a.</p>
                       </InfoBox>
                     )}
 
-                    <button
-                      type="button"
-                      className="btn btn--primary"
-                      disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel}
-                      onClick={() => setAlumnoOk(true)}
-                    >
-                      Vincular estudiante
-                    </button>
+                    {modoTutorial && (
+                      <InfoBox tipo="info" icono="ℹ️">
+                        <p>Vinculas un estudiante por postulación. Si postulas a hermanos/as, harás una postulación para cada uno/a y puedes pedir la <strong>postulación familiar en bloque</strong> para que el sistema intente dejarlos juntos.</p>
+                      </InfoBox>
+                    )}
+
+                    {/* S22-12: confirmación explícita del nivel antes de vincular */}
+                    {!confirmandoNivel ? (
+                      <button
+                        type="button"
+                        className="btn btn--primary"
+                        disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel}
+                        onClick={() => setConfirmandoNivel(true)}
+                      >
+                        Vincular estudiante
+                      </button>
+                    ) : (
+                      <InfoBox icono="🎯" titulo="Verifica el curso antes de continuar" tipo="alerta">
+                        <p>
+                          Vas a postular a <strong>{alumnoNombre}</strong> al nivel <strong>{alumnoNivel}</strong>.
+                          Postular a un curso incorrecto es el error más frecuente y puede afectar tu asignación.
+                        </p>
+                        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
+                          <button
+                            type="button"
+                            className="btn btn--primary"
+                            onClick={() => { setAlumnoOk(true); setConfirmandoNivel(false) }}
+                          >
+                            Sí, el curso es correcto
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn--secondary"
+                            onClick={() => setConfirmandoNivel(false)}
+                          >
+                            Corregir curso
+                          </button>
+                        </div>
+                      </InfoBox>
+                    )}
                   </div>
                 )}
 
@@ -555,6 +726,18 @@ export default function PostulacionPage() {
               Marca solo las que aplican a tu caso. El sistema las verifica.
             </span>
 
+            {/* S22-6 (corrige E6): orden real de procesamiento y naturaleza de la cuota del 15 % */}
+            {modoTutorial && (
+              <InfoBox icono="🧮" titulo="¿En qué orden se revisan las prioridades?" tipo="neutro" className="tut-box--sm">
+                <p>
+                  En cada colegio, el sistema asigna los asientos en este orden: 1.º cupos del{' '}
+                  <abbr title="Programa de Integración Escolar">PIE</abbr>, 2.º hermanos/as, 3.º reserva
+                  del 15 % para estudiantes prioritarios/as, 4.º hijos/as de funcionarios/as y 5.º exalumnos/as.
+                </p>
+                <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio guarda para estudiantes prioritarios/as.</p>
+              </InfoBox>
+            )}
+
             <div className="chip-row">
               {Object.entries(PRIORIDADES_INFO).map(([key, info]) => (
                 <button
@@ -579,16 +762,17 @@ export default function PostulacionPage() {
                   if (!mostrar) return null
                   return (
                     <div key={key} id={`prio-detalle-${key}`} aria-live="polite">
-                      <PrioridadDetalle clave={key} perfil={perfil} />
+                      <PrioridadDetalle clave={key} />
                     </div>
                   )
                 })}
               </div>
             )}
 
+            {/* S22-5 (corrige E5): desempate aleatorio por colegio, sin "certificado por MINEDUC" */}
             {!hayPrioridad && modoTutorial && (
               <InfoBox tipo="neutro" className="tut-box--sm">
-                <p>Si no tienes ninguna condición de prioridad, participarás en el <strong>sorteo público</strong> junto a otros postulantes sin prioridad. El sorteo es certificado por el MINEDUC y completamente transparente.</p>
+                <p>Si no tienes ninguna condición de prioridad, participarás en el <strong>desempate aleatorio</strong>: cuando hay más postulantes que vacantes, cada colegio realiza su propio sorteo (una lotería independiente por establecimiento) para ordenar a quienes no tienen prioridad.</p>
               </InfoBox>
             )}
 
@@ -597,8 +781,9 @@ export default function PostulacionPage() {
               <div className="post-picker-header">
                 <p className="post-picker-titulo">
                   Elige tus colegios:
+                  {/* S22-2 (corrige E2): sin límite de colegios; recomendación oficial de al menos 6 */}
                   <span className="post-picker-count" aria-live="polite">
-                    {lista.length}/8 seleccionados
+                    {lista.length} {lista.length === 1 ? 'seleccionado' : 'seleccionados'} · sin límite, se recomiendan al menos 6
                   </span>
                 </p>
                 {modoTutorial && (
@@ -617,11 +802,10 @@ export default function PostulacionPage() {
                 {colegios.map((c) => {
                   const enLista = lista.includes(c.id)
                   const orden   = lista.indexOf(c.id) + 1
-                  const llena   = lista.length >= 8
                   return (
                     <div
                       key={c.id}
-                      className={`post-school-card${enLista ? ' post-school-card--added' : ''}${!enLista && llena ? ' post-school-card--bloq' : ''}`}
+                      className={`post-school-card${enLista ? ' post-school-card--added' : ''}`}
                       role="listitem"
                     >
                       {enLista && (
@@ -649,8 +833,7 @@ export default function PostulacionPage() {
                         <button
                           type="button"
                           className="post-school-card__btn post-school-card__btn--agregar"
-                          onClick={() => { if (!llena) setLista((prev) => [...prev, c.id]) }}
-                          disabled={llena}
+                          onClick={() => agregar(c.id)}
                           aria-label={`Agregar ${c.nombre} a tu postulación`}
                         >
                           + Agregar
@@ -667,23 +850,51 @@ export default function PostulacionPage() {
               <div className="post-order-wrap">
                 <p className="post-order-titulo">
                   Tu lista en orden de preferencia:
+                  {/* S22-9: indicador visible de guardado del borrador */}
+                  {borradorGuardado && (
+                    <span className="post-draft-badge" role="status">✓ Borrador guardado</span>
+                  )}
                   <span className="form-hint" style={{ display: 'block', fontWeight: 400 }}>
-                    Usa los botones para reordenar. El 1 es el que más quieres.
+                    Arrastra las tarjetas o usa los botones ↑ y ↓ para reordenar. El 1 es el que más quieres.
                   </span>
                 </p>
                 <ul className="post-order-list" aria-label="Tu lista de colegios en orden de preferencia">
                   {lista.map((id, idx) => {
-                    const col = colegios.find((c) => c.id === id)
+                    const col = colegiosById[id]
                     if (!col) return null
                     const vac = totalVacantes(col)
                     return (
-                      <li key={id} className="post-item">
+                      /* S22-8: arrastrar y soltar nativo + botones ↑↓ como alternativa accesible */
+                      <li
+                        key={id}
+                        className={`post-item post-item--draggable${dragIdx === idx ? ' post-item--dragging' : ''}${dragOverIdx === idx && dragIdx !== idx ? ' post-item--dragover' : ''}`}
+                        draggable
+                        onDragStart={(e) => {
+                          setDragIdx(idx)
+                          e.dataTransfer.effectAllowed = 'move'
+                          e.dataTransfer.setData('text/plain', String(idx))
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault()
+                          e.dataTransfer.dropEffect = 'move'
+                          if (dragOverIdx !== idx) setDragOverIdx(idx)
+                        }}
+                        onDragLeave={() => { if (dragOverIdx === idx) setDragOverIdx(null) }}
+                        onDrop={(e) => {
+                          e.preventDefault()
+                          reordenar(dragIdx, idx)
+                          setDragIdx(null)
+                          setDragOverIdx(null)
+                        }}
+                        onDragEnd={() => { setDragIdx(null); setDragOverIdx(null) }}
+                      >
+                        <span className="post-item__grip" aria-hidden="true">⠿</span>
                         <span className="post-item__num" aria-hidden="true">{idx + 1}</span>
                         <div className="post-item__body">
                           <strong className="post-item__nombre">{col.nombre}</strong>
                           <span className="post-item__meta">{col.comuna} · {vac} vacantes · {col.demanda} demanda</span>
                           {modoTutorial && (
-                            <ColegioAnalisis colegio={col} orden={idx + 1} perfil={perfil} />
+                            <ColegioAnalisis colegio={col} orden={idx + 1} perfil={perfil} nivelAlumno={alumnoNivel} />
                           )}
                         </div>
                         <div className="post-item__acciones">
@@ -710,9 +921,32 @@ export default function PostulacionPage() {
                     )
                   })}
                 </ul>
-                {modoTutorial && lista.length >= 2 && (
+
+                {/* S22-2: progreso hacia la recomendación de al menos 6 + refuerzo positivo */}
+                {modoTutorial && lista.length >= 2 && lista.length < 6 && (
+                  <InfoBox tipo="info" className="tut-box--sm">
+                    <p>Tienes {lista.length} colegios. Más opciones = más probabilidades. No hay límite, y el SAE recomienda incluir <strong>al menos 6</strong> si tu hijo/a no tiene matrícula asegurada.</p>
+                  </InfoBox>
+                )}
+                {lista.length >= 6 && (
                   <InfoBox tipo="exito" className="tut-box--sm">
-                    <p>Tienes {lista.length} colegios. Más opciones = más probabilidades. Puedes agregar hasta 8.</p>
+                    <p>🎉 ¡Bien! Tienes {lista.length} opciones: alcanzaste la recomendación oficial de al menos 6. Puedes seguir agregando si quieres.</p>
+                  </InfoBox>
+                )}
+
+                {/* S22-14: consejo estratégico — ordenar por preferencia real */}
+                <InfoBox icono="🧠" titulo="Consejo: ordena por tu preferencia real" tipo="info" className="tut-box--sm">
+                  <p>El sistema está hecho para que te convenga poner primero el colegio que <strong>más quieres</strong>. Poner primero uno "más fácil" no mejora tus opciones y puedes perder el que preferías.</p>
+                </InfoBox>
+
+                {/* S22-14: aviso de lista corta con todas las opciones de alta demanda */}
+                {listaCortaYAlta && (
+                  <InfoBox icono="⚠️" titulo="Lista corta y toda de alta demanda" tipo="alerta">
+                    <p>
+                      Tu lista tiene {lista.length} {lista.length === 1 ? 'opción' : 'opciones'} y todas son de
+                      alta demanda. Así podrías quedar sin asignación. Agrega más colegios — idealmente al menos 6 —
+                      e incluye alguno de demanda media o baja.
+                    </p>
                   </InfoBox>
                 )}
               </div>
@@ -736,19 +970,47 @@ export default function PostulacionPage() {
           <CardContent>
             {modoTutorial && (
               <InfoBox icono="👁" titulo="¿Qué estás a punto de enviar?" tipo="info">
-                <p>Esta es tu postulación final. Una vez que hagas clic en "Confirmar", el sistema registra tu lista. <strong>Podrás modificarla durante el período de postulación</strong> antes de la fecha límite (30 de agosto). Después de esa fecha, la lista queda fija.</p>
+                {/* S22-3 (corrige E3): cierre real del Periodo Principal 2027 */}
+                <p>Esta es tu postulación final. Una vez que hagas clic en "Confirmar", el sistema registra tu lista. <strong>Podrás modificarla durante el período de postulación</strong> antes de la fecha límite (27 de agosto a las 14:00). Después de esa hora, la lista queda fija.</p>
               </InfoBox>
             )}
 
+            {/* S22-10: edición por sección sin perder estado — identificación */}
             <div className="post-alumno-card post-alumno-card--resumen" aria-label="Estudiante vinculado">
               <span className="post-alumno-card__icono" aria-hidden="true">🎒</span>
               <div className="post-alumno-card__info">
                 <strong className="post-alumno-card__nombre">{alumnoNombre}</strong>
                 <span className="post-alumno-card__meta">{alumnoNivel} · RUN {alumnoRut}</span>
               </div>
+              {!confirmado && (
+                <button
+                  type="button"
+                  className="btn--text-link post-alumno-card__editar"
+                  onClick={() => setPaso(1)}
+                  aria-label="Editar identificación: volver al paso 1"
+                >
+                  Editar
+                </button>
+              )}
             </div>
 
-            <p>Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong></p>
+            <p>
+              Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong>
+              {/* S22-10: edición por sección — prioridades */}
+              {!confirmado && (
+                <>
+                  {' '}
+                  <button
+                    type="button"
+                    className="btn--text-link"
+                    onClick={() => setPaso(2)}
+                    aria-label="Editar prioridades: volver al paso 2"
+                  >
+                    Editar
+                  </button>
+                </>
+              )}
+            </p>
 
             {modoTutorial && (
               <InfoBox tipo="neutro" className="tut-box--sm">
@@ -756,7 +1018,22 @@ export default function PostulacionPage() {
               </InfoBox>
             )}
 
-            <ul className="sim-list post-list" aria-label="Resumen de tu postulación" style={{ marginTop: 14 }}>
+            {/* S22-10: edición por sección — lista de colegios */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 14 }}>
+              <p style={{ fontWeight: 600, margin: 0 }}>Tu lista de colegios:</p>
+              {!confirmado && (
+                <button
+                  type="button"
+                  className="btn--text-link"
+                  onClick={() => setPaso(2)}
+                  aria-label="Editar la lista de colegios: volver al paso 2"
+                >
+                  Editar lista
+                </button>
+              )}
+            </div>
+
+            <ul className="sim-list post-list" aria-label="Resumen de tu postulación" style={{ marginTop: 8 }}>
               {resultado.detalles.map((d) => {
                 const probClass = d.prob >= 80 ? 'alta' : d.prob >= 60 ? 'media' : 'baja'
                 return (
@@ -791,9 +1068,24 @@ export default function PostulacionPage() {
 
             {modoTutorial && (
               <InfoBox icono="📅" titulo="¿Cuándo sabrás el resultado?" tipo="neutro">
-                <p>Los resultados se publican en la sección <strong>Mi postulación</strong> a partir del <strong>15 de octubre de 2026</strong>. Recibirás una notificación en el correo que registraste. Tendrás 5 días hábiles para aceptar o rechazar el colegio asignado.</p>
+                {/* S22-4 (corrige E4): rango real de la etapa de Resultados, sin "5 días hábiles" */}
+                <p>Los resultados del Periodo Principal se publican en la sección <strong>Mi postulación</strong> entre el <strong>15 y el 21 de octubre de 2026</strong>. En ese mismo rango de fechas podrás aceptar el resultado, aceptar y activar listas de espera, o rechazarlo. Recibirás una notificación en el correo que registraste.</p>
               </InfoBox>
             )}
+
+            {/* S22-15: qué pasa si no queda en ninguna opción — con y sin colegio de origen */}
+            <InfoBox icono="🧭" titulo="¿Y si no quedo en ninguna opción?" tipo="neutro">
+              <p><strong>Si tu hijo/a ya tiene colegio:</strong> conserva su matrícula actual. Nadie pierde su colegio de origen por postular y no quedar en sus preferencias.</p>
+              <p>
+                <strong>Si no tiene colegio:</strong> entra automáticamente a listas de espera y puede volver a
+                postular en el <strong>Periodo Complementario</strong> (10 al 17 de noviembre de 2026), con los
+                colegios que aún tengan vacantes. Si aun así no queda, el Mineduc le ofrece una vacante en un
+                colegio gratuito, sin categoría Insuficiente y a menos de 17 km de tu casa.
+              </p>
+              <p>
+                <Link to="/proceso" className="link-inline">Revisa las 5 etapas del proceso paso a paso</Link>.
+              </p>
+            </InfoBox>
 
             {!confirmado ? (
               <button type="button" className="btn btn--primary btn--grande" style={{ marginTop: 16 }} onClick={confirmar}>
@@ -803,10 +1095,31 @@ export default function PostulacionPage() {
               <div className="sim-result" role="status" aria-live="polite">
                 <h3>✅ Postulación enviada</h3>
                 <p>Número de comprobante: <strong>{confirmado.comprobante}</strong></p>
-                <p>Guarda este número. Los resultados estarán disponibles en <strong>Mi postulación</strong> a partir de la fecha de resultados.</p>
+
+                {/* S22-7: la postulación es válida al descargar el comprobante */}
+                {!comprobanteDescargado ? (
+                  <InfoBox icono="📄" titulo="Falta un paso: descarga tu comprobante" tipo="alerta">
+                    <p>Tu postulación es válida cuando descargas el comprobante. Es tu respaldo con el folio, tu lista y las próximas fechas.</p>
+                  </InfoBox>
+                ) : (
+                  <InfoBox icono="✅" titulo="Comprobante descargado" tipo="exito">
+                    <p>Listo. Tu postulación quedó registrada y tienes tu respaldo guardado.</p>
+                  </InfoBox>
+                )}
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  style={{ marginTop: 10 }}
+                  onClick={descargarComprobante}
+                >
+                  ⬇ Descargar comprobante (.txt)
+                </button>
+
+                <p style={{ marginTop: 10 }}>Los resultados estarán disponibles en <strong>Mi postulación</strong> entre el 15 y el 21 de octubre de 2026.</p>
                 {modoTutorial && (
                   <InfoBox icono="💾" titulo="¿Qué hacer ahora?" tipo="exito">
-                    <p>Guarda tu número de comprobante (<strong>{confirmado.comprobante}</strong>). También puedes hacer una captura de pantalla. Si quieres cambiar algo, vuelve antes del 30 de agosto — puedes modificar tu lista todas las veces que necesites hasta esa fecha.</p>
+                    {/* S22-3 (corrige E3): fecha y hora reales de cierre */}
+                    <p>Descarga y guarda tu comprobante (folio <strong>{confirmado.comprobante}</strong>). Si quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00 — puedes modificar tu lista todas las veces que necesites hasta esa hora.</p>
                   </InfoBox>
                 )}
               </div>

@@ -5412,12 +5412,28 @@ h2.seg-hero-name {
 /* Ítem de la lista ordenada */
 .post-item {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   gap: 10px;
   background: var(--bg-card);
   border: 1px solid var(--gris-borde);
   border-radius: var(--radio);
   padding: 10px 10px 10px 8px;
+}
+
+/* Mantenimiento correctivo (2026-08-05): ColegioAnalisis pasó a ser hijo directo
+   de .post-item (antes vivía en post-item__body, columna angosta a 375px).
+   flex-basis: 100% lo baja a su propia fila dentro del mismo flex-wrap. */
+.post-item > .tut-colegio-info {
+  flex-basis: 100%;
+  width: 100%;
+  margin-left: 38px;
+}
+
+@media (max-width: 480px) {
+  .post-item > .tut-colegio-info {
+    margin-left: 0;
+  }
 }
 
 .post-item__num {

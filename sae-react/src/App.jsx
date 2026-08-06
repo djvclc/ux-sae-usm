@@ -6,6 +6,7 @@ import { TextSizeProvider, useTextSize } from './context/TextSizeContext'
 import { TourProvider } from './context/TourContext'
 import GuidedTour from './components/GuidedTour'
 import ChatAyuda from './components/ChatAyuda'
+import ScrollToTop from './components/ScrollToTop'
 
 /* Escala global de fuente — cambia font-size en html para que todos los rem escalen (S13-g) */
 function GlobalFontSize() {
@@ -183,6 +184,7 @@ function App() {
         <div className="app-shell">
           <Navbar />
           <PageMeta />
+          <ScrollToTop />
           <div id="contenido-principal">
           <ErrorBoundary>
             <Suspense fallback={<LoadingPage />}>

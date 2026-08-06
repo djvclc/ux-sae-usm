@@ -893,9 +893,6 @@ export default function PostulacionPage() {
                         <div className="post-item__body">
                           <strong className="post-item__nombre">{col.nombre}</strong>
                           <span className="post-item__meta">{col.comuna} · {vac} vacantes · {col.demanda} demanda</span>
-                          {modoTutorial && (
-                            <ColegioAnalisis colegio={col} orden={idx + 1} perfil={perfil} nivelAlumno={alumnoNivel} />
-                          )}
                         </div>
                         <div className="post-item__acciones">
                           <button
@@ -917,6 +914,13 @@ export default function PostulacionPage() {
                             ↓
                           </button>
                         </div>
+                        {/* Mantenimiento correctivo (2026-08-05) sobre S22-11: el mini-análisis
+                            vivía dentro de post-item__body y a 375px quedaba en una columna de
+                            ~142px (grip + número + botones ↑↓ consumen la mitad de la tarjeta).
+                            Como hijo directo del <li> (flex-wrap) ocupa una fila completa. */}
+                        {modoTutorial && (
+                          <ColegioAnalisis colegio={col} orden={idx + 1} perfil={perfil} nivelAlumno={alumnoNivel} />
+                        )}
                       </li>
                     )
                   })}

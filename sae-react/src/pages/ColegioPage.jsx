@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { colegiosById, totalVacantes } from '../data/colegios'
 import SchoolIllustration from '../components/SchoolIllustration'
@@ -133,11 +133,8 @@ export default function ColegioPage() {
   })
   const [agregado, setAgregado] = useState(false)
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [id])
-
-
+  // Mantenimiento correctivo (2026-08-05): el scroll al tope ahora lo maneja
+  // el componente global ScrollToTop (reacciona a pathname + search, incluido ?id=)
   const yaEsta    = lista.includes(id)
 
   // S22-2 (corrige E2): sin tope de 8 — el SAE no limita el número de colegios

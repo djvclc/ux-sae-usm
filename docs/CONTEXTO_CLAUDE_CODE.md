@@ -1,5 +1,5 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-08-04 (actualizado tras rediseño del flujo de postulación — S22)  
+**Fecha:** 2026-08-05 (mantenimiento correctivo: scroll al navegar + auditoría móvil 375px)  
 **Estado del proyecto:** v4.5 — 87/87 puntos aplicables implementados (100%)  
 **Directorio principal:** `USM/sae-react/`
 
@@ -43,6 +43,7 @@ sae-react/
 │   │   ├── ChatAyuda.jsx        # Chat flotante con 8 FAQ predefinidas
 │   │   ├── GuidedTour.jsx       # Tour guiado paso a paso por la interfaz
 │   │   ├── SchoolIllustration.jsx # SVG generado por nombre (reemplaza fotos)
+│   │   ├── ScrollToTop.jsx      # Scroll al tope en cada cambio de ruta (montado en App.jsx)
 │   │   └── TextSizeBar.jsx      # Control global Normal/Grande de tamaño de fuente
 │   ├── context/
 │   │   ├── TextSizeContext.jsx  # Provider de tamaño de texto global
@@ -209,3 +210,11 @@ npm run lint   # validación obligatoria junto con build
 - **No agregar dependencias externas** sin necesidad — el objetivo es que el build sea liviano (<500 KB)
 - **Los datos de colegios son FICTICIOS** — no mezclar con datos reales del Mineduc
 - **CumplimientoPage y RoadmapPage** son páginas internas de trabajo del proyecto, no parte del flujo de usuario — no agregar enlaces a ellas en Navbar
+
+---
+
+## 14. Mantenimiento correctivo 2026-08-05 — scroll al navegar + auditoría móvil 375px
+
+**Scroll al cambiar de ruta:** se creó `src/components/ScrollToTop.jsx` (usa `useLocation` + `useEffect`, hace `window.scrollTo(0,0)` cuando cambian `pathname`/`search`, se omite si hay `hash`) y se montó globalmente en `App.jsx` dentro del Router. Se eliminó el `window.scrollTo(0,0)` local de `ColegioPage.jsx` (línea ~137) por redundante — ScrollToTop ya reacciona a `search` (`?id=`). Verificado sin conflicto con: `scrollToBuscador` de `InicioPage` (ancla en la misma página, no cambia `pathname`), auto-scroll interno de `ChatAyuda` (scroll de un contenedor, no de la ventana) y el `scrollIntoView` del `GuidedTour` (cuando el tour cambia de página, ScrollToTop deja la vista en 0 y el polling del tour reposiciona después con su propio `scrollIntoView`; cuando el tour permanece en la misma página entre pasos, ScrollToTop no vuelve a dispararse).
+
+**Auditoría de overflow horizontal a 375px:** se recorrieron las 13 rutas (`/`, `/colegio`, `/comparador`, `/postulacion`, `/seguimiento`, `/proceso`, `/algoritmo`, `/calendario`, `/perfil`, `/cumplimiento`, `/roadmap`, `/notas`, `/registro`) con Edge headless a 375×812 (estático, con modo texto grande activo, y con estados dinámicos: postulación con 6 colegios y tutorial activo, comparador con 3 colegios, seguimiento con postulación confirmada, chat abierto). Se detectó y corrigió un solo caso real: en `PostulacionPage.jsx` (paso 2, S22), `ColegioAnalisis` vivía dentro de `.post-item__body`, la columna central de la tarjeta de colegio — junto al grip de arrastre, el número de orden y los botones ↑↓ quedaba comprimida a ~142px de ancho a 375px, con el mini-análisis (demanda, vacantes por nivel, postulantes año anterior) apretado en esa columna angosta. Se movió `ColegioAnalisis` a hijo directo de `.post-item` (ahora con `flex-wrap: wrap`) y se le dio `flex-basis: 100%` para que ocupe una fila propia debajo de la tarjeta. No se encontró overflow horizontal (`scrollWidth` = 375 en todas las rutas y estados) ni se necesitó agregar `overflow-x: hidden` como red de seguridad. `npm run lint` (0 errores/0 warnings) y `npm run build` limpios tras los cambios.

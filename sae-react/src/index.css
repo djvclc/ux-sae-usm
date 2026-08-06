@@ -2765,6 +2765,239 @@ abbr[title] {
   padding: 10px 14px;
 }
 
+/* ─── Visualización animada del algoritmo ─── */
+@keyframes algo-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.algo-pasos-viz {
+  margin: var(--esp-lg) 0;
+  padding: var(--esp-lg);
+  background: var(--bg-soft);
+  border-radius: var(--radio-lg);
+  border: 1px solid var(--borde);
+}
+
+.algo-pasos-viz h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--texto);
+}
+
+.algo-pasos-viz__intro {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+  margin: 0 0 var(--esp-md);
+  line-height: 1.6;
+}
+
+.algo-pasos-viz__btn-reproducir {
+  margin-bottom: var(--esp-lg);
+}
+
+.algo-pasos-viz__contenido {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-md);
+}
+
+.algo-pasos-viz__perfil {
+  background: var(--bg-card);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: var(--esp-md);
+  font-size: 0.9rem;
+}
+
+.algo-pasos-viz__perfil p {
+  margin: 0;
+  color: var(--texto);
+}
+
+.algo-pasos-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--bg-card);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.algo-pasos-tabla thead {
+  background: var(--azul-cl);
+  border-bottom: 2px solid var(--borde);
+}
+
+.algo-pasos-tabla th {
+  padding: var(--esp-md);
+  text-align: left;
+  font-weight: 700;
+  color: var(--acento);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.algo-pasos-tabla tbody tr {
+  border-bottom: 1px solid var(--borde);
+}
+
+.algo-pasos-tabla tbody tr:last-child {
+  border-bottom: none;
+}
+
+.algo-pasos-row {
+  opacity: 0.3;
+  transition: all 0.35s ease-out;
+}
+
+.algo-pasos-row--visible {
+  animation: algo-fade-in 0.4s ease-out;
+  opacity: 1;
+}
+
+.algo-pasos-row--actual {
+  background: color-mix(in srgb, var(--naranja) 12%, #fff);
+  font-weight: 600;
+}
+
+.algo-pasos-row--asignado {
+  background: color-mix(in srgb, var(--verde) 12%, #fff);
+  font-weight: 600;
+}
+
+.algo-pasos-tabla td {
+  padding: var(--esp-md);
+  vertical-align: middle;
+}
+
+.algo-pasos-tabla__paso {
+  text-align: center;
+  font-weight: 700;
+  color: var(--acento);
+  min-width: 40px;
+}
+
+.algo-pasos-tabla__colegio {
+  flex: 1;
+}
+
+.algo-pasos-tabla__colegio-nombre {
+  display: block;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.algo-pasos-tabla__colegio-comuna {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  margin-top: 2px;
+}
+
+.algo-pasos-tabla__estado {
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 160px;
+}
+
+.algo-pasos-tabla__estado-icon {
+  font-size: 1.1rem;
+}
+
+.algo-pasos-tabla__prob {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  font-weight: normal;
+}
+
+.algo-pasos-viz__resultado {
+  background: var(--bg-card);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: var(--esp-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-md);
+}
+
+.algo-pasos-viz__resultado-caja {
+  background: color-mix(in srgb, var(--verde) 10%, #fff);
+  border-left: 3px solid var(--verde);
+  padding: var(--esp-md);
+  border-radius: 0 var(--radio) var(--radio) 0;
+}
+
+.algo-pasos-viz__resultado-titulo {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--texto-suave);
+}
+
+.algo-pasos-viz__resultado-colegio {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--verde);
+}
+
+.algo-pasos-viz__resultado-detalle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+.algo-pasos-viz__reproduciendo {
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.algo-pasos-viz__msg {
+  margin: 0;
+  animation: pulse 1s infinite;
+}
+
+/* Responsivo: 375px */
+@media (max-width: 600px) {
+  .algo-pasos-tabla {
+    font-size: 0.8rem;
+  }
+
+  .algo-pasos-tabla th,
+  .algo-pasos-tabla td {
+    padding: 8px;
+  }
+
+  .algo-pasos-tabla__estado {
+    min-width: 120px;
+    font-size: 0.75rem;
+  }
+
+  .algo-pasos-tabla__estado-icon {
+    font-size: 0.95rem;
+  }
+
+  .algo-pasos-tabla__colegio-comuna {
+    font-size: 0.7rem;
+  }
+}
+
 /* ─── Tutoriales ─── */
 .tutoriales-section {
   margin: var(--esp-lg) 0;
@@ -3472,6 +3705,8 @@ button[disabled],
   z-index: 2;
   color: var(--blanco);
   background: linear-gradient(180deg, transparent 0%, rgba(15,42,74,0.6) 30%);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Variante sólida — sin overlay sobre imagen, fondo azul propio */
@@ -3479,8 +3714,9 @@ button[disabled],
   position: relative;
   background: linear-gradient(170deg, var(--azul) 0%, var(--azul-osc) 100%);
   padding: var(--esp-lg);
-  padding-top: var(--esp-md);
+  padding-bottom: var(--esp-lg);
   color: var(--blanco);
+  box-sizing: border-box;
 }
 
 .seg-hero-badge {
@@ -3510,12 +3746,14 @@ button[disabled],
 /* Selector con elemento para superar la especificidad de `.page h2`,
    que pintaba el título oscuro sobre el fondo azul (contraste WCAG) */
 h2.seg-hero-name {
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
   font-weight: 800;
   margin: 8px 0 4px;
   color: var(--blanco);
   text-shadow: 0 2px 16px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.4);
-  line-height: 1.15;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .seg-hero-addr {
@@ -3537,20 +3775,20 @@ h2.seg-hero-name {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px var(--esp-sm);
+  padding: 20px var(--esp-sm);
   background: var(--blanco);
   text-align: center;
 }
 
 .seg-hero-stat__num {
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--acento);
   line-height: 1.2;
 }
 
 .seg-hero-stat__lbl {
-  font-size: 0.72rem;
+  font-size: 0.80rem;
   color: var(--texto-suave);
   margin-top: 2px;
   font-weight: 600;
@@ -3611,7 +3849,7 @@ h2.seg-hero-name {
   grid-template-columns: 48px 1fr auto 36px;
   gap: var(--esp-sm);
   align-items: center;
-  padding: var(--esp-md);
+  padding: 16px var(--esp-md);
   border: 1px solid var(--borde);
   border-radius: var(--radio);
   background: var(--blanco);
@@ -3669,14 +3907,15 @@ h2.seg-hero-name {
 
 .seg-pref-item__estado {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
+  margin-bottom: 4px;
 }
 
 .seg-pref-item__prob {
   display: block;
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.2rem;
+  font-weight: 900;
   color: var(--acento);
 }
 
@@ -3792,6 +4031,19 @@ h2.seg-hero-name {
 
   .seg-hero-stats-bar {
     grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+
+  .seg-hero-stat {
+    padding: 16px var(--esp-sm);
+  }
+
+  .seg-hero-stat__num {
+    font-size: 1.15rem;
+  }
+
+  .seg-hero-stat__lbl {
+    font-size: 0.75rem;
   }
 
   .seg-pref-item {

@@ -12,6 +12,7 @@ import { colegios } from '../data/colegios'
 import { calcularResultado, prioridadLabels } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
+import AlgoSimuladorPasos from '../components/AlgoSimuladorPasos'
 import { useTextSize } from '../context/TextSizeContext'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
@@ -471,6 +472,9 @@ export default function AlgoritmoPage() {
           ) : null}
         </CardContent>
       </Card>
+
+      {/* ══ VISUALIZACIÓN ANIMADA DEL ALGORITMO ══ */}
+      {resultado ? <AlgoSimuladorPasos resultado={resultado} perfil={perfil} /> : null}
 
       {/* ══ ESTADÍSTICAS HISTÓRICAS — punto 15.2 ══ */}
       <Card style={{ marginTop: 16 }}>

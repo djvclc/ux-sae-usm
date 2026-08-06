@@ -1277,6 +1277,155 @@ select:focus {
   font-weight: 600;
 }
 
+/* S22: botón "?" para abrir modal de prioridades — accesible, discreto */
+.chip-help-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: transparent;
+  border: 2px solid var(--borde);
+  color: var(--texto-suave);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+  margin: 0 4px;
+}
+
+.chip-help-btn:hover {
+  background: var(--azul-cl);
+  border-color: var(--azul);
+  color: var(--azul);
+}
+
+.chip-help-btn:focus {
+  outline: 3px solid var(--naranja);
+  outline-offset: 2px;
+}
+
+/* S22: modal accesible — <dialog> HTML nativo */
+.prio-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  z-index: 1000;
+  animation: modal-fade-in 0.2s ease;
+}
+
+.prio-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  animation: modal-fade-in 0.2s ease;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.prio-modal__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background: var(--blanco);
+  border-radius: var(--radio-lg);
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: modal-slide-in 0.3s ease;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@keyframes modal-slide-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.prio-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.prio-modal__titulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--texto);
+  margin: 0;
+  flex: 1;
+}
+
+.prio-modal__close {
+  background: transparent;
+  border: none;
+  color: var(--texto-suave);
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 4px 8px;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.prio-modal__close:hover {
+  color: var(--texto);
+}
+
+.prio-modal__close:focus {
+  outline: 2px solid var(--naranja);
+  border-radius: var(--radio);
+}
+
+.prio-modal__dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.prio-modal__dl dt {
+  font-weight: 700;
+  color: var(--texto-suave);
+  white-space: nowrap;
+  align-self: start;
+  padding-top: 2px;
+}
+
+.prio-modal__dl dd {
+  margin: 0;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.prio-modal__dl dd:nth-child(n+5) {
+  background: var(--naranja-cl);
+  border-radius: var(--radio);
+  padding: 6px 10px;
+}
+
 .sim-school-grid {
   display: grid;
   gap: var(--esp-sm);

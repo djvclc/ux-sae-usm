@@ -1,6 +1,6 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-08-05 (mantenimiento correctivo: scroll al navegar + auditoría móvil 375px)  
-**Estado del proyecto:** v4.5 — 87/87 puntos aplicables implementados (100%)  
+**Fecha:** 2026-08-06 (optimización de divulgación progresiva en PostulacionPage.jsx)  
+**Estado del proyecto:** v4.5 — 87/87 puntos aplicables implementados (100%); S22 optimizado  
 **Directorio principal:** `USM/sae-react/`
 
 ---
@@ -79,7 +79,7 @@ El plan completo está en `plan_mejora_sae.md`. Resumen de lo que YA está hecho
 
 ✅ **S21 cerrada (2026-08-04, 10 puntos):** vista `/proceso` (`ProcesoPage.jsx`) con las 5 etapas del proceso, calendario 2027 accesible y reglas de alto riesgo.
 
-✅ **S22 cerrada (2026-08-04, 15 puntos):** rediseño del flujo de postulación (`PostulacionPage.jsx` reescrita): correcciones de fidelidad E1–E6 (región como filtro, sin tope de 8 colegios — recomendación de al menos 6 —, cierre 27 de agosto 14:00, resultados 15–21 de octubre, desempate aleatorio por colegio, orden real de prioridades PIE → hermanos → 15 % reserva → funcionario → exalumno), comprobante .txt descargable con folio/lista/fechas, drag-and-drop nativo + botones ↑↓ con `aria-live`, borrador visible con aviso de reanudación, enlaces "Editar" por sección en paso 3, análisis por colegio con postulantes del año anterior y vacantes por nivel (esquema v2), confirmación explícita del nivel, postulación en bloque simulada, consejo estratégico y bloque "¿Y si no quedo en ninguna?". El tope de 8 y las fechas erróneas se corrigieron también en `InicioPage`, `ColegioPage`, `ComparadorPage`, `AlgoritmoPage`, `CalendarioPage`, `ChatAyuda` y `TourContext`.
+✅ **S22 cerrada (2026-08-04, 15 puntos) + optimizada (2026-08-06):** rediseño del flujo de postulación (`PostulacionPage.jsx` reescrita): correcciones de fidelidad E1–E6 (región como filtro, sin tope de 8 colegios — recomendación de al menos 6 —, cierre 27 de agosto 14:00, resultados 15–21 de octubre, desempate aleatorio por colegio, orden real de prioridades PIE → hermanos → 15 % reserva → funcionario → exalumno), comprobante .txt descargable con folio/lista/fechas, drag-and-drop nativo + botones ↑↓ con `aria-live`, borrador visible con aviso de reanudación, enlaces "Editar" por sección en paso 3, análisis por colegio con postulantes del año anterior y vacantes por nivel (esquema v2), confirmación explícita del nivel, postulación en bloque simulada, consejo estratégico y bloque "¿Y si no quedo en ninguna?". El tope de 8 y las fechas erróneas se corrigieron también en `InicioPage`, `ColegioPage`, `ComparadorPage`, `AlgoritmoPage`, `CalendarioPage`, `ChatAyuda` y `TourContext`. **Optimización 2026-08-06:** aplicada divulgación progresiva a prioridades (Paso 2): explicaciones complejas trasladadas a modal HTML `<dialog>` accesible con botón "?" discreto; chipsen-textos reducidos de 4 párrafos a 1-2 líneas. ColegioAnalisis simplificado a datos esenciales (demanda, vacantes, postulantes, prioridad); tips redundantes consolidados en hint del picker. Siglas (PIE, SEP) ahora con `<abbr title="...">` accesible. Textos legibilidad mejorada (Spaulding ~95 → objetivo 80, nivel 6°).
 
 ✅ **Lint saneado (2026-08-04):** los 15 errores preexistentes de ESLint fueron corregidos (inicializadores perezosos de `useState` para cargas de localStorage, supresiones justificadas de react-refresh, `import.meta.dirname` en `vite.config.js`, variables sin uso eliminadas). `npm run lint`: 0 errores, 0 warnings.
 

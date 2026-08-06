@@ -31,50 +31,46 @@ const REGIONES = [
   { value: 'XII',  label: 'Magallanes',            full: 'Región de Magallanes y de la Antártica Chilena' },
 ]
 
-/* ── Datos de prioridades con explicaciones completas ──
+/* ── Datos de prioridades — chip + modal accesible ──
    S22-6 (corrige E6): títulos y textos según el orden real de procesamiento
    (PIE → hermanos → 15 % prioritarios → funcionario → exalumno); el 15 % es
-   una reserva de asientos, no un puesto en una fila. */
+   una reserva de asientos, no un puesto en una fila.
+
+   OPTIMIZACIÓN (divulgación progresiva): solo label + icono visible en chip;
+   al hacer click se abre modal con explicación completa (qué es, qué implica,
+   ejemplo, advertencia). Cierre con ESC o clic fuera. */
 const PRIORIDADES_INFO = {
   hermano: {
     label: 'Hermano/a matriculado/a',
-    titulo: 'Hermano/a matriculado/a — se revisa primero (después de los cupos PIE)',
     icono: '👨‍👩‍👧',
-    que_es: 'Tu hijo/a tiene un hermano o hermana que está actualmente matriculado/a en ese colegio.',
-    que_implica: 'Después de llenar los cupos del Programa de Integración Escolar (PIE), el sistema revisa primero a quienes tienen hermanos/as en el colegio, antes de asignar los asientos restantes.',
+    que_es: 'Tu hijo/a tiene un hermano o hermana actualmente matriculado/a en ese colegio.',
+    que_implica: 'Después de los cupos del Programa de Integración Escolar (PIE), el sistema revisa primero a quienes tienen hermanos/as en el colegio.',
     ejemplo: 'Si Daniela quiere postular a su segundo hijo al Colegio Los Andes, donde ya está su hija mayor, tiene un 92% de probabilidad de quedar asignada (en vez del 28% sin esta prioridad).',
-    advertencia: 'Solo aplica si el hermano/a continuará matriculado/a en el mismo colegio el año escolar siguiente. Si el hermano/a egresa, esta prioridad ya no corresponde.',
-    color: 'var(--verde)',
+    advertencia: 'Solo aplica si el hermano/a seguirá matriculado/a en el mismo colegio al año siguiente.',
   },
   prioritario: {
     label: 'Estudiante prioritario/a',
-    titulo: 'Reserva del 15 % — asientos guardados para estudiantes prioritarios/as',
     icono: '🏫',
-    que_es: 'El/la estudiante es considerado/a prioritario/a según la Ley de Subvención Escolar Preferencial (SEP). Esto incluye situaciones de vulnerabilidad socioeconómica verificadas por el MINEDUC.',
-    que_implica: 'No es un puesto en una fila: cada colegio guarda el 15 % de sus asientos para estudiantes prioritarios/as. Si perteneces a este grupo, compites por esos asientos reservados además de los generales. El Estado identifica automáticamente a estos estudiantes — no necesitas postular a esta condición.',
-    ejemplo: 'Los estudiantes SEP tienen entre 88-98% de probabilidad de asignación según el nivel de demanda del colegio.',
-    advertencia: 'Esta condición la verifica el sistema automáticamente. Marcarla sin serlo puede anular tu postulación.',
-    color: 'var(--azul)',
+    que_es: 'El/la estudiante es prioritario/a según la Ley de Subvención Escolar Preferencial (SEP): vulnerabilidad socioeconómica verificada por el MINEDUC.',
+    que_implica: 'Cada colegio guarda el 15 % de asientos para estudiantes prioritarios/as. No es un puesto en fila: compites por esos asientos reservados además de los generales. El MINEDUC lo identifica automáticamente.',
+    ejemplo: 'Los estudiantes SEP tienen entre 88-98% de probabilidad de asignación según la demanda del colegio.',
+    advertencia: 'El sistema verifica esto automáticamente. Marcarla sin serlo puede anular tu postulación.',
   },
   funcionario: {
     label: 'Hijo/a de funcionario/a',
-    titulo: 'Hijo/a de funcionario/a — se revisa después de la reserva del 15 %',
     icono: '👔',
-    que_es: 'El/la apoderado/a trabaja como funcionario/a (docente, asistente de educación u otro cargo) en el establecimiento al que postulas.',
-    que_implica: 'Tienes preferencia sobre postulantes sin prioridad especial, una vez asignados los cupos PIE, los hermanos/as y la reserva del 15 %. Esta condición la verifica el colegio directamente con el MINEDUC a través de los registros de dotación docente.',
-    ejemplo: 'Si trabajas como profesora en el Colegio Los Andes y quieres matricular a tu hijo/a ahí, tienes un 65% de probabilidad (versus 28% sin prioridad).',
-    advertencia: 'Aplica solo en el establecimiento donde trabajas. No sirve para postular a un colegio distinto al de tu empleo.',
-    color: 'var(--naranja)',
+    que_es: 'El/la apoderado/a trabaja como funcionario/a (docente, asistente u otro cargo) en el establecimiento al que postulas.',
+    que_implica: 'Tienes preferencia sobre postulantes sin prioridad, una vez asignados los cupos PIE, hermanos/as y la reserva del 15 %. El colegio verifica esto con el MINEDUC.',
+    ejemplo: 'Si trabajas como profesora en el Colegio Los Andes y postulas a tu hijo/a ahí, tienes un 65% de probabilidad (versus 28% sin prioridad).',
+    advertencia: 'Aplica solo en el establecimiento donde trabajas. No sirve para postular a otro colegio.',
   },
   exalumno: {
     label: 'Exalumno/a del establecimiento',
-    titulo: 'Exalumno/a — la última prioridad antes del desempate aleatorio',
     icono: '🎓',
     que_es: 'El/la apoderado/a es exalumno/a del mismo establecimiento al que postulas.',
-    que_implica: 'Es la última condición que revisa el sistema antes del desempate aleatorio. En la práctica, tiene impacto solo cuando quedan asientos después de las condiciones anteriores.',
-    ejemplo: 'Si fuiste alumna del Colegio Los Andes y quieres que tu hijo/a estudie ahí, tienes un 60% de probabilidad en colegios de alta demanda.',
-    advertencia: 'Algunos establecimientos no aplican esta prioridad. Verifica en la ficha del colegio si está habilitada.',
-    color: 'var(--gris-med)',
+    que_implica: 'Es la última condición antes del desempate aleatorio. Tiene impacto solo cuando quedan asientos después de las otras condiciones.',
+    ejemplo: 'Si fuiste alumna del Colegio Los Andes y postulas a tu hijo/a ahí, tienes un 60% de probabilidad en colegios de alta demanda.',
+    advertencia: 'Algunos establecimientos no aplican esta prioridad. Verifica en la ficha del colegio.',
   },
 }
 
@@ -104,26 +100,59 @@ function InfoBox({ icono, titulo, children, tipo = 'info', className = '' }) {
   )
 }
 
-/* ── Panel de explicación de una prioridad ── */
-function PrioridadDetalle({ clave }) {
+/* ── Modal accesible de una prioridad (HTML <dialog> nativo) ──
+   S22: divulgación progresiva — explicación completa en modal (qué es,
+   qué implica, ejemplo, advertencia), desencadenado por chip. */
+function PrioridadModal({ clave, abierto, onCerrar }) {
   const info = PRIORIDADES_INFO[clave]
   if (!info) return null
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') onCerrar()
+  }
+
   return (
-    <div className="tut-prioridad" style={{ '--prio-color': info.color }}>
-      <p className="tut-prioridad__titulo">
-        <span aria-hidden="true">{info.icono}</span> {info.titulo}
-      </p>
-      <dl className="tut-prioridad__dl">
-        <dt>¿Qué significa?</dt>
-        <dd>{info.que_es}</dd>
-        <dt>¿Qué implica seleccionarla?</dt>
-        <dd>{info.que_implica}</dd>
-        <dt>Ejemplo</dt>
-        <dd className="tut-prioridad__ejemplo">{info.ejemplo}</dd>
-        <dt>⚠ Ten en cuenta</dt>
-        <dd className="tut-prioridad__advertencia">{info.advertencia}</dd>
-      </dl>
-    </div>
+    <dialog
+      open={abierto}
+      onKeyDown={handleKeyDown}
+      onClick={(e) => e.target === e.currentTarget && onCerrar()}
+      className="prio-modal"
+    >
+      <div className="prio-modal__content">
+        <div className="prio-modal__header">
+          <h2 className="prio-modal__titulo">
+            <span aria-hidden="true" style={{ marginRight: '8px' }}>{info.icono}</span>
+            {info.label}
+          </h2>
+          <button
+            type="button"
+            className="prio-modal__close"
+            onClick={onCerrar}
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+        <dl className="prio-modal__dl">
+          <dt>¿Qué significa?</dt>
+          <dd>{info.que_es}</dd>
+          <dt>¿Qué implica?</dt>
+          <dd>{info.que_implica}</dd>
+          <dt>Ejemplo</dt>
+          <dd>{info.ejemplo}</dd>
+          <dt>⚠️ Ten en cuenta</dt>
+          <dd>{info.advertencia}</dd>
+        </dl>
+        <button
+          type="button"
+          className="btn btn--primary"
+          style={{ marginTop: '16px', width: '100%' }}
+          onClick={onCerrar}
+        >
+          Entendido
+        </button>
+      </div>
+    </dialog>
   )
 }
 
@@ -138,16 +167,16 @@ function vacantesDeNivel(colegio, nivelAlumno) {
   return colegio.vacantes.find((v) => v.nivel === clave) ?? null
 }
 
-/* ── Mini-análisis de un colegio en la lista ── */
+/* ── Mini-análisis de un colegio en la lista ──
+   S22: divulgación progresiva — solo datos esenciales (demanda, vacantes,
+   postulantes, prioridad). Los tips se trasladan al tutorial del paso 2. */
 function ColegioAnalisis({ colegio, orden, perfil, nivelAlumno }) {
   const nivel = nivelPrioridad(perfil)
   const prob  = probAsignacion(nivel, colegio.demanda)
-  const vac   = totalVacantes(colegio)
   // S22-11: postulantes del año anterior y vacantes por nivel como fundamento del % estimado
   const vacNivel = vacantesDeNivel(colegio, nivelAlumno)
 
   const probClass = prob >= 80 ? 'alta' : prob >= 60 ? 'media' : 'baja'
-  const demandaTexto = { alta: 'Muchos postulantes compiten por pocas vacantes.', media: 'Competencia moderada por las vacantes.', baja: 'Pocas personas postulando — más fácil de conseguir.' }
 
   return (
     <div className="tut-colegio-info">
@@ -160,46 +189,27 @@ function ColegioAnalisis({ colegio, orden, perfil, nivelAlumno }) {
         <li>
           <span>Demanda:</span>
           <strong>{colegio.demanda}</strong>
-          <span className="tut-hint"> — {demandaTexto[colegio.demanda]}</span>
         </li>
         {vacNivel ? (
           <>
             <li>
               <span>Vacantes en {vacNivel.label}:</span>
-              <strong>entre {vacNivel.min} y {vacNivel.max}</strong>
+              <strong>{vacNivel.min}–{vacNivel.max}</strong>
             </li>
             <li>
-              <span>Postulantes el año pasado:</span>
+              <span>Postulantes año anterior:</span>
               <strong>{vacNivel.postulantesAnterior}</strong>
-            </li>
-            <li className="tut-colegio-info__tip">
-              📊 El {prob}% estimado nace de estos datos: el año pasado postularon {vacNivel.postulantesAnterior} personas a un máximo de {vacNivel.max} cupos en {vacNivel.label}, más tu condición de prioridad.
             </li>
           </>
         ) : nivelAlumno ? (
-          <li className="tut-colegio-info__tip">
-            ⚠ Este colegio no publica vacantes para {nivelAlumno}. Revisa su ficha antes de postular.
+          <li style={{ fontSize: '0.9rem', color: 'var(--texto-suave)' }}>
+            ℹ️ Este colegio no publica vacantes para {nivelAlumno}.
           </li>
-        ) : (
-          <li>
-            <span>Vacantes totales:</span>
-            <strong>{vac}</strong>
-          </li>
-        )}
+        ) : null}
         <li>
           <span>Tu prioridad:</span>
           <strong>{prioridadLabels[nivel]}</strong>
         </li>
-        {orden === 1 && (
-          <li className="tut-colegio-info__tip">
-            💡 Esta es tu primera opción. El sistema la evalúa primero. Ponla aquí solo si realmente es la que más quieres.
-          </li>
-        )}
-        {colegio.nee.programa && (
-          <li className="tut-colegio-info__tip">
-            ♿ Este colegio tiene programa <abbr title="Necesidades Educativas Especiales">NEE</abbr>.
-          </li>
-        )}
       </ul>
     </div>
   )
@@ -240,7 +250,7 @@ export default function PostulacionPage() {
   const [lista, setLista]       = useState(cargarBorradorInicial)
   const [confirmado, setConfirmado] = useState(null)
   const [modoTutorial, setModoTutorial] = useState(true)
-  const [prioridadAbierta, setPrioridadAbierta] = useState(null)
+  const [modalPrioridadAbierto, setModalPrioridadAbierto] = useState(null) // S22: modal de prioridades
   const [mostrarRut, setMostrarRut] = useState(false)
   const [alumnoRut, setAlumnoRut]       = useState('')
   const [alumnoNombre, setAlumnoNombre] = useState('')
@@ -266,7 +276,10 @@ export default function PostulacionPage() {
 
   const togglePerfil = (key) => {
     setPerfil((prev) => ({ ...prev, [key]: !prev[key] }))
-    setPrioridadAbierta((prev) => (prev === key ? null : key))
+  }
+
+  const abrirModalPrioridad = (key) => {
+    setModalPrioridadAbierto(key)
   }
 
   /* S22-8: reordenamiento compartido por botones ↑↓ y arrastrar/soltar,
@@ -732,42 +745,45 @@ export default function PostulacionPage() {
                 <p>
                   En cada colegio, el sistema asigna los asientos en este orden: 1.º cupos del{' '}
                   <abbr title="Programa de Integración Escolar">PIE</abbr>, 2.º hermanos/as, 3.º reserva
-                  del 15 % para estudiantes prioritarios/as, 4.º hijos/as de funcionarios/as y 5.º exalumnos/as.
+                  del 15 % para estudiantes de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr>, 4.º hijos/as de funcionarios/as, 5.º exalumnos/as.
                 </p>
-                <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio guarda para estudiantes prioritarios/as.</p>
+                <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio guarda para estudiantes con vulnerabilidad socioeconómica verificada.</p>
               </InfoBox>
             )}
 
             <div className="chip-row">
               {Object.entries(PRIORIDADES_INFO).map(([key, info]) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={`chip-btn ${perfil[key] ? 'chip-btn--on' : ''}`}
-                  onClick={() => togglePerfil(key)}
-                  aria-pressed={perfil[key]}
-                  aria-expanded={prioridadAbierta === key}
-                  aria-describedby={`prio-detalle-${key}`}
-                >
-                  {info.icono} {info.label}
-                </button>
+                <Fragment key={key}>
+                  <button
+                    type="button"
+                    className={`chip-btn ${perfil[key] ? 'chip-btn--on' : ''}`}
+                    onClick={() => togglePerfil(key)}
+                    aria-pressed={perfil[key]}
+                    title={`${perfil[key] ? 'Desseleccionar' : 'Seleccionar'} — clic para alternar o "?" para saber más`}
+                  >
+                    {info.icono} {info.label}
+                  </button>
+                  {/* Botón "?" para abrir modal — accesible sin ocupar espacio */}
+                  <button
+                    type="button"
+                    className="chip-help-btn"
+                    onClick={() => abrirModalPrioridad(key)}
+                    aria-label={`Saber más sobre ${info.label}`}
+                    title="Clic para más información"
+                  >
+                    ?
+                  </button>
+                  {/* Modal (solo se renderiza si está abierto) */}
+                  {modalPrioridadAbierto === key && (
+                    <PrioridadModal
+                      clave={key}
+                      abierto={true}
+                      onCerrar={() => setModalPrioridadAbierto(null)}
+                    />
+                  )}
+                </Fragment>
               ))}
             </div>
-
-            {/* Explicación de la prioridad seleccionada / abierta */}
-            {(prioridadAbierta || (modoTutorial && hayPrioridad)) && (
-              <div className="tut-prioridades-wrap">
-                {Object.entries(PRIORIDADES_INFO).map(([key]) => {
-                  const mostrar = modoTutorial ? perfil[key] : prioridadAbierta === key
-                  if (!mostrar) return null
-                  return (
-                    <div key={key} id={`prio-detalle-${key}`} aria-live="polite">
-                      <PrioridadDetalle clave={key} />
-                    </div>
-                  )
-                })}
-              </div>
-            )}
 
             {/* S22-5 (corrige E5): desempate aleatorio por colegio, sin "certificado por MINEDUC" */}
             {!hayPrioridad && modoTutorial && (
@@ -787,9 +803,11 @@ export default function PostulacionPage() {
                   </span>
                 </p>
                 {modoTutorial && (
-                  <p className="post-picker-hint">
-                    📌 <strong>El orden importa:</strong> el sistema evalúa primero tu opción N.°1. Ponla siempre el colegio que <em>más quieres</em>, no el que crees que te van a dar.
-                  </p>
+                  <>
+                    <p className="post-picker-hint">
+                      📌 <strong>El orden importa:</strong> el sistema evalúa primero tu opción N.°1. Ponla siempre el colegio que <em>más quieres</em>, no el que crees que te van a dar. El porcentaje estimado considera la demanda actual, vacantes disponibles y tu condición de prioridad.
+                    </p>
+                  </>
                 )}
               </div>
 

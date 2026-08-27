@@ -311,3 +311,22 @@ Implementa los pendientes **P1** y **P2** de `docs/planificacion/bitacora_flujo_
 **Trazabilidad:** comentarios `P1 · S22-11 (refinamiento)` (visual = refinamiento de "mostrar el dato que fundamenta el %") y `P2 · HAX G1 — S22 (refinamiento)` (relacionado con S22-6 y S13). **No** se creó sección del plan, **no** se sumó ningún punto, **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios). Sin impacto en cifras de `proyecto-tesis/` (`probAsignacion` y el umbral 65 no se tocaron; solo se muestra la misma cifra de otra forma).
 
 **Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-26). `PostulacionPage` compila a 41.58 kB; `ProbabilidadVisual` sale como chunk propio (0.84 kB).
+
+---
+
+## 20. Auditoría de lenguaje antropomórfico en `/algoritmo` (2026-08-26)
+
+Implementa el pendiente de lenguaje del `AlgoSimuladorPasos` de `docs/planificacion/bitacora_flujo_postulacion_y_resultado.md` (§5; listado como **P1** tras la última renumeración, originalmente **P3**). Fundamento: NN/g "Explainable AI in Chat Interfaces" (`investigacion_ux_guide_ai_systems.md` §5, L77): describir el procesamiento en términos de reglas y datos, no como una "elección" del sistema.
+
+Auditoría de todo el texto visible y los `aria-label` de `src/components/AlgoSimuladorPasos.jsx` y `src/pages/AlgoritmoPage.jsx` (prosa de los 4 pasos, datos `pasos`/`ESCENARIOS`/`CONTEXTO_MUNDIAL`/`tutoriales`, `explicacionSim`, render de `resultado`, FAQ). No se tocó lógica, animación, `asignacion.js`, la tabla `probAsignacion` ni el umbral 65.
+
+**Único cambio:** `AlgoSimuladorPasos.jsx`, párrafo de intro de la sección "Reproducir el algoritmo paso a paso":
+- Antes: "Mira cómo el sistema evalúa cada uno de tus colegios en orden, hasta encontrar una asignación."
+- Después: "Mira cómo el sistema revisa tus colegios en el orden que tú elegiste. En cada uno aplica las prioridades que fija la ley y cuenta los cupos disponibles, hasta asignarte uno."
+- Motivo: el texto previo no nombraba las reglas ni los datos; el nuevo encuadra el proceso como aplicación de prioridades legales + conteo de cupos, y refuerza que el orden lo elige la familia. Comentario de trazabilidad `S13 (refinamiento) · auditoría NN/g`.
+
+**Ya cumplía (sin cambio):** `AlgoritmoPage.jsx` usa lenguaje de proceso en toda su prosa — "el sistema cruza la lista de todos los postulantes con las prioridades y los cupos", "revisa la N.°2", "el sistema activa una segunda etapa", "el sistema aplica prioridades definidas por ley" (FAQ), "queda asignado al mejor colegio posible según su posición en la lista y sus condiciones de prioridad". Los verbos con sujeto "tú/la familia" ("Tú eliges tu lista", "el nivel que buscas") son correctos y no se tocaron. Las etiquetas de estado de la tabla ("Asignado aquí", "Sin cupos", "Prioridad insuficiente", "No evaluado") y los controles de reproducción (▶️ / ⟲ / ⏸) no son antropomorfismo.
+
+**Trazabilidad:** comentario `S13 (refinamiento) · auditoría NN/g` en `AlgoSimuladorPasos.jsx`. No se creó sección del plan, no se sumó ningún punto, **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios). Sin impacto en cifras de `proyecto-tesis/`.
+
+**Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-26). `AlgoritmoPage` compila a 182.64 kB.

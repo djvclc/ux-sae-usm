@@ -80,9 +80,12 @@ export default function AlgoSimuladorPasos({ resultado, perfil }) {
   return (
     <section className="algo-pasos-viz" aria-label="Reproducción paso a paso del algoritmo">
       <h2>Reproducir el algoritmo paso a paso</h2>
+      {/* S13 (refinamiento) · auditoría NN/g: describir el procesamiento como
+          aplicación de reglas sobre datos, no como una "elección" del sistema. */}
       <p className="algo-pasos-viz__intro">
-        Mira cómo el sistema evalúa cada uno de tus colegios en orden, hasta encontrar una
-        asignación.
+        Mira cómo el sistema revisa tus colegios en el orden que tú elegiste. En cada uno
+        aplica las prioridades que fija la ley y cuenta los cupos disponibles, hasta
+        asignarte uno.
       </p>
 
       {/* Botón para iniciar reproducción */}

@@ -1,7 +1,7 @@
 // PostulacionPage — flujo de postulación en 3 pasos
 // S22: rediseño de fidelidad y flujo según docs/investigacion/analisis_flujo_postulacion.md (2026-08-04)
 // Fechas y reglas: investigacion_paso_a_paso_sae.md (§2.1 y §3) — calendario oficial Admisión 2027
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios, colegiosById, totalVacantes } from '../data/colegios'
 import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
@@ -196,6 +196,120 @@ function vacantesDeNivel(colegio, nivelAlumno) {
   return colegio.vacantes.find((v) => v.nivel === clave) ?? null
 }
 
+/* ── C · fidelidad (analisis_video_paso_a_paso_sae.md brecha C) · S22-2 (refinamiento) ──
+   Jornada que se muestra en la casilla de aceptación al agregar un colegio.
+   Prioriza la jornada del nivel del estudiante (esquema v2); si ese nivel no
+   tiene dato, usa la jornada más frecuente entre los niveles del colegio; si el
+   colegio no declara jornada, devuelve null (la casilla usa un texto genérico). */
+function jornadaDeColegio(colegio, nivelAlumno) {
+  const v = vacantesDeNivel(colegio, nivelAlumno)
+  if (v?.jornada) return v.jornada
+  const cuenta = {}
+  colegio.vacantes.forEach((x) => {
+    if (x.jornada) cuenta[x.jornada] = (cuenta[x.jornada] ?? 0) + 1
+  })
+  const top = Object.entries(cuenta).sort((a, b) => b[1] - a[1])[0]
+  return top ? top[0] : null
+}
+
+/* ── C · fidelidad (analisis_video_paso_a_paso_sae.md brecha C) · S22-2 (refinamiento) ──
+   En el flujo real del SAE, al "agregar establecimiento" hay que aceptar el tipo
+   de jornada y la adhesión al proyecto educativo y al reglamento interno. Aquí es
+   una confirmación de dos casillas (no un muro): <dialog> nativo reutilizando el
+   patrón visual de PrioridadModal, lenguaje claro nivel 6°, mobile-first 375px.
+   Accesible: foco a la primera casilla al abrir, ESC y clic-fuera cierran sin
+   agregar, título asociado con aria-labelledby. Solo aplica al AGREGAR: quitar y
+   reordenar no disparan esto. */
+function AgregarColegioModal({ colegio, nivelAlumno, onConfirmar, onCancelar }) {
+  const [aceptaJornada, setAceptaJornada] = useState(false)
+  const [aceptaProyecto, setAceptaProyecto] = useState(false)
+  const contenidoRef = useRef(null)
+  const jornada = jornadaDeColegio(colegio, nivelAlumno)
+  const ambas = aceptaJornada && aceptaProyecto
+
+  useEffect(() => {
+    // Foco a la primera casilla al abrir el modal
+    contenidoRef.current?.querySelector('input')?.focus()
+  }, [])
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') onCancelar()
+  }
+
+  return (
+    <dialog
+      open
+      onKeyDown={handleKeyDown}
+      onClick={(e) => e.target === e.currentTarget && onCancelar()}
+      className="prio-modal"
+      aria-labelledby="agregar-colegio-titulo"
+    >
+      <div className="prio-modal__content" ref={contenidoRef}>
+        <div className="prio-modal__header">
+          <h2 className="prio-modal__titulo" id="agregar-colegio-titulo">
+            Agregar {colegio.nombre} a tu lista
+          </h2>
+          <button
+            type="button"
+            className="prio-modal__close"
+            onClick={onCancelar}
+            aria-label="Cerrar sin agregar el colegio"
+          >
+            ✕
+          </button>
+        </div>
+        <p style={{ margin: '0 0 12px', fontSize: '0.92rem' }}>
+          Para agregar este colegio, marca las dos casillas:
+        </p>
+        <label
+          className="post-hermanos-check"
+          htmlFor="acepta-jornada"
+          style={{ alignItems: 'flex-start', lineHeight: 1.4, marginBottom: 12 }}
+        >
+          <input
+            id="acepta-jornada"
+            type="checkbox"
+            checked={aceptaJornada}
+            onChange={(e) => setAceptaJornada(e.target.checked)}
+          />
+          <span>
+            {jornada
+              ? <>Acepto la jornada <strong>{jornada}</strong> de {colegio.nombre}.</>
+              : <>Acepto el tipo de jornada de {colegio.nombre}.</>}
+          </span>
+        </label>
+        <label
+          className="post-hermanos-check"
+          htmlFor="acepta-proyecto"
+          style={{ alignItems: 'flex-start', lineHeight: 1.4 }}
+        >
+          <input
+            id="acepta-proyecto"
+            type="checkbox"
+            checked={aceptaProyecto}
+            onChange={(e) => setAceptaProyecto(e.target.checked)}
+          />
+          <span>Acepto adherir al proyecto educativo y al reglamento interno de {colegio.nombre}.</span>
+        </label>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 18 }}>
+          <button
+            type="button"
+            className="btn btn--primary"
+            disabled={!ambas}
+            onClick={onConfirmar}
+            title={!ambas ? 'Marca las dos casillas para agregar el colegio' : undefined}
+          >
+            Agregar a mi lista
+          </button>
+          <button type="button" className="btn btn--secondary" onClick={onCancelar}>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </dialog>
+  )
+}
+
 /* ── S22-11 (refinamiento) · S4 (refinamiento): control para declarar prioridad POR COLEGIO ──
    `hermano`, `funcionario` y `exalumno` solo valen en el establecimiento donde
    la familia tiene ese vínculo, así que se declaran colegio por colegio (no hay
@@ -339,6 +453,12 @@ export default function PostulacionPage() {
   const [alumnoNivel, setAlumnoNivel]   = useState(perfilEstudiante.nivel)
   const [alumnoOk, setAlumnoOk]         = useState(false)
   const [confirmandoNivel, setConfirmandoNivel] = useState(false)   // S22-12
+  // A · fidelidad (analisis_video_paso_a_paso_sae.md brecha C): declaración legal
+  // obligatoria de ser apoderado/a antes de vincular al estudiante.
+  const [declaraApoderado, setDeclaraApoderado] = useState(false)   // S22-12 (refinamiento)
+  // C · fidelidad (analisis_video_paso_a_paso_sae.md brecha C): id del colegio en
+  // espera de las dos aceptaciones (jornada + proyecto educativo/reglamento).
+  const [colegioPendiente, setColegioPendiente] = useState(null)    // S22-2 (refinamiento)
   const [postulaHermanos, setPostulaHermanos]   = useState(false)   // S22-13
   const [borradorGuardado, setBorradorGuardado] = useState(false)   // S22-9
   const [anuncioOrden, setAnuncioOrden]         = useState('')      // S22-8
@@ -832,12 +952,35 @@ export default function PostulacionPage() {
                       </InfoBox>
                     )}
 
+                    {/* A · fidelidad (analisis_video_paso_a_paso_sae.md brecha A) · S22-12 (refinamiento):
+                        en el flujo real, tras ingresar el RUN del postulante, el apoderado/a
+                        marca "declaro ser apoderado del postulante" y recién ahí puede agregarlo.
+                        Casilla obligatoria: bloquea el botón de vincular mientras no esté marcada. */}
+                    <div className="rg-campo">
+                      <label className="form-label post-hermanos-check" htmlFor="check-apoderado">
+                        <input
+                          id="check-apoderado"
+                          type="checkbox"
+                          checked={declaraApoderado}
+                          onChange={(e) => setDeclaraApoderado(e.target.checked)}
+                          aria-required="true"
+                        />
+                        Declaro ser el/la apoderado/a legal de este/a estudiante
+                      </label>
+                      {!declaraApoderado && (
+                        <span className="form-hint" style={{ color: 'var(--rojo)', display: 'block' }} role="alert">
+                          Debes marcar esta casilla para vincular al estudiante.
+                        </span>
+                      )}
+                    </div>
+
                     {/* S22-12: confirmación explícita del nivel antes de vincular */}
                     {!confirmandoNivel ? (
                       <button
                         type="button"
                         className="btn btn--primary"
-                        disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel}
+                        disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel || !declaraApoderado}
+                        title={!declaraApoderado ? 'Primero marca la casilla en que declaras ser el/la apoderado/a legal' : undefined}
                         onClick={() => setConfirmandoNivel(true)}
                       >
                         Vincular estudiante
@@ -928,6 +1071,30 @@ export default function PostulacionPage() {
             <CardTitle>Paso 2 de 3 — Agrega y ordena tus colegios</CardTitle>
           </CardHeader>
           <CardContent>
+            {/* D · fidelidad (analisis_video_paso_a_paso_sae.md brecha D) · S22-15 (refinamiento):
+                el costo de postular en sí, antes de elegir colegios. Es distinto del encuadre
+                "cómo se decide tu resultado" del paso 1 (P2/HAX G1) y del bloque "¿Y si no quedo
+                en ninguna?" del paso 3 (S22-15): aquí se avisa que quedar asignado hace perder el
+                cupo actual. Siempre visible (no depende del modo tutorial): es la información de
+                mayor riesgo del proceso. */}
+            <InfoBox icono="⚠️" titulo="Postula solo si necesitas cambiar de colegio" tipo="alerta">
+              <p>
+                Postula solo si tu hijo/a necesita un colegio nuevo o si quieres cambiarlo de
+                establecimiento.
+              </p>
+              <p>
+                Si tu hijo/a <strong>queda asignado/a en un colegio nuevo, pierde de inmediato
+                el cupo en su colegio actual</strong> — aunque después rechaces el resultado.
+                Si no queda en ninguna de tus preferencias, en cambio, mantiene su colegio de
+                hoy: solo lo pierde si queda en uno nuevo.
+              </p>
+              <p style={{ marginBottom: 0 }}>
+                Y si el colegio actual <strong>no sigue el próximo año</strong> con el nivel que le
+                toca (por ejemplo, termina 8° básico en un colegio que no tiene enseñanza media),
+                sí o sí tienes que postular.
+              </p>
+            </InfoBox>
+
             {modoTutorial && (
               <InfoBox icono="📋" titulo="¿Cómo funciona este paso?" tipo="info">
                 <p>Agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong> (el primero es el que más quieres). En cada colegio de tu lista puedes indicar si tienes un vínculo que te da prioridad ahí.</p>
@@ -1075,8 +1242,11 @@ export default function PostulacionPage() {
                         <button
                           type="button"
                           className="post-school-card__btn post-school-card__btn--agregar"
-                          onClick={() => agregar(c.id)}
+                          /* C · fidelidad (analisis_video_paso_a_paso_sae.md brecha C):
+                             abre la confirmación de dos aceptaciones antes de agregar */
+                          onClick={() => setColegioPendiente(c.id)}
                           aria-label={`Agregar ${c.nombre} a tu postulación`}
+                          aria-haspopup="dialog"
                         >
                           + Agregar
                         </button>
@@ -1217,6 +1387,21 @@ export default function PostulacionPage() {
               <p className="form-hint" role="status" style={{ marginTop: 8 }}>
                 Toca "+ Agregar" en los colegios que te interesen para armar tu lista.
               </p>
+            )}
+
+            {/* C · fidelidad (analisis_video_paso_a_paso_sae.md brecha C): confirmación
+                de las dos aceptaciones (jornada + proyecto educativo/reglamento) al
+                agregar un colegio. Los colegios que ya estuvieran en la lista por un
+                borrador guardado (S22-9) no pasan por aquí: sus aceptaciones se dan
+                por hechas y el gate solo intercepta los nuevos "+ Agregar". */}
+            {colegioPendiente != null && colegiosById[colegioPendiente] && (
+              <AgregarColegioModal
+                key={colegioPendiente}
+                colegio={colegiosById[colegioPendiente]}
+                nivelAlumno={alumnoNivel}
+                onConfirmar={() => { agregar(colegioPendiente); setColegioPendiente(null) }}
+                onCancelar={() => setColegioPendiente(null)}
+              />
             )}
           </CardContent>
         </Card>

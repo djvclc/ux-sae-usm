@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { colegiosById, totalVacantes } from '../data/colegios'
+import { probAsignacion } from '../utils/asignacion'
+import ProbabilidadVisual from '../components/ProbabilidadVisual'
 import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
@@ -168,6 +170,11 @@ export default function ColegioPage() {
      colegio.promedioComunal.ciencias + colegio.promedioComunal.historia) / 4
   )
   const simceSobre = simcePromedio >= comunalPromedio
+
+  // P1 · S22-11 (refinamiento): probabilidad estimada para un/a postulante SIN
+  // prioridad (nivel 5) según la demanda del colegio. La ficha no conoce el perfil
+  // del usuario, así que muestra el caso base; el detalle por perfil está en /algoritmo.
+  const probSinPrioridad = probAsignacion(5, colegio.demanda)
 
   // S16-1: clase de comparación GSE para badge
   const gseClass = colegio.gseComparacion === 'Más alto' ? 'pos'
@@ -352,6 +359,25 @@ export default function ColegioPage() {
               </tbody>
             </table>
           </div>
+          {/* P1 · S22-11 (refinamiento): versión visual del formato de frecuencia
+              (RISK-NUM / PAIR-ET, investigacion_ux_guide_ai_systems.md §6 y §3).
+              Icon array de 10×10 — la ficha tiene espacio para la variante con
+              más aire. Cifra tomada de probAsignacion(), no inventada. */}
+          <div className="probviz-block">
+            <p className="probviz-block__titulo">Si postulas sin ninguna prioridad</p>
+            <ProbabilidadVisual
+              prob={probSinPrioridad}
+              variante="grid"
+              sentencia={`Estimación: si no tienes ninguna prioridad, ${probSinPrioridad} de cada 100 postulantes quedan asignados en este colegio, que tiene demanda ${colegio.demanda}.`}
+            />
+            <p className="form-hint" style={{ marginTop: 6 }}>
+              Es una estimación según la demanda de este colegio. Si tienes prioridad
+              (hermano/a en el colegio, estudiante prioritario/a, funcionario/a o exalumno/a),
+              tu probabilidad sube. Calcula tu caso en el{' '}
+              <Link to="/algoritmo" className="link-inline">simulador del algoritmo</Link>.
+            </p>
+          </div>
+
           {/* S16-1: conexión con el algoritmo */}
           <div className="vacantes-infobox">
             <InfoBox tipo="info" icono="🔗">

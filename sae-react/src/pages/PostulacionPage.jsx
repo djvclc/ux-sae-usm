@@ -7,6 +7,7 @@ import { colegios, colegiosById, totalVacantes } from '../data/colegios'
 import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
+import ProbabilidadVisual from '../components/ProbabilidadVisual'
 import { useTextSize } from '../context/TextSizeContext'
 
 const STORAGE_KEY = 'sae_react_postulacion'
@@ -227,6 +228,14 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
         <span className={`tut-prob tut-prob--${probClass}`}>{prob}% estimado</span>
       </div>
       <p className="tut-colegio-info__nombre">{colegio.nombre}</p>
+      {/* P1 · S22-11 (refinamiento): versión visual del formato de frecuencia
+          (RISK-NUM). Variante "barra" por el ancho reducido dentro de .post-item
+          a 375px. Acompaña al chip "{prob}% estimado" y a la categoría cualitativa. */}
+      <ProbabilidadVisual
+        prob={prob}
+        variante="barra"
+        sentencia={`Probabilidad estimada en ${colegio.nombre}: ${Math.round(prob)} de cada 100 postulantes en tu misma condición quedan asignados.`}
+      />
       <ul className="tut-colegio-info__lista">
         <li>
           <span>Demanda:</span>
@@ -591,6 +600,30 @@ export default function PostulacionPage() {
             </p>
           </CardHeader>
           <CardContent>
+            {/* P2 · HAX G1 — S22 (refinamiento): encuadre de qué hace y qué NO hace
+                el algoritmo, ANTES de pedir datos (investigacion_ux_guide_ai_systems.md
+                §2 "Al inicio"). Resumen de encuadre, no repite el detalle de /algoritmo
+                ni /proceso. Siempre visible (no depende del modo tutorial): es
+                información básica, no un tip. Relacionado con S22-6 (orden legal de
+                prioridades) y S13 (transparencia). */}
+            <InfoBox icono="⚖️" titulo="Antes de empezar: cómo se decide tu resultado" tipo="info">
+              <p>
+                El sistema arma la asignación con tres cosas: <strong>el orden de tu lista</strong>,
+                las <strong>prioridades que fija la ley</strong> (primero el Programa de Integración
+                Escolar, después hermanos/as en el colegio, la reserva del 15 % para estudiantes
+                prioritarios/as, hijos/as de funcionarios/as y exalumnos/as) y las
+                <strong> vacantes</strong> de cada colegio. Cuando hay más postulantes que vacantes,
+                se hace un <strong>sorteo al azar, distinto en cada colegio</strong>.
+              </p>
+              <p style={{ marginBottom: 0 }}>
+                <strong>No hay puntaje, ni notas, ni ranking por mérito.</strong> Tu familia no compite
+                por rendimiento (la única excepción es la modalidad de alta exigencia académica, que
+                este prototipo no incluye). Y poner primero el colegio que más quieres
+                {' '}<strong>nunca te perjudica</strong>.{' '}
+                <Link to="/algoritmo" className="link-inline">Ver cómo funciona en detalle</Link>.
+              </p>
+            </InfoBox>
+
             {/* Acción principal: ClaveÚnica */}
             {!loginOk && (
               <div className="post-clave-block">

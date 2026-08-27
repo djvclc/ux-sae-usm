@@ -293,3 +293,21 @@ Implementa los pendientes **P3** y **P4** de `docs/planificacion/bitacora_flujo_
 **Trazabilidad:** comentarios `S22-6 (refinamiento)`, `S22-11 (refinamiento)` y `S22-14 (refinamiento)` en `PostulacionPage.jsx`. No se creó sección del plan, no se sumó ningún punto, **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios). Sin impacto en cifras de `proyecto-tesis/`.
 
 **Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-26); `PostulacionPage` compila a 40.18 kB. `SeguimientoPage.jsx` no requirió cambios.
+
+---
+
+## 19. Visualización del formato de frecuencia (P1) + encuadre HAX G1 antes de pedir datos (P2) (2026-08-26)
+
+Implementa los pendientes **P1** y **P2** de `docs/planificacion/bitacora_flujo_postulacion_y_resultado.md` (§5).
+
+**P1 — versión visual del formato de frecuencia (RISK-NUM / PAIR-ET, `investigacion_ux_guide_ai_systems.md` §6 y §3).** Nuevo componente compartido `src/components/ProbabilidadVisual.jsx` (sin dependencias; solo CSS/DOM). Toma la cifra de `probAsignacion()` (no inventa nada) y la representa como "X de cada 100":
+- `variante="barra"`: barra proporcional con divisiones cada 10 % (vía `background-size`), compacta. Se usa en `PostulacionPage.jsx` → `ColegioAnalisis` (paso 2), donde el ancho dentro de `.post-item` a 375 px es reducido. Acompaña —no reemplaza— al chip "{prob}% estimado" y a la categoría cualitativa.
+- `variante="grid"`: icon array de 10×10 (100 celdas, N rellenas). Se usa en `ColegioPage.jsx`, sección "Vacantes por nivel", en un bloque nuevo `.probviz-block` ("Si postulas sin ninguna prioridad"), con `probAsignacion(5, colegio.demanda)` — la ficha no conoce el perfil del usuario, así que muestra el caso base (nivel 5) y remite a `/algoritmo` para el caso propio.
+- Accesibilidad: contenedor `role="img"` con `aria-label` = la cifra en palabras ("Probabilidad estimada en {colegio}: {N} de cada 100 postulantes en tu misma condición quedan asignados."); el dibujo es `aria-hidden`. Distinción lleno/vacío por relleno + borde + número, no solo color (WCAG AA). `@media (prefers-reduced-motion: reduce)` desactiva la transición de la barra. Paleta Mineduc por categoría (verde/naranja/rojo), consistente con `.tut-prob--*`.
+- CSS nuevo en `src/index.css` (final del archivo): `.probviz`, `.probviz__resumen`, `.probviz__bar(-fill)`, `.probviz__grid`, `.probviz__cell(--on)`, `.probviz-block`.
+
+**P2 — HAX G1: qué hace / qué NO hace el algoritmo, antes de pedir datos (`investigacion_ux_guide_ai_systems.md` §2 "Al inicio").** En `PostulacionPage.jsx`, paso 1 ("Identifícate"), primer elemento dentro de `CardContent` (antes del bloque de ClaveÚnica): `InfoBox` "Antes de empezar: cómo se decide tu resultado", **siempre visible** (no depende del modo tutorial — es encuadre básico, no un tip; no rompe el layout). Dos párrafos: (1) el sistema asigna con el orden de tu lista + las prioridades legales (PIE → hermanos → reserva 15 % SEP → funcionario → exalumno) + las vacantes, y desempata con sorteo al azar por colegio; (2) no hay puntaje ni notas ni ranking por mérito (excepción: alta exigencia académica, fuera de este prototipo), y poner primero el colegio que más quieres nunca perjudica. Enlace "Ver cómo funciona en detalle" → `/algoritmo`. No replica el contenido extenso de `/algoritmo` ni `/proceso`.
+
+**Trazabilidad:** comentarios `P1 · S22-11 (refinamiento)` (visual = refinamiento de "mostrar el dato que fundamenta el %") y `P2 · HAX G1 — S22 (refinamiento)` (relacionado con S22-6 y S13). **No** se creó sección del plan, **no** se sumó ningún punto, **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios). Sin impacto en cifras de `proyecto-tesis/` (`probAsignacion` y el umbral 65 no se tocaron; solo se muestra la misma cifra de otra forma).
+
+**Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-26). `PostulacionPage` compila a 41.58 kB; `ProbabilidadVisual` sale como chunk propio (0.84 kB).

@@ -7277,3 +7277,102 @@ h2.seg-hero-name {
   accent-color: var(--azul);
   flex-shrink: 0;
 }
+
+/* ── P1 · S22-11 (refinamiento): ProbabilidadVisual ──
+   Versión visual del formato de frecuencia ("X de cada 100") — RISK-NUM / PAIR-ET
+   (docs/investigacion/investigacion_ux_guide_ai_systems.md §6 y §3). Complementa
+   el texto y la categoría cualitativa; nunca los reemplaza. La distinción
+   lleno/vacío es relleno + borde + número, no solo color (WCAG AA). */
+.probviz {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.probviz__resumen {
+  font-size: 0.85rem;
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.probviz__resumen-num {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.probviz--alta  .probviz__resumen-num { color: #145f2c; }
+.probviz--media .probviz__resumen-num { color: #6b2d07; }
+.probviz--baja  .probviz__resumen-num { color: #7b1c1c; }
+
+/* Barra proporcional segmentada (variante compacta) */
+.probviz__bar {
+  position: relative;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--borde);
+  overflow: hidden;
+}
+
+.probviz__bar-fill {
+  height: 100%;
+  border-radius: 999px 0 0 999px;
+  transition: width 0.5s ease;
+}
+
+.probviz--alta  .probviz__bar-fill { background: var(--verde); }
+.probviz--media .probviz__bar-fill { background: var(--naranja); }
+.probviz--baja  .probviz__bar-fill { background: var(--rojo); }
+
+/* Divisiones cada 10 % — dan la lectura "de a 10" sin depender del color */
+.probviz__bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.22) 1px, transparent 1px);
+  background-size: 10% 100%;
+}
+
+/* Icon array 10×10 (variante con más espacio) */
+.probviz__grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+  max-width: 240px;
+}
+
+.probviz__cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 3px;
+  background: #fff;
+  border: 1px solid var(--borde);
+}
+
+.probviz__cell--on {
+  border-color: transparent;
+}
+
+.probviz--alta  .probviz__cell--on { background: var(--verde); }
+.probviz--media .probviz__cell--on { background: var(--naranja); }
+.probviz--baja  .probviz__cell--on { background: var(--rojo); }
+
+@media (prefers-reduced-motion: reduce) {
+  .probviz__bar-fill { transition: none; }
+}
+
+/* Bloque contenedor en la ficha de colegio (ColegioPage) */
+.probviz-block {
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--gris-cl);
+  border-radius: var(--radio);
+}
+
+.probviz-block__titulo {
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--texto);
+}

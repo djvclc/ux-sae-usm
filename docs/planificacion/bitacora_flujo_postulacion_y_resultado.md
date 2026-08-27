@@ -197,16 +197,31 @@ Comentarios de trazabilidad en código: `S22-6 (refinamiento)`, `S22-11 (refinam
 
 ---
 
+### Bloque I — Comunicación visual de probabilidad y encuadre del algoritmo (P1 · P2, 2026-08-26)
+
+**Fundamento de origen:** los pendientes **P1** y **P2** de la sec. 5 de esta bitácora (ambos nacen de las guías de UX-IA, no de la auditoría de fidelidad). Commit `b9ba358`. Comentarios de trazabilidad en código: `P1 · S22-11 (refinamiento)` y `P2 · HAX G1 — S22 (refinamiento)` (con nota a S22-6 y S13). **Sin cambios de lógica:** `probAsignacion()` y el umbral `>= 65` no se tocaron; P1 muestra la **misma cifra** de otra forma. No creó sección del plan ni sumó punto: **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios).
+**Estado de validación:** ✅ lint+build OK (2026-08-26) — `npm run lint` (0 errores / 0 warnings) y `npm run build` (limpio; `ProbabilidadVisual` compila a chunk propio de 0.84 kB, `PostulacionPage` 41.58 kB) corridos en esta sesión sobre el estado con el cambio aplicado.
+**Impacto en cifras de la memoria:** ninguno.
+
+**Componente nuevo reutilizable:** `sae-react/src/components/ProbabilidadVisual.jsx` (sin dependencias, solo CSS/DOM). Recibe `prob` (cifra de `probAsignacion()`, no inventa), `sentencia` (texto en palabras para el `aria-label`) y `variante`. Hoy se usa en el paso 2 del flujo y en la ficha de colegio; queda disponible por si se reutiliza en el paso 3 (resumen de confirmación) o en `/algoritmo` más adelante.
+
+| # | Cambio | Ancla | Mapeo a guía | Cap. memoria |
+|---|---|---|---|---|
+| **P1-1** | `ProbabilidadVisual.jsx`: dibuja "X de cada 100" a partir de la cifra de `probAsignacion()` en dos variantes — `barra` (barra proporcional segmentada, compacta) y `grid` (icon array 10×10, 100 celdas, N rellenas). Accesible: contenedor `role="img"` con `aria-label` = la cifra en palabras; dibujo `aria-hidden`; distinción lleno/vacío por relleno + borde + número (no solo color); texto visible "{N} de cada 100 postulantes"; `@media (prefers-reduced-motion: reduce)` desactiva la transición; paleta Mineduc por categoría (alta/media/baja) | `ProbabilidadVisual.jsx` `// P1 · S22-11 (refinamiento)` · `index.css` `.probviz*` / `.probviz-block*` | **RISK-NUM** (`investigacion_ux_guide_ai_systems.md` §6: "el formato de frecuencia… es más comprensible que la probabilidad porcentual pura para personas con numeracidad baja"; "los arreglos icónicos (icon arrays) son la técnica más recomendada… directamente trasladables a mostrar cupos y postulantes"; §8 rec. 3) · **PAIR-ET** (§3: los indicadores numéricos de confianza "presuponen que el usuario tiene una base de comprensión de probabilidad", recomienda probar "visualizaciones gráficas") | 3 (decisión de diseño), 4 (comprensión medible — ítems C2/J2) |
+| **P1-2** | `PostulacionPage.jsx`, `ColegioAnalisis` (paso 2): variante `barra` bajo el nombre del colegio, por el ancho reducido dentro de `.post-item` a 375 px. **Acompaña** —no reemplaza— al chip "{prob}% estimado" y a la categoría cualitativa (alta/media/baja, "certeza muy alta") | `PostulacionPage.jsx` `// P1 · S22-11 (refinamiento)` (~231) | ídem P1-1 · continuidad de S22-11 (dato crudo + % en el punto de decisión) y D3 (formato de frecuencia en los tres niveles) | 3, 4 |
+| **P1-3** | `ColegioPage.jsx` (ficha): bloque nuevo `.probviz-block` "Si postulas sin ninguna prioridad" con la variante `grid`, usando `probAsignacion(5, colegio.demanda)` — la ficha no conoce el perfil del usuario, muestra el caso base nivel 5 y remite al simulador de `/algoritmo` para el caso propio | `ColegioPage.jsx` `// P1 · S22-11 (refinamiento)` (~171, ~359) | ídem P1-1 (§6 y §8 rec. 3 nombran explícitamente "la ficha de colegio" como lugar a reforzar) | 3, 4 |
+| **P2-1** | `PostulacionPage.jsx`, paso 1 ("Identifícate"), primer elemento del `CardContent`, **antes** del bloque de ClaveÚnica: `InfoBox` **siempre visible** (no depende del modo tutorial) "Antes de empezar: cómo se decide tu resultado". Encuadra que la asignación se arma con el orden de la lista + prioridades legales (PIE → hermanos → 15 % SEP → funcionario → exalumno) + vacantes, con sorteo aleatorio por colegio; que **no hay puntaje ni notas ni ranking por mérito** (salvo alta exigencia académica, fuera de este prototipo); y que poner primero el colegio preferido **nunca perjudica**. Enlace "Ver cómo funciona en detalle" a `/algoritmo`; no repite el contenido extenso de `/algoritmo` ni `/proceso` | `PostulacionPage.jsx` `// P2 · HAX G1 — S22 (refinamiento)` (~600) | **HAX G1** (`investigacion_ux_guide_ai_systems.md` §2 "Al inicio": "conviene revisar que la primera pantalla de `/postulacion` explicite, antes de pedir datos, qué hace el algoritmo y qué no decide la familia directamente — orden de prioridad legal, no 'puntaje'") · relacionado con S22-6 (orden legal) y S13 (transparencia) | 3 |
+
+---
+
 ## 5. Pendientes propuestos por las guías (aún NO implementados)
 
-De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G; la auditoría de microcopy que figuraba como **P3** y **P4** se implementó el 2026-08-26 — ver Bloque H.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.
+De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G; la auditoría de microcopy que figuraba como **P3** y **P4** se implementó el 2026-08-26 — ver Bloque H; la versión visual del formato de frecuencia —**P1**— y el encuadre del algoritmo en la primera pantalla —**P2**— se implementaron el 2026-08-26 — ver Bloque I.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.
 
 | # | Pendiente | Fundamento | Prioridad sugerida | Bloquea la prueba |
 |---|---|---|---|---|
-| **P1** | Versión **visual** del formato de frecuencia (mini icon array o barra proporcional), no solo texto, en `ColegioAnalisis` y en la ficha de colegio. Los datos crudos ya existen (esquema v2) | RISK-NUM · PAIR-ET (visualización de confianza) | Alta | No, pero fortalece C2/J2 |
-| **P2** | Primera pantalla de `/postulacion`: explicitar **antes de pedir datos** qué hace el algoritmo y qué no decide la familia (orden de prioridad legal, no "puntaje") | HAX G1 · sec. 2 | Media | No |
-| **P3** | Lenguaje de `AlgoSimuladorPasos` (en `/algoritmo`, no en el flujo, pero relacionado): describir el procesamiento en términos de reglas y datos, no de "elección" del sistema | NNG-XAI (antropomorfismo) · sec. 5 | Baja | No |
-| **P4** | Evaluar mostrar **N-mejores alternativas** ("si no quedas aquí, tus siguientes opciones más probables son…") | PAIR-ET (patrón de alternativas) | Baja | No |
+| **P1** | Lenguaje de `AlgoSimuladorPasos` (en `/algoritmo`, no en el flujo, pero relacionado): describir el procesamiento en términos de reglas y datos, no de "elección" del sistema | NNG-XAI (antropomorfismo) · sec. 5 | Baja | No |
+| **P2** | Evaluar mostrar **N-mejores alternativas** ("si no quedas aquí, tus siguientes opciones más probables son…") | PAIR-ET (patrón de alternativas) | Baja | No |
 
 ---
 

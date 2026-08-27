@@ -171,18 +171,42 @@ Verificación funcional (Node, code-agent): en el caso Muñoz González, Colegio
 
 ---
 
+### Bloque H — Auditoría de microcopy de avisos (P3 · P4, 2026-08-26)
+
+**Fundamento de origen:** los pendientes **P3** y **P4** de la sec. 5 de esta bitácora. P4 se liga además al tema central de la memoria: la mitigación de sesgos no solo en el algoritmo, sino en cómo el sistema comunica. Auditoría de redacción de todos los avisos del flujo — **sin cambios de lógica, tabla de probabilidades ni umbral**. Commit `b18a7a7`.
+
+**Mapeo a guía:**
+- **P4 → HAX G5** (respeta las normas sociales relevantes) y **G6** (mitiga sesgos sociales). Verificado contra `investigacion_ux_guide_ai_systems.md` L35: la guía pide explícitamente "evitar que el aviso sobre un colegio de alta demanda suene a juicio sobre la familia (p. ej., insinuar que 'apuntó muy alto')" y "revisar que ningún dato mostrado refuerce estigmas socioeconómicos entre colegios de distinta categoría".
+- **P3 → NNG-XAI.** Verificado contra `investigacion_ux_guide_ai_systems.md` L76: "Lenguaje claro y accionable, no genérico: un disclaimer vago ('esto es una estimación') es menos útil que uno que dice qué hacer"; el propio documento nombra `ColegioAnalisis` como el lugar a auditar.
+
+Comentarios de trazabilidad en código: `S22-6 (refinamiento)`, `S22-11 (refinamiento)`, `S22-14 (refinamiento)`. No creó sección del plan ni sumó punto: **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios).
+**Estado de validación:** ✅ lint+build OK (2026-08-26) — `npm run lint` y `npm run build` limpios (code-agent, reconfirmados en la sesión principal).
+**Impacto en cifras de la memoria:** ninguno (solo redacción de avisos).
+
+| # | Cambio | Ancla | Mapeo a guía | Cap. memoria |
+|---|---|---|---|---|
+| **P4-1** | `PRIORIDADES_INFO.prioritario.que_es`: deja de usar "vulnerabilidad socioeconómica verificada por el MINEDUC" como rótulo de la persona. Nuevo texto: la cuota SEP es un derecho que "el Estado lo determina según la situación socioeconómica de tu familia, con información que el MINEDUC ya tiene. No es algo que decidas tú ni el colegio" | `PostulacionPage.jsx` `S22-6 (refinamiento) · auditoría P4` (~41, ~59) | **HAX G5 · G6** (doc L35) | 3, 5 |
+| **P4-2** | InfoBox "¿En qué orden se revisan las prioridades?" (paso 2): el 15 % pasa de "estudiantes con vulnerabilidad socioeconómica verificada" a "estudiantes prioritarios/as, definidos por la situación socioeconómica que el Estado ya tiene registrada" | `PostulacionPage.jsx` `S22-6 (refinamiento) · P4` (~885) | **HAX G6** (doc L35) | 3, 5 |
+| **P4-3** | Aviso de lista corta (S22-14): título "Tu lista es corta y toda de alta demanda" (antes "Lista corta y toda de alta demanda"); el cuerpo reencuadra el riesgo en "en todos hay más postulantes que vacantes" y "si en ninguno queda cupo para tu prioridad", en vez de atribuirlo a la elección de la familia ("así podrías quedar sin asignación") | `PostulacionPage.jsx` `S22-14 (refinamiento)` (~1124) | **HAX G6** (doc L35) · continuidad de S22-14 / D1–D2 | 3, 5 |
+| **P3-1** | `ColegioAnalisis`, mensaje cuando el colegio no publica vacantes para el nivel: antes solo informaba la carencia ("Este colegio no publica vacantes para {nivel}"); ahora añade de qué se calcula el % ("solo con su demanda general") y una acción ("Abre la ficha del colegio para confirmar que ofrece ese nivel antes de dejarlo en tu lista") | `PostulacionPage.jsx` `S22-11 (refinamiento) · auditoría P3` (~247) | **NNG-XAI** (doc L76) | 3 |
+| **P3-2** | Aviso de lista corta (mismo bloque que P4-3): la parte accionable se afina — cierra con "agrega más colegios — al menos 6 — e incluye alguno de demanda media o baja", sin sugerir reordenar por probabilidad (strategy-proofness intacto) | `PostulacionPage.jsx` `S22-14 (refinamiento)` (~1124) | **NNG-XAI** (doc L76) · strategy-proofness (`investigacion_algoritmo_sae.md` sec. 4.2) | 3 |
+
+**Avisos auditados que ya cumplían ambos criterios (sin cambio, registrado para trazabilidad):** para P4 — `ColegioAnalisis` (no muestra SIMCE/GSE/categoría ni contrapone colegios), las 3 explicaciones de probabilidad del paso 3 (atribuyen la baja probabilidad a la demanda del colegio, no a la familia — ya refinadas en D2), el consejo "ordena por tu preferencia real", el bloque "¿Y si no quedo en ninguna?" (S22-15), `SeguimientoPage.jsx generarExplicacion`, las entradas hermano/funcionario/exalumno de `PRIORIDADES_INFO`, `colegios.js` (`casoPrioridades` son tokens, `proyecto` es descripción institucional no comparativa). Para P3 — las explicaciones de probabilidad media/baja/alta y "certeza muy alta", y los InfoBox "al menos 6", "Verifica el curso" (S22-12) y "descarga tu comprobante" (S22-7) ya son accionables o son refuerzo, no advertencia; los InfoBox neutros/tutoriales (orden de prioridades, cuándo sabrás el resultado, transversal vs. específica) son informativos — el criterio de acción no aplica.
+
+**Para la memoria (observación, no editar):** P4 es material directo del cap. 5 — la mitigación de sesgos en la capa de comunicación del sistema, no solo en el algoritmo, es una dimensión del tema central de la tesis.
+
+---
+
 ## 5. Pendientes propuestos por las guías (aún NO implementados)
 
-De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.
+De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G; la auditoría de microcopy que figuraba como **P3** y **P4** se implementó el 2026-08-26 — ver Bloque H.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.
 
 | # | Pendiente | Fundamento | Prioridad sugerida | Bloquea la prueba |
 |---|---|---|---|---|
 | **P1** | Versión **visual** del formato de frecuencia (mini icon array o barra proporcional), no solo texto, en `ColegioAnalisis` y en la ficha de colegio. Los datos crudos ya existen (esquema v2) | RISK-NUM · PAIR-ET (visualización de confianza) | Alta | No, pero fortalece C2/J2 |
 | **P2** | Primera pantalla de `/postulacion`: explicitar **antes de pedir datos** qué hace el algoritmo y qué no decide la familia (orden de prioridad legal, no "puntaje") | HAX G1 · sec. 2 | Media | No |
-| **P3** | Auditar que **todos** los textos de advertencia de `ColegioAnalisis` sean accionables y no genéricos ("agrega al menos un colegio de demanda media o baja" > "esto es una estimación") | NNG-XAI · sec. 5 | Media | No |
-| **P4** | Revisar que ningún aviso suene a juicio sobre la familia ("apuntó muy alto") ni que ningún dato mostrado refuerce estigmas socioeconómicos entre colegios de distinta categoría | HAX G5 / G6 | Media | Conviene resolver antes (sesgo observable en la prueba) |
-| **P5** | Lenguaje de `AlgoSimuladorPasos` (en `/algoritmo`, no en el flujo, pero relacionado): describir el procesamiento en términos de reglas y datos, no de "elección" del sistema | NNG-XAI (antropomorfismo) · sec. 5 | Baja | No |
-| **P6** | Evaluar mostrar **N-mejores alternativas** ("si no quedas aquí, tus siguientes opciones más probables son…") | PAIR-ET (patrón de alternativas) | Baja | No |
+| **P3** | Lenguaje de `AlgoSimuladorPasos` (en `/algoritmo`, no en el flujo, pero relacionado): describir el procesamiento en términos de reglas y datos, no de "elección" del sistema | NNG-XAI (antropomorfismo) · sec. 5 | Baja | No |
+| **P4** | Evaluar mostrar **N-mejores alternativas** ("si no quedas aquí, tus siguientes opciones más probables son…") | PAIR-ET (patrón de alternativas) | Baja | No |
 
 ---
 

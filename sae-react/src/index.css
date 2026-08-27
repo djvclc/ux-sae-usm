@@ -5837,6 +5837,30 @@ h2.seg-hero-name {
   }
 }
 
+/* S22-11 (refinamiento): control de prioridad por colegio dentro de cada .post-item.
+   Fila completa (flex-basis 100%) como ColegioAnalisis, para no comprimirse a 375px. */
+.post-item > .post-prio-colegio {
+  flex-basis: 100%;
+  width: 100%;
+  margin-left: 38px;
+  background: var(--naranja-cl);
+  border: 1px solid var(--naranja);
+  border-radius: var(--radio);
+  padding: 10px 12px;
+}
+
+.post-prio-colegio__titulo {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #6b2d07;
+}
+
+@media (max-width: 480px) {
+  .post-item > .post-prio-colegio {
+    margin-left: 0;
+  }
+}
+
 .post-item__num {
   width: 28px;
   height: 28px;

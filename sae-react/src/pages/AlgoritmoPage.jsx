@@ -227,6 +227,10 @@ export default function AlgoritmoPage() {
   })
   const [seleccion, setSeleccion] = useState([])
 
+  /* S22-11 (refinamiento): este simulador no modela vínculos por colegio.
+     `calcularResultado` recibe un `perfil` sin `prioridadesPorColegio`, así que
+     `nivelPrioridadEnColegio` trata las condiciones marcadas como si aplicaran
+     en todos los colegios elegidos (comportamiento previo, coherente aquí). */
   const resultado = useMemo(
     () => (seleccion.length ? calcularResultado(seleccion, perfil) : null),
     [seleccion, perfil],
@@ -249,24 +253,25 @@ export default function AlgoritmoPage() {
     })
   }
 
-  /* Genera explicación contextualizada del resultado del simulador (S4-2) */
+  /* Genera explicación contextualizada del resultado del simulador (S4-2).
+     S22-11 (refinamiento): se explica según el nivel real en el colegio asignado
+     (asignado.nivel), no según una prioridad global del perfil. */
   const explicacionSim = useMemo(() => {
     if (!resultado?.asignado) return null
     const { asignado } = resultado
-    if (perfil.hermano) {
-      return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque tienes un hermano o hermana matriculado/a ahí. Eso te da la <strong>prioridad más alta por ley</strong>.`
+    switch (asignado.nivel) {
+      case 1:
+        return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque tienes un hermano o hermana matriculado/a ahí. Eso te da la <strong>prioridad más alta por ley</strong>.`
+      case 2:
+        return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque eres estudiante prioritario/a (<abbr title="Subvención Escolar Preferencial">SEP</abbr>). Esta es la segunda prioridad más alta.`
+      case 3:
+        return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque eres hijo/a de funcionario/a de ese establecimiento. Esta condición te da prioridad sobre el sorteo.`
+      case 4:
+        return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque eres exalumno/a de ese establecimiento.`
+      default:
+        return `Tu mejor opción probable es <strong>${asignado.nombre}</strong> a través del sorteo público. Como no tienes prioridades especiales, el sistema evalúa disponibilidad de vacantes.`
     }
-    if (perfil.prioritario) {
-      return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque eres estudiante prioritario/a (<abbr title="Subvención Escolar Preferencial">SEP</abbr>). Esta es la segunda prioridad más alta.`
-    }
-    if (perfil.funcionario) {
-      return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque eres hijo/a de funcionario/a. Esta condición te da prioridad sobre el sorteo.`
-    }
-    if (perfil.exalumno) {
-      return `Tu mejor opción es <strong>${asignado.nombre}</strong> porque eres exalumno/a del establecimiento.`
-    }
-    return `Tu mejor opción probable es <strong>${asignado.nombre}</strong> a través del sorteo público. Como no tienes prioridades especiales, el sistema evalúa disponibilidad de vacantes.`
-  }, [resultado, perfil])
+  }, [resultado])
 
   const estadoLabel = {
     asignado: '✅ Mejor opción',

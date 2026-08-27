@@ -17,32 +17,40 @@ const ETAPAS_PROCESO = [
   { id: 'resultado', icon: '🎓', label: 'Resultado', desc: 'Tu resultado está listo para revisarlo' },
 ]
 
-/* Genera la explicacion contextualizada del resultado en terminos del usuario */
-function generarExplicacion(asignado, perfil) {
+/* Genera la explicacion contextualizada del resultado en terminos del usuario.
+   S22-11 (refinamiento): la prioridad se explica según el nivel REAL en el
+   colegio asignado (asignado.nivel), no según una prioridad global del perfil —
+   hermano/funcionario/exalumno solo valen en el colegio donde hay ese vínculo. */
+function generarExplicacion(asignado) {
   if (!asignado) return null
 
   const partes = []
 
-  if (perfil?.hermano) {
-    partes.push(
-      `Quedaste en el <strong>${asignado.nombre}</strong> porque tienes un hermano o hermana matriculado/a ahí. Eso te da la <strong>prioridad más alta por ley</strong>.`
-    )
-  } else if (perfil?.prioritario) {
-    partes.push(
-      `Quedaste en el <strong>${asignado.nombre}</strong> como estudiante prioritario/a (con <abbr title="Subvención Escolar Preferencial">SEP</abbr>). Esta es la segunda prioridad más alta.`
-    )
-  } else if (perfil?.funcionario) {
-    partes.push(
-      `Quedaste en el <strong>${asignado.nombre}</strong> como hijo/a de funcionario/a del establecimiento. Esta condición te da prioridad sobre el sorteo.`
-    )
-  } else if (perfil?.exalumno) {
-    partes.push(
-      `Quedaste en el <strong>${asignado.nombre}</strong> como exalumno/a del establecimiento.`
-    )
-  } else {
-    partes.push(
-      `Quedaste en el <strong>${asignado.nombre}</strong> a través del <strong>sorteo público y transparente</strong>. Este sorteo se realiza cuando varios postulantes tienen las mismas condiciones.`
-    )
+  switch (asignado.nivel) {
+    case 1:
+      partes.push(
+        `Quedaste en el <strong>${asignado.nombre}</strong> porque tienes un hermano o hermana matriculado/a ahí. En ese colegio, eso te da la <strong>prioridad más alta por ley</strong>.`
+      )
+      break
+    case 2:
+      partes.push(
+        `Quedaste en el <strong>${asignado.nombre}</strong> como estudiante prioritario/a (con <abbr title="Subvención Escolar Preferencial">SEP</abbr>). Esta cuota del 15 % vale en todos los colegios de tu lista.`
+      )
+      break
+    case 3:
+      partes.push(
+        `Quedaste en el <strong>${asignado.nombre}</strong> porque tu apoderado/a trabaja en ese establecimiento. La prioridad de funcionario/a vale <strong>solo en ese colegio</strong>.`
+      )
+      break
+    case 4:
+      partes.push(
+        `Quedaste en el <strong>${asignado.nombre}</strong> como exalumno/a de ese establecimiento. Esa prioridad vale <strong>solo en ese colegio</strong>.`
+      )
+      break
+    default:
+      partes.push(
+        `Quedaste en el <strong>${asignado.nombre}</strong> a través del <strong>sorteo público y transparente</strong>. En ese colegio no tenías una prioridad especial, así que entraste al desempate aleatorio que hace cada colegio cuando hay más postulantes que vacantes.`
+      )
   }
 
   if (asignado.idx > 1) {
@@ -162,9 +170,9 @@ export default function SeguimientoPage() {
     )
   }
 
-  const { resultado, comprobante, perfil } = data
+  const { resultado, comprobante } = data
   const asignado = resultado?.asignado
-  const explicacion = generarExplicacion(asignado, perfil)
+  const explicacion = generarExplicacion(asignado)
   const colegioAsignado = asignado ? colegios.find((c) => c.id === asignado.id) : null
 
   return (
@@ -346,7 +354,9 @@ export default function SeguimientoPage() {
                   <div className="seg-pref-item__info">
                     <strong>{d.nombre}</strong>
                     <span className="seg-pref-item__sub">
+                      {/* S22-11 (refinamiento): prioridad de ESTE colegio, no la global */}
                       {d.comuna} · demanda {d.demanda}
+                      {d.nivel < 5 ? ` · ${d.prioridadLabel ?? prioridadLabels[d.nivel]}` : ''}
                     </span>
                   </div>
                   <div className="seg-pref-item__right">

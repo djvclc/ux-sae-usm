@@ -1,6 +1,16 @@
 // Catálogo ficticio — esquema v2 (investigacion_vitrina_sae.md)
 // Reutilizado en: buscador, simulador, ficha, comparador, postulación
 // S16-1: campos enriquecidos alineados con vitrina oficial SAE
+//
+// S22-11 (refinamiento) · S22-6: campo `casoPrioridades`.
+// Las prioridades `hermano`, `funcionario` y `exalumno` NO son transversales:
+// la familia solo tiene ese vínculo en establecimientos concretos. `casoPrioridades`
+// declara qué prioridades específicas de colegio tiene la familia del caso de estudio
+// Muñoz González en cada colegio (docs/investigacion/caso_estudio_prueba_usabilidad_postulacion.md,
+// Tabla 1, mapeado por nombre). `prioritario` (cuota SEP 15 %) sí es transversal y
+// se marca como perfil global, no aquí. El array `prioritarios` (vocabulario antiguo:
+// hermano/cercano/nee/vulnerabilidad) es solo para la ficha de colegio y no se
+// cablea al algoritmo; se conserva sin cambios.
 
 export const colegios = [
   {
@@ -33,6 +43,8 @@ export const colegios = [
     proyecto: 'Formamos personas íntegras con énfasis en el desarrollo socioemocional, la convivencia respetuosa y las competencias del siglo XXI.',
     demanda: 'alta',
     prioritarios: ['hermano', 'cercano', 'nee'],
+    // Caso Muñoz González: la hija mayor (Martina) está matriculada aquí → hermano
+    casoPrioridades: ['hermano'],
   },
   {
     id: 2,
@@ -64,6 +76,9 @@ export const colegios = [
     proyecto: 'Comprometidos con la excelencia académica y el desarrollo valórico, formamos ciudadanos responsables con sólidas bases en lenguaje y matemática.',
     demanda: 'media',
     prioritarios: ['hermano', 'vulnerabilidad'],
+    // Caso Muñoz González: el "colegio en mente" (preferencia personal, sin vínculo).
+    // Es el colegio-control: solo aplica la cuota transversal de prioritario 15 %.
+    casoPrioridades: [],
   },
   {
     id: 3,
@@ -95,6 +110,8 @@ export const colegios = [
     proyecto: 'Escuela pública comprometida con la comunidad, con énfasis en la lectura, la naturaleza y los valores ciudadanos.',
     demanda: 'baja',
     prioritarios: ['hermano', 'cercano', 'nee', 'vulnerabilidad'],
+    // Caso Muñoz González: Daniela (madre) es exalumna de este colegio → exalumno
+    casoPrioridades: ['exalumno'],
   },
   {
     id: 4,
@@ -125,6 +142,9 @@ export const colegios = [
     proyecto: 'Preparamos a jóvenes para el mundo laboral y la educación superior con especialidades técnicas de alta demanda y sólida formación general.',
     demanda: 'media',
     prioritarios: ['hermano', 'cercano'],
+    // Caso Muñoz González: fuera de la comuna de residencia, sin vínculo familiar.
+    // Solo aplica la cuota transversal de prioritario 15 %.
+    casoPrioridades: [],
   },
   {
     id: 5,
@@ -157,6 +177,8 @@ export const colegios = [
     proyecto: 'Comunidad educativa bilingüe y diversa que desarrolla el pensamiento crítico, la creatividad y la conciencia global en un ambiente inclusivo de excelencia.',
     demanda: 'alta',
     prioritarios: ['hermano', 'vulnerabilidad', 'nee'],
+    // Caso Muñoz González: Rodrigo (padre) trabaja aquí como asistente de aula → funcionario
+    casoPrioridades: ['funcionario'],
   },
   {
     id: 6,
@@ -188,6 +210,10 @@ export const colegios = [
     proyecto: 'Escuela comunitaria con fuerte vínculo con las familias y el barrio, que apuesta por la educación ambiental y el aprendizaje colaborativo.',
     demanda: 'media',
     prioritarios: ['hermano', 'cercano', 'nee', 'vulnerabilidad'],
+    // Caso Muñoz González: colegio de origen de Sofía (continuidad garantizada si no
+    // queda en otra preferencia). La continuidad no se modela como prioridad de
+    // checkbox en este prototipo → sin prioridad específica; solo prioritario 15 %.
+    casoPrioridades: [],
   },
 ]
 

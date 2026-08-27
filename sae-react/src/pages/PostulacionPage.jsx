@@ -4,7 +4,7 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios, colegiosById, totalVacantes } from '../data/colegios'
-import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridad } from '../utils/asignacion'
+import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
@@ -167,11 +167,48 @@ function vacantesDeNivel(colegio, nivelAlumno) {
   return colegio.vacantes.find((v) => v.nivel === clave) ?? null
 }
 
+/* ── S22-11 (refinamiento): control para declarar prioridad POR COLEGIO ──
+   `hermano`, `funcionario` y `exalumno` solo valen en el establecimiento donde
+   la familia tiene ese vínculo. Cuando la familia marcó una de esas condiciones
+   en los chips de arriba, en cada colegio de su lista puede indicar si la tiene
+   ahí. `prioritario` (15 %) NO aparece: es transversal. */
+function PrioridadColegioControl({ colegio, clavesActivas, valores, onToggle }) {
+  if (!clavesActivas.length) return null
+  return (
+    <div className="post-prio-colegio">
+      <p className="post-prio-colegio__titulo">
+        ¿Tienes alguna de estas prioridades <strong>en {colegio.nombre}</strong>?
+      </p>
+      <div className="chip-row" style={{ margin: '6px 0 0' }}>
+        {clavesActivas.map((clave) => {
+          const info = PRIORIDADES_INFO[clave]
+          const on = !!valores[clave]
+          return (
+            <button
+              key={clave}
+              type="button"
+              className={`chip-btn ${on ? 'chip-btn--on' : ''}`}
+              aria-pressed={on}
+              onClick={() => onToggle(colegio.id, clave)}
+            >
+              {info.icono} {info.label} aquí
+            </button>
+          )
+        })}
+      </div>
+      <span className="form-hint" style={{ display: 'block', marginTop: 4 }}>
+        Marca solo el colegio donde de verdad tienes ese vínculo. Si no marcas ninguno, en este colegio entras al desempate general (o por tu cuota de estudiante prioritario, si la tienes).
+      </span>
+    </div>
+  )
+}
+
 /* ── Mini-análisis de un colegio en la lista ──
    S22: divulgación progresiva — solo datos esenciales (demanda, vacantes,
-   postulantes, prioridad). Los tips se trasladan al tutorial del paso 2. */
-function ColegioAnalisis({ colegio, orden, perfil, nivelAlumno }) {
-  const nivel = nivelPrioridad(perfil)
+   postulantes, prioridad). Los tips se trasladan al tutorial del paso 2.
+   S22-11 (refinamiento): el nivel y el % son los DE ESTE COLEGIO. */
+function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
+  const nivel = nivelPrioridadEnColegio(perfilCompleto, colegio.id)
   const prob  = probAsignacion(nivel, colegio.demanda)
   // S22-11: postulantes del año anterior y vacantes por nivel como fundamento del % estimado
   const vacNivel = vacantesDeNivel(colegio, nivelAlumno)
@@ -207,7 +244,7 @@ function ColegioAnalisis({ colegio, orden, perfil, nivelAlumno }) {
           </li>
         ) : null}
         <li>
-          <span>Tu prioridad:</span>
+          <span>Tu prioridad aquí:</span>
           <strong>{prioridadLabels[nivel]}</strong>
         </li>
       </ul>
@@ -247,6 +284,10 @@ export default function PostulacionPage() {
   const [rut, setRut]           = useState('')
   const [rutTocado, setRutTocado] = useState(false)
   const [perfil, setPerfil]     = useState({ hermano: false, prioritario: false, funcionario: false, exalumno: false })
+  // S22-11 (refinamiento): prioridades específicas de colegio declaradas por la familia.
+  // Forma: { [colegioId]: { hermano: bool, funcionario: bool, exalumno: bool } }
+  const [prioridadesPorColegio, setPrioridadesPorColegio] = useState({})
+  const [anuncioPrioridad, setAnuncioPrioridad] = useState('') // S22-11 (refinamiento): aria-live
   const [lista, setLista]       = useState(cargarBorradorInicial)
   const [confirmado, setConfirmado] = useState(null)
   const [modoTutorial, setModoTutorial] = useState(true)
@@ -272,10 +313,68 @@ export default function PostulacionPage() {
     localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(lista))
   }, [lista])
 
-  const resultado = useMemo(() => calcularResultado(lista, perfil), [lista, perfil])
+  /* S22-11 (refinamiento): perfil que combina las condiciones globales con las
+     prioridades declaradas por colegio. `prioritario` (15 %) es transversal;
+     `hermano`/`funcionario`/`exalumno` se resuelven por colegio en asignacion.js. */
+  const perfilCompleto = useMemo(
+    () => ({ ...perfil, prioridadesPorColegio }),
+    [perfil, prioridadesPorColegio],
+  )
+
+  const resultado = useMemo(
+    () => calcularResultado(lista, perfilCompleto),
+    [lista, perfilCompleto],
+  )
+
+  // Claves específicas de colegio que la familia marcó en los chips (para mostrar los toggles por colegio)
+  const clavesEspecificasActivas = PRIORIDADES_POR_COLEGIO.filter((k) => perfil[k])
 
   const togglePerfil = (key) => {
+    const nuevoValor = !perfil[key]
     setPerfil((prev) => ({ ...prev, [key]: !prev[key] }))
+    // S22-11 (refinamiento): al activar una condición específica de colegio,
+    // se pre-marca en los colegios de la lista donde la familia del caso la tiene
+    // (colegios.js `casoPrioridades`). Al desactivarla, se limpia de todos.
+    if (!PRIORIDADES_POR_COLEGIO.includes(key)) return
+    setPrioridadesPorColegio((mapa) => {
+      const copia = { ...mapa }
+      if (nuevoValor) {
+        lista.forEach((id) => {
+          const col = colegiosById[id]
+          if (col?.casoPrioridades?.includes(key)) {
+            copia[id] = { ...(copia[id] ?? {}), [key]: true }
+          }
+        })
+      } else {
+        Object.keys(copia).forEach((id) => {
+          if (copia[id]?.[key]) {
+            const entrada = { ...copia[id] }
+            delete entrada[key]
+            copia[id] = entrada
+          }
+        })
+      }
+      return copia
+    })
+  }
+
+  /* S22-11 (refinamiento): alterna una prioridad específica en un colegio concreto */
+  const togglePrioridadColegio = (colegioId, clave) => {
+    setPrioridadesPorColegio((mapa) => {
+      const entrada = { ...(mapa[colegioId] ?? {}) }
+      const nuevoValor = !entrada[clave]
+      if (nuevoValor) entrada[clave] = true
+      else delete entrada[clave]
+      return { ...mapa, [colegioId]: entrada }
+    })
+    setBorradorGuardado(true) // S22-9
+    const col = colegiosById[colegioId]
+    const info = PRIORIDADES_INFO[clave]
+    setAnuncioPrioridad(
+      `${info?.label ?? 'Prioridad'} en ${col?.nombre ?? 'el colegio'}: ${
+        prioridadesPorColegio[colegioId]?.[clave] ? 'quitada' : 'agregada'
+      }. Actualizamos el porcentaje estimado de ese colegio.`,
+    )
   }
 
   const abrirModalPrioridad = (key) => {
@@ -301,11 +400,34 @@ export default function PostulacionPage() {
   const agregar = (id) => {
     setLista((prev) => (prev.includes(id) ? prev : [...prev, id]))
     setBorradorGuardado(true) // S22-9
+    // S22-11 (refinamiento): pre-marca las prioridades específicas que la familia
+    // del caso tiene en este colegio, solo entre las que ya marcó en los chips.
+    const col = colegiosById[id]
+    if (col?.casoPrioridades?.length) {
+      setPrioridadesPorColegio((mapa) => {
+        const entrada = { ...(mapa[id] ?? {}) }
+        let cambio = false
+        col.casoPrioridades.forEach((k) => {
+          if (PRIORIDADES_POR_COLEGIO.includes(k) && perfil[k] && !entrada[k]) {
+            entrada[k] = true
+            cambio = true
+          }
+        })
+        return cambio ? { ...mapa, [id]: entrada } : mapa
+      })
+    }
   }
 
   const quitar = (id) => {
     setLista((prev) => prev.filter((item) => item !== id))
     setBorradorGuardado(true) // S22-9
+    // S22-11 (refinamiento): al sacar el colegio, se descartan sus prioridades declaradas
+    setPrioridadesPorColegio((mapa) => {
+      if (!(id in mapa)) return mapa
+      const copia = { ...mapa }
+      delete copia[id]
+      return copia
+    })
   }
 
   const siguiente = () => {
@@ -321,7 +443,8 @@ export default function PostulacionPage() {
       fecha: new Date().toISOString(),
       comprobante: `SAE-${Math.floor(100000 + Math.random() * 900000)}`,
       alumno: { nombre: alumnoNombre, run: alumnoRut, nivel: alumnoNivel },
-      perfil,
+      // S22-11 (refinamiento): se guarda el perfil con las prioridades por colegio
+      perfil: perfilCompleto,
       lista,
       resultado,
     }
@@ -343,12 +466,15 @@ export default function PostulacionPage() {
       `Fecha de envío: ${new Date(confirmado.fecha).toLocaleString('es-CL')}`,
       `Estudiante: ${alumnoNombre} (RUN ${alumnoRut})`,
       `Nivel al que postula: ${alumnoNivel}`,
-      `Prioridad aplicada: ${prioridadLabels[resultado.nivel]}`,
+      // S22-11 (refinamiento): la "prioridad aplicada" es la del colegio asignado;
+      // el detalle por colegio va en la lista de abajo (la prioridad puede cambiar).
+      `Prioridad en el colegio asignado: ${prioridadLabels[resultado.nivel]}`,
       '',
       '── LISTA EN ORDEN DE PREFERENCIA ──',
       ...lista.map((id, i) => {
         const c = colegiosById[id]
-        return `${i + 1}. ${c ? `${c.nombre} — ${c.comuna}` : 'Colegio'}`
+        const n = nivelPrioridadEnColegio(perfilCompleto, id)
+        return `${i + 1}. ${c ? `${c.nombre} — ${c.comuna}` : 'Colegio'} · prioridad: ${prioridadLabels[n]}`
       }),
       '',
       '── PRÓXIMAS FECHAS (ADMISIÓN 2027) ──',
@@ -389,6 +515,8 @@ export default function PostulacionPage() {
 
       {/* S22-8: anuncio del nuevo orden para lectores de pantalla */}
       <p className="sr-only" role="status" aria-live="polite">{anuncioOrden}</p>
+      {/* S22-11 (refinamiento): anuncio del cambio de prioridad por colegio */}
+      <p className="sr-only" role="status" aria-live="polite">{anuncioPrioridad}</p>
 
       {/* ── Encabezado con toggle de tutorial ── */}
       <div className="post-header">
@@ -792,6 +920,21 @@ export default function PostulacionPage() {
               </InfoBox>
             )}
 
+            {/* S22-11 (refinamiento): hermano/funcionario/exalumno valen solo en el colegio
+                donde tienes ese vínculo. La cuota de estudiante prioritario (15 %) sí es transversal. */}
+            {clavesEspecificasActivas.length > 0 && (
+              <InfoBox icono="📍" titulo="¿Dónde tienes esa prioridad?" tipo="alerta" className="tut-box--sm">
+                <p>
+                  Tener un hermano/a matriculado/a, ser hijo/a de funcionario/a o exalumno/a
+                  vale <strong>solo en el colegio</strong> donde de verdad tienes ese vínculo — no en todos.
+                  Cuando agregues colegios a tu lista, te preguntaremos en cuál aplica.
+                </p>
+                <p style={{ marginBottom: 0 }}>
+                  La cuota de <strong>estudiante prioritario/a (15 %)</strong> es distinta: esa sí vale en todos los colegios.
+                </p>
+              </InfoBox>
+            )}
+
             {/* ── Selector visual de colegios ── */}
             <div className="post-picker-wrap" style={{ marginTop: 20 }}>
               <div className="post-picker-header">
@@ -932,12 +1075,21 @@ export default function PostulacionPage() {
                             ↓
                           </button>
                         </div>
+                        {/* S22-11 (refinamiento): declaración de prioridad específica
+                            (hermano/funcionario/exalumno) para ESTE colegio. Funcional
+                            (no depende del modo tutorial). Fila completa dentro del <li>. */}
+                        <PrioridadColegioControl
+                          colegio={col}
+                          clavesActivas={clavesEspecificasActivas}
+                          valores={prioridadesPorColegio[col.id] ?? {}}
+                          onToggle={togglePrioridadColegio}
+                        />
                         {/* Mantenimiento correctivo (2026-08-05) sobre S22-11: el mini-análisis
                             vivía dentro de post-item__body y a 375px quedaba en una columna de
                             ~142px (grip + número + botones ↑↓ consumen la mitad de la tarjeta).
                             Como hijo directo del <li> (flex-wrap) ocupa una fila completa. */}
                         {modoTutorial && (
-                          <ColegioAnalisis colegio={col} orden={idx + 1} perfil={perfil} nivelAlumno={alumnoNivel} />
+                          <ColegioAnalisis colegio={col} orden={idx + 1} perfilCompleto={perfilCompleto} nivelAlumno={alumnoNivel} />
                         )}
                       </li>
                     )
@@ -1017,7 +1169,11 @@ export default function PostulacionPage() {
             </div>
 
             <p>
-              Prioridad aplicada: <strong>{prioridadLabels[resultado.nivel]}</strong>
+              {/* S22-11 (refinamiento): la prioridad ya no es única para toda la lista */}
+              {perfil.prioritario
+                ? <>Prioridad transversal: <strong>Estudiante prioritario/a (15 %)</strong> — vale en todos tus colegios.</>
+                : <>No marcaste prioridades transversales.</>}
+              {' '}Las demás (hermano/a, funcionario/a, exalumno/a) se aplican <strong>solo en el colegio</strong> donde las declaraste; abajo verás la de cada uno.
               {/* S22-10: edición por sección — prioridades */}
               {!confirmado && (
                 <>
@@ -1036,7 +1192,9 @@ export default function PostulacionPage() {
 
             {modoTutorial && (
               <InfoBox tipo="neutro" className="tut-box--sm">
-                <p>Tu prioridad se aplica a <strong>todos</strong> los colegios de tu lista. No puedes tener distinta prioridad por colegio.</p>
+                {/* S22-11 (refinamiento): corrige el texto anterior, que decía que la
+                    prioridad era única para toda la lista */}
+                <p>Algunas prioridades (hermano/a matriculado/a, hijo/a de funcionario/a, exalumno/a) valen <strong>solo en el colegio</strong> donde tienes ese vínculo. La cuota de estudiante prioritario/a (15 %) sí vale en todos. Por eso el porcentaje estimado puede cambiar de un colegio a otro.</p>
               </InfoBox>
             )}
 
@@ -1057,25 +1215,50 @@ export default function PostulacionPage() {
 
             <ul className="sim-list post-list" aria-label="Resumen de tu postulación" style={{ marginTop: 8 }}>
               {resultado.detalles.map((d) => {
+                /* S22-14 (refinamiento, investigacion_ux_guide_ai_systems.md §4 y §8):
+                   - #1: se retira "considera ponerlo más abajo en tu lista" del texto de
+                     probabilidad baja — contradecía el consejo de strategy-proofness del
+                     paso 2 y reproducía el mito de riesgo estratégico (caso San Martín).
+                   - #2: cada explicación separa el dato que fundamenta el % (demanda,
+                     vacantes y postulantes año anterior del esquema v2) de una frase
+                     explícita de que el orden en la lista no afecta las chances en los
+                     demás colegios (riesgo real vs. falso riesgo estratégico, PAIR §3).
+                   - #3: formato de frecuencia ("de cada 100...") extendido a los tres
+                     niveles de probabilidad, no solo al alto.
+                   - #4: categoría cualitativa ("certeza muy alta") para el caso de mayor
+                     certeza rastreado por el prototipo (prioridad de hermano/a matriculado/a
+                     con probabilidad ≥90%), en vez de solo el porcentaje puntual. PIE y
+                     continuidad del colegio de origen no se modelan como checkbox en este
+                     prototipo, por lo que no se les aplica esta categoría aquí. */
                 const probClass = d.prob >= 80 ? 'alta' : d.prob >= 60 ? 'media' : 'baja'
+                const colegioD = colegiosById[d.id]
+                const vacNivelD = colegioD ? vacantesDeNivel(colegioD, alumnoNivel) : null
+                /* S22-11 (refinamiento): d.nivel es el nivel DE ESTE COLEGIO, no global.
+                   La categoría "certeza muy alta" solo aplica si en ESTE colegio la
+                   prioridad es hermano/a matriculado/a (d.nivel === 1). */
+                const certezaMuyAlta = d.nivel === 1 && d.prob >= 90
                 return (
                   <li key={d.id} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                       <span>
                         <strong>{d.idx}.</strong> {d.nombre}
-                        <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--texto-suave)' }}>{d.demanda} demanda</span>
+                        <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--texto-suave)' }}>
+                          {d.demanda} demanda{d.nivel < 5 ? ` · ${d.prioridadLabel}` : ''}
+                        </span>
                       </span>
                       <span className={`tut-prob tut-prob--${probClass}`} aria-label={`Probabilidad estimada: ${d.prob}%`}>
-                        {d.prob}%
+                        {certezaMuyAlta ? 'Muy alta' : `${d.prob}%`}
                       </span>
                     </div>
                     {modoTutorial && (
                       <p className="tut-prob-explicacion">
-                        {d.prob >= 80
-                          ? `✅ Muy buena probabilidad. De cada 100 postulantes con tu misma condición en este colegio, aproximadamente ${d.prob} quedan asignados.`
-                          : d.prob >= 60
-                            ? `🟡 Probabilidad moderada. Tienes buenas chances, pero no está garantizado. Considera agregar más opciones.`
-                            : `🔴 Probabilidad baja. Este colegio tiene alta demanda para tu nivel de prioridad. Considera ponerlo más abajo en tu lista o agregar colegios con menos demanda.`
+                        {certezaMuyAlta
+                          ? `🟢 Certeza muy alta. Por tu prioridad de hermano/a matriculado/a, tu asignación en este colegio está prácticamente asegurada (estimado: ${d.prob} de cada 100 postulantes en tu misma condición).`
+                          : d.prob >= 80
+                            ? `✅ Muy buena probabilidad. De cada 100 postulantes con tu misma condición en este colegio, aproximadamente ${d.prob} quedan asignados.`
+                            : d.prob >= 60
+                              ? `🟡 Probabilidad moderada. De cada 100 postulantes con tu misma condición, aproximadamente ${d.prob} quedan asignados. Agregar más colegios a tu lista te da más opciones en total.`
+                              : `🔴 Probabilidad baja. De cada 100 postulantes con tu misma condición, aproximadamente ${d.prob} quedan asignados en este colegio${vacNivelD ? ` (el año pasado hubo ${vacNivelD.postulantesAnterior} postulantes para ${vacNivelD.min}–${vacNivelD.max} vacantes en ${vacNivelD.label})` : ''}, porque tiene alta demanda para tu nivel de prioridad. Cambiar el orden de este colegio en tu lista no cambia esta cifra ni tus chances en los demás — el sistema siempre evalúa según tu preferencia real. Para tener más opciones, agrega colegios con demanda media o baja.`
                         }
                       </p>
                     )}
@@ -1137,13 +1320,35 @@ export default function PostulacionPage() {
                   ⬇ Descargar comprobante (.txt)
                 </button>
 
-                <p style={{ marginTop: 10 }}>Los resultados estarán disponibles en <strong>Mi postulación</strong> entre el 15 y el 21 de octubre de 2026.</p>
+                <p style={{ marginTop: 10 }}>En el proceso real, los resultados estarán disponibles en <strong>Mi postulación</strong> entre el 15 y el 21 de octubre de 2026.</p>
                 {modoTutorial && (
                   <InfoBox icono="💾" titulo="¿Qué hacer ahora?" tipo="exito">
                     {/* S22-3 (corrige E3): fecha y hora reales de cierre */}
                     <p>Descarga y guarda tu comprobante (folio <strong>{confirmado.comprobante}</strong>). Si quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00 — puedes modificar tu lista todas las veces que necesites hasta esa hora.</p>
                   </InfoBox>
                 )}
+
+                {/* Extensión fuera de la matriz del plan de mejora (S1-S22): acceso inmediato
+                    al resultado, agregado para la prueba de usabilidad por indicación del
+                    profesor guía (2026-08-13) — ver docs/investigacion/caso_estudio_prueba_
+                    usabilidad_postulacion.md. En el sistema real hay que esperar hasta octubre;
+                    aquí se adelanta solo para poder observar la reacción de la familia al
+                    resultado dentro de la misma sesión de prueba. Reutiliza el resultado ya
+                    calculado (calcularResultado) y la explicación contextualizada que ya
+                    construye SeguimientoPage a partir del mismo STORAGE_KEY. */}
+                <InfoBox icono="⏩" titulo="Solo para esta prueba: mira tu resultado ahora" tipo="alerta">
+                  <p>
+                    En la vida real tendrías que esperar hasta octubre. Para esta prueba,
+                    adelantamos el resultado para que puedas verlo hoy mismo.
+                  </p>
+                  <Link
+                    className="btn btn--primary btn--grande"
+                    to="/seguimiento"
+                    style={{ marginTop: 10, display: 'inline-flex' }}
+                  >
+                    Ver mi resultado ahora →
+                  </Link>
+                </InfoBox>
               </div>
             )}
           </CardContent>

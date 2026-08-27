@@ -8,12 +8,51 @@ export const prioridadLabels = {
   5: 'Sorteo público transparente',
 }
 
+/* S22-11 (refinamiento) · S22-6:
+   La prioridad NO es global. Solo `prioritario` (cuota SEP 15 %) es transversal:
+   es un atributo del estudiante y aplica en todos los colegios. En cambio
+   `hermano`, `funcionario` y `exalumno` son específicas del establecimiento —
+   la familia tiene el hermano matriculado / el empleo / el vínculo de exalumno
+   solo en colegios concretos. Se declaran en
+   `perfil.prioridadesPorColegio[colegioId] = { hermano, funcionario, exalumno }`. */
+export const PRIORIDADES_POR_COLEGIO = ['hermano', 'funcionario', 'exalumno']
+
+// Nivel legal de cada prioridad específica de colegio (menor número = mejor).
+// Orden real de procesamiento (S22-6): hermano → (15 % SEP) → funcionario → exalumno.
+const NIVEL_ESPECIFICO = { hermano: 1, funcionario: 3, exalumno: 4 }
+
+/* Nivel de prioridad GLOBAL del perfil.
+   Se conserva como valor representativo para compatibilidad con consumidores
+   que aún no distinguen por colegio (p. ej. cuando la lista está vacía). */
 export function nivelPrioridad(perfil) {
   if (perfil?.hermano) return 1
   if (perfil?.prioritario) return 2
   if (perfil?.funcionario) return 3
   if (perfil?.exalumno) return 4
   return 5
+}
+
+/* S22-11 (refinamiento): nivel de prioridad de la familia EN UN COLEGIO CONCRETO.
+   Resuelve el mejor nivel (número más bajo) entre:
+   - la prioridad transversal `prioritario` (cuota SEP 15 %), y
+   - las prioridades específicas que la familia declaró para ESE colegio.
+
+   Compatibilidad: si el perfil no trae `prioridadesPorColegio` (p. ej. el
+   simulador de /algoritmo, que no modela vínculos por colegio), se asume que
+   las condiciones marcadas a nivel de perfil aplican en el colegio — es el
+   comportamiento previo a este refinamiento. */
+export function nivelPrioridadEnColegio(perfil = {}, colegioId) {
+  const mapa = perfil?.prioridadesPorColegio
+  const especificas = mapa
+    ? mapa[colegioId] ?? {}
+    : { hermano: perfil.hermano, funcionario: perfil.funcionario, exalumno: perfil.exalumno }
+
+  const niveles = [5]
+  if (perfil?.prioritario) niveles.push(2)
+  for (const clave of PRIORIDADES_POR_COLEGIO) {
+    if (especificas[clave]) niveles.push(NIVEL_ESPECIFICO[clave])
+  }
+  return Math.min(...niveles)
 }
 
 export function probAsignacion(nivel, demanda) {
@@ -34,12 +73,12 @@ export function calcularResultado(listaIds = [], perfil = {}) {
     }
   }
 
-  const nivel = nivelPrioridad(perfil)
-
   const detalles = listaIds
     .map((id, idx) => {
       const colegio = colegios.find((c) => c.id === id)
       if (!colegio) return null
+      // S22-11 (refinamiento): el nivel se resuelve POR COLEGIO, no global
+      const nivel = nivelPrioridadEnColegio(perfil, id)
       return {
         id: colegio.id,
         idx: idx + 1,
@@ -47,6 +86,7 @@ export function calcularResultado(listaIds = [], perfil = {}) {
         comuna: colegio.comuna,
         demanda: colegio.demanda,
         nivel,
+        prioridadLabel: prioridadLabels[nivel],
         prob: probAsignacion(nivel, colegio.demanda),
         estado: 'evaluado',
       }
@@ -75,11 +115,17 @@ export function calcularResultado(listaIds = [], perfil = {}) {
     asignado = detalles[idxAsignado]
   }
 
+  /* S22-11 (refinamiento): `nivel`/`prioridadLabel` de nivel superior son un
+     valor REPRESENTATIVO (el del colegio asignado, que es la "prioridad
+     aplicada" que ve la familia). Para el detalle por colegio usar
+     `d.nivel` / `d.prioridadLabel` de cada entrada de `detalles`. */
+  const nivelRep = asignado ? asignado.nivel : nivelPrioridad(perfil)
+
   return {
     error: null,
     asignado,
     detalles,
-    nivel,
-    prioridadLabel: prioridadLabels[nivel],
+    nivel: nivelRep,
+    prioridadLabel: prioridadLabels[nivelRep],
   }
 }

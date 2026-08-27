@@ -5,6 +5,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios, colegiosById, totalVacantes } from '../data/colegios'
 import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
+import { formatearRut, rutValido } from '../utils/rut'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import ProbabilidadVisual from '../components/ProbabilidadVisual'
@@ -12,6 +13,28 @@ import { useTextSize } from '../context/TextSizeContext'
 
 const STORAGE_KEY = 'sae_react_postulacion'
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
+// S4 (refinamiento — arquitectura de información): /perfil es la fuente única de
+// los datos del estudiante. Aquí se LEE como base (precarga de nombre/RUT/nivel y
+// la condición SEP como información de solo lectura). Contrato completo en
+// PerfilPage.jsx.
+const PERFIL_KEY = 'sae_react_perfil'
+
+/* Lee el perfil del estudiante guardado en /perfil. Devuelve siempre un objeto
+   con forma estable; tolera perfiles antiguos (`condiciones.prioritario`). */
+function cargarPerfilEstudiante() {
+  try {
+    const raw = localStorage.getItem(PERFIL_KEY)
+    const p = raw ? JSON.parse(raw) : {}
+    return {
+      nombre: typeof p.nombre === 'string' ? p.nombre : '',
+      rut: typeof p.rut === 'string' ? p.rut : '',
+      nivel: typeof p.nivel === 'string' ? p.nivel : '',
+      prioritario: !!(p.prioritario ?? p.condiciones?.prioritario),
+    }
+  } catch {
+    return { nombre: '', rut: '', nivel: '', prioritario: false }
+  }
+}
 
 const REGIONES = [
   { value: 'XV',   label: 'Arica y Parinacota',   full: 'Región de Arica y Parinacota' },
@@ -173,37 +196,47 @@ function vacantesDeNivel(colegio, nivelAlumno) {
   return colegio.vacantes.find((v) => v.nivel === clave) ?? null
 }
 
-/* ── S22-11 (refinamiento): control para declarar prioridad POR COLEGIO ──
+/* ── S22-11 (refinamiento) · S4 (refinamiento): control para declarar prioridad POR COLEGIO ──
    `hermano`, `funcionario` y `exalumno` solo valen en el establecimiento donde
-   la familia tiene ese vínculo. Cuando la familia marcó una de esas condiciones
-   en los chips de arriba, en cada colegio de su lista puede indicar si la tiene
-   ahí. `prioritario` (15 %) NO aparece: es transversal. */
-function PrioridadColegioControl({ colegio, clavesActivas, valores, onToggle }) {
-  if (!clavesActivas.length) return null
+   la familia tiene ese vínculo, así que se declaran colegio por colegio (no hay
+   chips globales que los "activen"). `prioritario` (SEP, 15 %) NO aparece: no se
+   elige en el flujo, viene de /perfil y se muestra como información en el paso 1. */
+function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda }) {
+  if (!claves.length) return null
   return (
     <div className="post-prio-colegio">
       <p className="post-prio-colegio__titulo">
         ¿Tienes alguna de estas prioridades <strong>en {colegio.nombre}</strong>?
       </p>
       <div className="chip-row" style={{ margin: '6px 0 0' }}>
-        {clavesActivas.map((clave) => {
+        {claves.map((clave) => {
           const info = PRIORIDADES_INFO[clave]
           const on = !!valores[clave]
           return (
-            <button
-              key={clave}
-              type="button"
-              className={`chip-btn ${on ? 'chip-btn--on' : ''}`}
-              aria-pressed={on}
-              onClick={() => onToggle(colegio.id, clave)}
-            >
-              {info.icono} {info.label} aquí
-            </button>
+            <Fragment key={clave}>
+              <button
+                type="button"
+                className={`chip-btn ${on ? 'chip-btn--on' : ''}`}
+                aria-pressed={on}
+                onClick={() => onToggle(colegio.id, clave)}
+              >
+                {info.icono} {info.label}
+              </button>
+              <button
+                type="button"
+                className="chip-help-btn"
+                onClick={() => onAyuda(clave)}
+                aria-label={`Saber más sobre ${info.label}`}
+                title="Clic para más información"
+              >
+                ?
+              </button>
+            </Fragment>
           )
         })}
       </div>
       <span className="form-hint" style={{ display: 'block', marginTop: 4 }}>
-        Marca solo el colegio donde de verdad tienes ese vínculo. Si no marcas ninguno, en este colegio entras al desempate general (o por tu cuota de estudiante prioritario, si la tienes).
+        Marca solo el colegio donde de verdad tienes ese vínculo. Si no marcas ninguno, en este colegio entras al desempate general (o por tu cuota de estudiante prioritario/a, si la tienes registrada).
       </span>
     </div>
   )
@@ -268,18 +301,7 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
   )
 }
 
-/* ── Formateo y validación de RUT ── */
-function formatearRut(valor) {
-  const limpio = valor.replace(/[^0-9kK]/g, '').slice(0, 9)
-  if (limpio.length < 2) return limpio
-  const cuerpo = limpio.slice(0, -1)
-  const dv = limpio.slice(-1)
-  return cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + dv
-}
-
-function rutValido(rut) {
-  return /^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/.test(rut)
-}
+/* Formateo y validación de RUT: helper compartido con /perfil (src/utils/rut.js). */
 
 /* S22-9: carga perezosa del borrador guardado (sin tope de 8 — corrige E2) */
 function cargarBorradorInicial() {
@@ -299,7 +321,9 @@ export default function PostulacionPage() {
   const [region, setRegion]     = useState('')
   const [rut, setRut]           = useState('')
   const [rutTocado, setRutTocado] = useState(false)
-  const [perfil, setPerfil]     = useState({ hermano: false, prioritario: false, funcionario: false, exalumno: false })
+  // S4 (refinamiento): datos del estudiante que vienen de /perfil (fuente única).
+  // `prioritario` (SEP) NO es editable en el flujo: se muestra como información.
+  const [perfilEstudiante] = useState(cargarPerfilEstudiante)
   // S22-11 (refinamiento): prioridades específicas de colegio declaradas por la familia.
   // Forma: { [colegioId]: { hermano: bool, funcionario: bool, exalumno: bool } }
   const [prioridadesPorColegio, setPrioridadesPorColegio] = useState({})
@@ -309,9 +333,10 @@ export default function PostulacionPage() {
   const [modoTutorial, setModoTutorial] = useState(true)
   const [modalPrioridadAbierto, setModalPrioridadAbierto] = useState(null) // S22: modal de prioridades
   const [mostrarRut, setMostrarRut] = useState(false)
-  const [alumnoRut, setAlumnoRut]       = useState('')
-  const [alumnoNombre, setAlumnoNombre] = useState('')
-  const [alumnoNivel, setAlumnoNivel]   = useState('')
+  // S4 (refinamiento): precarga desde /perfil; el usuario puede corregir.
+  const [alumnoRut, setAlumnoRut]       = useState(perfilEstudiante.rut)
+  const [alumnoNombre, setAlumnoNombre] = useState(perfilEstudiante.nombre)
+  const [alumnoNivel, setAlumnoNivel]   = useState(perfilEstudiante.nivel)
   const [alumnoOk, setAlumnoOk]         = useState(false)
   const [confirmandoNivel, setConfirmandoNivel] = useState(false)   // S22-12
   const [postulaHermanos, setPostulaHermanos]   = useState(false)   // S22-13
@@ -329,12 +354,14 @@ export default function PostulacionPage() {
     localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(lista))
   }, [lista])
 
-  /* S22-11 (refinamiento): perfil que combina las condiciones globales con las
-     prioridades declaradas por colegio. `prioritario` (15 %) es transversal;
-     `hermano`/`funcionario`/`exalumno` se resuelven por colegio en asignacion.js. */
+  /* S22-11 (refinamiento) · S4 (refinamiento): perfil que se pasa a
+     calcularResultado. `prioritario` (SEP, 15 %) es transversal y NO se elige en
+     el flujo — viene de /perfil (localStorage PERFIL_KEY) y se muestra como
+     información de solo lectura en el paso 1. `hermano`/`funcionario`/`exalumno`
+     se resuelven por colegio en asignacion.js a partir de `prioridadesPorColegio`. */
   const perfilCompleto = useMemo(
-    () => ({ ...perfil, prioridadesPorColegio }),
-    [perfil, prioridadesPorColegio],
+    () => ({ prioritario: perfilEstudiante.prioritario, prioridadesPorColegio }),
+    [perfilEstudiante.prioritario, prioridadesPorColegio],
   )
 
   const resultado = useMemo(
@@ -342,37 +369,9 @@ export default function PostulacionPage() {
     [lista, perfilCompleto],
   )
 
-  // Claves específicas de colegio que la familia marcó en los chips (para mostrar los toggles por colegio)
-  const clavesEspecificasActivas = PRIORIDADES_POR_COLEGIO.filter((k) => perfil[k])
-
-  const togglePerfil = (key) => {
-    const nuevoValor = !perfil[key]
-    setPerfil((prev) => ({ ...prev, [key]: !prev[key] }))
-    // S22-11 (refinamiento): al activar una condición específica de colegio,
-    // se pre-marca en los colegios de la lista donde la familia del caso la tiene
-    // (colegios.js `casoPrioridades`). Al desactivarla, se limpia de todos.
-    if (!PRIORIDADES_POR_COLEGIO.includes(key)) return
-    setPrioridadesPorColegio((mapa) => {
-      const copia = { ...mapa }
-      if (nuevoValor) {
-        lista.forEach((id) => {
-          const col = colegiosById[id]
-          if (col?.casoPrioridades?.includes(key)) {
-            copia[id] = { ...(copia[id] ?? {}), [key]: true }
-          }
-        })
-      } else {
-        Object.keys(copia).forEach((id) => {
-          if (copia[id]?.[key]) {
-            const entrada = { ...copia[id] }
-            delete entrada[key]
-            copia[id] = entrada
-          }
-        })
-      }
-      return copia
-    })
-  }
+  // S4 (refinamiento): hermano/funcionario/exalumno se declaran SIEMPRE por colegio
+  // (ya no hay chips globales que los activen).
+  const clavesEspecificas = PRIORIDADES_POR_COLEGIO
 
   /* S22-11 (refinamiento): alterna una prioridad específica en un colegio concreto */
   const togglePrioridadColegio = (colegioId, clave) => {
@@ -416,15 +415,17 @@ export default function PostulacionPage() {
   const agregar = (id) => {
     setLista((prev) => (prev.includes(id) ? prev : [...prev, id]))
     setBorradorGuardado(true) // S22-9
-    // S22-11 (refinamiento): pre-marca las prioridades específicas que la familia
-    // del caso tiene en este colegio, solo entre las que ya marcó en los chips.
+    // S22-11 (refinamiento) · S4 (refinamiento): pre-marca las prioridades específicas
+    // que la familia del caso de estudio tiene en este colegio (colegios.js
+    // `casoPrioridades`). Ya no depende de chips globales: se siembra directo al
+    // agregar el colegio. La familia puede desmarcarlas si no le aplican.
     const col = colegiosById[id]
     if (col?.casoPrioridades?.length) {
       setPrioridadesPorColegio((mapa) => {
         const entrada = { ...(mapa[id] ?? {}) }
         let cambio = false
         col.casoPrioridades.forEach((k) => {
-          if (PRIORIDADES_POR_COLEGIO.includes(k) && perfil[k] && !entrada[k]) {
+          if (PRIORIDADES_POR_COLEGIO.includes(k) && !entrada[k]) {
             entrada[k] = true
             cambio = true
           }
@@ -518,7 +519,12 @@ export default function PostulacionPage() {
       ? 'Formato incorrecto. Escribe tu RUT así: 12.345.678-9 (con puntos y guión).'
       : null
 
-  const hayPrioridad = Object.values(perfil).some(Boolean)
+  // S4 (refinamiento): hay prioridad si el/la estudiante es prioritario/a (viene de
+  // /perfil) o si la familia declaró algún vínculo (hermano/funcionario/exalumno)
+  // en algún colegio de su lista.
+  const hayPrioridad =
+    perfilEstudiante.prioritario ||
+    Object.values(prioridadesPorColegio).some((e) => e && Object.values(e).some(Boolean))
 
   // S22-14: aviso de lista corta con todas las opciones de alta demanda
   const listaColegios = lista.map((id) => colegiosById[id]).filter(Boolean)
@@ -880,6 +886,35 @@ export default function PostulacionPage() {
                     </button>
                   </div>
                 )}
+
+                {/* S4 (refinamiento — arquitectura de información): condiciones a nivel
+                    estudiante como INFORMACIÓN de solo lectura, no como un control.
+                    La condición SEP la determina el MINEDUC (Registro Social de
+                    Hogares); en el sistema real llega ya cargada. Se lee de /perfil
+                    (PERFIL_KEY). No hay casilla para marcarla aquí a propósito. */}
+                {region && alumnoOk && (
+                  perfilEstudiante.prioritario ? (
+                    <InfoBox icono="🏫" titulo="Condición registrada: Estudiante prioritario/a (SEP)" tipo="info">
+                      <p style={{ marginBottom: 0 }}>
+                        El MINEDUC ya tiene esta información (la determina con el{' '}
+                        <abbr title="Registro Social de Hogares">Registro Social de Hogares</abbr>),
+                        así que no necesitas declararla aquí. Se aplicará en{' '}
+                        <strong>todos los colegios</strong> de tu lista: cada uno reserva
+                        el 15 % de sus cupos para estudiantes prioritarios/as.{' '}
+                        <Link to="/perfil" className="link-inline">Editar en Mis datos</Link>.
+                      </p>
+                    </InfoBox>
+                  ) : (
+                    <InfoBox icono="ℹ️" titulo="Sin condiciones prioritarias registradas" tipo="neutro">
+                      <p style={{ marginBottom: 0 }}>
+                        No hay condiciones prioritarias registradas para este/a estudiante.
+                        La condición de estudiante prioritario/a (SEP) la determina el
+                        MINEDUC; si corresponde, en el sistema real llega ya cargada.{' '}
+                        <Link to="/perfil" className="link-inline">Editar en Mis datos</Link>.
+                      </p>
+                    </InfoBox>
+                  )
+                )}
               </div>
             )}
           </CardContent>
@@ -895,16 +930,57 @@ export default function PostulacionPage() {
           <CardContent>
             {modoTutorial && (
               <InfoBox icono="📋" titulo="¿Cómo funciona este paso?" tipo="info">
-                <p>Primero marca si tienes condiciones de prioridad (son ventajas que te da la ley). Después agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong>. El primero es el que más quieres.</p>
+                <p>Agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong> (el primero es el que más quieres). En cada colegio de tu lista puedes indicar si tienes un vínculo que te da prioridad ahí.</p>
               </InfoBox>
             )}
 
-            {/* Prioridades */}
+            {/* Prioridades — S4 (refinamiento): ya no hay chips globales.
+                hermano/funcionario/exalumno se declaran por colegio, más abajo en
+                cada tarjeta de la lista. La condición SEP no se marca aquí: viene
+                de /perfil y se mostró en el paso 1. */}
             <p style={{ marginTop: 14, fontWeight: 600, fontSize: '0.95rem' }}>
-              ¿Tienes alguna condición de prioridad?
+              Prioridades que puedes tener en un colegio
             </p>
-            <span className="form-hint" style={{ marginBottom: 8 }}>
-              Marca solo las que aplican a tu caso. El sistema las verifica.
+            <span className="form-hint" style={{ marginBottom: 8, display: 'block' }}>
+              Estas son ventajas que da la ley. Las declaras <strong>colegio por colegio</strong>
+              {' '}en tu lista, marcando en cuál tienes el vínculo. Toca el <strong>?</strong> para saber qué significa cada una.
+            </span>
+
+            <div className="chip-row">
+              {PRIORIDADES_POR_COLEGIO.map((key) => {
+                const info = PRIORIDADES_INFO[key]
+                return (
+                  <Fragment key={key}>
+                    <span className="chip-btn" style={{ cursor: 'default' }}>
+                      {info.icono} {info.label}
+                    </span>
+                    <button
+                      type="button"
+                      className="chip-help-btn"
+                      onClick={() => abrirModalPrioridad(key)}
+                      aria-label={`Saber más sobre ${info.label}`}
+                      title="Clic para más información"
+                    >
+                      ?
+                    </button>
+                    {modalPrioridadAbierto === key && (
+                      <PrioridadModal
+                        clave={key}
+                        abierto={true}
+                        onCerrar={() => setModalPrioridadAbierto(null)}
+                      />
+                    )}
+                  </Fragment>
+                )
+              })}
+            </div>
+
+            {/* S4 (refinamiento): la condición SEP no se elige en el flujo */}
+            <span className="form-hint" style={{ marginTop: 6, display: 'block' }}>
+              🏫 La condición de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr> (estudiante prioritario/a){' '}
+              {perfilEstudiante.prioritario
+                ? <><strong>ya está registrada</strong> para este/a estudiante y vale en todos los colegios (ver paso 1).</>
+                : <>no está registrada para este/a estudiante. La determina el MINEDUC; revísala en <Link to="/perfil" className="link-inline">Mis datos</Link>.</>}
             </span>
 
             {/* S22-6 (corrige E6): orden real de procesamiento y naturaleza de la cuota del 15 % */}
@@ -920,40 +996,6 @@ export default function PostulacionPage() {
               </InfoBox>
             )}
 
-            <div className="chip-row">
-              {Object.entries(PRIORIDADES_INFO).map(([key, info]) => (
-                <Fragment key={key}>
-                  <button
-                    type="button"
-                    className={`chip-btn ${perfil[key] ? 'chip-btn--on' : ''}`}
-                    onClick={() => togglePerfil(key)}
-                    aria-pressed={perfil[key]}
-                    title={`${perfil[key] ? 'Desseleccionar' : 'Seleccionar'} — clic para alternar o "?" para saber más`}
-                  >
-                    {info.icono} {info.label}
-                  </button>
-                  {/* Botón "?" para abrir modal — accesible sin ocupar espacio */}
-                  <button
-                    type="button"
-                    className="chip-help-btn"
-                    onClick={() => abrirModalPrioridad(key)}
-                    aria-label={`Saber más sobre ${info.label}`}
-                    title="Clic para más información"
-                  >
-                    ?
-                  </button>
-                  {/* Modal (solo se renderiza si está abierto) */}
-                  {modalPrioridadAbierto === key && (
-                    <PrioridadModal
-                      clave={key}
-                      abierto={true}
-                      onCerrar={() => setModalPrioridadAbierto(null)}
-                    />
-                  )}
-                </Fragment>
-              ))}
-            </div>
-
             {/* S22-5 (corrige E5): desempate aleatorio por colegio, sin "certificado por MINEDUC" */}
             {!hayPrioridad && modoTutorial && (
               <InfoBox tipo="neutro" className="tut-box--sm">
@@ -961,17 +1003,15 @@ export default function PostulacionPage() {
               </InfoBox>
             )}
 
-            {/* S22-11 (refinamiento): hermano/funcionario/exalumno valen solo en el colegio
-                donde tienes ese vínculo. La cuota de estudiante prioritario (15 %) sí es transversal. */}
-            {clavesEspecificasActivas.length > 0 && (
+            {/* S22-11 (refinamiento) · S4 (refinamiento): hermano/funcionario/exalumno
+                valen solo en el colegio donde tienes ese vínculo. La cuota de
+                estudiante prioritario/a (SEP) sí es transversal y viene de /perfil. */}
+            {modoTutorial && (
               <InfoBox icono="📍" titulo="¿Dónde tienes esa prioridad?" tipo="alerta" className="tut-box--sm">
-                <p>
+                <p style={{ marginBottom: 0 }}>
                   Tener un hermano/a matriculado/a, ser hijo/a de funcionario/a o exalumno/a
                   vale <strong>solo en el colegio</strong> donde de verdad tienes ese vínculo — no en todos.
-                  Cuando agregues colegios a tu lista, te preguntaremos en cuál aplica.
-                </p>
-                <p style={{ marginBottom: 0 }}>
-                  La cuota de <strong>estudiante prioritario/a (15 %)</strong> es distinta: esa sí vale en todos los colegios.
+                  Por eso, debajo de cada colegio de tu lista te preguntamos si aplica ahí.
                 </p>
               </InfoBox>
             )}
@@ -1121,9 +1161,10 @@ export default function PostulacionPage() {
                             (no depende del modo tutorial). Fila completa dentro del <li>. */}
                         <PrioridadColegioControl
                           colegio={col}
-                          clavesActivas={clavesEspecificasActivas}
+                          claves={clavesEspecificas}
                           valores={prioridadesPorColegio[col.id] ?? {}}
                           onToggle={togglePrioridadColegio}
+                          onAyuda={abrirModalPrioridad}
                         />
                         {/* Mantenimiento correctivo (2026-08-05) sobre S22-11: el mini-análisis
                             vivía dentro de post-item__body y a 375px quedaba en una columna de
@@ -1215,12 +1256,15 @@ export default function PostulacionPage() {
             </div>
 
             <p>
-              {/* S22-11 (refinamiento): la prioridad ya no es única para toda la lista */}
-              {perfil.prioritario
-                ? <>Prioridad transversal: <strong>Estudiante prioritario/a (15 %)</strong> — vale en todos tus colegios.</>
-                : <>No marcaste prioridades transversales.</>}
-              {' '}Las demás (hermano/a, funcionario/a, exalumno/a) se aplican <strong>solo en el colegio</strong> donde las declaraste; abajo verás la de cada uno.
-              {/* S22-10: edición por sección — prioridades */}
+              {/* S22-11 (refinamiento) · S4 (refinamiento): la condición SEP viene de
+                  /perfil (no se elige aquí); las demás se declararon por colegio. */}
+              {perfilEstudiante.prioritario
+                ? <>Condición registrada: <strong>estudiante prioritario/a (SEP)</strong> — la determina el MINEDUC y vale en todos tus colegios.{' '}
+                    {!confirmado && <Link to="/perfil" className="link-inline">Editar en Mis datos</Link>}.</>
+                : <>Sin condición de estudiante prioritario/a registrada.{' '}
+                    {!confirmado && <Link to="/perfil" className="link-inline">Editar en Mis datos</Link>}.</>}
+              {' '}Las prioridades de hermano/a, funcionario/a y exalumno/a se aplican <strong>solo en el colegio</strong> donde las declaraste; abajo verás la de cada uno.
+              {/* S22-10: edición por sección — prioridades por colegio */}
               {!confirmado && (
                 <>
                   {' '}
@@ -1228,9 +1272,9 @@ export default function PostulacionPage() {
                     type="button"
                     className="btn--text-link"
                     onClick={() => setPaso(2)}
-                    aria-label="Editar prioridades: volver al paso 2"
+                    aria-label="Editar prioridades por colegio: volver al paso 2"
                   >
-                    Editar
+                    Editar por colegio
                   </button>
                 </>
               )}

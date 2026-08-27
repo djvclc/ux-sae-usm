@@ -397,8 +397,15 @@ export default function AlgoritmoPage() {
           <p style={{ fontWeight: 600, marginBottom: 4, marginTop: 20 }}>
             ¿Tienes alguna de estas condiciones de prioridad?
           </p>
+          {/* S4 (refinamiento): este es un simulador exploratorio. Aquí puedes
+              probar cualquier combinación de condiciones. En la postulación real,
+              la condición de estudiante prioritario/a (SEP) NO se marca: la
+              determina el MINEDUC y en el flujo aparece como información (ver
+              /perfil y el paso 1 de /postulacion). */}
           <span className="form-hint" style={{ marginBottom: 8 }}>
             Estas condiciones afectan directamente tu probabilidad de quedar asignado/a.
+            Actívalas para explorar distintos casos; la de estudiante prioritario/a la
+            determina el MINEDUC, no se elige al postular.
           </span>
           <div className="chip-row">
             {[

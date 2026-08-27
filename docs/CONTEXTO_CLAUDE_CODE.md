@@ -31,7 +31,7 @@ sae-react/
 │   │   ├── ColegioPage.jsx      # Ficha ampliada con SIMCE + NEE + docentes
 │   │   ├── PostulacionPage.jsx  # Flujo 3 pasos con ClaveÚnica + validación RUT
 │   │   ├── SeguimientoPage.jsx  # Estado postulación + resultado + comprobante
-│   │   ├── PerfilPage.jsx       # Datos del apoderado
+│   │   ├── PerfilPage.jsx       # Fuente única de datos del estudiante (nombre, RUT, nivel, condición SEP) — ver sección 21
 │   │   ├── CumplimientoPage.jsx # Página interna: matriz de estado del plan (no mostrar al usuario)
 │   │   ├── RoadmapPage.jsx      # Página interna: roadmap de migración (no mostrar al usuario)
 │   │   ├── NotFoundPage.jsx     # 404 personalizado
@@ -330,3 +330,39 @@ Auditoría de todo el texto visible y los `aria-label` de `src/components/AlgoSi
 **Trazabilidad:** comentario `S13 (refinamiento) · auditoría NN/g` en `AlgoSimuladorPasos.jsx`. No se creó sección del plan, no se sumó ningún punto, **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios). Sin impacto en cifras de `proyecto-tesis/`.
 
 **Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-26). `AlgoritmoPage` compila a 182.64 kB.
+
+---
+
+## 21. Modelo de datos unificado del estudiante + reencuadre de `prioritario` (SEP) como condición del Estado (2026-08-27)
+
+**Motivación.** Las prioridades se pedían en dos lugares desconectados (`/perfil` con checkboxes y guardado en `sae_react_perfil`, y `/postulacion` con su propio estado) y el flujo nunca leía `/perfil`. Además `prioritario` (SEP) se presentaba como casilla autodeclarada, cuando en el SAE real lo determina el MINEDUC con el Registro Social de Hogares y la familia no lo elige.
+
+**Principio rector (del usuario):** todo lo que la familia no puede modificar (lo determina el Estado / es automático) se muestra en el flujo como alerta o información, no como control editable.
+
+**Contrato de datos (documentado en `PerfilPage.jsx` y `PostulacionPage.jsx`):**
+- `localStorage['sae_react_perfil']` (PERFIL_KEY) — lo escribe `/perfil`, fuente única de nivel estudiante: `{ nombre, rut, nivel, prioritario }`. `nivel` usa el mismo vocabulario que el `<select>` del paso 1 de `/postulacion` ("Prekínder", "Kínder", "1° básico"… "4° medio"). `prioritario` es booleano; se activa solo para simular. Tolera perfiles antiguos con `condiciones.prioritario`.
+- `localStorage['sae_react_postulacion']` (STORAGE_KEY) — lo escribe `PostulacionPage` al confirmar, sin cambios de forma: `{ fecha, comprobante, alumno:{nombre,run,nivel}, perfil: perfilCompleto, lista, resultado }`. Ahora `perfilCompleto = { prioritario: <de /perfil>, prioridadesPorColegio: {...} }` (ya no lleva `hermano/funcionario/exalumno` globales). `SeguimientoPage` lo lee igual que antes.
+- `sae_react_postulacion_draft_list` (DRAFT_LIST_KEY) — sin cambios.
+
+**`src/utils/rut.js` (nuevo).** `formatearRut` y `rutValido` extraídos verbatim de `PostulacionPage.jsx` (comportamiento idéntico). Los usan `PerfilPage` (campo RUT nuevo) y `PostulacionPage`. `RegistroPage.jsx` mantiene sus propias `formatRut`/`validarRut` (no se tocó).
+
+**`PerfilPage.jsx`.** Reescrita: bloque 1 (nombre, RUT nuevo con validación en vivo, nivel con vocabulario unificado); bloque 2 = solo el toggle `prioritario` reencuadrado ("El MINEDUC lo determina según el RSH… aquí lo activas solo para la simulación", con la advertencia de que marcar sin serlo anula la postulación en el sistema real); bloque 3 = nota de que hermano/funcionario/exalumno se declaran al postular, por colegio (con enlace a `/postulacion`). Guarda `{ nombre, rut, nivel, prioritario }`.
+
+**`PostulacionPage.jsx`.**
+- Lee `/perfil` con `cargarPerfilEstudiante()` (loader tolerante). `alumnoRut/alumnoNombre/alumnoNivel` se **precargan** desde `/perfil` (inicializadores perezosos; el usuario corrige y confirma con "Vincular estudiante").
+- **Paso 1:** tras vincular al estudiante, `InfoBox` de **solo lectura** con la condición de nivel estudiante: si `prioritario` → "Condición registrada: Estudiante prioritario/a (SEP). El MINEDUC ya lo tiene…"; si no → "Sin condiciones prioritarias registradas…". Ambas con enlace "Editar en Mis datos" → `/perfil`.
+- **Paso 2:** se **quitaron los chips activadores globales** de hermano/funcionario/exalumno (y el chip `prioritario`). En su lugar, una leyenda no interactiva con las 3 prioridades declarables + botón "?" que abre el modal (`PRIORIDADES_INFO`/`PrioridadModal` se conservan), más una línea informativa sobre la condición SEP que remite al paso 1 / `/perfil`. Las prioridades por colegio se declaran **solo** en `PrioridadColegioControl` (P6), que ahora se muestra en **todos** los colegios de la lista con las 3 claves (`clavesEspecificas = PRIORIDADES_POR_COLEGIO`) y se **siembra directo desde `casoPrioridades`** al agregar el colegio (ya no gateado por un chip global). `hayPrioridad` se recalcula: `prioritario` o cualquier `prioridadesPorColegio` marcada.
+- **Paso 3:** el resumen de prioridades dice "Condición registrada: estudiante prioritario/a (SEP) — la determina el MINEDUC" (enlace a `/perfil`) y "Editar por colegio" para las específicas.
+- `perfilCompleto = { prioritario: perfilEstudiante.prioritario, prioridadesPorColegio }`. `nivelPrioridadEnColegio` ya lo soporta. **No se tocó `asignacion.js`** (`calcularResultado`, `probAsignacion`, `nivelPrioridadEnColegio`, tabla de probabilidades, umbral 65).
+
+**`AlgoritmoPage.jsx`.** Solo una nota en el `form-hint` del simulador aclarando que es exploratorio y que `prioritario` (SEP) en el flujo real lo determina el MINEDUC, no se elige. Sin cambio funcional (usa el fallback documentado de `nivelPrioridadEnColegio`).
+
+**Verificación caso Muñoz González** (6 colegios, `prioritario` en `/perfil`, hermano/funcionario/exalumno sembrados desde `casoPrioridades`): Los Andes → nivel 1 (hermano, 92 %), San Martín → nivel 2 (prioritario, 90 %); República de Chile y Villa del Sol resuelven a nivel 2 porque la cuota SEP (2) supera a exalumno (4) y funcionario (3) — comportamiento de `Math.min` preexistente, no alterado.
+
+**PIE:** fuera de alcance (no se modela como campo en el prototipo). Si se agrega en el futuro, mismo encuadre que `prioritario` (dato del Estado, no elección).
+
+**Trazabilidad:** comentarios `S4 (refinamiento — arquitectura de información)` y `S22-6 / S22-11 (refinamiento)`. **No** se creó sección del plan, **no** se sumó ningún punto, **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios). Sin impacto en cifras de `proyecto-tesis/`.
+
+**Doc de la prueba a actualizar (writing-agent):** `docs/investigacion/caso_estudio_prueba_usabilidad_postulacion.md` y el material de participantes (`material_prueba_usabilidad_postulacion.pdf`, guion del moderador) asumen que `prioritario` se marca dentro del flujo; ahora se configura en `/perfil` y en el flujo aparece como información de solo lectura. El caso de estudio en sí no cambia (mismas prioridades, mismos resultados).
+
+**Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-27). `PostulacionPage` compila a 43.63 kB; `PerfilPage` a 6.22 kB; `rut` sale como chunk propio (0.24 kB).

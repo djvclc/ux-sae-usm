@@ -272,3 +272,24 @@ Resuelve el pendiente **P6** de `docs/planificacion/bitacora_flujo_postulacion_y
 **Trazabilidad:** comentarios `S22-11 (refinamiento)` y `S22-6` en el código. Es un refinamiento de puntos S22 existentes: **no** se creó sección nueva del plan, **no** se sumó ningún punto, **no** se tocó la cifra 87/87 de `plan_mejora_sae.md` ni `src/data/incisos.js`. No impacta cifras citadas en `proyecto-tesis/` (las probabilidades de `probAsignacion` y el umbral 65 no cambiaron; solo cambia a qué colegio se le asigna cada nivel).
 
 **Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-26). `node_modules` estaba completo y funcional. Verificación adicional ad-hoc con Node de la resolución por colegio para el caso Muñoz González (script descartado).
+
+---
+
+## 18. Auditoría de lenguaje de los avisos del flujo — P3 y P4 (2026-08-26)
+
+Implementa los pendientes **P3** y **P4** de `docs/planificacion/bitacora_flujo_postulacion_y_resultado.md` (§5). Auditoría de microcopy (no de lógica): no se tocó `asignacion.js`, ni la tabla `probAsignacion`, ni el umbral 65, ni la estructura de componentes.
+
+**P4 (HAX G5/G6 — que ningún aviso juzgue a la familia ni refuerce estigmas):**
+- `PostulacionPage.jsx` `PRIORIDADES_INFO.prioritario.que_es`: se reemplazó "vulnerabilidad socioeconómica verificada por el MINEDUC" por "El Estado lo determina según la situación socioeconómica de tu familia… No es algo que decidas tú ni el colegio". Se evita usar "vulnerabilidad" como rótulo repetido y se encuadra la cuota SEP como un derecho.
+- `PostulacionPage.jsx` Paso 2, InfoBox "¿En qué orden se revisan las prioridades?": misma corrección ("…estudiantes prioritarios/as, definidos por la situación socioeconómica que el Estado ya tiene registrada").
+- `PostulacionPage.jsx` aviso de lista corta (S22-14): el título pasó a "Tu lista es corta y toda de alta demanda" y el cuerpo atribuye el riesgo a "en todos hay más postulantes que vacantes" en vez de un fraseo que podía leerse como "apuntaste muy alto".
+- Ya cumplían (sin cambio): `ColegioAnalisis` (solo muestra demanda, vacantes, postulantes año anterior y prioridad — datos de contexto neutros, sin SIMCE/GSE/categoría, sin jerarquía de prestigio); las tres explicaciones de probabilidad del paso 3 (atribuyen la baja probabilidad a la demanda del colegio, no a la familia — ya refinadas en S22-14); el bloque "¿Y si no quedo en ninguna?"; `SeguimientoPage.jsx` `generarExplicacion` y "¿Qué significa no quedar en tu primera opción?" (explican por demanda/prioridad/vacantes, sin juicio).
+
+**P3 (NN/g — toda advertencia accionable, no genérica):**
+- `PostulacionPage.jsx` `ColegioAnalisis`, mensaje de nivel sin vacantes publicadas: de "Este colegio no publica vacantes para {nivel}." (genérico) a "…aún no publica vacantes… El porcentaje se calcula solo con su demanda general. Abre la ficha del colegio para confirmar que ofrece ese nivel antes de dejarlo en tu lista." (dice qué significa el dato faltante y qué hacer).
+- `PostulacionPage.jsx` aviso de lista corta (S22-14): cierra con acción concreta ("agrega más colegios — al menos 6 — e incluye alguno de demanda media o baja"); no sugiere reordenar por probabilidad (strategy-proofness intacto).
+- Ya cumplían (sin cambio): explicación de probabilidad media ("Agregar más colegios a tu lista te da más opciones en total") y baja ("agrega colegios con demanda media o baja"); la de probabilidad alta y la de "certeza muy alta" son mensajes de refuerzo, no advertencias, por lo que no requieren acción; los InfoBox neutro del flujo son informativos/tutoriales, no advertencias de riesgo.
+
+**Trazabilidad:** comentarios `S22-6 (refinamiento)`, `S22-11 (refinamiento)` y `S22-14 (refinamiento)` en `PostulacionPage.jsx`. No se creó sección del plan, no se sumó ningún punto, **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios). Sin impacto en cifras de `proyecto-tesis/`.
+
+**Validación:** `npm run lint` limpio (0 errores / 0 warnings) y `npm run build` limpio, ejecutados en esta sesión (2026-08-26); `PostulacionPage` compila a 40.18 kB. `SeguimientoPage.jsx` no requirió cambios.

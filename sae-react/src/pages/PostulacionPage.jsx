@@ -38,7 +38,12 @@ const REGIONES = [
 
    OPTIMIZACIÓN (divulgación progresiva): solo label + icono visible en chip;
    al hacer click se abre modal con explicación completa (qué es, qué implica,
-   ejemplo, advertencia). Cierre con ESC o clic fuera. */
+   ejemplo, advertencia). Cierre con ESC o clic fuera.
+
+   S22-6 (refinamiento) · auditoría P4 (HAX G5/G6, bitácora sec. 5): los textos
+   describen cada prioridad como un derecho que da la ley, sin etiquetar a la
+   familia. La cuota SEP se explica por "situación socioeconómica que el Estado
+   ya tiene registrada", no repitiendo "vulnerabilidad" como rótulo. */
 const PRIORIDADES_INFO = {
   hermano: {
     label: 'Hermano/a matriculado/a',
@@ -51,7 +56,7 @@ const PRIORIDADES_INFO = {
   prioritario: {
     label: 'Estudiante prioritario/a',
     icono: '🏫',
-    que_es: 'El/la estudiante es prioritario/a según la Ley de Subvención Escolar Preferencial (SEP): vulnerabilidad socioeconómica verificada por el MINEDUC.',
+    que_es: 'El/la estudiante es prioritario/a según la Ley de Subvención Escolar Preferencial (SEP). El Estado lo determina según la situación socioeconómica de tu familia, con información que el MINEDUC ya tiene. No es algo que decidas tú ni el colegio.',
     que_implica: 'Cada colegio guarda el 15 % de asientos para estudiantes prioritarios/as. No es un puesto en fila: compites por esos asientos reservados además de los generales. El MINEDUC lo identifica automáticamente.',
     ejemplo: 'Los estudiantes SEP tienen entre 88-98% de probabilidad de asignación según la demanda del colegio.',
     advertencia: 'El sistema verifica esto automáticamente. Marcarla sin serlo puede anular tu postulación.',
@@ -239,8 +244,10 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
             </li>
           </>
         ) : nivelAlumno ? (
+          /* S22-11 (refinamiento) · auditoría P3 (NN/g: aviso accionable, no genérico):
+             además de avisar la falta del dato, dice de qué se calcula el % y qué hacer. */
           <li style={{ fontSize: '0.9rem', color: 'var(--texto-suave)' }}>
-            ℹ️ Este colegio no publica vacantes para {nivelAlumno}.
+            ℹ️ Este colegio aún no publica vacantes para {nivelAlumno}. El porcentaje se calcula solo con su demanda general. Abre la ficha del colegio para confirmar que ofrece ese nivel antes de dejarlo en tu lista.
           </li>
         ) : null}
         <li>
@@ -875,7 +882,8 @@ export default function PostulacionPage() {
                   <abbr title="Programa de Integración Escolar">PIE</abbr>, 2.º hermanos/as, 3.º reserva
                   del 15 % para estudiantes de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr>, 4.º hijos/as de funcionarios/as, 5.º exalumnos/as.
                 </p>
-                <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio guarda para estudiantes con vulnerabilidad socioeconómica verificada.</p>
+                {/* S22-6 (refinamiento) · P4 (HAX G6): sin repetir "vulnerabilidad" como rótulo */}
+                <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio reserva para estudiantes prioritarios/as, definidos por la situación socioeconómica que el Estado ya tiene registrada.</p>
               </InfoBox>
             )}
 
@@ -1113,13 +1121,18 @@ export default function PostulacionPage() {
                   <p>El sistema está hecho para que te convenga poner primero el colegio que <strong>más quieres</strong>. Poner primero uno "más fácil" no mejora tus opciones y puedes perder el que preferías.</p>
                 </InfoBox>
 
-                {/* S22-14: aviso de lista corta con todas las opciones de alta demanda */}
+                {/* S22-14 (refinamiento): aviso de lista corta con todas las opciones de alta demanda.
+                    Auditoría P4 (HAX G6): el riesgo se atribuye a que hay más postulantes que
+                    vacantes, no a que la familia "haya apuntado muy alto".
+                    Auditoría P3 (NN/g): cierra con acción concreta (agregar colegios, incluir
+                    demanda media o baja) y no sugiere reordenar por probabilidad. */}
                 {listaCortaYAlta && (
-                  <InfoBox icono="⚠️" titulo="Lista corta y toda de alta demanda" tipo="alerta">
+                  <InfoBox icono="⚠️" titulo="Tu lista es corta y toda de alta demanda" tipo="alerta">
                     <p>
-                      Tu lista tiene {lista.length} {lista.length === 1 ? 'opción' : 'opciones'} y todas son de
-                      alta demanda. Así podrías quedar sin asignación. Agrega más colegios — idealmente al menos 6 —
-                      e incluye alguno de demanda media o baja.
+                      Tienes {lista.length} {lista.length === 1 ? 'colegio' : 'colegios'} y en todos hay más
+                      postulantes que vacantes. Si en ninguno queda cupo para tu prioridad, podrías terminar sin
+                      asignación. Para bajar ese riesgo, agrega más colegios — al menos 6 — e incluye alguno de
+                      demanda media o baja.
                     </p>
                   </InfoBox>
                 )}

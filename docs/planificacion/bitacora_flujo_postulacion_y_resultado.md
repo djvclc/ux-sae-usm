@@ -214,14 +214,33 @@ Comentarios de trazabilidad en código: `S22-6 (refinamiento)`, `S22-11 (refinam
 
 ---
 
+### Bloque J — Lenguaje no antropomórfico en `AlgoSimuladorPasos` (2026-08-26)
+
+**Fundamento de origen:** el pendiente que figuraba en la sec. 5 de esta bitácora sobre el lenguaje del `AlgoSimuladorPasos` (listado como **P1** tras la última renumeración; originalmente **P3**). Ámbito `/algoritmo`, no el flujo de postulación, pero la sec. 5 ya lo listaba como pendiente derivado de las guías ("en `/algoritmo`, no en el flujo, pero relacionado"). Commit `04d2f2b`. Comentario de trazabilidad en código: `S13 (refinamiento) · auditoría NN/g`.
+
+**Mapeo a guía:** **NNG-XAI** — verificado contra `investigacion_ux_guide_ai_systems.md` sec. 5, L77: "Evitar lenguaje antropomórfico al describir cómo 'decide' el sistema — relevante para el texto del `AlgoSimuladorPasos`, que debe describir el procesamiento en términos de reglas y datos, no de 'elección' del sistema." El documento nombra `AlgoSimuladorPasos` explícitamente.
+
+Auditoría de todo el texto visible y los `aria-label` de `AlgoSimuladorPasos.jsx` y `AlgoritmoPage.jsx` (prosa de los 4 pasos, `ESCENARIOS`, `CONTEXTO_MUNDIAL`, `tutoriales`, `explicacionSim`, render de `resultado`, FAQ). **Sin cambios de lógica, animación, `asignacion.js`, tabla `probAsignacion` ni umbral 65.** No creó sección del plan ni sumó punto: **87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios).
+**Estado de validación:** ✅ lint+build OK (2026-08-26) — `npm run lint` (0 errores / 0 warnings) y `npm run build` limpios (code-agent, reconfirmados en la sesión principal). `AlgoritmoPage` compila a 182.64 kB.
+**Impacto en cifras de la memoria:** ninguno.
+
+| # | Cambio | Ancla | Mapeo a guía | Cap. memoria |
+|---|---|---|---|---|
+| **J1** | `AlgoSimuladorPasos.jsx`, párrafo de intro de la sección "Reproducir el algoritmo paso a paso". Antes: "Mira cómo el sistema **evalúa** cada uno de tus colegios en orden, hasta encontrar una asignación". Después: "Mira cómo el sistema revisa tus colegios en el orden que **tú elegiste**. En cada uno aplica las prioridades que fija la ley y cuenta los cupos disponibles, hasta asignarte uno". El texto previo no nombraba reglas ni datos; el nuevo encuadra el proceso como aplicación de prioridades legales + conteo de cupos y refuerza que el orden lo define la familia | `AlgoSimuladorPasos.jsx` `// S13 (refinamiento) · auditoría NN/g` (~83) | **NNG-XAI** (doc L77) · relacionado con S22-6 (orden legal) y S13 (transparencia del algoritmo) | 3 (decisión de diseño del módulo de transparencia) |
+| **J2** | Revisado y **ya cumplía (sin cambio)**: etiquetas de estado de la tabla ("Asignado aquí", "Sin cupos", "Prioridad insuficiente", "No evaluado"), `aria-label` de la sección, `perfilLabel`, y toda la prosa de `AlgoritmoPage.jsx` — usa verbos de proceso ("el sistema cruza la lista… con las prioridades y los cupos", "revisa la N.°2", "el sistema activa una segunda etapa", "aplica prioridades definidas por ley"). Los verbos con sujeto "tú/la familia" son correctos. Controles ▶️ / ⟲ / ⏸ no son antropomorfismo | `AlgoritmoPage.jsx` (prosa completa) | **NNG-XAI** (doc L77) | 3 |
+
+**Para la memoria (observación, no editar):** este cambio no toca el flujo de postulación; alimenta la descripción del módulo de transparencia (`/algoritmo`) en el cap. 3, no los resultados de la prueba de usabilidad del flujo.
+
+---
+
 ## 5. Pendientes propuestos por las guías (aún NO implementados)
 
-De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G; la auditoría de microcopy que figuraba como **P3** y **P4** se implementó el 2026-08-26 — ver Bloque H; la versión visual del formato de frecuencia —**P1**— y el encuadre del algoritmo en la primera pantalla —**P2**— se implementaron el 2026-08-26 — ver Bloque I.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.
+De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G; la auditoría de microcopy que figuraba como **P3** y **P4** se implementó el 2026-08-26 — ver Bloque H; la versión visual del formato de frecuencia —**P1**— y el encuadre del algoritmo en la primera pantalla —**P2**— se implementaron el 2026-08-26 — ver Bloque I; el lenguaje antropomórfico del `AlgoSimuladorPasos` —**P1** en la última numeración— se implementó el 2026-08-26 — ver Bloque J.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.
 
 | # | Pendiente | Fundamento | Prioridad sugerida | Bloquea la prueba |
 |---|---|---|---|---|
-| **P1** | Lenguaje de `AlgoSimuladorPasos` (en `/algoritmo`, no en el flujo, pero relacionado): describir el procesamiento en términos de reglas y datos, no de "elección" del sistema | NNG-XAI (antropomorfismo) · sec. 5 | Baja | No |
-| **P2** | Evaluar mostrar **N-mejores alternativas** ("si no quedas aquí, tus siguientes opciones más probables son…") | PAIR-ET (patrón de alternativas) | Baja | No |
+| **P1** | Evaluar mostrar **N-mejores alternativas** ("si no quedas aquí, tus siguientes opciones más probables son…") | PAIR-ET (patrón de alternativas) | Baja | No |
+| **P2** | `PostulacionPage.jsx` (~813), InfoBox "Postulación familiar en bloque" (S22-13): "el sistema **intenta** dejarlos en el mismo colegio". Bajo lectura estricta NN/g podría reencuadrarse en términos de proceso ("se procura dejarlos juntos según cupos y prioridades"). Detectado en la auditoría del Bloque J; "intenta" es defendible como proceso (puede no lograrse por cupos), por eso queda como pendiente menor y no como corrección inmediata. Fuera de `/algoritmo` pero **dentro del flujo**. Nota: `ProcesoPage.jsx` (~145) tiene el mismo "intenta" pero está fuera del flujo; `NotasPage.jsx` (~99, ~108) usa "el sistema sigue buscando" de forma **deliberada** (lenguaje tranquilizador citado de la literatura) — no es defecto, no se registra | NNG-XAI (antropomorfismo, lectura estricta) · sec. 5 | Baja | No |
 
 ---
 

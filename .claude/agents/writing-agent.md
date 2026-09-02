@@ -35,7 +35,7 @@ Eres el agente de redacción de la memoria "Mitigación de Sesgos en IA: Anális
 | `capitulos/00_resumen.tex` | Resumen | Redactado (declara etapa intermedia) |
 | `capitulos/01_introduccion.tex` | Introducción | Redactado |
 | `capitulos/02_marco_teorico.tex` | Marco Teórico | Redactado (el más extenso) |
-| `capitulos/03_metodologia.tex` | Metodología | Redactado (4 fases; validación = plan pendiente, Sección 3.5) |
+| `capitulos/03_metodologia.tex` | Metodología | Redactado (4 fases; caso de estudio = familia Muñoz González; subsección "Marcos de diseño de interacción humano-IA"; cronología ampliada a sep. 2026 con el trabajo del flujo de postulación; validación = plan pendiente con subsección "Prueba de usabilidad del flujo de postulación", Sección 3.5) |
 | `capitulos/04_resultados.tex` | Resultados | Redactado parcial: solo resultados verificables; validación con usuarios pendiente |
 | `capitulos/05_discusion.tex` | Discusión | PENDIENTE por diseño (solo discusión preliminar) |
 | `capitulos/06_conclusiones.tex` | Conclusiones | PENDIENTE por diseño (solo "lo que puede afirmarse hasta ahora") |

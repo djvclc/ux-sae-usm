@@ -381,7 +381,11 @@ export default function RegistroPage() {
               {errores.pwdConf && <span className="rg-error" role="alert">{errores.pwdConf}</span>}
             </div>
 
-            {/* Términos y condiciones */}
+            {/* S22 (refinamiento) · fidelidad (analisis_video_paso_a_paso_sae.md, Paso 1 —
+                capturas del registro real): antes de "Registrarme" hay dos casillas
+                obligatorias — términos y condiciones del proceso y protocolo de manejo de
+                datos. Bloquean el envío hasta marcarlas ambas (paso2Ok), con aviso
+                role="alert" igual que la casilla A del paso 1 de /postulacion. */}
             <fieldset className="rg-checks">
               <legend className="sr-only">Aceptación de condiciones</legend>
               <label className="rg-check-label">
@@ -390,6 +394,7 @@ export default function RegistroPage() {
                   className="rg-check"
                   checked={aceptaTerminos}
                   onChange={(e) => setAceptaTerminos(e.target.checked)}
+                  aria-required="true"
                 />
                 <span>
                   He leído y acepto los{' '}
@@ -405,6 +410,7 @@ export default function RegistroPage() {
                   className="rg-check"
                   checked={aceptaDatos}
                   onChange={(e) => setAceptaDatos(e.target.checked)}
+                  aria-required="true"
                 />
                 <span>
                   He leído y acepto el protocolo de{' '}
@@ -413,6 +419,11 @@ export default function RegistroPage() {
                   </Link>
                 </span>
               </label>
+              {(!aceptaTerminos || !aceptaDatos) && (
+                <span className="rg-error" role="alert">
+                  Tienes que marcar las dos casillas para crear tu cuenta.
+                </span>
+              )}
             </fieldset>
 
             <button

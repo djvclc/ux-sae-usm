@@ -6281,6 +6281,13 @@ h2.seg-hero-name {
   line-height: 1.4;
 }
 
+/* B · fidelidad (analisis_video_paso_a_paso_sae.md brecha B) · S22-1 (refinamiento):
+   subsección de dirección de residencia dentro del bloque de vinculación. */
+.post-direccion-block {
+  border-top: 1px solid rgba(0, 87, 183, 0.15);
+  padding-top: var(--esp-md);
+}
+
 /* Tarjeta de confirmación del estudiante vinculado */
 .post-alumno-card {
   margin-top: var(--esp-md);

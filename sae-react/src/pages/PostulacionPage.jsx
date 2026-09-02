@@ -55,6 +55,22 @@ const REGIONES = [
   { value: 'XII',  label: 'Magallanes',            full: 'Región de Magallanes y de la Antártica Chilena' },
 ]
 
+/* B · fidelidad (analisis_video_paso_a_paso_sae.md brecha B) · S22-1 (refinamiento):
+   sugerencias de comuna para el campo de dirección de residencia. Se usa
+   <input> + <datalist> y NO un <select>: el catálogo de comunas depende de la
+   región y mantener las 346 comunas del país (con sus tildes) es frágil y
+   propenso a errores; el datalist sugiere sin restringir la escritura.
+   Semilla: comunas presentes en colegios.js + comunas frecuentes de la Región
+   Metropolitana y de Valparaíso. */
+const COMUNAS_SUGERIDAS = [
+  ...colegios.map((c) => c.comuna),
+  'Santiago', 'Providencia', 'Ñuñoa', 'Las Condes', 'La Reina', 'Macul',
+  'San Joaquín', 'San Miguel', 'Estación Central', 'Recoleta', 'Independencia',
+  'Quilicura', 'Pudahuel', 'Cerrillos', 'El Bosque', 'La Cisterna', 'San Bernardo',
+  'Lo Prado', 'Cerro Navia', 'Renca', 'Conchalí', 'Huechuraba', 'Vitacura',
+  'Valparaíso', 'Viña del Mar', 'Quilpué', 'Villa Alemana', 'Concón',
+].filter((v, i, a) => a.indexOf(v) === i)
+
 /* ── Datos de prioridades — chip + modal accesible ──
    S22-6 (corrige E6): títulos y textos según el orden real de procesamiento
    (PIE → hermanos → 15 % prioritarios → funcionario → exalumno); el 15 % es
@@ -456,6 +472,17 @@ export default function PostulacionPage() {
   // A · fidelidad (analisis_video_paso_a_paso_sae.md brecha C): declaración legal
   // obligatoria de ser apoderado/a antes de vincular al estudiante.
   const [declaraApoderado, setDeclaraApoderado] = useState(false)   // S22-12 (refinamiento)
+  // B · fidelidad (analisis_video_paso_a_paso_sae.md brecha B) · S22-1 (refinamiento):
+  // dirección de residencia del/de la estudiante. El flujo real la pide (región +
+  // comuna + calle y número + casa/depto). NO entra en la lógica de asignación
+  // (asignacion.js intacto): solo acota la búsqueda. `region` ya existía como
+  // filtro de exploración y aquí pasa a ser el campo de región de la dirección.
+  const [comuna, setComuna]         = useState('')
+  const [dirCalle, setDirCalle]     = useState('')
+  const [dirNumero, setDirNumero]   = useState('')
+  const [dirTocada, setDirTocada]   = useState({})   // validación en vivo suave (marca al salir del campo)
+  const tocarDir = (campo) => setDirTocada((p) => ({ ...p, [campo]: true }))
+  const direccionCompleta = !!region && comuna.trim().length > 1 && dirCalle.trim().length > 2
   // C · fidelidad (analisis_video_paso_a_paso_sae.md brecha C): id del colegio en
   // espera de las dos aceptaciones (jornada + proyecto educativo/reglamento).
   const [colegioPendiente, setColegioPendiente] = useState(null)    // S22-2 (refinamiento)
@@ -580,6 +607,15 @@ export default function PostulacionPage() {
       fecha: new Date().toISOString(),
       comprobante: `SAE-${Math.floor(100000 + Math.random() * 900000)}`,
       alumno: { nombre: alumnoNombre, run: alumnoRut, nivel: alumnoNivel },
+      // B · fidelidad (brecha B): dirección de residencia. Se guarda como bloque
+      // aparte; NO la usa la lógica de asignación ni SeguimientoPage.
+      direccion: {
+        region,
+        regionLabel: REGIONES.find((r) => r.value === region)?.label ?? '',
+        comuna: comuna.trim(),
+        calle: dirCalle.trim(),
+        numero: dirNumero.trim(),
+      },
       // S22-11 (refinamiento): se guarda el perfil con las prioridades por colegio
       perfil: perfilCompleto,
       lista,
@@ -603,6 +639,16 @@ export default function PostulacionPage() {
       `Fecha de envío: ${new Date(confirmado.fecha).toLocaleString('es-CL')}`,
       `Estudiante: ${alumnoNombre} (RUN ${alumnoRut})`,
       `Nivel al que postula: ${alumnoNivel}`,
+      '',
+      // B · fidelidad (brecha B): la dirección va en el comprobante como dato del
+      // formulario, no como criterio de asignación.
+      '── DIRECCIÓN DE RESIDENCIA ──',
+      `Región: ${REGIONES.find((r) => r.value === region)?.label ?? '—'}`,
+      `Comuna: ${comuna.trim() || '—'}`,
+      `Dirección: ${dirCalle.trim() || '—'}${dirNumero.trim() ? ` (${dirNumero.trim()})` : ''}`,
+      'La dirección no cambia tus probabilidades ni tu resultado: la cercanía no',
+      'es un criterio de prioridad del SAE.',
+      '',
       // S22-11 (refinamiento): la "prioridad aplicada" es la del colegio asignado;
       // el detalle por colegio va en la lista de abajo (la prioridad puede cambiar).
       `Prioridad en el colegio asignado: ${prioridadLabels[resultado.nivel]}`,
@@ -833,10 +879,13 @@ export default function PostulacionPage() {
 
                 <div className="post-region-block">
                   <label htmlFor="select-region" className="form-label">
-                    ¿En qué región vives?{' '}
+                    ¿En qué región vive el/la estudiante?{' '}
                     <span aria-hidden="true" style={{ color: 'var(--rojo)' }}>*</span>
                   </label>
-                  {/* S22-1 (corrige E1): la región es solo un filtro de exploración, no una restricción */}
+                  {/* S22-1 (corrige E1) · B · fidelidad (analisis_video_paso_a_paso_sae.md brecha B):
+                      la región es parte de la dirección de residencia (el resto —comuna,
+                      calle y número— se pide abajo, junto a la vinculación). Nunca es una
+                      restricción: puedes postular a colegios de otras comunas y regiones. */}
                   <p className="form-hint">
                     Usamos tu región para mostrarte primero los colegios cercanos. Puedes postular a colegios de otras comunas y regiones si así lo deseas.
                   </p>
@@ -974,13 +1023,113 @@ export default function PostulacionPage() {
                       )}
                     </div>
 
+                    {/* B · fidelidad (analisis_video_paso_a_paso_sae.md brecha B) · S22-1 (refinamiento):
+                        dirección de residencia del/de la estudiante, tal como la pide el flujo real
+                        (video, Paso 2: región + comuna + calle y número + casa/depto). Región se
+                        elige más arriba; aquí se completan comuna, calle y número. La dirección NO
+                        entra en la lógica de asignación (asignacion.js, probAsignacion y umbral 65
+                        intactos): solo acota la búsqueda de colegios cercanos. */}
+                    <div className="post-direccion-block">
+                      <h4 className="post-alumno-block__titulo" style={{ fontSize: '1rem', margin: '4px 0 8px' }}>
+                        Dirección del/de la estudiante
+                      </h4>
+
+                      <p className="form-hint" style={{ margin: '0 0 10px' }}>
+                        Región: <strong>{REGIONES.find((r) => r.value === region)?.label ?? '—'}</strong>
+                        {' '}(la eliges más arriba).
+                      </p>
+
+                      <div className="rg-campo">
+                        <label className="form-label" htmlFor="dir-comuna">
+                          Comuna <span aria-hidden="true" style={{ color: 'var(--rojo)' }}>*</span>
+                        </label>
+                        <input
+                          id="dir-comuna"
+                          type="text"
+                          className="form-input rg-input"
+                          list="dir-comunas-sugeridas"
+                          value={comuna}
+                          onChange={(e) => setComuna(e.target.value)}
+                          onBlur={() => tocarDir('comuna')}
+                          placeholder="Ej: La Florida"
+                          autoComplete="address-level2"
+                          aria-required="true"
+                          aria-invalid={dirTocada.comuna && comuna.trim().length <= 1 ? 'true' : undefined}
+                        />
+                        <datalist id="dir-comunas-sugeridas">
+                          {COMUNAS_SUGERIDAS.map((c) => (
+                            <option key={c} value={c} />
+                          ))}
+                        </datalist>
+                        {dirTocada.comuna && comuna.trim().length <= 1 && (
+                          <span className="form-hint" style={{ color: 'var(--rojo)', display: 'block' }} role="alert">
+                            Escribe la comuna donde vive el/la estudiante.
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="rg-campo">
+                        <label className="form-label" htmlFor="dir-calle">
+                          Dirección (calle y número) <span aria-hidden="true" style={{ color: 'var(--rojo)' }}>*</span>
+                        </label>
+                        <input
+                          id="dir-calle"
+                          type="text"
+                          className="form-input rg-input"
+                          value={dirCalle}
+                          onChange={(e) => setDirCalle(e.target.value)}
+                          onBlur={() => tocarDir('calle')}
+                          placeholder="Ej: Av. Los Aromos 450"
+                          autoComplete="address-line1"
+                          aria-required="true"
+                          aria-invalid={dirTocada.calle && dirCalle.trim().length <= 2 ? 'true' : undefined}
+                        />
+                        {dirTocada.calle && dirCalle.trim().length <= 2 && (
+                          <span className="form-hint" style={{ color: 'var(--rojo)', display: 'block' }} role="alert">
+                            Escribe la calle y el número de la casa.
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="rg-campo">
+                        <label className="form-label" htmlFor="dir-numero">
+                          Número de casa o depto.
+                          <span className="form-label__opt"> (opcional)</span>
+                        </label>
+                        <input
+                          id="dir-numero"
+                          type="text"
+                          className="form-input rg-input"
+                          value={dirNumero}
+                          onChange={(e) => setDirNumero(e.target.value)}
+                          placeholder="Ej: Depto. 32 / Casa B"
+                          autoComplete="address-line2"
+                        />
+                      </div>
+
+                      {/* B · fidelidad: en Aceptación Diferida la cercanía NO prioriza.
+                          Se dice explícito para no reforzar el mito del "colegio cercano". */}
+                      <p className="form-hint" style={{ margin: '4px 0 0' }}>
+                        Tu dirección se usa para ubicar colegios cercanos en la búsqueda. No cambia
+                        tus probabilidades ni tu resultado: la cercanía no es un criterio de
+                        prioridad del SAE.
+                      </p>
+                    </div>
+
                     {/* S22-12: confirmación explícita del nivel antes de vincular */}
                     {!confirmandoNivel ? (
                       <button
                         type="button"
                         className="btn btn--primary"
-                        disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel || !declaraApoderado}
-                        title={!declaraApoderado ? 'Primero marca la casilla en que declaras ser el/la apoderado/a legal' : undefined}
+                        /* B · fidelidad (brecha B): la dirección de residencia (comuna + calle)
+                           también es obligatoria para vincular, junto con RUN, nombre, nivel y
+                           la declaración de apoderado/a. */
+                        disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel || !declaraApoderado || !direccionCompleta}
+                        title={
+                          !declaraApoderado ? 'Primero marca la casilla en que declaras ser el/la apoderado/a legal'
+                          : !direccionCompleta ? 'Completa la comuna y la dirección (calle y número) del/de la estudiante'
+                          : undefined
+                        }
                         onClick={() => setConfirmandoNivel(true)}
                       >
                         Vincular estudiante
@@ -1596,10 +1745,25 @@ export default function PostulacionPage() {
                 </button>
 
                 <p style={{ marginTop: 10 }}>En el proceso real, los resultados estarán disponibles en <strong>Mi postulación</strong> entre el 15 y el 21 de octubre de 2026.</p>
+
+                {/* E · fidelidad (analisis_video_paso_a_paso_sae.md brecha E) · S22 (refinamiento):
+                    en el flujo real, cada modificación durante el período obliga a reenviar la
+                    postulación y descargar un comprobante nuevo; el anterior queda obsoleto. Aquí
+                    es solo un aviso de texto (siempre visible): NO se invalida el estado ni se
+                    rehace el flujo de envío — eso queda para fase 2. */}
+                <InfoBox icono="🔁" titulo="Si cambias tu lista después de enviar" tipo="alerta">
+                  <p style={{ marginBottom: 0 }}>
+                    Puedes modificar tu lista todas las veces que quieras hasta el cierre. Pero
+                    cada vez que la cambies tienes que <strong>volver a enviar la postulación y
+                    descargar un comprobante nuevo</strong>: el comprobante anterior deja de tener
+                    validez. Vale siempre el último que descargaste.
+                  </p>
+                </InfoBox>
+
                 {modoTutorial && (
                   <InfoBox icono="💾" titulo="¿Qué hacer ahora?" tipo="exito">
                     {/* S22-3 (corrige E3): fecha y hora reales de cierre */}
-                    <p>Descarga y guarda tu comprobante (folio <strong>{confirmado.comprobante}</strong>). Si quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00 — puedes modificar tu lista todas las veces que necesites hasta esa hora.</p>
+                    <p>Descarga y guarda tu comprobante (folio <strong>{confirmado.comprobante}</strong>). Si quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00 — puedes modificar tu lista todas las veces que necesites hasta esa hora. Cada cambio te obliga a <strong>reenviar la postulación</strong> y descargar un comprobante nuevo; el anterior ya no vale.</p>
                   </InfoBox>
                 )}
 

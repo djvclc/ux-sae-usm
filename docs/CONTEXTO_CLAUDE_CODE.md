@@ -140,15 +140,31 @@ ATENCIÓN: el campo `jornada` ya NO es global; está por nivel dentro de `vacant
 
 ---
 
-## 8. Lógica del simulador (src/utils/asignacion.js)
+## 8. Lógica del simulador (src/utils/asignacion.js + src/utils/simulacionSae.js)
+
+**Reescrito el 2026-09-03 (Bloque R). Ya NO hay tabla `probAsignacion` ni umbral 65.** La probabilidad se estima con Monte Carlo sobre una simulación DA-por-colegio.
 
 ```js
-nivelPrioridad(perfil)     // retorna 1-5 según hermano/prioritario/funcionario/exalumno/ninguno
-probAsignacion(nivel, demanda) // tabla: alta/media/baja × nivel 1-5 → porcentaje
-calcularResultado(listaIds, perfil) // simula asignación: retorna { asignado, detalles, nivel, prioridadLabel, error }
+// src/utils/simulacionSae.js — el motor
+PARAMS_POBLACION            // { pSep:0.55, pHermano:0.10, pFuncionario:0.02, pExalumno:0.03, cuotaSep:0.15 }
+SEED_CASO = 20260903        // semilla del recorrido determinista del caso
+ITERACIONES_MONTE_CARLO = 1000
+mulberry32(seed)            // PRNG con semilla
+tramoFamiliaEnColegio(perfil, colegioId) // → { esSep, general: 'hermano'|'funcionario'|'exalumno'|'sorteo' }
+simularCupo(colegio, nivelAlumno, familiaTramo, rng)  // UN sorteo: fase 1 cuota SEP (15%) + fase 2 pozo general → { seated, ... }
+probabilidadCupo(colegio, nivelAlumno, familiaTramo)  // Monte Carlo 1000 iter, seed fija por (colegio,nivel), cacheado → 0..1
+TRAMO_SIN_PRIORIDAD        // { esSep: false, general: 'sorteo' }
+
+// src/utils/asignacion.js — el orquestador (API estable para consumidores)
+nivelPrioridad(perfil)                 // 1-5, solo para ETIQUETAS
+nivelPrioridadEnColegio(perfil, id)    // 1-5, solo para ETIQUETAS
+probPorcentaje(pRaw)                   // 0..1 → entero acotado a [1,99] (nunca 0% ni 100%)
+calcularResultado(listaIds, perfil, nivelAlumno)
+  // detalles[i].prob = Monte Carlo; asignado = recorrido determinista de la lista con SEED_CASO
+  // → { asignado, detalles, nivel, prioridadLabel, error, sinAsignacionEnPreferencias }
 ```
 
-El simulador está funcional en `AlgoritmoPage.jsx` y el comparador (`ComparadorPage.jsx`) reutiliza `nivelPrioridad` y `probAsignacion`.
+Consumidores: `PostulacionPage.jsx` (pasa el nivel del estudiante), `ColegioPage.jsx` (nivel representativo del colegio). `AlgoritmoPage.jsx` (simulador genérico, nivel por defecto `'1° básico'`), `AlgoSimuladorPasos.jsx` y `SeguimientoPage.jsx` no cambiaron (misma forma de `resultado`, mismo vocabulario de `estado`).
 
 ---
 
@@ -546,3 +562,42 @@ Se **eliminó** el InfoBox SEP-only que estaba gateado por `region && alumnoOk` 
 **Pendiente writing-agent (grande):** `caso_estudio_prueba_usabilidad_postulacion.md` §1/§2/§3/§3.1/§8 asumen familia SEP + PIE y San Martín de "demanda moderada"; revisar también el ítem C3 del cuestionario. Más `material_prueba_usabilidad_postulacion.pdf` y `guion_moderador_prueba_usabilidad.md`. Y queda pendiente **argumentar por escrito de dónde salen los porcentajes de `probAsignacion`** (origen: heurística a ojo de `archivo/CLAUDE_v2.md` §3, sin calibración empírica; anclas para justificar: `investigacion_algoritmo_sae.md` §3.1/§3.2/§6).
 
 **Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (12/12) — 2026-09-03. Verificado end-to-end en navegador: atajo carga `{ prioritario:false, pie:false }`; panel del paso 1 lista solo los 3 vínculos; San Martín 28 % en el paso 2; con San Martín 1.º, `calcularResultado` asigna Los Andes en preferencia 2 y `/seguimiento` muestra "no quedaste en tu primera opción". Sin errores de consola.
+
+## 27. Reescritura del simulador — DA-por-colegio + Monte Carlo (plan C, 2026-09-03)
+
+**Autorizado explícitamente por el usuario.** La tabla `probAsignacion` (15 valores a ojo, `archivo/CLAUDE_v2.md §3`) no tenía calibración empírica y su regla ("primer colegio con prob ≥ 65 %; si ninguno, el mayor con aviso") **no representa la Aceptación Diferida** (sin umbral, por rondas, asignación estable). Se reemplazó por una simulación.
+
+**`src/utils/simulacionSae.js` (nuevo):**
+- **`PARAMS_POBLACION`** — multitud sintética. `pSep: 0.55` **anclado** (54,7 % prioritarios entre postulantes 2018, `investigacion_algoritmo_sae.md §6`); `pHermano: 0.10`, `pFuncionario: 0.02`, `pExalumno: 0.03` **estimaciones** (sin microdatos; ajustables); `cuotaSep: 0.15` (ley).
+- **`simularCupo`** — un sorteo de cupo. `S = round((min+max)/2)` (vacantes en el punto medio), `A = postulantesAnterior` competidores. **Fase 1 cuota SEP:** prioritarios por `round(0.15·S)` cupos reservados, solo por sorteo (sub-escuela, §3.2). **Fase 2 pozo general:** no ubicados por (rango legal hermano<funcionario<exalumno<sorteo, sorteo).
+- **`probabilidadCupo`** — Monte Carlo 1000 iteraciones, PRNG con semilla fija por (colegio, nivel), cacheado. **No depende del orden de la lista.**
+- **`mulberry32`**, **`tramoFamiliaEnColegio`**, **`TRAMO_SIN_PRIORIDAD`**.
+
+**`src/utils/asignacion.js` (reescrito):**
+- Se **eliminaron `probAsignacion` y el umbral 65**.
+- `calcularResultado(lista, perfil, nivelAlumno)`: `detalles[i].prob` = `probPorcentaje(probabilidadCupo(...))`; el **colegio asignado** sale de un **recorrido determinista** de la lista con `SEED_CASO = 20260903` (`simularCupo` por colegio, `rng` compartido — la familia "propone" en orden y para en el primero donde el sorteo la sienta). Fallback al de mayor `%` con `sinAsignacionEnPreferencias: true`.
+- **`probPorcentaje(pRaw)`** acota a **[1, 99]** — un sistema con sorteo nunca garantiza ni prohíbe del todo un cupo (evita 0 %/100 %).
+- Se conservan `nivelPrioridad`, `nivelPrioridadEnColegio`, `prioridadLabels`, `PRIORIDADES_POR_COLEGIO` y el vocabulario de `estado`.
+
+**Ajuste de datos** (`colegios.js`, tras analizar resultados): Simón Bolívar y Los Quillayes tenían `postulantesAnterior`/vacantes ~1,2–1,4× (incoherente con "demanda media" → un/a sin-prioridad daba ~75 %). Se subieron a ~1,7× (básico: Simón Bolívar 42→60, Los Quillayes 48→62; otros niveles en proporción).
+
+**Números del caso Muñoz González (4° básico, sin SEP), Monte Carlo 1000:**
+
+| Colegio | vínculo · demanda | `%` nuevo | (tabla vieja) |
+|---|---|---|---|
+| Los Andes | hermano/a · alta | **99** | 92 |
+| República de Chile | exalumno/a · baja | **99** | 96 |
+| Villa del Sol | funcionario/a · alta | **99** | 65 |
+| Simón Bolívar | — · media | **50** | 60 |
+| Los Quillayes | — · media | **46** | 60 |
+| San Martín | — · alta | **26** | 28 |
+
+Lectura: **prioridad legal → ~99 %** (fiel: el SAE reserva a hermanos/funcionarios/exalumnos); **sin vínculo, manda la demanda** (alta → 26 %, media → moneda al aire). Escenario clave intacto: San Martín 1.º → no queda → Los Andes en 2.ª preferencia.
+
+**Limitaciones v1 (declaradas en el header de `simulacionSae.js` y en `mapa_resultados_caso_munoz_gonzalez.md`):** DA *por colegio*, no multi-colegio (los demás postulantes no se desplazan entre colegios); sin cuota PIE ni alta exigencia académica; los 3 parámetros de vínculo son estimaciones (calibración con microdatos = paso siguiente, fuera de alcance).
+
+**Tests:** `tests/flujo-postulacion.test.js` reescrito, 14 tests — snapshot calibrado de los 6 `%`, propiedades (prioridad ≥ 90; San Martín < 40; media 30–65), **strategy-proofness**, determinismo, escenario clave, guardarraíl de `PARAMS_POBLACION`/`SEED_CASO`/iteraciones.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (14/14) — 2026-09-03. Verificado end-to-end en navegador: los 6 `%` del flujo coinciden con el snapshot; `/colegio` y `/algoritmo` sin errores de consola.
+
+**Pendiente writing-agent (grande):** `proyecto-tesis/capitulos/03_metodologia.tex` describe el simulador como "lógica Gale-Shapley simplificada" con estimación por (demanda, prioridad). Reescribir esa parte del Cap. 3 con el modelo nuevo, sus limitaciones declaradas y los parámetros de población como supuesto metodológico. **Subsume** la tarea previa de "argumentar de dónde salen los porcentajes".

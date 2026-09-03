@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { colegiosById, totalVacantes } from '../data/colegios'
-import { probAsignacion } from '../utils/asignacion'
+import { probabilidadCupo, probPorcentaje } from '../utils/asignacion'
+import { TRAMO_SIN_PRIORIDAD } from '../utils/simulacionSae'
 import ProbabilidadVisual from '../components/ProbabilidadVisual'
 import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
@@ -172,9 +173,20 @@ export default function ColegioPage() {
   const simceSobre = simcePromedio >= comunalPromedio
 
   // P1 · S22-11 (refinamiento): probabilidad estimada para un/a postulante SIN
-  // prioridad (nivel 5) según la demanda del colegio. La ficha no conoce el perfil
-  // del usuario, así que muestra el caso base; el detalle por perfil está en /algoritmo.
-  const probSinPrioridad = probAsignacion(5, colegio.demanda)
+  // prioridad. La ficha no conoce el perfil ni el nivel del usuario, así que usa
+  // un nivel representativo del colegio y el caso base (sin ninguna prioridad).
+  // Modelo nuevo (plan C): sale de la simulación, no de una tabla.
+  const NIVEL_STR = { preKinder: 'Prekínder', kinder: 'Kínder', basico: '4° básico', medio: '1° medio' }
+  const nivelesDisp = colegio.vacantes.map((v) => v.nivel)
+  const nivelClaveFicha = nivelesDisp.includes('basico')
+    ? 'basico'
+    : nivelesDisp.includes('medio')
+      ? 'medio'
+      : nivelesDisp[0]
+  const nivelRepFicha = NIVEL_STR[nivelClaveFicha] ?? '4° básico'
+  const probSinPrioridad = probPorcentaje(
+    probabilidadCupo(colegio, nivelRepFicha, TRAMO_SIN_PRIORIDAD),
+  )
 
   // S16-1: clase de comparación GSE para badge
   const gseClass = colegio.gseComparacion === 'Más alto' ? 'pos'
@@ -361,8 +373,9 @@ export default function ColegioPage() {
           </div>
           {/* P1 · S22-11 (refinamiento): versión visual del formato de frecuencia
               (RISK-NUM / PAIR-ET, investigacion_ux_guide_ai_systems.md §6 y §3).
-              Icon array de 10×10 — la ficha tiene espacio para la variante con
-              más aire. Cifra tomada de probAsignacion(), no inventada. */}
+              Icon array de 10×10. Cifra estimada por la simulación (plan C), no
+              tomada de una tabla. */}
+          {probSinPrioridad !== null && (
           <div className="probviz-block">
             <p className="probviz-block__titulo">Si postulas sin ninguna prioridad</p>
             <ProbabilidadVisual
@@ -377,6 +390,7 @@ export default function ColegioPage() {
               <Link to="/algoritmo" className="link-inline">simulador del algoritmo</Link>.
             </p>
           </div>
+          )}
 
           {/* S16-1: conexión con el algoritmo */}
           <div className="vacantes-infobox">

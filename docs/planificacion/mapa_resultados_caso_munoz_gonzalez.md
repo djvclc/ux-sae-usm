@@ -1,96 +1,81 @@
-# Mapa de resultados del caso Muñoz González (prototipo, sin SEP/PIE)
+# Mapa de resultados del caso Muñoz González
 
-**Fecha:** 2026-09-03
+**Fecha:** 2026-09-03 (reescrito para el modelo nuevo — bitácora Bloque R)
 **Para qué:** entender qué colegio puede quedar asignado según el orden que elija el/la participante, para el diseño de tareas de la prueba de usabilidad y para el `writing-agent`.
-**Estado del caso:** familia sin cuota SEP ni PIE (revisión Bloque O de `bitacora_flujo_postulacion_y_resultado.md`).
+**Estado del caso:** familia sin cuota SEP ni PIE (Bloque O). Nivel: 4° básico.
 
 ---
 
-## ⚠️ Aclaración importante: esto NO es el algoritmo del SAE
+## Qué modelo describe esto
 
-Lo que sigue describe **`calcularResultado`** de `sae-react/src/utils/asignacion.js` — el **modelo didáctico del prototipo**, no el mecanismo real.
+`src/utils/simulacionSae.js` + `calcularResultado` de `asignacion.js`. Es una **simulación DA-por-colegio**:
 
-**El SAE real** usa **Aceptación Diferida** (Gale–Shapley *student-proposing*, `investigacion_algoritmo_sae.md` §3.1):
+- Para cada colegio, se simula la competencia por sus cupos: `postulantesAnterior` competidores sintéticos (dato real de `colegios.js`) con tramos de prioridad muestreados de `PARAMS_POBLACION`, la **cuota SEP del 15 %** como bloque reservado (fase 1) y el pozo general (fase 2), con un **sorteo aleatorio por colegio**.
+- El **`%` mostrado** es Monte Carlo: 1000 sorteos → fracción en que la familia queda. Es **estable** (semilla fija) y **no depende del orden de la lista**.
+- El **colegio asignado** sale de **un** recorrido determinista de la lista con `SEED_CASO`: la familia "propone" a su 1.ª opción; si ese sorteo no la sienta, propone a la 2.ª; y así.
 
-- Opera **por rondas**: cada estudiante "propone" a su colegio más preferido que aún no lo rechazó; cada colegio **retiene tentativamente** a los mejores según prioridades legales + un **sorteo aleatorio independiente por colegio**, hasta llenar sus vacantes, y rechaza al resto; los rechazados proponen a su siguiente preferencia; un retenido puede ser **desplazado** en rondas posteriores por alguien con mejor prioridad. Termina cuando no hay más propuestas.
-- **No existe un "umbral de probabilidad"**: quedas o no quedas en un colegio según cuántos otros postulantes con igual o mejor prioridad lo pidan, cuántas vacantes haya y cómo caiga el sorteo. El resultado es una **asignación estable** para todo el sistema a la vez.
-- Si un colegio tiene menos postulantes que vacantes, **la ley obliga a admitirlos a todos**.
-- Las cuotas (PIE, 15 % prioritarios, alta exigencia) se modelan como "sub-escuelas" con sus propias vacantes.
-
-**El prototipo no corre nada de esto.** No simula a los demás postulantes, ni cupos reales, ni rondas, ni sorteo. Estima, para **una sola familia ficticia**, una probabilidad aproximada por colegio en función de (a) su nivel de prioridad legal ahí y (b) qué tan disputado está el colegio, y de ahí deduce un desenlace plausible. Es un **proxy de resultados**, pensado para hacer visible una relación —más prioridad / menos demanda → más probable; el orden decide cuál de tus opciones viables te toca—, no para reproducir el mecanismo.
+**⚠️ No es la Aceptación Diferida multi-colegio completa:** no modela que los demás postulantes también tienen listas y se desplazan entre colegios. Para el resultado de *una* familia, con los otros como demanda fija de cada colegio, la aproximación es buena. Sin cuota PIE ni alta exigencia académica. Los parámetros `pHermano`/`pFuncionario`/`pExalumno` son estimaciones (ver Bloque R).
 
 ---
 
-## Qué hace `calcularResultado` (el modelo del prototipo), exacto
+## Probabilidad por colegio (familia del caso, 4° básico)
 
-1. Para cada colegio de la lista calcula `prob = probAsignacion(nivel, demanda)` (tabla fija de 15 valores; `nivel` 1–5 resuelto por `nivelPrioridadEnColegio`, `demanda` = etiqueta del colegio en `colegios.js`). **La `prob` de un colegio no cambia con su posición en la lista.**
-2. `idxAsignado = detalles.findIndex(d => d.prob >= 65)` → **el primer colegio de la lista cuya `prob` estimada llega a 65 %** es la asignación.
-3. **Si ninguno llega a 65 %** (`idxAsignado === -1`): asigna el de **mayor `prob`** de la lista (`reduce` que se queda con el primer índice del máximo → en empate gana el que está más arriba). La página lo presenta en rojo (*"ningún colegio de tu lista alcanza… podrías quedar sin asignación en la ronda principal"*).
-4. Los `estado` de los demás colegios (`sin_cupos` / `prioridad_insuficiente` / `no_evaluado`) son etiquetas de la visualización paso a paso (`AlgoSimuladorPasos`), no estados del SAE real.
+| # | Colegio | Vínculo | demanda · sobredemanda | **`%`** | lectura |
+|---|---|---|---|---|---|
+| 1 | Colegio Los Andes | hermano/a | alta · 3,4× | **99 %** | casi seguro |
+| 3 | Escuela República de Chile | exalumno/a | baja · 0,8× | **99 %** | casi seguro (colegio no sobredemandado → la ley obliga a admitir a todos) |
+| 5 | Colegio Villa del Sol | funcionario/a | alta · 2,9× | **99 %** | casi seguro |
+| 4 | Liceo Técnico Simón Bolívar | — | media · 1,7× | **50 %** | moneda al aire |
+| 6 | Escuela Básica Los Quillayes | — | media · 1,8× | **46 %** | moneda al aire |
+| 2 | **Colegio San Martín** | — | alta · 2,7× | **26 %** | el "colegio en mente": probable que **no** quede |
 
-El umbral `65` y el "modo de descarte" vienen del diseño del simulador V2 (`archivo/CLAUDE_v2.md` §3: *"muestra el primer colegio donde la probabilidad supera el 65 %; si ninguno, el de mayor probabilidad con advertencia"*). Son decisiones pedagógicas, sin calibración empírica (ver bitácora sec. 6 nº 9).
-
----
-
-## Probabilidades fijas del caso (familia sin SEP/PIE)
-
-| # | Colegio | Vínculo de la familia | nivel | demanda | **prob.** | ¿puede ser la asignación? |
-|---|---|---|---|---|---|---|
-| 1 | Colegio Los Andes | hermano/a (Martina matriculada) | 1 | alta | **92 %** | ✅ siempre (≥ 65) |
-| 3 | Escuela República de Chile | exalumno/a (la madre) | 4 | baja | **96 %** | ✅ siempre (≥ 65) |
-| 5 | Colegio Villa del Sol | funcionario/a (el padre) | 3 | alta | **65 %** | ✅ siempre (justo en el umbral, inclusivo) |
-| 4 | Liceo Técnico Simón Bolívar | — | 5 | media | **60 %** | ⚠️ solo por descarte |
-| 6 | **Escuela Básica Los Quillayes** | — (colegio de origen; la continuidad no se modela como prioridad) | 5 | media | **60 %** | ⚠️ solo por descarte |
-| 2 | Colegio San Martín | — (el "colegio en mente") | 5 | alta | **28 %** | ❌ prácticamente nunca |
-
-Se llaman **"viables"** a Los Andes, República de Chile y Villa del Sol (prob ≥ 65).
+**Idea central:** tener cualquier prioridad legal (hermano/a, funcionario/a, exalumno/a) deja el resultado casi asegurado — es fiel, el SAE reserva a esos grupos para que no dependan del sorteo. **Sin vínculo, manda la demanda:** alta → 26 %, media → ~48 %.
 
 ---
 
-## Regla derivada
+## Qué decide el orden de la lista
 
-El desenlace depende **solo de cuál de los tres viables aparece primero** en la lista:
+- El `%` de cada colegio **no cambia** con su posición (strategy-proofness — verificado por test).
+- Lo que el orden decide es **en cuál colegio caés**: la familia recorre su lista y para en el primero donde el sorteo la sienta.
+- Con `SEED_CASO`, cada colegio tiene un desenlace determinista para *ese* sorteo:
+  - Los Andes / República / Villa del Sol → **siempre** sientan (99 %).
+  - San Martín → **no** sienta (cayó en el 74 % que no queda).
+  - Simón Bolívar / Los Quillayes → **sí** sientan con `SEED_CASO` (cayeron en el ~48 % que sí queda). *Ojo:* esto es un sorteo puntual; su `%` mostrado es ~48 %.
 
-- **Si la lista contiene al menos un viable:** la asignación es **el primer viable de la lista**. Su número de preferencia = su posición (contando los no-viables que pusiste antes). Como hay 3 no-viables, un viable puede terminar hasta en 4.ª preferencia.
-- **Si la lista no contiene ningún viable:** modo de descarte → gana el de mayor `prob` entre {Simón Bolívar 60, Los Quillayes 60, San Martín 28} que esté en la lista; en el empate 60–60, el que esté más arriba. Siempre con la alerta roja.
+### Recorridos de ejemplo (con `SEED_CASO`)
 
----
+| Lista | Asignación | Preferencia |
+|---|---|---|
+| `Los Andes · San Martín · …` | Colegio Los Andes | 1.ª |
+| `San Martín · Los Andes · …` | Colegio Los Andes | 2.ª (San Martín se salta) |
+| `San Martín · Simón Bolívar · Los Quillayes · República · …` | **Liceo Técnico Simón Bolívar** | 2.ª |
+| `Los Quillayes · Los Andes · …` | **Escuela Básica Los Quillayes** | 1.ª |
+| `San Martín · San Martín-only…` (lista de 1) | fallback: San Martín, con aviso "podrías quedar sin asignación" | 1.ª |
 
-## Mapa de resultados
-
-| Orden (lo que importa) | Asignación | Preferencia | Cómo lo presenta la página |
-|---|---|---|---|
-| Los Andes antes que República y Villa del Sol | **Los Andes** (92 %) | 1.ª–4.ª | verde; *"prioridad más alta por ley (hermano/a)"* |
-| República antes que Los Andes y Villa del Sol | **República de Chile** (96 %) | 1.ª–4.ª | verde; *"exalumno/a de ese establecimiento"* |
-| Villa del Sol antes que Los Andes y República | **Villa del Sol** (65 %) | 1.ª–4.ª | verde; *"tu apoderado/a trabaja ahí"*. Al 65 % — menos certeza que Los Andes, pero igual queda. Poner Los Andes primero no le habría costado nada |
-| San Martín 1.º, luego un viable | ese viable | 2.ª+ | *"no quedaste en tu primera opción porque…"* |
-| Lista **sin** Los Andes, República ni Villa del Sol, con Simón Bolívar antes que Los Quillayes | **Simón Bolívar** (60 %) | según posición | **alerta roja**: ningún colegio alcanza el umbral |
-| Lista **sin** los tres viables, con **Los Quillayes antes que Simón Bolívar** (o sin Simón Bolívar) | **Escuela Básica Los Quillayes** (60 %) | según posición | **alerta roja** |
-| Lista = solo San Martín | San Martín (28 %) | 1.ª | degenerado (la recomendación es ≥ 6 colegios) |
+**Diferencia clave con el modelo viejo:** antes Simón Bolívar y Los Quillayes tenían 60 % < umbral 65 → **nunca** se asignaban. Ahora, con demanda media, un/a sin-prioridad tiene ~48 % de chance real ahí, así que **sí pueden quedar** si van arriba en la lista — y su orden importa. San Martín (26 %) sigue siendo el que casi nunca queda.
 
 ---
 
 ## Respuestas puntuales
 
 **¿Puede quedar en Escuela Básica Los Quillayes?**
-Sí, pero solo con una lista "mala": hay que **excluir los tres colegios donde la familia tiene prioridad** (Los Andes, República, Villa del Sol) y poner Los Quillayes antes que Simón Bolívar. Ejemplo mínimo:
-
-> `San Martín · Los Quillayes · Simón Bolívar` → asignación **Escuela Básica Los Quillayes** (60 %), preferencia 2, con la alerta *"ningún colegio de tu lista alcanza… podrías quedar sin asignación"*.
+Sí, con probabilidad real (~46 %) si va antes que un colegio con vínculo. Ej.: `Los Quillayes · Los Andes · …` → con `SEED_CASO` queda en Los Quillayes (1.ª opción). Pedagógicamente: "pusiste tu colegio de origen primero y esta vez el sorteo te favoreció".
 
 **¿Puede quedar en Liceo Técnico Simón Bolívar?**
-Igual que Los Quillayes, pero con Simón Bolívar antes que Los Quillayes en una lista sin viables.
+Igual que Los Quillayes (~50 %).
 
 **¿Puede quedar en Colegio San Martín?**
-No, salvo que sea el **único** colegio de la lista. Su 28 % está por debajo de todo lo demás, así que ni el modo de descarte lo elige mientras haya otro colegio.
+Es poco probable (26 %). Con `SEED_CASO` no queda. Si en la prueba la persona lo pone 1.º, el desenlace esperado es que **no** quede y caiga a su siguiente opción con vínculo.
 
 ---
 
 ## Para el diseño de la prueba
 
-- El caso "esperado" (viable como 1.ª opción) y el caso "puse San Martín 1.º y caí en Los Andes" ya están cubiertos.
-- **Anti-patrón observable:** una persona que arma su lista solo con colegios "aspiracionales" donde no tiene vínculo (San Martín, Simón Bolívar, Los Quillayes) y deja fuera los tres donde sí tiene prioridad. Resultado: cae en su colegio de origen (Los Quillayes) por descarte, o queda en riesgo de no-asignación. Enseña que **listar colegios donde tienes un vínculo real es lo que da opciones**, no solo listar los que te gustan.
-- **Villa del Sol 1.º vs Los Andes 1.º:** los dos quedan asignados; sirve para observar si la persona entiende que poner primero el menos seguro (65 %) igual la deja adentro y no perjudica al otro.
+- **Escenario A (esperado):** un colegio con vínculo como 1.ª opción → queda ahí (99 %).
+- **Escenario B (el clave):** San Martín 1.º → no queda → cae a Los Andes en 2.ª preferencia. Observa la reacción a *no* obtener el colegio en mente y si la conecta con el 26 % que la página ya mostraba.
+- **Escenario C (nuevo, más rico que antes):** una lista que mezcla colegios sin vínculo de demanda media (Simón Bolívar, Los Quillayes) → puede quedar en cualquiera de ellos según el orden, con ~50 % de chance cada uno. Enseña que el orden entre opciones "moneda al aire" sí decide cuál te toca.
+- **Anti-patrón:** listar solo colegios sin vínculo → resultado incierto; si van todos de demanda alta (como San Martín), riesgo real de no-asignación.
 
 ## Para el `writing-agent`
 
-Este mapa **no debe** presentarse en la memoria como "el algoritmo del SAE". Si se usa, encuadrarlo como el **comportamiento del simulador del prototipo** y contrastarlo con la Aceptación Diferida real (`investigacion_algoritmo_sae.md` §3.1). Conecta con la tarea pendiente de "argumentar de dónde salen los porcentajes de `probAsignacion`" (`prompt_pendientes_revision_caso_sin_sep.md`, Tarea 2).
+Encuadrar como el **comportamiento del simulador del prototipo** y contrastarlo con la Aceptación Diferida real (`investigacion_algoritmo_sae.md §3.1`). Los parámetros de población son un supuesto metodológico documentado, parcialmente anclado a 2018 (`pSep`); la calibración con microdatos queda fuera de alcance. Ver bitácora Bloque R.

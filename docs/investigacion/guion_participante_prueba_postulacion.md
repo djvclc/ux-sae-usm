@@ -2,7 +2,7 @@
 
 **Qué es esto:** el texto que se lee o entrega a quien participa en la prueba de usabilidad, antes de empezar la tarea en `/postulacion`. No explica la lógica del algoritmo ni el motivo real del estudio, para no sesgar sus decisiones. Basado en `caso_estudio_prueba_usabilidad_postulacion.md`.
 
-> **v2 (2026-09-03):** la familia **ya no es prioritaria por ingresos** ni Sofía tiene PIE (revisión del caso, bitácora Bloque O). Sus únicos vínculos son: Martina en Colegio Los Andes (→ hermano/a), Rodrigo en Villa del Sol (→ funcionario/a), Daniela exalumna de República de Chile (→ exalumno/a). El **Colegio San Martín** no tiene ningún vínculo y es de demanda alta → la página le mostrará una probabilidad baja (28 %). Si `material_prueba_usabilidad_postulacion.pdf` se armó desde otras fuentes además de este `.md`, revisarlo también.
+> **v2 (2026-09-03):** la familia **ya no es prioritaria por ingresos** ni Sofía tiene PIE (revisión del caso, bitácora Bloque O). Sus únicos vínculos son: Martina en Colegio Los Andes (→ hermano/a), Rodrigo en Villa del Sol (→ funcionario/a), Daniela exalumna de República de Chile (→ exalumno/a). El **Colegio San Martín** no tiene ningún vínculo y es de demanda alta → la página le mostrará una probabilidad baja (≈26 %). Si `material_prueba_usabilidad_postulacion.pdf` se armó desde otras fuentes además de este `.md`, revisarlo también.
 
 ---
 

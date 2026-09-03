@@ -88,7 +88,7 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 "Antes de confirmar, tomate un momento para leer lo que la pagina te muestra sobre cada colegio y sobre el orden que elegiste. Cuentame que vas entendiendo."
 
-*En el Colegio San Martin la pagina muestra "28% estimado" y "entras solo por el sorteo: no tienes ninguna prioridad en este colegio". Observa la reaccion a ese numero bajo.*
+*En el Colegio San Martin la pagina muestra "~26% estimado" y "entras solo por el sorteo: no tienes ninguna prioridad en este colegio". Observa la reaccion a ese numero bajo.*
 
 *La pagina tambien muestra un recuadro "Con este orden, donde quedarias?" que se actualiza si la persona reordena la lista. Si la persona mueve algun colegio, observa si mira ese recuadro y si entiende que los porcentajes no cambian pero si cambia en cual colegio queda.*
 
@@ -108,7 +108,7 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 *Deja que haga clic y lea el resultado.*
 
-*Desenlace esperado con este caso: si puso San Martin primero, NO queda ahi (28%) y el sistema la asigna a Colegio Los Andes en 2a preferencia, por el hermano. Observa la reaccion a no haber obtenido el colegio en mente.*
+*Desenlace esperado con este caso: si puso San Martin primero, NO queda ahi (~26%) y el sistema la asigna a Colegio Los Andes en 2a preferencia, por el hermano. Observa la reaccion a no haber obtenido el colegio en mente.*
 
 "Era lo que esperabas? Por que crees que paso esto?"
 

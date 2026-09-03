@@ -131,8 +131,8 @@ export const colegios = [
     distanciaBase: 5.1,
     niveles: ['Básico', 'Medio'],
     vacantes: [
-      { nivel: 'basico', label: '1°–8° Básico',  min: 33, max: 37, postulantesAnterior: 42, jornada: 'Completa', copago: 0 },
-      { nivel: 'medio',  label: '1°–4° Medio',   min: 38, max: 42, postulantesAnterior: 55, jornada: 'Completa', copago: 0 },
+      { nivel: 'basico', label: '1°–8° Básico',  min: 33, max: 37, postulantesAnterior: 60, jornada: 'Completa', copago: 0 },
+      { nivel: 'medio',  label: '1°–4° Medio',   min: 38, max: 42, postulantesAnterior: 68, jornada: 'Completa', copago: 0 },
     ],
     simce: { lectura: 260, matematica: 255, ciencias: 258, historia: 252 },
     simceAnio: '2024',
@@ -198,9 +198,9 @@ export const colegios = [
     distanciaBase: 1.8,
     niveles: ['Prekínder', 'Kínder', 'Básico'],
     vacantes: [
-      { nivel: 'preKinder', label: 'Prekínder',   min: 28, max: 32, postulantesAnterior: 35, jornada: 'Completa', copago: 0 },
-      { nivel: 'kinder',    label: 'Kínder',       min: 26, max: 30, postulantesAnterior: 31, jornada: 'Completa', copago: 0 },
-      { nivel: 'basico',    label: '1°–8° Básico', min: 33, max: 37, postulantesAnterior: 48, jornada: 'Completa', copago: 0 },
+      { nivel: 'preKinder', label: 'Prekínder',   min: 28, max: 32, postulantesAnterior: 44, jornada: 'Completa', copago: 0 },
+      { nivel: 'kinder',    label: 'Kínder',       min: 26, max: 30, postulantesAnterior: 42, jornada: 'Completa', copago: 0 },
+      { nivel: 'basico',    label: '1°–8° Básico', min: 33, max: 37, postulantesAnterior: 62, jornada: 'Completa', copago: 0 },
     ],
     simce: { lectura: 249, matematica: 245, ciencias: 242, historia: 244 },
     simceAnio: '2024',

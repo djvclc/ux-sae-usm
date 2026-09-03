@@ -1,4 +1,12 @@
 import { colegios } from '../data/colegios'
+import {
+  SEED_CASO,
+  mulberry32,
+  probabilidadCupo,
+  simularCupo,
+  tramoFamiliaEnColegio,
+  vacantesDeNivel,
+} from './simulacionSae'
 
 export const prioridadLabels = {
   1: 'Hermano/a matriculado/a',
@@ -22,8 +30,7 @@ export const PRIORIDADES_POR_COLEGIO = ['hermano', 'funcionario', 'exalumno']
 const NIVEL_ESPECIFICO = { hermano: 1, funcionario: 3, exalumno: 4 }
 
 /* Nivel de prioridad GLOBAL del perfil.
-   Se conserva como valor representativo para compatibilidad con consumidores
-   que aún no distinguen por colegio (p. ej. cuando la lista está vacía). */
+   Valor representativo para etiquetas cuando no hay colegio concreto. */
 export function nivelPrioridad(perfil) {
   if (perfil?.hermano) return 1
   if (perfil?.prioritario) return 2
@@ -32,15 +39,9 @@ export function nivelPrioridad(perfil) {
   return 5
 }
 
-/* S22-11 (refinamiento): nivel de prioridad de la familia EN UN COLEGIO CONCRETO.
-   Resuelve el mejor nivel (número más bajo) entre:
-   - la prioridad transversal `prioritario` (cuota SEP 15 %), y
-   - las prioridades específicas que la familia declaró para ESE colegio.
-
-   Compatibilidad: si el perfil no trae `prioridadesPorColegio` (p. ej. el
-   simulador de /algoritmo, que no modela vínculos por colegio), se asume que
-   las condiciones marcadas a nivel de perfil aplican en el colegio — es el
-   comportamiento previo a este refinamiento. */
+/* Nivel de prioridad de la familia EN UN COLEGIO CONCRETO (1–5). Se usa para las
+   ETIQUETAS ("Prioridad aplicada", "certeza muy alta") — la probabilidad ya no
+   sale de acá, sale de la simulación (`simulacionSae.js`). */
 export function nivelPrioridadEnColegio(perfil = {}, colegioId) {
   const mapa = perfil?.prioridadesPorColegio
   const especificas = mapa
@@ -55,77 +56,103 @@ export function nivelPrioridadEnColegio(perfil = {}, colegioId) {
   return Math.min(...niveles)
 }
 
-export function probAsignacion(nivel, demanda) {
-  const tabla = {
-    alta: { 1: 92, 2: 88, 3: 65, 4: 60, 5: 28 },
-    media: { 1: 96, 2: 90, 3: 78, 4: 75, 5: 60 },
-    baja: { 1: 99, 2: 98, 3: 96, 4: 96, 5: 92 },
-  }
-  return tabla[demanda][nivel]
+/* Nivel del/de la estudiante por defecto cuando el consumidor no lo pasa
+   (p. ej. el simulador de /algoritmo, que es un explicador genérico). */
+const NIVEL_POR_DEFECTO = '1° básico'
+
+/* Convierte la probabilidad cruda (0..1) de `probabilidadCupo` en el entero que
+   se muestra. Acota a [1, 99]: un sistema con sorteo nunca garantiza ni prohíbe
+   por completo un cupo, así que no mostramos 0 % ni 100 % exactos. */
+export function probPorcentaje(pRaw) {
+  if (pRaw === null || pRaw === undefined) return null
+  return Math.min(99, Math.max(1, Math.round(pRaw * 100)))
 }
 
-export function calcularResultado(listaIds = [], perfil = {}) {
+/* ── Resultado de la postulación ──
+   Modelo nuevo (2026-09-03, plan C): la probabilidad por colegio se ESTIMA con
+   Monte Carlo sobre una simulación DA-por-colegio (ver `simulacionSae.js`); el
+   colegio asignado sale de UN recorrido determinista de la lista con semilla fija
+   (`SEED_CASO`): la familia propone a su 1.ª opción, y si el sorteo + su prioridad
+   no la sientan, pasa a la 2.ª, etc. Ya no hay tabla `probAsignacion` ni umbral 65. */
+export function calcularResultado(listaIds = [], perfil = {}, nivelAlumno = NIVEL_POR_DEFECTO) {
   if (!listaIds.length) {
-    return {
-      error: 'Debes agregar al menos un colegio.',
-      asignado: null,
-      detalles: [],
-    }
+    return { error: 'Debes agregar al menos un colegio.', asignado: null, detalles: [] }
   }
+  const nivel = nivelAlumno || NIVEL_POR_DEFECTO
 
-  const detalles = listaIds
+  const base = listaIds
     .map((id, idx) => {
       const colegio = colegios.find((c) => c.id === id)
       if (!colegio) return null
-      // S22-11 (refinamiento): el nivel se resuelve POR COLEGIO, no global
-      const nivel = nivelPrioridadEnColegio(perfil, id)
+      const tramo = tramoFamiliaEnColegio(perfil, id)
+      const nivelEtq = nivelPrioridadEnColegio(perfil, id)
+      const pRaw = probabilidadCupo(colegio, nivel, tramo)
       return {
         id: colegio.id,
         idx: idx + 1,
         nombre: colegio.nombre,
         comuna: colegio.comuna,
         demanda: colegio.demanda,
-        nivel,
-        prioridadLabel: prioridadLabels[nivel],
-        prob: probAsignacion(nivel, colegio.demanda),
+        nivel: nivelEtq,
+        prioridadLabel: prioridadLabels[nivelEtq],
+        ofreceNivel: pRaw !== null,
+        prob: probPorcentaje(pRaw),
         estado: 'evaluado',
       }
     })
     .filter(Boolean)
 
-  const idxAsignado = detalles.findIndex((d) => d.prob >= 65)
-  let asignado
+  // Recorrido determinista de la lista, un solo sorteo por colegio (semilla fija).
+  const rng = mulberry32(SEED_CASO)
+  let idxAsignado = -1
+  const detalles = base.map((d, i) => {
+    if (!d.ofreceNivel) return { ...d, estado: 'sin_nivel' }
+    const colegio = colegios.find((c) => c.id === d.id)
+    const tramo = tramoFamiliaEnColegio(perfil, d.id)
+    const sim = simularCupo(colegio, nivel, tramo, rng)
+    const salida = { ...d, simulacion: sim }
+    if (idxAsignado === -1 && sim.seated) {
+      idxAsignado = i
+      salida.estado = 'asignado'
+    } else if (idxAsignado === -1) {
+      // no quedó y todavía no hay asignación: etiqueta según qué tan fuerte era su prioridad
+      salida.estado = d.nivel <= 2 ? 'sin_cupos' : 'prioridad_insuficiente'
+    } else {
+      salida.estado = 'no_evaluado'
+    }
+    return salida
+  })
 
-  if (idxAsignado === -1) {
-    const mejorIdx = detalles.reduce(
-      (best, item, i) => (item.prob > detalles[best].prob ? i : best),
-      0,
-    )
-    detalles.forEach((d, i) => {
-      if (i === mejorIdx) d.estado = 'asignado'
-      else d.estado = d.nivel <= 2 ? 'sin_cupos' : 'prioridad_insuficiente'
-    })
-    asignado = detalles[mejorIdx]
-  } else {
-    detalles.forEach((d, i) => {
-      if (i < idxAsignado) d.estado = d.nivel <= 2 ? 'sin_cupos' : 'prioridad_insuficiente'
-      else if (i === idxAsignado) d.estado = 'asignado'
-      else d.estado = 'no_evaluado'
-    })
+  let asignado
+  if (idxAsignado !== -1) {
     asignado = detalles[idxAsignado]
+  } else {
+    // No quedó en ninguna preferencia. En el SAE real acá entra la "asignación por
+    // cercanía"; el prototipo muestra el de mayor probabilidad estimada con aviso.
+    const conProb = detalles.filter((d) => d.prob !== null)
+    if (conProb.length) {
+      const mejor = conProb.reduce((b, d) => (d.prob > b.prob ? d : b), conProb[0])
+      const i = detalles.findIndex((d) => d.id === mejor.id)
+      detalles[i] = { ...detalles[i], estado: 'asignado' }
+      asignado = detalles[i]
+    } else {
+      asignado = null
+    }
   }
 
-  /* S22-11 (refinamiento): `nivel`/`prioridadLabel` de nivel superior son un
-     valor REPRESENTATIVO (el del colegio asignado, que es la "prioridad
-     aplicada" que ve la familia). Para el detalle por colegio usar
-     `d.nivel` / `d.prioridadLabel` de cada entrada de `detalles`. */
   const nivelRep = asignado ? asignado.nivel : nivelPrioridad(perfil)
-
   return {
     error: null,
     asignado,
     detalles,
     nivel: nivelRep,
     prioridadLabel: prioridadLabels[nivelRep],
+    // true si la asignación fue por el fallback (ningún colegio de la lista sentó a la familia)
+    sinAsignacionEnPreferencias: idxAsignado === -1,
   }
 }
+
+/* Compatibilidad: algunos consumidores llamaban `probAsignacion(nivel, demanda)`.
+   Ahora la probabilidad necesita el colegio (vacantes, postulantes) y el nivel
+   del estudiante, así que se expone la función real. Ver `simulacionSae.js`. */
+export { probabilidadCupo, tramoFamiliaEnColegio, vacantesDeNivel }

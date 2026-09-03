@@ -4,7 +4,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios, colegiosById, totalVacantes } from '../data/colegios'
-import { calcularResultado, prioridadLabels, probAsignacion, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
+import { calcularResultado, prioridadLabels, probabilidadCupo, probPorcentaje, tramoFamiliaEnColegio, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
 import { formatearRut, rutValido } from '../utils/rut'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
@@ -593,27 +593,35 @@ function ResultadoProvisional({ resultado, modoTutorial }) {
    S22-11 (refinamiento): el nivel y el % son los DE ESTE COLEGIO. */
 function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
   const nivel = nivelPrioridadEnColegio(perfilCompleto, colegio.id)
-  const prob  = probAsignacion(nivel, colegio.demanda)
+  // Modelo nuevo (plan C): la probabilidad se estima simulando la competencia real
+  // por los cupos de ESTE colegio (`probabilidadCupo` en simulacionSae.js).
+  const prob = probPorcentaje(
+    probabilidadCupo(colegio, nivelAlumno, tramoFamiliaEnColegio(perfilCompleto, colegio.id)),
+  )
   // S22-11: postulantes del año anterior y vacantes por nivel como fundamento del % estimado
   const vacNivel = vacantesDeNivel(colegio, nivelAlumno)
 
-  const probClass = prob >= 80 ? 'alta' : prob >= 60 ? 'media' : 'baja'
+  const probClass = prob === null ? 'media' : prob >= 80 ? 'alta' : prob >= 60 ? 'media' : 'baja'
 
   return (
     <div className="tut-colegio-info">
       <div className="tut-colegio-info__header">
         <span className="tut-colegio-info__orden">Opción {orden}</span>
-        <span className={`tut-prob tut-prob--${probClass}`}>{prob}% estimado</span>
+        <span className={`tut-prob tut-prob--${probClass}`}>
+          {prob === null ? 'sin nivel' : `${prob}% estimado`}
+        </span>
       </div>
       <p className="tut-colegio-info__nombre">{colegio.nombre}</p>
       {/* P1 · S22-11 (refinamiento): versión visual del formato de frecuencia
           (RISK-NUM). Variante "barra" por el ancho reducido dentro de .post-item
           a 375px. Acompaña al chip "{prob}% estimado" y a la categoría cualitativa. */}
-      <ProbabilidadVisual
-        prob={prob}
-        variante="barra"
-        sentencia={`Probabilidad estimada en ${colegio.nombre}: ${Math.round(prob)} de cada 100 postulantes en tu misma condición quedan asignados.`}
-      />
+      {prob !== null && (
+        <ProbabilidadVisual
+          prob={prob}
+          variante="barra"
+          sentencia={`Probabilidad estimada en ${colegio.nombre}: ${prob} de cada 100 postulantes en tu misma condición quedan asignados.`}
+        />
+      )}
       <ul className="tut-colegio-info__lista">
         <li>
           <span>Demanda:</span>
@@ -765,8 +773,8 @@ export default function PostulacionPage() {
   )
 
   const resultado = useMemo(
-    () => calcularResultado(lista, perfilCompleto),
-    [lista, perfilCompleto],
+    () => calcularResultado(lista, perfilCompleto, alumnoNivel),
+    [lista, perfilCompleto, alumnoNivel],
   )
 
   // S4 (refinamiento): hermano/funcionario/exalumno se declaran SIEMPRE por colegio

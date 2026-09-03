@@ -54,8 +54,13 @@ function generarExplicacion(asignado) {
   }
 
   if (asignado.idx > 1) {
+    // S22-13 (refinamiento): concordancia singular/plural — con la variante sin SEP
+    // este mensaje aparece por primera vez de verdad (antes era código muerto).
+    const nPrevias = asignado.idx - 1
+    const cuales = nPrevias === 1 ? 'tu primera opción' : `tus primeras ${nPrevias} opciones`
+    const eseColegio = nPrevias === 1 ? 'ese colegio tenía' : 'esos colegios tenían'
     partes.push(
-      `No quedaste en tus primeras ${asignado.idx - 1} opcion${asignado.idx > 2 ? 'es' : ''} porque ese colegio tenía más postulantes con prioridad mayor o no había vacantes disponibles para tu nivel de prioridad.`
+      `No quedaste en ${cuales} porque ${eseColegio} más postulantes con prioridad mayor o no había vacantes disponibles para tu nivel de prioridad.`
     )
   } else {
     partes.push('¡Quedaste en tu primera opción!')

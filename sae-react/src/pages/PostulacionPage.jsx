@@ -19,6 +19,35 @@ const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 // PerfilPage.jsx.
 const PERFIL_KEY = 'sae_react_perfil'
 
+/* S4 (refinamiento) — atajo de la prueba de usabilidad: perfil precargado de la
+   familia del caso de estudio (docs/investigacion/caso_estudio_prueba_usabilidad_postulacion.md).
+   El botón "Cargar caso de ejemplo" del paso 1 escribe esto en PERFIL_KEY para
+   que la persona no tenga que tipear los datos del/de la estudiante ni la
+   dirección — reduce el tiempo de la sesión sin alterar lo que se testea
+   (ordenar la lista, reaccionar a las advertencias, ver el resultado).
+
+   S22-13 (refinamiento, 2026-09-03): la familia Muñoz González NO es prioritaria
+   (sin SEP ni PIE). Sus únicas ventajas son los vínculos por colegio (hermano/a
+   en Los Andes, funcionario/a en Villa del Sol, exalumno/a en República). Así el
+   "colegio en mente" (San Martín: sin vínculo + demanda alta) da 28 % y refleja
+   un resultado incierto — que es lo que la prueba necesita observar. El marcador
+   `caso` habilita la vista de vínculos por establecimiento en el panel del paso 1. */
+const CASO_EJEMPLO = {
+  caso: 'munoz-gonzalez',
+  nombre: 'Sofía Muñoz González',
+  rut: '25.123.456-7',
+  nivel: '4° básico',
+  prioritario: false,
+  pie: false,
+  region: 'RM',
+  comuna: 'La Florida',
+  calle: 'Av. Los Aromos 123',
+  // Hermano que postula en bloque (caso de estudio §2: Mateo, 6.º básico → postula a 7.º).
+  hermanoNombre: 'Mateo Muñoz González',
+  hermanoRut: '25.234.567-8',
+  hermanoNivel: '7° básico',
+}
+
 /* Lee el perfil del estudiante guardado en /perfil. Devuelve siempre un objeto
    con forma estable; tolera perfiles antiguos (`condiciones.prioritario`). */
 function cargarPerfilEstudiante() {
@@ -30,9 +59,14 @@ function cargarPerfilEstudiante() {
       rut: typeof p.rut === 'string' ? p.rut : '',
       nivel: typeof p.nivel === 'string' ? p.nivel : '',
       prioritario: !!(p.prioritario ?? p.condiciones?.prioritario),
+      // PIE vigente — dato a nivel de estudiante que el Estado ya conoce. En este
+      // prototipo es SOLO informativo: no lo procesa asignacion.js (ver §5 y §9
+      // de caso_estudio_prueba_usabilidad_postulacion.md, gap de cálculo abierto).
+      pie: !!(p.pie ?? p.condiciones?.pie),
+      caso: typeof p.caso === 'string' ? p.caso : '',
     }
   } catch {
-    return { nombre: '', rut: '', nivel: '', prioritario: false }
+    return { nombre: '', rut: '', nivel: '', prioritario: false, pie: false, caso: '' }
   }
 }
 
@@ -119,6 +153,19 @@ const PRIORIDADES_INFO = {
   },
 }
 
+/* S4 (refinamiento) · transparencia (HAX G1): vínculos por establecimiento que el
+   Estado ya conoce por el RUN del/de la estudiante (hermano/a matriculado/a,
+   apoderado/a funcionario/a o exalumno/a). En el SAE real llegan resueltos tras
+   ClaveÚnica; aquí se leen del catálogo (colegios.js `casoPrioridades`, la misma
+   semilla que usa el paso 2). Es solo lo que se MUESTRA en el panel de
+   "condiciones detectadas": la declaración efectiva sigue ocurriendo al agregar
+   cada colegio. Se muestra únicamente con el caso de ejemplo cargado. */
+const VINCULOS_DETECTADOS = colegios.flatMap((c) =>
+  (c.casoPrioridades ?? [])
+    .filter((k) => PRIORIDADES_POR_COLEGIO.includes(k))
+    .map((k) => ({ colegio: c.nombre, clave: k, info: PRIORIDADES_INFO[k] })),
+)
+
 /* ── Caja de información contextual ── */
 function InfoBox({ icono, titulo, children, tipo = 'info', className = '' }) {
   const colores = {
@@ -142,6 +189,59 @@ function InfoBox({ icono, titulo, children, tipo = 'info', className = '' }) {
       )}
       {children}
     </div>
+  )
+}
+
+/* ── Panel de "condiciones detectadas" (paso 1, tras ClaveÚnica) ──
+   S4 (refinamiento) · transparencia (HAX G1, investigacion_ux_guide_ai_systems.md §2):
+   apenas la persona ingresa, el sistema le muestra lo que YA sabe del/de la
+   estudiante en vez de pedírselo. Es de solo lectura: la condición SEP y el PIE
+   los determina el Estado (aquí se configuran en /perfil solo para la
+   simulación); los vínculos por establecimiento se confirman al agregar cada
+   colegio en el paso 2. El PIE se muestra como información y NO cambia el
+   porcentaje estimado (asignacion.js intacto). */
+function CondicionesDetectadas({ prioritario, pie, mostrarVinculos }) {
+  const sinNada = !prioritario && !pie && !mostrarVinculos
+  return (
+    <InfoBox icono="🔎" titulo="Esto es lo que el sistema ya sabe de tu hijo/a" tipo="info">
+      <p>
+        Con tu <strong>ClaveÚnica</strong>, el sistema recupera las condiciones que ya
+        están registradas en el Estado. No tienes que volver a declararlas.
+      </p>
+      <ul className="cond-detectadas">
+        {prioritario && (
+          <li>
+            <strong>🏫 Estudiante prioritario/a (SEP).</strong> La determina el MINEDUC con el{' '}
+            <abbr title="Registro Social de Hogares">Registro Social de Hogares</abbr>. Vale en{' '}
+            <strong>todos</strong> los colegios de tu lista: cada uno reserva el 15 % de sus cupos.
+          </li>
+        )}
+        {pie && (
+          <li>
+            <strong>♿ Programa de Integración Escolar (<abbr title="Programa de Integración Escolar">PIE</abbr>) vigente.</strong>{' '}
+            Da prioridad en los colegios que tengan programa PIE.{' '}
+            <em>En este prototipo se muestra como información: todavía no se refleja en el porcentaje estimado.</em>
+          </li>
+        )}
+        {mostrarVinculos && VINCULOS_DETECTADOS.map(({ colegio, clave, info }) => (
+          <li key={colegio + clave}>
+            <strong>{info.icono} {info.label}</strong> en <strong>{colegio}</strong>.{' '}
+            Se confirma cuando agregas ese colegio a tu lista (paso 2).
+          </li>
+        ))}
+        {sinNada && (
+          <li>
+            No hay condiciones de prioridad registradas para este/a estudiante. Podrás
+            declarar un vínculo con cada colegio en el paso 2.
+          </li>
+        )}
+      </ul>
+      <p style={{ marginBottom: 0 }}>
+        ¿Algo no calza? <Link to="/perfil" className="link-inline">Revísalo en Mis datos</Link>.
+        {' '}En el sistema real, la condición SEP y el PIE llegan ya cargados; aquí se
+        configuran en Mis datos solo para la simulación.
+      </p>
+    </InfoBox>
   )
 }
 
@@ -326,49 +426,164 @@ function AgregarColegioModal({ colegio, nivelAlumno, onConfirmar, onCancelar }) 
   )
 }
 
-/* ── S22-11 (refinamiento) · S4 (refinamiento): control para declarar prioridad POR COLEGIO ──
+/* ── S22-11 (refinamiento) · S4 (refinamiento): prioridad POR COLEGIO ──
    `hermano`, `funcionario` y `exalumno` solo valen en el establecimiento donde
-   la familia tiene ese vínculo, así que se declaran colegio por colegio (no hay
-   chips globales que los "activen"). `prioritario` (SEP, 15 %) NO aparece: no se
-   elige en el flujo, viene de /perfil y se muestra como información en el paso 1. */
-function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda }) {
-  if (!claves.length) return null
+   la familia tiene ese vínculo. `prioritario` (SEP, 15 %) NO aparece: viene de
+   /perfil y se muestra en el paso 1.
+
+   S4 (refinamiento, 2026-09-02) — "el sistema lo detecta, no lo pregunta":
+   - `hermano/a` lo VERIFICA el sistema por RUN contra el registro de matrícula →
+     se muestra siempre de solo lectura (detectado / no detectado).
+   - `funcionario/a` y `exalumno/a` los DECLARA la familia y los valida el colegio
+     → chips editables… salvo con el caso de ejemplo cargado (`soloDeteccion`),
+     donde `casoPrioridades` ya trae la respuesta de los 6 colegios y todo se
+     muestra de solo lectura, con un `<details>` de corrección por si algo no calza.
+   La fuente de la "detección" es `colegio.casoPrioridades`, sembrada en `valores`
+   al agregar el colegio (`agregar()`). No cambia `asignacion.js`. */
+const PRIO_PROVENIENCIA = {
+  hermano: 'verificado con el registro de matrícula',
+  funcionario: 'declarado; lo valida el colegio',
+  exalumno: 'declarado; lo valida el colegio',
+}
+
+function chipAyuda(clave, onAyuda) {
   return (
-    <div className="post-prio-colegio">
+    <button
+      type="button"
+      className="chip-help-btn"
+      onClick={() => onAyuda(clave)}
+      aria-label={`Saber más sobre ${PRIORIDADES_INFO[clave].label}`}
+      title="Clic para más información"
+    >
+      ?
+    </button>
+  )
+}
+
+function filaDetectada(clave, valores, onAyuda) {
+  const info = PRIORIDADES_INFO[clave]
+  const on = !!valores[clave]
+  return (
+    <li key={clave} className={`post-prio-det ${on ? 'post-prio-det--on' : 'post-prio-det--off'}`}>
+      <span aria-hidden="true">{on ? '✓ ' : '— '}</span>
+      {info.icono} <strong>{info.label}</strong>
+      {on ? ` — ${PRIO_PROVENIENCIA[clave]}` : ' — no detectado'}
+      {' '}{chipAyuda(clave, onAyuda)}
+    </li>
+  )
+}
+
+function chipEditable(clave, colegioId, valores, onToggle, onAyuda) {
+  const info = PRIORIDADES_INFO[clave]
+  const on = !!valores[clave]
+  return (
+    <Fragment key={clave}>
+      <button
+        type="button"
+        className={`chip-btn ${on ? 'chip-btn--on' : ''}`}
+        aria-pressed={on}
+        onClick={() => onToggle(colegioId, clave)}
+      >
+        {info.icono} {info.label}
+      </button>
+      {chipAyuda(clave, onAyuda)}
+    </Fragment>
+  )
+}
+
+function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda, soloDeteccion, tieneSEP }) {
+  if (!claves.length) return null
+
+  const activas = claves.filter((k) => valores[k])
+  const declarables = claves.filter((k) => k !== 'hermano') // funcionario/a, exalumno/a
+
+  return (
+    <div className={`post-prio-colegio${soloDeteccion ? ' post-prio-colegio--deteccion' : ''}`}>
       <p className="post-prio-colegio__titulo">
-        ¿Tienes alguna de estas prioridades <strong>en {colegio.nombre}</strong>?
+        Prioridad <strong>en {colegio.nombre}</strong>
       </p>
-      <div className="chip-row" style={{ margin: '6px 0 0' }}>
-        {claves.map((clave) => {
-          const info = PRIORIDADES_INFO[clave]
-          const on = !!valores[clave]
-          return (
-            <Fragment key={clave}>
-              <button
-                type="button"
-                className={`chip-btn ${on ? 'chip-btn--on' : ''}`}
-                aria-pressed={on}
-                onClick={() => onToggle(colegio.id, clave)}
-              >
-                {info.icono} {info.label}
-              </button>
-              <button
-                type="button"
-                className="chip-help-btn"
-                onClick={() => onAyuda(clave)}
-                aria-label={`Saber más sobre ${info.label}`}
-                title="Clic para más información"
-              >
-                ?
-              </button>
-            </Fragment>
-          )
-        })}
-      </div>
-      <span className="form-hint" style={{ display: 'block', marginTop: 4 }}>
-        Marca solo el colegio donde de verdad tienes ese vínculo. Si no marcas ninguno, en este colegio entras al desempate general (o por tu cuota de estudiante prioritario/a, si la tienes registrada).
-      </span>
+
+      {soloDeteccion ? (
+        <>
+          {activas.length > 0 ? (
+            <ul className="post-prio-colegio__detectadas">
+              {activas.map((k) => filaDetectada(k, valores, onAyuda))}
+            </ul>
+          ) : (
+            <span className="form-hint" style={{ display: 'block' }}>
+              No detectamos ningún vínculo con {colegio.nombre}.{' '}
+              {tieneSEP
+                ? <>Aquí entras por tu cuota de estudiante prioritario/a (SEP) o por el sorteo general.</>
+                : <>Aquí entras <strong>solo por el sorteo</strong>: no tienes ninguna prioridad en este colegio.</>}
+            </span>
+          )}
+          <details className="post-prio-colegio__correccion">
+            <summary>¿Algo no calza? Corregir</summary>
+            <div className="chip-row" style={{ margin: '6px 0 0' }}>
+              {claves.map((k) => chipEditable(k, colegio.id, valores, onToggle, onAyuda))}
+            </div>
+          </details>
+        </>
+      ) : (
+        <>
+          {/* hermano/a: lo verifica el sistema → solo lectura */}
+          <ul className="post-prio-colegio__detectadas">
+            {filaDetectada('hermano', valores, onAyuda)}
+          </ul>
+          {/* funcionario/a y exalumno/a: la familia los declara */}
+          <p className="form-hint" style={{ margin: '2px 0 4px' }}>
+            ¿Tienes uno de estos vínculos con {colegio.nombre}? Decláralo — el colegio lo verificará.
+          </p>
+          <div className="chip-row" style={{ margin: '2px 0 0' }}>
+            {declarables.map((k) => chipEditable(k, colegio.id, valores, onToggle, onAyuda))}
+          </div>
+        </>
+      )}
     </div>
+  )
+}
+
+/* ── Resultado provisional con el orden actual de la lista ──
+   S22-13 (refinamiento, 2026-09-03): al reordenar, los porcentajes por colegio NO
+   cambian (es lo correcto: el mecanismo es a prueba de estrategia). Lo que sí
+   cambia es EN CUÁL COLEGIO quedas asignado, porque el sistema recorre la lista
+   en orden y para en el primero donde la probabilidad estimada alcanza el umbral.
+   Antes eso solo se veía tras confirmar; ahora se muestra en vivo en el paso 2 y
+   en el paso 3 (HAX G16 — comunicar la consecuencia de la acción del usuario).
+   Usa `resultado` (useMemo sobre `lista`), así que se actualiza al arrastrar. */
+function ResultadoProvisional({ resultado, modoTutorial }) {
+  if (resultado.error || !resultado.asignado) return null
+  const a = resultado.asignado
+  const alcanza = a.prob >= 65
+  return (
+    <InfoBox
+      icono={alcanza ? '🎯' : '⚠️'}
+      titulo="Con este orden, ¿dónde quedarías?"
+      tipo={alcanza ? 'info' : 'alerta'}
+    >
+      {alcanza ? (
+        <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
+          La simulación te asignaría en <strong>{a.nombre}</strong>
+          {a.idx === 1
+            ? <> — es tu <strong>primera opción</strong>.</>
+            : <> — tu <strong>preferencia N° {a.idx}</strong>. No quedarías en {a.idx === 2 ? 'la de más arriba' : `las ${a.idx - 1} de más arriba`} porque su probabilidad estimada no alcanza.</>}
+        </p>
+      ) : (
+        <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
+          Ningún colegio de tu lista alcanza con tu perfil. La simulación te asignaría en el de
+          mayor probabilidad (<strong>{a.nombre}</strong>, {a.prob}%), pero en el proceso real
+          podrías quedar sin asignación en la ronda principal — agrega colegios de demanda media o baja.
+        </p>
+      )}
+      {modoTutorial && (
+        <p style={{ marginBottom: 0 }}>
+          El sistema recorre tu lista <strong>en el orden que elegiste</strong> y te asigna al
+          primer colegio donde tu probabilidad estimada alcanza. Reordenar
+          {' '}<strong>no cambia los porcentajes</strong>, pero sí puede cambiar en cuál quedas:
+          por eso conviene poner primero el que más quieres.
+        </p>
+      )}
+    </InfoBox>
   )
 }
 
@@ -443,6 +658,24 @@ function cargarBorradorInicial() {
   } catch { return [] }
 }
 
+/* S22-13 (refinamiento, 2026-09-02): siembra las prioridades específicas de cada
+   colegio que venga de un borrador guardado. Esos colegios NO pasan por
+   `agregar()` (que es donde normalmente se siembran desde `colegios.js`
+   `casoPrioridades`), así que sin esto el paso 2 mostraría "sin vínculo detectado"
+   para, p. ej., Colegio Los Andes tras recargar la página. Mismo criterio que
+   `agregar()`: se siembra para cualquier perfil (el catálogo modela una sola
+   familia). */
+function sembrarPrioridadesDeBorrador() {
+  const mapa = {}
+  for (const id of cargarBorradorInicial()) {
+    const cp = (colegiosById[id]?.casoPrioridades ?? []).filter((k) =>
+      PRIORIDADES_POR_COLEGIO.includes(k),
+    )
+    if (cp.length) mapa[id] = Object.fromEntries(cp.map((k) => [k, true]))
+  }
+  return mapa
+}
+
 /* ── Componente principal ── */
 export default function PostulacionPage() {
   const { textoGrande } = useTextSize()
@@ -453,10 +686,12 @@ export default function PostulacionPage() {
   const [rutTocado, setRutTocado] = useState(false)
   // S4 (refinamiento): datos del estudiante que vienen de /perfil (fuente única).
   // `prioritario` (SEP) NO es editable en el flujo: se muestra como información.
-  const [perfilEstudiante] = useState(cargarPerfilEstudiante)
+  const [perfilEstudiante, setPerfilEstudiante] = useState(cargarPerfilEstudiante)
   // S22-11 (refinamiento): prioridades específicas de colegio declaradas por la familia.
   // Forma: { [colegioId]: { hermano: bool, funcionario: bool, exalumno: bool } }
-  const [prioridadesPorColegio, setPrioridadesPorColegio] = useState({})
+  // S22-13 (refinamiento): se inicializa desde el borrador guardado (ver
+  // sembrarPrioridadesDeBorrador) para no perder los vínculos detectados al recargar.
+  const [prioridadesPorColegio, setPrioridadesPorColegio] = useState(sembrarPrioridadesDeBorrador)
   const [anuncioPrioridad, setAnuncioPrioridad] = useState('') // S22-11 (refinamiento): aria-live
   const [lista, setLista]       = useState(cargarBorradorInicial)
   const [confirmado, setConfirmado] = useState(null)
@@ -487,6 +722,15 @@ export default function PostulacionPage() {
   // espera de las dos aceptaciones (jornada + proyecto educativo/reglamento).
   const [colegioPendiente, setColegioPendiente] = useState(null)    // S22-2 (refinamiento)
   const [postulaHermanos, setPostulaHermanos]   = useState(false)   // S22-13
+  // S22-13 (refinamiento, 2026-09-02): datos básicos del hermano/a que se postula
+  // en bloque. En el SAE real hay una postulación por cada hijo/a; este prototipo
+  // simula una sola, pero captura el nombre/RUN/nivel del hermano/a para que el
+  // bloque familiar sea concreto. NO entra en la lógica de asignación.
+  const [hermanoRut, setHermanoRut]       = useState('')
+  const [hermanoNombre, setHermanoNombre] = useState('')
+  const [hermanoNivel, setHermanoNivel]   = useState('')
+  const hermanoDatosOk =
+    rutValido(hermanoRut) && hermanoNombre.trim().length >= 3 && !!hermanoNivel
   const [borradorGuardado, setBorradorGuardado] = useState(false)   // S22-9
   const [anuncioOrden, setAnuncioOrden]         = useState('')      // S22-8
   const [dragIdx, setDragIdx]           = useState(null)            // S22-8
@@ -500,6 +744,15 @@ export default function PostulacionPage() {
   useEffect(() => {
     localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(lista))
   }, [lista])
+
+  /* Mantenimiento correctivo (2026-09-03): el flujo cambia de vista sin cambiar de
+     ruta (los 3 pasos comparten /postulacion), así que ScrollToTop.jsx —que se
+     dispara por cambio de pathname— no aplica. Al avanzar/retroceder de paso,
+     vincular al estudiante o confirmar la postulación, la vista quedaba a mitad
+     de página. Se restaura el scroll al tope en esas transiciones. */
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [paso, alumnoOk, confirmado])
 
   /* S22-11 (refinamiento) · S4 (refinamiento): perfil que se pasa a
      calcularResultado. `prioritario` (SEP, 15 %) es transversal y NO se elige en
@@ -519,6 +772,12 @@ export default function PostulacionPage() {
   // S4 (refinamiento): hermano/funcionario/exalumno se declaran SIEMPRE por colegio
   // (ya no hay chips globales que los activen).
   const clavesEspecificas = PRIORIDADES_POR_COLEGIO
+
+  /* S4 (refinamiento, 2026-09-02): con el caso de ejemplo cargado, el sistema ya
+     resolvió los vínculos de los 6 colegios (`casoPrioridades`) → el paso 2
+     muestra las prioridades por colegio de SOLO LECTURA ("el sistema lo detecta,
+     no lo pregunta"), y los textos de introducción cambian en consecuencia. */
+  const prioridadDetectada = perfilEstudiante.caso === 'munoz-gonzalez'
 
   /* S22-11 (refinamiento): alterna una prioridad específica en un colegio concreto */
   const togglePrioridadColegio = (colegioId, clave) => {
@@ -602,11 +861,74 @@ export default function PostulacionPage() {
 
   const anterior = () => setPaso((prev) => Math.max(prev - 1, 1))
 
+  /* S4 (refinamiento) — atajo para la prueba de usabilidad: precarga el perfil de
+     la familia del caso de estudio (nombre/RUN/nivel + dirección) y simula el
+     ingreso con ClaveÚnica. Deja intactos los pasos con valor de fidelidad
+     (declarar apoderado/a, confirmar el nivel, agregar los colegios con sus dos
+     aceptaciones). No toca asignacion.js ni la cifra 87/87. */
+  const cargarCasoEjemplo = () => {
+    const {
+      region: reg, comuna: com, calle,
+      hermanoNombre: hNombre, hermanoRut: hRut, hermanoNivel: hNivel,
+      ...perfil
+    } = CASO_EJEMPLO
+    try {
+      localStorage.setItem(
+        PERFIL_KEY,
+        JSON.stringify({
+          nombre: perfil.nombre,
+          rut: perfil.rut,
+          nivel: perfil.nivel,
+          prioritario: perfil.prioritario,
+          pie: perfil.pie,
+          caso: perfil.caso,
+        }),
+      )
+    } catch { /* almacenamiento no disponible: seguimos con el estado en memoria */ }
+    setPerfilEstudiante({
+      nombre: perfil.nombre,
+      rut: perfil.rut,
+      nivel: perfil.nivel,
+      prioritario: perfil.prioritario,
+      pie: perfil.pie,
+      caso: perfil.caso,
+    })
+    setAlumnoRut(perfil.rut)
+    setAlumnoNombre(perfil.nombre)
+    setAlumnoNivel(perfil.nivel)
+    setRegion(reg)
+    setComuna(com)
+    setDirCalle(calle)
+    setPostulaHermanos(true)
+    setHermanoNombre(hNombre)
+    setHermanoRut(hRut)
+    setHermanoNivel(hNivel)
+    setLoginOk(true)
+    // Si ya hay colegios en la lista (p. ej. de un borrador guardado), siembra sus
+    // prioridades detectadas desde `casoPrioridades` para que el modo "detección"
+    // del paso 2 muestre el estado correcto sin depender de re-agregarlos.
+    setPrioridadesPorColegio((mapa) => {
+      const copia = { ...mapa }
+      for (const id of lista) {
+        const cp = (colegiosById[id]?.casoPrioridades ?? []).filter((k) =>
+          PRIORIDADES_POR_COLEGIO.includes(k),
+        )
+        if (cp.length) copia[id] = { ...(copia[id] ?? {}), ...Object.fromEntries(cp.map((k) => [k, true])) }
+      }
+      return copia
+    })
+  }
+
   const confirmar = () => {
     const payload = {
       fecha: new Date().toISOString(),
       comprobante: `SAE-${Math.floor(100000 + Math.random() * 900000)}`,
       alumno: { nombre: alumnoNombre, run: alumnoRut, nivel: alumnoNivel },
+      // S22-13 (refinamiento): datos del hermano/a en postulación de bloque.
+      // Aditivo; NO lo usa `calcularResultado` ni `SeguimientoPage`.
+      hermano: postulaHermanos
+        ? { nombre: hermanoNombre.trim(), run: hermanoRut, nivel: hermanoNivel }
+        : null,
       // B · fidelidad (brecha B): dirección de residencia. Se guarda como bloque
       // aparte; NO la usa la lógica de asignación ni SeguimientoPage.
       direccion: {
@@ -639,6 +961,12 @@ export default function PostulacionPage() {
       `Fecha de envío: ${new Date(confirmado.fecha).toLocaleString('es-CL')}`,
       `Estudiante: ${alumnoNombre} (RUN ${alumnoRut})`,
       `Nivel al que postula: ${alumnoNivel}`,
+      ...(postulaHermanos
+        ? [
+            `En bloque con: ${hermanoNombre.trim()} (RUN ${hermanoRut}) — ${hermanoNivel}`,
+            `  (este comprobante es de ${alumnoNombre}; ${hermanoNombre.trim()} tiene su propia postulación)`,
+          ]
+        : []),
       '',
       // B · fidelidad (brecha B): la dirección va en el comprobante como dato del
       // formulario, no como criterio de asignación.
@@ -867,6 +1195,27 @@ export default function PostulacionPage() {
                     Regístrate aquí
                   </Link>
                 </p>
+
+                {/* S4 (refinamiento) — atajo para la prueba de usabilidad: evita
+                    que la persona tenga que tipear los datos del/de la estudiante y
+                    la dirección antes de llegar a lo que se testea. Colapsado y
+                    rotulado como herramienta de la demo. */}
+                <details className="post-demo">
+                  <summary>⚙️ Cargar caso de ejemplo (para la prueba de usabilidad)</summary>
+                  <p>
+                    Rellena <strong>Mis datos</strong> con el perfil de la familia Muñoz
+                    González y la dirección de residencia, y simula el ingreso con
+                    ClaveÚnica, para no tipear todo en la sesión. Solo para esta demo:
+                    no envía nada al SAE real.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn--secondary"
+                    onClick={cargarCasoEjemplo}
+                  >
+                    Cargar familia Muñoz González
+                  </button>
+                </details>
               </div>
             )}
 
@@ -876,6 +1225,15 @@ export default function PostulacionPage() {
                 <p className="small-note post-login-ok" role="status" aria-live="polite">
                   ✅ Ingreso exitoso. Tus datos fueron cargados desde ClaveÚnica.
                 </p>
+
+                {/* S4 (refinamiento) · transparencia (HAX G1): lo que el sistema
+                    ya sabe del/de la estudiante, apenas ingresa y antes de pedirle
+                    nada. Ver componente CondicionesDetectadas. */}
+                <CondicionesDetectadas
+                  prioritario={perfilEstudiante.prioritario}
+                  pie={perfilEstudiante.pie}
+                  mostrarVinculos={perfilEstudiante.caso === 'munoz-gonzalez'}
+                />
 
                 <div className="post-region-block">
                   <label htmlFor="select-region" className="form-label">
@@ -970,7 +1328,11 @@ export default function PostulacionPage() {
                       </select>
                     </div>
 
-                    {/* S22-13: postulación familiar en bloque */}
+                    {/* S22-13: postulación familiar en bloque.
+                        S22-13 (refinamiento, 2026-09-03): la casilla declara un HECHO
+                        ("hay un hermano/a que también postula"), no una acción
+                        ("estoy postulando a los dos"). El flujo completa una sola
+                        postulación —la de {alumnoNombre}—; la del hermano/a va aparte. */}
                     <div className="rg-campo">
                       <label className="form-label post-hermanos-check" htmlFor="check-hermanos">
                         <input
@@ -979,25 +1341,106 @@ export default function PostulacionPage() {
                           checked={postulaHermanos}
                           onChange={(e) => setPostulaHermanos(e.target.checked)}
                         />
-                        ¿Postulas también a un hermano o una hermana?
+                        {alumnoNombre || 'El/la estudiante'} tiene un hermano o hermana que <strong>también postula este año</strong>
                       </label>
                     </div>
 
+                    {/* S22-13 (refinamiento): al marcar la casilla, se piden los datos
+                        básicos del hermano/a (nombre + RUN + nivel). Sirven para vincular
+                        las dos postulaciones; NO entran en la asignación de este flujo. */}
+                    {postulaHermanos && (
+                      <div className="post-hermano-datos">
+                        <h4 className="post-alumno-block__titulo" style={{ fontSize: '1rem', margin: '0 0 4px' }}>
+                          Datos del hermano o la hermana
+                        </h4>
+                        <p className="form-hint" style={{ margin: '0 0 10px' }}>
+                          Sirven para <strong>vincular las dos postulaciones</strong>. La
+                          postulación de {hermanoNombre.trim() || 'tu otro/a hijo/a'} se hace
+                          por separado, con su propia lista de colegios.
+                        </p>
+                        <div className="rg-campo">
+                          <label className="form-label" htmlFor="herm-nombre">Nombre completo</label>
+                          <input
+                            id="herm-nombre"
+                            type="text"
+                            className="form-input rg-input"
+                            value={hermanoNombre}
+                            onChange={(e) => setHermanoNombre(e.target.value)}
+                            placeholder="Ej. Mateo Muñoz González"
+                            autoCapitalize="words"
+                            aria-required="true"
+                          />
+                        </div>
+                        <div className="rg-campo">
+                          <label className="form-label" htmlFor="herm-run">RUN</label>
+                          <input
+                            id="herm-run"
+                            type="text"
+                            inputMode="numeric"
+                            className="form-input rg-input"
+                            value={hermanoRut}
+                            onChange={(e) => setHermanoRut(formatearRut(e.target.value))}
+                            placeholder="Ej. 25.234.567-8"
+                            maxLength={12}
+                            aria-required="true"
+                          />
+                        </div>
+                        <div className="rg-campo">
+                          <label className="form-label" htmlFor="herm-nivel">Nivel al que postula</label>
+                          <select
+                            id="herm-nivel"
+                            className="form-select"
+                            value={hermanoNivel}
+                            onChange={(e) => setHermanoNivel(e.target.value)}
+                            style={{ maxWidth: '100%' }}
+                            aria-required="true"
+                          >
+                            <option value="">Selecciona un nivel…</option>
+                            <option value="Prekínder">Prekínder</option>
+                            <option value="Kínder">Kínder</option>
+                            {[1,2,3,4,5,6,7,8].map(n => (
+                              <option key={n} value={`${n}° básico`}>{n}° básico</option>
+                            ))}
+                            {[1,2,3,4].map(n => (
+                              <option key={n} value={`${n}° medio`}>{n}° medio</option>
+                            ))}
+                          </select>
+                        </div>
+                        {postulaHermanos && !hermanoDatosOk && (
+                          <span className="form-hint" style={{ color: 'var(--rojo)', display: 'block' }} role="alert">
+                            Completa el nombre, el RUN y el nivel del hermano o la hermana para continuar.
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     {postulaHermanos && (
                       <InfoBox icono="👨‍👩‍👧‍👦" titulo="Postulación familiar en bloque" tipo="info">
-                        <p>Cuando postulas a dos o más hermanos/as, puedes pedir la <strong>postulación en bloque</strong>: el sistema intenta dejarlos en el mismo colegio.</p>
-                        <p>Si tu hijo/a mayor queda admitido/a, el sistema <strong>reordena automáticamente</strong> la lista del menor y pone primero el colegio del mayor. Así se ve la simulación:</p>
-                        <p>
-                          Lista del menor antes: <strong>1. Colegio San Martín · 2. Colegio Los Andes</strong><br />
-                          El mayor queda en Colegio Los Andes ➜ lista del menor ahora: <strong>1. Colegio Los Andes · 2. Colegio San Martín</strong>
+                        <p style={{ marginTop: 0 }}>
+                          Ahora estás completando <strong>la postulación de {alumnoNombre || 'este/a estudiante'}</strong>.
+                          Marcar la casilla le avisa al sistema que {hermanoNombre.trim() || 'su hermano/a'} también
+                          postula este año, para que <strong>intente dejarlos en el mismo colegio</strong>.
                         </p>
-                        <p>En este prototipo simulamos una postulación a la vez. En el sistema real marcas esta opción al postular a cada hermano/a.</p>
+                        <p>
+                          En el sistema real harías <strong>una postulación por cada hijo/a</strong>, cada una con su
+                          propia lista de colegios. <strong>En esta demo completas y ves solo la de {alumnoNombre || 'este/a estudiante'}.</strong>
+                        </p>
+                        <p style={{ marginBottom: 0 }}>
+                          Así vincula el sistema las dos listas: procesa primero al hijo/a mayor; si queda admitido/a en
+                          un colegio, ese colegio sube al primer lugar de la lista del menor. Por ejemplo, si
+                          {' '}{hermanoNombre.trim() || 'el/la mayor'} queda en Colegio Los Andes, la lista de
+                          {' '}{alumnoNombre || 'el/la menor'} se reordena para poner Colegio Los Andes primero.
+                        </p>
                       </InfoBox>
                     )}
 
                     {modoTutorial && (
                       <InfoBox tipo="info" icono="ℹ️">
-                        <p>Vinculas un estudiante por postulación. Si postulas a hermanos/as, harás una postulación para cada uno/a y puedes pedir la <strong>postulación familiar en bloque</strong> para que el sistema intente dejarlos juntos.</p>
+                        <p style={{ margin: 0 }}>
+                          En este flujo vinculas y postulas a <strong>un/a estudiante</strong>: {alumnoNombre || 'el/la que elegiste arriba'}.
+                          Si además tiene hermanos/as que postulan, en el sistema real harías una postulación aparte para
+                          cada uno/a; aquí marcas la casilla de arriba para simular que van <strong>en bloque</strong>.
+                        </p>
                       </InfoBox>
                     )}
 
@@ -1123,11 +1566,13 @@ export default function PostulacionPage() {
                         className="btn btn--primary"
                         /* B · fidelidad (brecha B): la dirección de residencia (comuna + calle)
                            también es obligatoria para vincular, junto con RUN, nombre, nivel y
-                           la declaración de apoderado/a. */
-                        disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel || !declaraApoderado || !direccionCompleta}
+                           la declaración de apoderado/a. S22-13 (refinamiento): si se postula
+                           a un hermano/a en bloque, sus datos básicos también son obligatorios. */
+                        disabled={!rutValido(alumnoRut) || alumnoNombre.trim().length < 3 || !alumnoNivel || !declaraApoderado || !direccionCompleta || (postulaHermanos && !hermanoDatosOk)}
                         title={
                           !declaraApoderado ? 'Primero marca la casilla en que declaras ser el/la apoderado/a legal'
                           : !direccionCompleta ? 'Completa la comuna y la dirección (calle y número) del/de la estudiante'
+                          : (postulaHermanos && !hermanoDatosOk) ? 'Completa los datos del hermano o la hermana (nombre, RUN y nivel)'
                           : undefined
                         }
                         onClick={() => setConfirmandoNivel(true)}
@@ -1168,6 +1613,12 @@ export default function PostulacionPage() {
                     <div className="post-alumno-card__info">
                       <strong className="post-alumno-card__nombre">{alumnoNombre}</strong>
                       <span className="post-alumno-card__meta">{alumnoNivel} · RUN {alumnoRut}</span>
+                      <span className="post-alumno-card__meta">Vas a hacer <strong>su</strong> postulación (una lista de colegios).</span>
+                      {postulaHermanos && hermanoDatosOk && (
+                        <span className="post-alumno-card__meta">
+                          👨‍👩‍👧‍👦 En bloque con {hermanoNombre.trim()} — su postulación se hace por separado.
+                        </span>
+                      )}
                     </div>
                     <button
                       type="button"
@@ -1179,34 +1630,10 @@ export default function PostulacionPage() {
                   </div>
                 )}
 
-                {/* S4 (refinamiento — arquitectura de información): condiciones a nivel
-                    estudiante como INFORMACIÓN de solo lectura, no como un control.
-                    La condición SEP la determina el MINEDUC (Registro Social de
-                    Hogares); en el sistema real llega ya cargada. Se lee de /perfil
-                    (PERFIL_KEY). No hay casilla para marcarla aquí a propósito. */}
-                {region && alumnoOk && (
-                  perfilEstudiante.prioritario ? (
-                    <InfoBox icono="🏫" titulo="Condición registrada: Estudiante prioritario/a (SEP)" tipo="info">
-                      <p style={{ marginBottom: 0 }}>
-                        El MINEDUC ya tiene esta información (la determina con el{' '}
-                        <abbr title="Registro Social de Hogares">Registro Social de Hogares</abbr>),
-                        así que no necesitas declararla aquí. Se aplicará en{' '}
-                        <strong>todos los colegios</strong> de tu lista: cada uno reserva
-                        el 15 % de sus cupos para estudiantes prioritarios/as.{' '}
-                        <Link to="/perfil" className="link-inline">Editar en Mis datos</Link>.
-                      </p>
-                    </InfoBox>
-                  ) : (
-                    <InfoBox icono="ℹ️" titulo="Sin condiciones prioritarias registradas" tipo="neutro">
-                      <p style={{ marginBottom: 0 }}>
-                        No hay condiciones prioritarias registradas para este/a estudiante.
-                        La condición de estudiante prioritario/a (SEP) la determina el
-                        MINEDUC; si corresponde, en el sistema real llega ya cargada.{' '}
-                        <Link to="/perfil" className="link-inline">Editar en Mis datos</Link>.
-                      </p>
-                    </InfoBox>
-                  )
-                )}
+                {/* S4 (refinamiento): las condiciones a nivel estudiante (SEP, PIE)
+                    y los vínculos por establecimiento se muestran de una vez en el
+                    panel "Esto es lo que el sistema ya sabe…" al inicio de este
+                    paso (componente CondicionesDetectadas), no se repiten aquí. */}
               </div>
             )}
           </CardContent>
@@ -1246,7 +1673,12 @@ export default function PostulacionPage() {
 
             {modoTutorial && (
               <InfoBox icono="📋" titulo="¿Cómo funciona este paso?" tipo="info">
-                <p>Agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong> (el primero es el que más quieres). En cada colegio de tu lista puedes indicar si tienes un vínculo que te da prioridad ahí.</p>
+                <p>
+                  Agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong> (el primero es el que más quieres).{' '}
+                  {prioridadDetectada
+                    ? <>El sistema ya revisó tus vínculos con cada colegio: en cada tarjeta de tu lista verás la prioridad que detectó ahí.</>
+                    : <>En cada colegio de tu lista puedes indicar si tienes un vínculo que te da prioridad ahí.</>}
+                </p>
               </InfoBox>
             )}
 
@@ -1255,11 +1687,14 @@ export default function PostulacionPage() {
                 cada tarjeta de la lista. La condición SEP no se marca aquí: viene
                 de /perfil y se mostró en el paso 1. */}
             <p style={{ marginTop: 14, fontWeight: 600, fontSize: '0.95rem' }}>
-              Prioridades que puedes tener en un colegio
+              Prioridades que puede tener tu familia en un colegio
             </p>
             <span className="form-hint" style={{ marginBottom: 8, display: 'block' }}>
-              Estas son ventajas que da la ley. Las declaras <strong>colegio por colegio</strong>
-              {' '}en tu lista, marcando en cuál tienes el vínculo. Toca el <strong>?</strong> para saber qué significa cada una.
+              Estas son ventajas que da la ley.{' '}
+              {prioridadDetectada
+                ? <>El sistema ya revisó cuáles tienes en cada colegio de tu lista: <strong>hermano/a matriculado/a</strong> lo verifica con el registro de matrícula; <strong>funcionario/a</strong> y <strong>exalumno/a</strong> los valida el colegio.</>
+                : <>Las declaras <strong>colegio por colegio</strong> en tu lista, marcando en cuál tienes el vínculo.</>}
+              {' '}Toca el <strong>?</strong> para saber qué significa cada una.
             </span>
 
             <div className="chip-row">
@@ -1327,7 +1762,9 @@ export default function PostulacionPage() {
                 <p style={{ marginBottom: 0 }}>
                   Tener un hermano/a matriculado/a, ser hijo/a de funcionario/a o exalumno/a
                   vale <strong>solo en el colegio</strong> donde de verdad tienes ese vínculo — no en todos.
-                  Por eso, debajo de cada colegio de tu lista te preguntamos si aplica ahí.
+                  {prioridadDetectada
+                    ? ' Por eso el sistema los revisa colegio por colegio: en cada tarjeta de tu lista verás cuál detectó ahí.'
+                    : ' Por eso, debajo de cada colegio de tu lista te preguntamos si aplica ahí.'}
                 </p>
               </InfoBox>
             )}
@@ -1484,6 +1921,8 @@ export default function PostulacionPage() {
                           valores={prioridadesPorColegio[col.id] ?? {}}
                           onToggle={togglePrioridadColegio}
                           onAyuda={abrirModalPrioridad}
+                          soloDeteccion={perfilEstudiante.caso === 'munoz-gonzalez'}
+                          tieneSEP={perfilEstudiante.prioritario}
                         />
                         {/* Mantenimiento correctivo (2026-08-05) sobre S22-11: el mini-análisis
                             vivía dentro de post-item__body y a 375px quedaba en una columna de
@@ -1496,6 +1935,10 @@ export default function PostulacionPage() {
                     )
                   })}
                 </ul>
+
+                {/* S22-13 (refinamiento): resultado provisional con el orden actual —
+                    se actualiza al arrastrar/mover, para que se vea qué hace reordenar */}
+                <ResultadoProvisional resultado={resultado} modoTutorial={modoTutorial} />
 
                 {/* S22-2: progreso hacia la recomendación de al menos 6 + refuerzo positivo */}
                 {modoTutorial && lista.length >= 2 && lista.length < 6 && (
@@ -1576,6 +2019,12 @@ export default function PostulacionPage() {
               <div className="post-alumno-card__info">
                 <strong className="post-alumno-card__nombre">{alumnoNombre}</strong>
                 <span className="post-alumno-card__meta">{alumnoNivel} · RUN {alumnoRut}</span>
+                {/* S22-13 (refinamiento): hermano/a en postulación de bloque */}
+                {postulaHermanos && hermanoDatosOk && (
+                  <span className="post-alumno-card__meta">
+                    👨‍👩‍👧‍👦 En bloque con <strong>{hermanoNombre.trim()}</strong> ({hermanoNivel}) — su postulación va aparte
+                  </span>
+                )}
               </div>
               {!confirmado && (
                 <button
@@ -1622,6 +2071,9 @@ export default function PostulacionPage() {
               </InfoBox>
             )}
 
+            {/* S22-13 (refinamiento): mismo resultado provisional que en el paso 2 */}
+            <ResultadoProvisional resultado={resultado} modoTutorial={modoTutorial} />
+
             {/* S22-10: edición por sección — lista de colegios */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 14 }}>
               <p style={{ fontWeight: 600, margin: 0 }}>Tu lista de colegios:</p>
@@ -1661,11 +2113,21 @@ export default function PostulacionPage() {
                    La categoría "certeza muy alta" solo aplica si en ESTE colegio la
                    prioridad es hermano/a matriculado/a (d.nivel === 1). */
                 const certezaMuyAlta = d.nivel === 1 && d.prob >= 90
+                const esAsignado = d.id === resultado.asignado?.id
                 return (
-                  <li key={d.id} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
+                  <li
+                    key={d.id}
+                    style={{
+                      flexDirection: 'column', alignItems: 'flex-start', gap: 4,
+                      ...(esAsignado ? { borderLeft: '3px solid var(--verde)', paddingLeft: 10 } : null),
+                    }}
+                  >
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                       <span>
                         <strong>{d.idx}.</strong> {d.nombre}
+                        {esAsignado && (
+                          <span style={{ color: 'var(--verde)', fontWeight: 700 }}> — te asignarían aquí</span>
+                        )}
                         <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--texto-suave)' }}>
                           {d.demanda} demanda{d.nivel < 5 ? ` · ${d.prioridadLabel}` : ''}
                         </span>

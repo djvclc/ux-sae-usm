@@ -1,41 +1,40 @@
-# Guion para la persona que participa en la prueba (borrador v1)
+# Guion para la persona que participa en la prueba (borrador v2)
 
 **Qué es esto:** el texto que se lee o entrega a quien participa en la prueba de usabilidad, antes de empezar la tarea en `/postulacion`. No explica la lógica del algoritmo ni el motivo real del estudio, para no sesgar sus decisiones. Basado en `caso_estudio_prueba_usabilidad_postulacion.md`.
+
+> **v2 (2026-09-03):** la familia **ya no es prioritaria por ingresos** ni Sofía tiene PIE (revisión del caso, bitácora Bloque O). Sus únicos vínculos son: Martina en Colegio Los Andes (→ hermano/a), Rodrigo en Villa del Sol (→ funcionario/a), Daniela exalumna de República de Chile (→ exalumno/a). El **Colegio San Martín** no tiene ningún vínculo y es de demanda alta → la página le mostrará una probabilidad baja (28 %). Si `material_prueba_usabilidad_postulacion.pdf` se armó desde otras fuentes además de este `.md`, revisarlo también.
 
 ---
 
 ## Lo que se lee o entrega al participante
 
-Imagina que eres **Daniela**, mamá de dos hijos: **Sofía**, de 9 años, y **Mateo**, de 12. Es agosto de 2026 y se abrió el proceso de postulación a colegios para el próximo año escolar a través del Sistema de Admisión Escolar (SAE). Quieres postular a tus dos hijos juntos, y como familia ya conversaron sobre qué colegios les gustaría intentar.
+Imagina que eres **Daniela**, mamá de dos hijos: **Sofía**, de 9 años, y **Mateo**, de 12. Es agosto de 2026 y se abrió el proceso de postulación a colegios para el próximo año escolar a través del Sistema de Admisión Escolar (SAE). Los dos postulan este año y te gustaría que quedaran en el mismo colegio; como familia ya conversaron sobre qué colegios les gustaría intentar.
 
 Esto es lo que sabes de tu familia:
 
 - Tu hija mayor, **Martina** (15 años), estudia hace tres años en el **Colegio Los Andes**. Te gustaría que sus hermanos menores pudieran ir al mismo colegio, si es posible.
-- **Sofía** recibe apoyo especial en el colegio (Programa de Integración Escolar) por una dificultad del lenguaje.
 - Tu pareja, **Rodrigo**, trabaja en el **Colegio Villa del Sol**.
 - Tú estudiaste de niña en la **Escuela República de Chile**.
-- Tu familia también cumple los requisitos para postular como familia prioritaria por ingresos.
 - Y hay un colegio que de verdad les gusta: el **Colegio San Martín**. Se los recomendó una vecina, y cuando lo visitaron les encantó el proyecto educativo. Nadie de tu familia estudió ni trabaja ahí — simplemente es el que más les gustó.
 
-Tu tarea hoy es usar esta página para postular a Sofía y a Mateo: armar la lista de colegios a los que quieren postular (se recomienda incluir al menos 6) y ordenarla como creas que le conviene más a tu familia, usando la información y las alertas que la página te vaya mostrando. Al final, vas a confirmar la postulación y descargar el comprobante.
+Tu tarea hoy es usar esta página para hacer **la postulación de Sofía**: armar su lista de colegios (se recomienda incluir al menos 6) y ordenarla como creas que le conviene más a tu familia, usando la información y las alertas que la página te vaya mostrando. Cuando la página te pregunte, indica también que **Mateo** postula este año, para que el sistema intente dejarlos juntos (esa es la "postulación en bloque"). Al final, vas a confirmar y descargar el comprobante.
 
 ## Ficha de apoyo (el participante la puede mirar durante toda la prueba)
 
 | Quién | Detalle |
 |---|---|
-| Sofía | 9 años, postula a 4.º básico. Tiene apoyo PIE por dificultad del lenguaje. |
+| Sofía | 9 años, postula a 4.º básico. |
 | Mateo | 12 años, postula a 7.º básico. |
 | Martina (no postula) | 15 años, estudia en Colegio Los Andes desde 2023. |
 | Rodrigo (papá) | Trabaja en Colegio Villa del Sol. |
 | Daniela (mamá) | Fue alumna de Escuela República de Chile. |
-| Situación familiar | Familia prioritaria por ingresos (Registro Social de Hogares). |
 | El colegio que más les gusta | Colegio San Martín (Maipú) — se los recomendaron, sin vínculo previo. |
 
 ## La tarea, paso a paso
 
 1. Inicia sesión (ClaveÚnica simulada).
-2. Vincula a Sofía y a Mateo a la postulación.
-3. Busca y agrega a tu lista al menos 6 colegios, incluyendo los que se mencionan en la ficha de apoyo.
+2. Vincula a **Sofía** a la postulación e indica que **Mateo** también postula este año (postulación en bloque).
+3. Busca y agrega a la lista de Sofía al menos 6 colegios, incluyendo los que se mencionan en la ficha de apoyo.
 4. Ordena la lista como prefieras para tu familia.
 5. Revisa la información y las advertencias que te muestre la página en cada colegio.
 6. Confirma tu postulación y descarga el comprobante.

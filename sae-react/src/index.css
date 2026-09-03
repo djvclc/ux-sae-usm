@@ -3678,7 +3678,9 @@ button[disabled],
 /* Image wrapper — contiene imagen, overlay y texto */
 .seg-hero-img-wrap {
   position: relative;
-  height: 280px;
+  /* Sin alto fijo: el bloque .seg-hero-img-content--solid (nombre del colegio,
+     dirección) fluye DESPUÉS de la ilustración y con un height fijo + overflow
+     hidden quedaba recortado. La ilustración ya trae su propio height. */
   overflow: hidden;
 }
 
@@ -4015,10 +4017,6 @@ h2.seg-hero-name {
     top: 22px;
     left: calc(50% + 26px);
     right: calc(-50% + 26px);
-  }
-
-  .seg-hero-img-wrap {
-    height: 200px;
   }
 
   .seg-hero-img-content {
@@ -5855,6 +5853,43 @@ h2.seg-hero-name {
   color: #6b2d07;
 }
 
+/* S4 (refinamiento, 2026-09-02): modo "detección" — cuando el sistema ya resolvió
+   las prioridades del colegio (caso de ejemplo), el bloque se muestra informativo
+   (azul), no de acción pendiente (naranja). */
+.post-item > .post-prio-colegio--deteccion {
+  background: var(--azul-cl);
+  border-color: var(--azul);
+}
+.post-prio-colegio--deteccion .post-prio-colegio__titulo {
+  color: var(--azul-osc);
+}
+
+.post-prio-colegio__detectadas {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+.post-prio-det {
+  font-size: 0.86rem;
+  line-height: 1.4;
+  margin: 3px 0;
+}
+.post-prio-det--on {
+  color: #145f2c;
+}
+.post-prio-det--off {
+  color: var(--gris-med);
+}
+
+.post-prio-colegio__correccion {
+  margin-top: 8px;
+}
+.post-prio-colegio__correccion > summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--azul-osc);
+}
+
 @media (max-width: 480px) {
   .post-item > .post-prio-colegio {
     margin-left: 0;
@@ -6286,6 +6321,44 @@ h2.seg-hero-name {
 .post-direccion-block {
   border-top: 1px solid rgba(0, 87, 183, 0.15);
   padding-top: var(--esp-md);
+}
+
+/* S22-13 (refinamiento): datos básicos del hermano/a en postulación de bloque. */
+.post-hermano-datos {
+  border-left: 3px solid var(--azul);
+  background: var(--azul-cl);
+  border-radius: var(--radio);
+  padding: 12px var(--esp-md);
+  margin: 8px 0;
+}
+
+/* S4 (refinamiento): panel de "condiciones detectadas" (lista dentro del InfoBox)
+   y atajo colapsable "Cargar caso de ejemplo" del paso 1. */
+.cond-detectadas {
+  margin: var(--esp-sm) 0 10px;
+  padding-left: 1.15rem;
+}
+.cond-detectadas li {
+  margin: 6px 0;
+  line-height: 1.45;
+}
+
+.post-demo {
+  margin-top: var(--esp-md);
+  border-top: 1px dashed var(--borde);
+  padding-top: 10px;
+}
+.post-demo > summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--azul-osc);
+}
+.post-demo p {
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+  margin: 8px 0 10px;
+  line-height: 1.45;
 }
 
 /* Tarjeta de confirmación del estudiante vinculado */

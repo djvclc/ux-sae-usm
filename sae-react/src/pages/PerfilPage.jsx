@@ -15,6 +15,11 @@ import { formatearRut, rutValido } from '../utils/rut'
        prioritario: boolean,    // condición SEP — la DETERMINA EL ESTADO (Registro
                                 // Social de Hogares), la familia NO la elige. Acá se
                                 // activa solo para poder simular el caso de estudio.
+       pie: boolean,            // Programa de Integración Escolar vigente — dato a
+                                // nivel de estudiante que el Estado ya conoce. En
+                                // este prototipo es SOLO informativo: NO lo procesa
+                                // asignacion.js (gap de cálculo abierto, ver §5 y §9
+                                // de caso_estudio_prueba_usabilidad_postulacion.md).
      }
    `hermano`, `funcionario` y `exalumno` NO viven aquí: son vínculos con un
    establecimiento concreto y se declaran POR COLEGIO al postular (ver
@@ -52,6 +57,10 @@ export default function PerfilPage() {
   const [prioritario, setPrioritario] = useState(
     perfilInicial.prioritario ?? perfilInicial.condiciones?.prioritario ?? false,
   )
+  // PIE vigente — informativo en el flujo, no entra al cálculo (asignacion.js intacto).
+  const [pie, setPie] = useState(
+    perfilInicial.pie ?? perfilInicial.condiciones?.pie ?? false,
+  )
   const [guardado, setGuardado] = useState(false)
 
   const marcarSucio = () => setGuardado(false)
@@ -62,7 +71,7 @@ export default function PerfilPage() {
       : null
 
   const guardar = () => {
-    const payload = { nombre, rut, nivel, prioritario }
+    const payload = { nombre, rut, nivel, prioritario, pie }
     localStorage.setItem(PERFIL_KEY, JSON.stringify(payload))
     setGuardado(true)
   }
@@ -132,22 +141,23 @@ export default function PerfilPage() {
           </div>
         </section>
 
-        {/* Bloque 2 — Condición que determina el Estado (SEP)
-            S4 (refinamiento): la prioridad de estudiante prioritario/a NO es una
-            casilla que la familia elige. La determina el MINEDUC con el Registro
-            Social de Hogares. Se deja el interruptor solo para poder configurar el
-            caso de estudio en la simulación. */}
+        {/* Bloque 2 — Condiciones que determina el Estado (SEP y PIE)
+            S4 (refinamiento): ni la condición de estudiante prioritario/a ni el
+            PIE son casillas que la familia elige. Las determina el MINEDUC (el
+            Registro Social de Hogares para SEP; el registro del programa para
+            PIE). En el sistema real llegan ya cargadas tras ClaveÚnica. Se dejan
+            los interruptores solo para poder configurar el caso de estudio en la
+            simulación. */}
         <section className="perfil-bloque">
-          <h2>2. Condición de estudiante prioritario/a (SEP)</h2>
+          <h2>2. Condiciones que el Estado ya tiene registradas</h2>
           <p className="small-note">
-            Esta condición <strong>no la eliges tú</strong>. El Ministerio de
-            Educación la determina según el{' '}
-            <abbr title="Registro Social de Hogares">RSH</abbr> de tu familia. En el
-            sistema real llega ya cargada y no aparece como una casilla.{' '}
-            <strong>Aquí la activas solo para la simulación.</strong>
+            Estas condiciones <strong>no las eliges tú</strong>. El Ministerio de
+            Educación las determina y, en el sistema real, llegan ya cargadas tras
+            ingresar con ClaveÚnica — no aparecen como casillas.{' '}
+            <strong>Aquí las activas solo para la simulación.</strong>
           </p>
 
-          <div className="criterios-grid" role="group" aria-label="Condición de estudiante prioritario/a">
+          <div className="criterios-grid" role="group" aria-label="Condiciones que determina el Estado">
             <label className={`criterio-card${prioritario ? ' criterio-card--on' : ''}`}>
               <input
                 type="checkbox"
@@ -173,13 +183,44 @@ export default function PerfilPage() {
                 </div>
               </div>
             </label>
+
+            <label className={`criterio-card${pie ? ' criterio-card--on' : ''}`}>
+              <input
+                type="checkbox"
+                checked={pie}
+                onChange={() => { setPie((v) => !v); marcarSucio() }}
+              />
+              <div className="criterio-card__body">
+                <span className="criterio-card__num" aria-hidden="true">PIE</span>
+                <div>
+                  <p className="criterio-card__titulo">
+                    Simular que mi hijo/a tiene un Programa de Integración Escolar (PIE) vigente
+                  </p>
+                  <p className="criterio-card__desc">
+                    El PIE apoya a estudiantes con necesidades educativas especiales y
+                    da prioridad de admisión en los colegios que tengan ese programa.
+                    En el sistema real, el MINEDUC ya sabe si tu hijo/a está en PIE.
+                  </p>
+                  <p className="criterio-card__alerta">
+                    ⚠️ En este prototipo el PIE se muestra como información en el flujo,
+                    pero <strong>todavía no cambia el porcentaje estimado</strong> de
+                    asignación.
+                  </p>
+                </div>
+              </div>
+            </label>
           </div>
 
-          {prioritario && (
+          {(prioritario || pie) && (
             <div className="sim-result" role="status">
               <p style={{ margin: 0 }}>
-                Registrado para la simulación: <strong>estudiante prioritario/a (SEP)</strong>.
-                El flujo de postulación lo mostrará como una condición ya registrada,
+                Registrado para la simulación:{' '}
+                <strong>
+                  {[prioritario && 'estudiante prioritario/a (SEP)', pie && 'PIE vigente']
+                    .filter(Boolean)
+                    .join(' + ')}
+                </strong>
+                . El flujo de postulación lo mostrará como una condición ya registrada,
                 sin pedirte que la marques otra vez.
               </p>
             </div>
@@ -212,8 +253,9 @@ export default function PerfilPage() {
 
       <div className="perfil-aviso" role="note">
         <strong>💡 ¿Cómo se usan estos datos?</strong> El nombre, el RUT y el nivel
-        se precargan en el paso 1 de la postulación (puedes corregirlos ahí). La
-        condición SEP se muestra en el flujo como información, no como una casilla.{' '}
+        se precargan en el paso 1 de la postulación (puedes corregirlos ahí). Las
+        condiciones SEP y PIE se muestran en el flujo como información, no como
+        casillas.{' '}
         <strong>Nada se envía al SAE real</strong> — este es un prototipo pedagógico y
         todo queda guardado solo en este dispositivo.
       </div>

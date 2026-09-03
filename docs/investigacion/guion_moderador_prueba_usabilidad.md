@@ -16,6 +16,8 @@ Este documento es para ti, Diego, no para la persona que participa. Dos tipos de
 
 Antes de cada sesion: ten a mano la tarjeta de familia (impresa o en pantalla aparte), el cuestionario impreso, algo para grabar pantalla y audio, y el prototipo cargado en /postulacion con el navegador limpio (sin borrador guardado de una sesion anterior).
 
+*Atajo opcional para no perder tiempo tipeando:* en el paso 1, dentro de "Ingresar con ClaveUnica", hay un desplegable "Cargar caso de ejemplo". Si lo usas antes de que la persona empiece, deja precargados el nombre, el RUN y el nivel de Sofia, la direccion y los datos de Mateo. La persona igual tiene que leer el panel de "lo que el sistema ya sabe", marcar la casilla de apoderado/a y pulsar "Vincular estudiante". Si prefieres que la persona lo escriba todo, no uses el atajo.
+
 \newpage
 
 ## 1. Bienvenida
@@ -60,6 +62,8 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 *Observa si usa ClaveUnica o la opcion de RUT. No corrijas.*
 
+*Cuando aparezca el recuadro "Esto es lo que el sistema ya sabe de tu hijo/a", pregunta:* "Que te esta diciendo la pagina que ya sabe de la familia? Eso te calza con la tarjeta?" *Solo escucha, no expliques.*
+
 ### Tarea 2: Agregar los colegios
 
 "Ahora busca y agrega estos seis colegios a la lista de postulacion de Sofia y Mateo."
@@ -76,11 +80,17 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 ### Tarea 4: Postulacion familiar en bloque
 
-"Activa la opcion para postular tambien al hermano o hermana, como postulacion conjunta."
+"En el paso 1, marca que Sofia tiene un hermano que tambien postula este ano (Mateo), y completa sus datos si no vienen cargados."
+
+*La pagina aclara que en esta demo se completa solo la postulacion de Sofia; la de Mateo iria por separado. Observa si a la persona le queda claro esa distincion o si cree que esta postulando a los dos aqui.*
 
 ### Tarea 5: Leer las explicaciones
 
 "Antes de confirmar, tomate un momento para leer lo que la pagina te muestra sobre cada colegio y sobre el orden que elegiste. Cuentame que vas entendiendo."
+
+*En el Colegio San Martin la pagina muestra "28% estimado" y "entras solo por el sorteo: no tienes ninguna prioridad en este colegio". Observa la reaccion a ese numero bajo.*
+
+*La pagina tambien muestra un recuadro "Con este orden, donde quedarias?" que se actualiza si la persona reordena la lista. Si la persona mueve algun colegio, observa si mira ese recuadro y si entiende que los porcentajes no cambian pero si cambia en cual colegio queda.*
 
 *Probe:* "Esto te hace querer cambiar algo de tu lista? Por que?"
 
@@ -90,9 +100,15 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 ### Tarea 7: Ver el resultado
 
-"Ahora, en esta pagina vas a encontrar un boton para ver el resultado de la postulacion ya mismo, en vez de esperar. Antes de tocarlo, cuentame: que crees que va a pasar? En que colegio crees que va a quedar, y por que?"
+"Ahora, en esta pagina vas a encontrar un boton para ver el resultado de la postulacion ya mismo, en vez de esperar."
 
-*Anota la prediccion antes de que la vea. Luego deja que haga clic y lea el resultado.*
+*Nota: desde el paso 2 la pagina ya mostro la asignacion estimada (recuadro "Con este orden, donde quedarias?"), asi que no pidas una prediccion a ciegas. En vez de eso:*
+
+"Recuerdas lo que la pagina te venia diciendo sobre donde ibas a quedar? Toca el boton y cuentame si el resultado coincide."
+
+*Deja que haga clic y lea el resultado.*
+
+*Desenlace esperado con este caso: si puso San Martin primero, NO queda ahi (28%) y el sistema la asigna a Colegio Los Andes en 2a preferencia, por el hermano. Observa la reaccion a no haber obtenido el colegio en mente.*
 
 "Era lo que esperabas? Por que crees que paso esto?"
 

@@ -58,9 +58,9 @@ export const colegios = [
     distanciaBase: 3.5,
     niveles: ['Prekínder', 'Kínder', 'Básico'],
     vacantes: [
-      { nivel: 'preKinder', label: 'Prekínder',   min: 22, max: 26, postulantesAnterior: 31, jornada: 'Completa', copago: 0 },
-      { nivel: 'kinder',    label: 'Kínder',       min: 22, max: 26, postulantesAnterior: 28, jornada: 'Completa', copago: 0 },
-      { nivel: 'basico',    label: '1°–8° Básico', min: 28, max: 32, postulantesAnterior: 44, jornada: 'Completa', copago: 0 },
+      { nivel: 'preKinder', label: 'Prekínder',   min: 20, max: 24, postulantesAnterior: 58, jornada: 'Completa', copago: 0 },
+      { nivel: 'kinder',    label: 'Kínder',       min: 20, max: 24, postulantesAnterior: 55, jornada: 'Completa', copago: 0 },
+      { nivel: 'basico',    label: '1°–8° Básico', min: 24, max: 28, postulantesAnterior: 71, jornada: 'Completa', copago: 0 },
     ],
     simce: { lectura: 252, matematica: 248, ciencias: 244, historia: 241 },
     simceAnio: '2024',
@@ -74,10 +74,16 @@ export const colegios = [
     seguridad: { camaras: true, porteria: false, antibullying: true, semaforo: false },
     metodos: ['Metodología tradicional con innovación', 'Talleres de teatro', 'Deporte'],
     proyecto: 'Comprometidos con la excelencia académica y el desarrollo valórico, formamos ciudadanos responsables con sólidas bases en lenguaje y matemática.',
-    demanda: 'media',
+    // S22-13 (refinamiento, 2026-09-03): San Martín es el "colegio en mente" del
+    // caso Muñoz González — la familia lo quiere pero NO tiene ningún vínculo ahí.
+    // Se sube a demanda ALTA (muchos otros apoderados lo piden) para que refleje un
+    // resultado incierto: nivel 5 (sorteo) + demanda alta → probAsignacion = 28 %.
+    // Es el punto donde se observa el falso riesgo estratégico (caso_estudio §3.1).
+    demanda: 'alta',
     prioritarios: ['hermano', 'vulnerabilidad'],
-    // Caso Muñoz González: el "colegio en mente" (preferencia personal, sin vínculo).
-    // Es el colegio-control: solo aplica la cuota transversal de prioritario 15 %.
+    // Caso Muñoz González: el "colegio en mente" (preferencia personal, sin vínculo
+    // legal). La familia no es prioritaria (SEP): en San Martín no tiene ninguna
+    // ventaja → entra solo por el sorteo.
     casoPrioridades: [],
   },
   {

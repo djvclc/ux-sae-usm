@@ -542,12 +542,41 @@ En la reunión, la profesora guía sugirió **reorientar la prueba de usabilidad
 - **Comité de ética UTFSM** (sec. 6 nº 5): un estudio comparativo con N≈30 y reclutamiento por conveniencia refuerza la necesidad de pasar por el comité, aunque los datos sean ficticios.
 - **Cuidado 1 — el control no debe ser un espantapájaros.** Si la condición B es una versión deliberadamente pobre, el hallazgo es trivial ("obvio que la que explica ganó"). Debe representar de forma justa el SAE/vitrina que ya se documentó.
 - **Cuidado 2 — no perder lo cualitativo.** Dejar 1–2 preguntas abiertas tipo "¿habrías ordenado distinto? ¿por qué?" para conservar la lectura del *falso riesgo estratégico*, aunque ya no sea la medida principal.
-- **Decisión de F1 pendiente:** semilla definitiva y si Simón Bolívar/Los Quillayes deben poder *no* sentar (variar la semilla por participante) o da igual con orden fijo.
-- **Decisión de F3 pendiente:** alcance exacto de lo que oculta el control; `?modo=control` vs. ruta paralela; cómo se asigna la condición en terreno.
+- **Decisión de F1** semilla y libertad de orden → **resuelta 2026-09-06, ver 7.5.**
+- **Decisión de F3** alcance de lo que oculta el control → **resuelta 2026-09-06 (qué se oculta); pendiente lo técnico, ver 7.5.**
 
 ### 7.4 Lectura del usuario para la reunión (registrada)
 
 "No conforme con el estado actual, pero avanzando hacia algo que me gusta." Defendible: el prototipo pasó de un `%` inventado en una tabla (`archivo/CLAUDE_v2.md §3`, sin calibración) a un `%` derivado de datos reales + un mecanismo documentado con limitaciones explícitas (Bloque R); y la prueba pasa de observación formativa a un diseño que **puede contrastar la hipótesis central** de la tesis.
+
+### 7.5 Decisiones del autor sobre F1 y F3 (2026-09-06)
+
+Resuelven las decisiones abiertas listadas en 7.3.
+
+**D1 — Orden de la lista: fijo estricto.** A cada participante se le entrega la lista con los **6 colegios en un orden exacto**, sin margen para reordenar ("postulá exactamente estos 6 en este orden"). No es "estos 6, ordenás con esta lógica".
+
+**D2 — Semilla: `SEED_CASO` único, no varía por participante.** El orden sí importa (decide en cuál colegio se cae al recorrer la lista), pero el sorteo es el mismo para todos → **todos ven el mismo desenlace determinista**. No se implementa semilla-por-participante.
+
+**D3 — Resultado canónico: San Martín 1.º → asignación en Colegio Los Andes (2.ª preferencia).** El "colegio en mente" va primero; no queda ahí (26 %) y la familia cae a Los Andes por el vínculo de hermano/a (99 %). Se eligió sobre la alternativa "colegio con vínculo 1.º → queda en su 1.ª preferencia" porque el contraste entre la condición que explica el algoritmo y la que no **solo significa algo si hay algo no obvio que explicar**: "no obtuviste tu primera opción, y este es el porqué". Conserva la lectura del *falso riesgo estratégico* como observación cualitativa (7.3, Cuidado 2).
+
+**Orden canónico F1 (verificado contra el código real, `calcularResultado` + `SEED_CASO = 20260903`, 4.º básico, familia sin SEP):**
+
+| pos | colegio | vínculo | demanda | `%` | estado en el recorrido |
+|---|---|---|---|---|---|
+| 1 | Colegio San Martín | — | alta | **26** | prioridad_insuficiente (no queda) |
+| 2 | **Colegio Los Andes** | hermano/a | alta | **99** | **asignado** — preferencia N.º 2, nivel 1 |
+| 3 | Escuela República de Chile | exalumno/a | baja | 99 | no evaluado |
+| 4 | Colegio Villa del Sol | funcionario/a | alta | 99 | no evaluado |
+| 5 | Liceo Técnico Simón Bolívar | — | media | 50 | no evaluado |
+| 6 | Escuela Básica Los Quillayes | — | media | 46 | no evaluado |
+
+`sinAsignacionEnPreferencias: false`. Coincide con el test `paso 3 (escenario clave)` de `flujo-postulacion.test.js` (14/14 verde). Las posiciones 3–6 se dejaron en el orden "resto de vínculos primero, luego los sin vínculo de demanda media"; como Los Andes queda 2.º, el desenlace no depende de ese tramo.
+
+**D4 — Modo control (F3): oculta toda la capa de explicabilidad, lo que diferencia el prototipo de la vitrina/SAE actual.** Concretamente, se ocultan: el enlace a `/algoritmo` y el simulador paso a paso (`AlgoSimuladorPasos`), `ResultadoProvisional` ("con este orden, ¿dónde quedarías?", Bloque Q), la visual "X de cada 100" (`ProbabilidadVisual`, Bloque I), la explicación contextualizada "por qué te asignaron este colegio" de `SeguimientoPage.generarExplicacion`, el InfoBox inicial "cómo se decide tu resultado" (paso 1) y los textos de `ColegioAnalisis` que fundamentan el `%` (demanda, postulantes/vacantes). Queda un proxy fiel del flujo real: buscar, armar la lista (en el orden fijo dado), confirmar, descargar comprobante, y ver el resultado **a secas** (colegio asignado, sin el porqué). Debe representar de forma justa la vitrina ya documentada (7.3, Cuidado 1), no una versión mutilada.
+
+**Pendiente técnico de F3 (no bloquea F1):** `?modo=control` vs. ruta paralela vs. bandera de sesión; y el mecanismo de asignación de condición en terreno (número de participante → A/B). Se decide al planificar F3, con revisión del autor antes de tocar código.
+
+**Estado:** F1 desbloqueada. Sus entregables (`caso_estudio…md`, `mapa_resultados…md`, `guion_moderador…md`, `guion_participante…md` + PDFs, y el Cap. 3 vía writing-agent) se re-sincronizan con esta especificación y con los números del Bloque R.
 
 ---
 

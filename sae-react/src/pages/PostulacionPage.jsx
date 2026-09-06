@@ -1349,22 +1349,7 @@ export default function PostulacionPage() {
                             <dt>Domicilio</dt>
                             <dd>{[dirCalle, dirNumero, comuna].filter((s) => s && s.trim()).join(', ') || '—'}</dd>
                           </div>
-                          {postulaHermanos && hermanoNombre.trim() && (
-                            <div>
-                              <dt>Hermano/a en bloque</dt>
-                              <dd>
-                                {[hermanoNombre.trim(), hermanoNivel, hermanoRut && `RUN ${hermanoRut}`]
-                                  .filter(Boolean).join(' · ')}
-                              </dd>
-                            </div>
-                          )}
                         </dl>
-                        {postulaHermanos && hermanoNombre.trim() && (
-                          <p className="form-hint" style={{ margin: '0 0 8px' }}>
-                            Su postulación se hace por separado; aquí completas solo la de{' '}
-                            {alumnoNombre || 'este/a estudiante'}.
-                          </p>
-                        )}
                         <button
                           type="button"
                           className="btn--text-link"
@@ -1374,7 +1359,7 @@ export default function PostulacionPage() {
                         </button>
                         <p className="form-hint" style={{ margin: '6px 0 0' }}>
                           En el sistema real, estos son los datos de tu hijo/a tal como están
-                          registrados en el Estado (Registro Civil, domicilio y matrícula del grupo familiar).
+                          registrados en el Estado (Registro Civil y domicilio).
                         </p>
                       </div>
                     ) : (
@@ -1435,10 +1420,10 @@ export default function PostulacionPage() {
                         ("estoy postulando a los dos"). El flujo completa una sola
                         postulación —la de {alumnoNombre}—; la del hermano/a va aparte.
                         S4 (refinamiento, 2026-09-06): el hermano/a también se precarga
-                        (el Estado ve su matrícula); en modo verificación aparece en el
-                        recap de arriba y estos controles se muestran solo al "corregir". */}
-                    {editandoIdentidad && (
-                    <>
+                        (el Estado ve su matrícula). La casilla y los datos quedan VISIBLES
+                        —no dentro del "corregir"— para que la familia confirme
+                        explícitamente que ese hermano/a también postula; los campos vienen
+                        rellenados. */}
                     <div className="rg-campo">
                       <label className="form-label post-hermanos-check" htmlFor="check-hermanos">
                         <input
@@ -1451,18 +1436,19 @@ export default function PostulacionPage() {
                       </label>
                     </div>
 
-                    {/* S22-13 (refinamiento): al marcar la casilla, se piden los datos
-                        básicos del hermano/a (nombre + RUN + nivel). Sirven para vincular
-                        las dos postulaciones; NO entran en la asignación de este flujo. */}
+                    {/* S22-13 (refinamiento): datos básicos del hermano/a (nombre + RUN +
+                        nivel). Vienen precargados de ClaveÚnica (S4, 2026-09-06); la
+                        familia los verifica. Sirven para vincular las dos postulaciones;
+                        NO entran en la asignación de este flujo. */}
                     {postulaHermanos && (
                       <div className="post-hermano-datos">
                         <h4 className="post-alumno-block__titulo" style={{ fontSize: '1rem', margin: '0 0 4px' }}>
-                          Datos del hermano o la hermana
+                          Verifica los datos del hermano o la hermana
                         </h4>
                         <p className="form-hint" style={{ margin: '0 0 10px' }}>
-                          Sirven para <strong>vincular las dos postulaciones</strong>. La
-                          postulación de {hermanoNombre.trim() || 'tu otro/a hijo/a'} se hace
-                          por separado, con su propia lista de colegios.
+                          Vienen cargados desde ClaveÚnica y sirven para <strong>vincular las dos
+                          postulaciones</strong>. La postulación de {hermanoNombre.trim() || 'tu otro/a hijo/a'}{' '}
+                          se hace por separado, con su propia lista de colegios.
                         </p>
                         <div className="rg-campo">
                           <label className="form-label" htmlFor="herm-nombre">Nombre completo</label>
@@ -1548,8 +1534,6 @@ export default function PostulacionPage() {
                           cada uno/a; aquí marcas la casilla de arriba para simular que van <strong>en bloque</strong>.
                         </p>
                       </InfoBox>
-                    )}
-                    </>
                     )}
 
                     {/* A · fidelidad (analisis_video_paso_a_paso_sae.md brecha A) · S22-12 (refinamiento):

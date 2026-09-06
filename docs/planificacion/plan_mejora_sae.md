@@ -288,7 +288,7 @@
 | 22-6 | E6: prioridades según procesamiento real (PIE → hermanos → 15 % prioritarios → funcionario → exalumno); el 15 % explicado como reserva de asientos | ✅ | `PostulacionPage.jsx` |
 | 22-7 | Comprobante descargable simulado (.txt con folio, lista ordenada y fechas siguientes) + aviso "tu postulación es válida cuando descargas el comprobante" | ✅ | `PostulacionPage.jsx` |
 | 22-8 | Reordenamiento drag-and-drop nativo + botones ↑↓ y anuncio `aria-live` del nuevo orden | ✅ | `PostulacionPage.jsx`, `index.css` |
-| 22-9 | Guardado visible del borrador ("Borrador guardado") + aviso de reanudación al volver | ✅ | `PostulacionPage.jsx`, `index.css` |
+| 22-9 | La lista de preferencias **no se pierde al moverse entre los pasos** del flujo (estado conservado en paso 1 ↔ 2 ↔ 3). *Reformulado 2026-09-06:* se retiró la persistencia del borrador entre visitas/recargas y el aviso "Retomaste tu borrador" — cada entrada a `/postulacion` arma la lista desde cero, por decisión de diseño para la prueba comparativa de lista fija. La parte FORM-MS de "volver a un paso sin perder datos" la cubre también 22-10. | ✅ | `PostulacionPage.jsx` |
 | 22-10 | Paso 3 con enlaces "Editar" por sección (identificación, prioridades, lista) sin perder estado | ✅ | `PostulacionPage.jsx` |
 | 22-11 | ColegioAnalisis con postulantes del año anterior y vacantes por nivel (esquema v2) como fundamento del % estimado | ✅ | `PostulacionPage.jsx` |
 | 22-12 | Confirmación explícita del nivel al vincular estudiante ("Verifica el curso: es el error más frecuente…") | ✅ | `PostulacionPage.jsx` |

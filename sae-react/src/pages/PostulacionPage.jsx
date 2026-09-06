@@ -571,36 +571,60 @@ function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda, 
    Antes eso solo se veía tras confirmar; ahora se muestra en vivo en el paso 2 y
    en el paso 3 (HAX G16 — comunicar la consecuencia de la acción del usuario).
    Usa `resultado` (useMemo sobre `lista`), así que se actualiza al arrastrar. */
+/* Bloque Q (refinamiento, 2026-09-06): comunica la CONSECUENCIA del orden de la
+   lista (HAX G16) sin lenguaje de "sorteo" / "azar" — el proyecto combate el
+   estigma de que el SAE es una "tómbola". El resultado se atribuye a las
+   prioridades legales, las vacantes y la demanda (razón estructural), no a un
+   sorteo. La incertidumbre se comunica en formato de frecuencia ("X de cada 100",
+   RISK-NUM) y encuadrada como estimación con datos del año pasado; el detalle de
+   cómo se resuelven los empates vive en /algoritmo (PAIR: explicaciones
+   parciales). Ya NO hay umbral 65 % (Bloque R): el desenlace sale de
+   `resultado.sinAsignacionEnPreferencias` y `asignado.idx`. */
 function ResultadoProvisional({ resultado, modoTutorial }) {
   if (resultado.error || !resultado.asignado) return null
   const a = resultado.asignado
-  const alcanza = a.prob >= 65
+  const sinAsignacion = resultado.sinAsignacionEnPreferencias
+  const arriba = a.idx === 2 ? 'tu 1.ª opción' : `tus ${a.idx - 1} primeras opciones`
   return (
     <InfoBox
-      icono={alcanza ? '🎯' : '⚠️'}
+      icono={sinAsignacion ? '⚠️' : '🎯'}
       titulo="Con este orden, ¿dónde quedarías?"
-      tipo={alcanza ? 'info' : 'alerta'}
+      tipo={sinAsignacion ? 'alerta' : 'info'}
     >
-      {alcanza ? (
+      {sinAsignacion ? (
         <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
-          La simulación te asignaría en <strong>{a.nombre}</strong>
-          {a.idx === 1
-            ? <> — es tu <strong>primera opción</strong>.</>
-            : <> — tu <strong>preferencia N° {a.idx}</strong>. No quedarías en {a.idx === 2 ? 'la de más arriba' : `las ${a.idx - 1} de más arriba`} porque su probabilidad estimada no alcanza.</>}
+          Con los datos de este año, en ningún colegio de tu lista consigues un cupo:
+          todos tienen más familias que los piden que vacantes, y tu familia no tiene una
+          prioridad en ellos. La estimación te deja en el de mayor probabilidad
+          (<strong>{a.nombre}</strong>, {a.prob} de cada 100), pero podrías quedar sin
+          asignación en la etapa principal. Agrega colegios con más vacantes disponibles
+          para tu nivel.
+        </p>
+      ) : a.idx === 1 ? (
+        <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
+          Con los datos de este año, la estimación te deja en <strong>{a.nombre}</strong> —
+          es tu <strong>primera opción</strong>.
         </p>
       ) : (
         <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
-          Ningún colegio de tu lista alcanza con tu perfil. La simulación te asignaría en el de
-          mayor probabilidad (<strong>{a.nombre}</strong>, {a.prob}%), pero en el proceso real
-          podrías quedar sin asignación en la ronda principal — agrega colegios de demanda media o baja.
+          Con los datos de este año, la estimación te deja en <strong>{a.nombre}</strong> —
+          tu <strong>preferencia N° {a.idx}</strong>, donde tu cupo es muy probable
+          ({a.prob} de cada 100). En {arriba} no consigues cupo: son colegios con más
+          familias que los piden que vacantes, y no tienes una prioridad ahí que asegure
+          el lugar.
         </p>
       )}
       {modoTutorial && (
         <p style={{ marginBottom: 0 }}>
-          El sistema recorre tu lista <strong>en el orden que elegiste</strong> y te asigna al
-          primer colegio donde tu probabilidad estimada alcanza. Reordenar
-          {' '}<strong>no cambia los porcentajes</strong>, pero sí puede cambiar en cuál quedas:
-          por eso conviene poner primero el que más quieres.
+          El sistema revisa tu lista <strong>en el orden que elegiste</strong> y te deja en
+          el primer colegio donde consigues un cupo, según las prioridades que fija la ley
+          y las vacantes de cada colegio. <strong>Cambiar el orden no cambia estas
+          probabilidades</strong>, solo puede cambiar en cuál quedas — por eso conviene
+          poner primero el que más quieres. Esta es una estimación con los datos del año
+          pasado; el resultado real lo calcula el sistema en octubre, con las mismas
+          reglas y las postulaciones reales de este año, y puede salir distinto según
+          cuántas familias pidan cada colegio.{' '}
+          <Link to="/algoritmo" className="link-inline">Ver cómo se decide</Link>.
         </p>
       )}
     </InfoBox>

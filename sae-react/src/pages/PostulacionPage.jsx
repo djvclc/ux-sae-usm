@@ -918,6 +918,20 @@ export default function PostulacionPage() {
     }
   }
 
+  /* S22-9 (refinamiento, 2026-09-06) — reset para la prueba de usabilidad: entre
+     un/a participante y el/la siguiente, el borrador guardado (DRAFT_LIST_KEY), la
+     postulación enviada (STORAGE_KEY) y el perfil (PERFIL_KEY) no deben
+     arrastrarse. Este botón los borra y recarga a un paso 1 limpio. La
+     funcionalidad de borrador/reanudación (S22-9) en sí no cambia. */
+  const limpiarTodo = () => {
+    try {
+      localStorage.removeItem(DRAFT_LIST_KEY)
+      localStorage.removeItem(STORAGE_KEY)
+      localStorage.removeItem(PERFIL_KEY)
+    } catch { /* almacenamiento no disponible */ }
+    window.location.reload()
+  }
+
   const cargarCasoEjemplo = () => {
     const {
       region: reg, comuna: com, calle,
@@ -1117,6 +1131,12 @@ export default function PostulacionPage() {
             Guardamos tu lista con {lista.length} {lista.length === 1 ? 'colegio' : 'colegios'} la última vez.
             Puedes seguir donde quedaste: tu avance se guarda automáticamente en este dispositivo.
           </p>
+          {/* S22-9 (refinamiento): descartar el borrador y empezar de cero
+              (útil para un/a usuario/a real que no reconoce ese borrador, y para
+              limpiar entre participantes de la prueba). */}
+          <button type="button" className="btn--text-link" onClick={limpiarTodo}>
+            ¿No es tuyo? Empezar una postulación nueva
+          </button>
         </InfoBox>
       )}
 
@@ -1253,20 +1273,34 @@ export default function PostulacionPage() {
                     la dirección antes de llegar a lo que se testea. Colapsado y
                     rotulado como herramienta de la demo. */}
                 <details className="post-demo">
-                  <summary>⚙️ Cargar caso de ejemplo (para la prueba de usabilidad)</summary>
+                  <summary>⚙️ Herramientas de la prueba de usabilidad</summary>
                   <p>
-                    Rellena <strong>Mis datos</strong> con el perfil de la familia Muñoz
-                    González y la dirección de residencia, y simula el ingreso con
-                    ClaveÚnica, para no tipear todo en la sesión. Solo para esta demo:
-                    no envía nada al SAE real.
+                    <strong>Cargar familia Muñoz González:</strong> rellena{' '}
+                    <strong>Mis datos</strong> con el perfil del caso y la dirección de
+                    residencia, y simula el ingreso con ClaveÚnica, para no tipear en la
+                    sesión.
                   </p>
-                  <button
-                    type="button"
-                    className="btn btn--secondary"
-                    onClick={cargarCasoEjemplo}
-                  >
-                    Cargar familia Muñoz González
-                  </button>
+                  <p>
+                    <strong>Limpiar y empezar de cero:</strong> borra el borrador guardado,
+                    la postulación enviada y el perfil de este dispositivo. Úsalo entre
+                    un/a participante y el/la siguiente. Solo para la demo: no toca el SAE real.
+                  </p>
+                  <div className="post-demo__botones">
+                    <button
+                      type="button"
+                      className="btn btn--secondary"
+                      onClick={cargarCasoEjemplo}
+                    >
+                      Cargar familia Muñoz González
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--secondary"
+                      onClick={limpiarTodo}
+                    >
+                      🧹 Limpiar y empezar de cero
+                    </button>
+                  </div>
                 </details>
               </div>
             )}

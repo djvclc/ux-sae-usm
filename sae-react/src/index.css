@@ -6400,6 +6400,11 @@ h2.seg-hero-name {
   margin: 8px 0 10px;
   line-height: 1.45;
 }
+.post-demo__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 
 /* Tarjeta de confirmación del estudiante vinculado */
 .post-alumno-card {

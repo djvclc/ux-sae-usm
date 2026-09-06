@@ -61,6 +61,8 @@ const IDENTIDAD_CLAVEUNICA_DEMO = {
   region: 'RM',
   comuna: 'La Florida',
   calle: 'Pasaje Los Copihues 145',
+  // Hermano/a que el Estado detecta también con una postulación abierta este año.
+  hermano: { nombre: 'Tomás Ríos Contreras', rut: '22.984.116-5', nivel: '7° básico' },
 }
 
 /* Lee el perfil del estudiante guardado en /perfil. Devuelve siempre un objeto
@@ -905,6 +907,15 @@ export default function PostulacionPage() {
     setRegion((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.region)
     setComuna((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.comuna)
     setDirCalle((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.calle)
+    // Hermano/a que el Estado detecta también con postulación abierta: se precarga
+    // y se marca la casilla; la familia lo verifica (o lo quita en "corregir").
+    const h = IDENTIDAD_CLAVEUNICA_DEMO.hermano
+    if (h) {
+      setHermanoNombre((v) => v || h.nombre)
+      setHermanoRut((v) => v || h.rut)
+      setHermanoNivel((v) => v || h.nivel)
+      setPostulaHermanos(true)
+    }
   }
 
   const cargarCasoEjemplo = () => {
@@ -1338,7 +1349,22 @@ export default function PostulacionPage() {
                             <dt>Domicilio</dt>
                             <dd>{[dirCalle, dirNumero, comuna].filter((s) => s && s.trim()).join(', ') || '—'}</dd>
                           </div>
+                          {postulaHermanos && hermanoNombre.trim() && (
+                            <div>
+                              <dt>Hermano/a en bloque</dt>
+                              <dd>
+                                {[hermanoNombre.trim(), hermanoNivel, hermanoRut && `RUN ${hermanoRut}`]
+                                  .filter(Boolean).join(' · ')}
+                              </dd>
+                            </div>
+                          )}
                         </dl>
+                        {postulaHermanos && hermanoNombre.trim() && (
+                          <p className="form-hint" style={{ margin: '0 0 8px' }}>
+                            Su postulación se hace por separado; aquí completas solo la de{' '}
+                            {alumnoNombre || 'este/a estudiante'}.
+                          </p>
+                        )}
                         <button
                           type="button"
                           className="btn--text-link"
@@ -1348,7 +1374,7 @@ export default function PostulacionPage() {
                         </button>
                         <p className="form-hint" style={{ margin: '6px 0 0' }}>
                           En el sistema real, estos son los datos de tu hijo/a tal como están
-                          registrados en el Estado (Registro Civil y domicilio).
+                          registrados en el Estado (Registro Civil, domicilio y matrícula del grupo familiar).
                         </p>
                       </div>
                     ) : (
@@ -1407,7 +1433,12 @@ export default function PostulacionPage() {
                         S22-13 (refinamiento, 2026-09-03): la casilla declara un HECHO
                         ("hay un hermano/a que también postula"), no una acción
                         ("estoy postulando a los dos"). El flujo completa una sola
-                        postulación —la de {alumnoNombre}—; la del hermano/a va aparte. */}
+                        postulación —la de {alumnoNombre}—; la del hermano/a va aparte.
+                        S4 (refinamiento, 2026-09-06): el hermano/a también se precarga
+                        (el Estado ve su matrícula); en modo verificación aparece en el
+                        recap de arriba y estos controles se muestran solo al "corregir". */}
+                    {editandoIdentidad && (
+                    <>
                     <div className="rg-campo">
                       <label className="form-label post-hermanos-check" htmlFor="check-hermanos">
                         <input
@@ -1517,6 +1548,8 @@ export default function PostulacionPage() {
                           cada uno/a; aquí marcas la casilla de arriba para simular que van <strong>en bloque</strong>.
                         </p>
                       </InfoBox>
+                    )}
+                    </>
                     )}
 
                     {/* A · fidelidad (analisis_video_paso_a_paso_sae.md brecha A) · S22-12 (refinamiento):

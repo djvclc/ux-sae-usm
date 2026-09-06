@@ -6316,6 +6316,46 @@ h2.seg-hero-name {
   line-height: 1.4;
 }
 
+/* S22-12 / S4 (refinamiento, 2026-09-06): identidad y domicilio en modo
+   verificación — se muestran como datos que trae ClaveÚnica, no como formulario. */
+.post-identidad-verif {
+  background: var(--fondo, #fff);
+  border: 1px solid rgba(0, 87, 183, 0.18);
+  border-radius: var(--radio);
+  padding: var(--esp-md);
+}
+
+.post-identidad-verif__lista {
+  margin: 0 0 var(--esp-sm);
+  display: grid;
+  gap: 8px;
+}
+
+.post-identidad-verif__lista > div {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 4px 12px;
+  align-items: baseline;
+}
+
+.post-identidad-verif__lista dt {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
+.post-identidad-verif__lista dd {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--texto);
+  font-weight: 600;
+}
+
+@media (max-width: 420px) {
+  .post-identidad-verif__lista > div { grid-template-columns: 1fr; gap: 0; }
+  .post-identidad-verif__lista dd { margin-bottom: 2px; }
+}
+
 /* B · fidelidad (analisis_video_paso_a_paso_sae.md brecha B) · S22-1 (refinamiento):
    subsección de dirección de residencia dentro del bloque de vinculación. */
 .post-direccion-block {

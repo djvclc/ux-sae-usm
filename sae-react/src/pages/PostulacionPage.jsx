@@ -48,6 +48,21 @@ const CASO_EJEMPLO = {
   hermanoNivel: '7° básico',
 }
 
+/* S22-12 / S4 (refinamiento, 2026-09-06) — modo verificación del paso 1.
+   En el SAE real, ClaveÚnica devuelve los datos de identidad y domicilio del/de
+   la estudiante ya cargados desde el Estado: la familia los VERIFICA, no los
+   tipea. Para un visitante sin datos en /perfil, este identikit ficticio hace de
+   "lo que devolvió ClaveÚnica"; se muestra con la aclaración de que en el
+   sistema real son los datos propios. Si /perfil tiene datos, esos mandan. */
+const IDENTIDAD_CLAVEUNICA_DEMO = {
+  nombre: 'Sofía Ríos Contreras',
+  rut: '21.457.883-4',
+  nivel: '4° básico',
+  region: 'RM',
+  comuna: 'La Florida',
+  calle: 'Pasaje Los Copihues 145',
+}
+
 /* Lee el perfil del estudiante guardado en /perfil. Devuelve siempre un objeto
    con forma estable; tolera perfiles antiguos (`condiciones.prioritario`). */
 function cargarPerfilEstudiante() {
@@ -712,6 +727,10 @@ export default function PostulacionPage() {
   const [alumnoNivel, setAlumnoNivel]   = useState(perfilEstudiante.nivel)
   const [alumnoOk, setAlumnoOk]         = useState(false)
   const [confirmandoNivel, setConfirmandoNivel] = useState(false)   // S22-12
+  // S22-12 / S4 (refinamiento, 2026-09-06): identidad y domicilio se muestran en
+  // modo verificación (solo lectura + "corregir"), como los precarga ClaveÚnica
+  // en el SAE real. `true` = el usuario abrió el editor.
+  const [editandoIdentidad, setEditandoIdentidad] = useState(false)
   // A · fidelidad (analisis_video_paso_a_paso_sae.md brecha C): declaración legal
   // obligatoria de ser apoderado/a antes de vincular al estudiante.
   const [declaraApoderado, setDeclaraApoderado] = useState(false)   // S22-12 (refinamiento)
@@ -874,6 +893,20 @@ export default function PostulacionPage() {
      ingreso con ClaveÚnica. Deja intactos los pasos con valor de fidelidad
      (declarar apoderado/a, confirmar el nivel, agregar los colegios con sus dos
      aceptaciones). No toca asignacion.js ni la cifra 87/87. */
+  /* S4 (refinamiento, 2026-09-06): "ingresar con ClaveÚnica" trae los datos de
+     identidad y domicilio ya cargados. Si /perfil no tenía nada, se usan los del
+     identikit demo; el usuario los verifica y puede corregirlos. No pisa datos
+     que ya vengan de /perfil ni del caso de ejemplo. */
+  const ingresarConClaveUnica = () => {
+    setLoginOk(true)
+    setAlumnoRut((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.rut)
+    setAlumnoNombre((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.nombre)
+    setAlumnoNivel((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.nivel)
+    setRegion((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.region)
+    setComuna((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.comuna)
+    setDirCalle((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.calle)
+  }
+
   const cargarCasoEjemplo = () => {
     const {
       region: reg, comuna: com, calle,
@@ -1143,7 +1176,7 @@ export default function PostulacionPage() {
                 <button
                   type="button"
                   className="btn btn--primary btn--grande"
-                  onClick={() => setLoginOk(true)}
+                  onClick={ingresarConClaveUnica}
                 >
                   Ingresar con ClaveÚnica
                 </button>
@@ -1184,7 +1217,7 @@ export default function PostulacionPage() {
                         type="button"
                         className="btn btn--primary"
                         style={{ marginTop: 10 }}
-                        onClick={() => setLoginOk(true)}
+                        onClick={ingresarConClaveUnica}
                       >
                         Continuar con RUT
                       </button>
@@ -1253,7 +1286,7 @@ export default function PostulacionPage() {
                       calle y número— se pide abajo, junto a la vinculación). Nunca es una
                       restricción: puedes postular a colegios de otras comunas y regiones. */}
                   <p className="form-hint">
-                    Usamos tu región para mostrarte primero los colegios cercanos. Puedes postular a colegios de otras comunas y regiones si así lo deseas.
+                    Viene de tu domicilio registrado; puedes cambiarla. La usamos para mostrarte primero los colegios cercanos — nunca es una restricción: puedes postular a colegios de otras comunas y regiones.
                   </p>
                   <select
                     id="select-region"
@@ -1281,13 +1314,45 @@ export default function PostulacionPage() {
                     <div className="post-alumno-block__header">
                       <span className="post-alumno-block__icono" aria-hidden="true">🎒</span>
                       <div>
-                        <h3 className="post-alumno-block__titulo">¿Para quién vas a postular?</h3>
+                        <h3 className="post-alumno-block__titulo">Verifica los datos del estudiante</h3>
                         <p className="post-alumno-block__sub">
-                          Ingresa los datos del estudiante que va a participar en el proceso SAE.
+                          Con tu ClaveÚnica, el sistema trae estos datos ya cargados desde el
+                          Estado. Revísalos: si algo no está bien, corrígelo antes de continuar.
                         </p>
                       </div>
                     </div>
 
+                    {/* S22-12 / S4 (refinamiento, 2026-09-06): identidad y domicilio en
+                        modo verificación — el SAE real los precarga desde ClaveÚnica y la
+                        familia los confirma, no los tipea. "Corregir" abre los campos
+                        editables. El nivel mantiene además su confirmación explícita
+                        (S22-12, más abajo) y la declaración de apoderado/a sigue siendo un
+                        acto activo. */}
+                    {!editandoIdentidad ? (
+                      <div className="post-identidad-verif">
+                        <dl className="post-identidad-verif__lista">
+                          <div><dt>Nombre</dt><dd>{alumnoNombre || '—'}</dd></div>
+                          <div><dt>RUN</dt><dd>{alumnoRut || '—'}</dd></div>
+                          <div><dt>Nivel al que postula</dt><dd>{alumnoNivel || '—'}</dd></div>
+                          <div>
+                            <dt>Domicilio</dt>
+                            <dd>{[dirCalle, dirNumero, comuna].filter((s) => s && s.trim()).join(', ') || '—'}</dd>
+                          </div>
+                        </dl>
+                        <button
+                          type="button"
+                          className="btn--text-link"
+                          onClick={() => setEditandoIdentidad(true)}
+                        >
+                          Algún dato no está bien — corregir
+                        </button>
+                        <p className="form-hint" style={{ margin: '6px 0 0' }}>
+                          En el sistema real, estos son los datos de tu hijo/a tal como están
+                          registrados en el Estado (Registro Civil y domicilio).
+                        </p>
+                      </div>
+                    ) : (
+                    <>
                     <div className="rg-campo">
                       <label className="form-label" htmlFor="alum-run">RUN del estudiante</label>
                       <input
@@ -1335,6 +1400,8 @@ export default function PostulacionPage() {
                         ))}
                       </select>
                     </div>
+                    </>
+                    )}
 
                     {/* S22-13: postulación familiar en bloque.
                         S22-13 (refinamiento, 2026-09-03): la casilla declara un HECHO
@@ -1476,10 +1543,12 @@ export default function PostulacionPage() {
 
                     {/* B · fidelidad (analisis_video_paso_a_paso_sae.md brecha B) · S22-1 (refinamiento):
                         dirección de residencia del/de la estudiante, tal como la pide el flujo real
-                        (video, Paso 2: región + comuna + calle y número + casa/depto). Región se
-                        elige más arriba; aquí se completan comuna, calle y número. La dirección NO
-                        entra en la lógica de asignación (asignacion.js, probAsignacion y umbral 65
-                        intactos): solo acota la búsqueda de colegios cercanos. */}
+                        (video, Paso 2: región + comuna + calle y número + casa/depto). La dirección NO
+                        entra en la lógica de asignación: solo acota la búsqueda de colegios cercanos.
+                        S4 (refinamiento, 2026-09-06): en modo verificación el domicilio se muestra en
+                        el recap de arriba; estos campos aparecen solo al pulsar "corregir". */}
+                    {editandoIdentidad && (
+                    <>
                     <div className="post-direccion-block">
                       <h4 className="post-alumno-block__titulo" style={{ fontSize: '1rem', margin: '4px 0 8px' }}>
                         Dirección del/de la estudiante
@@ -1566,6 +1635,16 @@ export default function PostulacionPage() {
                         prioridad del SAE.
                       </p>
                     </div>
+                    <button
+                      type="button"
+                      className="btn--text-link"
+                      style={{ marginTop: 8, alignSelf: 'flex-start' }}
+                      onClick={() => setEditandoIdentidad(false)}
+                    >
+                      Listo, datos verificados
+                    </button>
+                    </>
+                    )}
 
                     {/* S22-12: confirmación explícita del nivel antes de vincular */}
                     {!confirmandoNivel ? (

@@ -12,7 +12,10 @@ import ProbabilidadVisual from '../components/ProbabilidadVisual'
 import { useTextSize } from '../context/TextSizeContext'
 
 const STORAGE_KEY = 'sae_react_postulacion'
-const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
+// Nota (2026-09-06): la lista de colegios ya NO se persiste ni se restaura entre
+// visitas. Cada vez que se entra a /postulacion se arma desde cero (decisión de
+// diseño para la prueba comparativa de lista fija). Antes existía
+// `sae_react_postulacion_draft_list` (borrador reanudable, S22-9) — se retiró.
 // S4 (refinamiento — arquitectura de información): /perfil es la fuente única de
 // los datos del estudiante. Aquí se LEE como base (precarga de nombre/RUT/nivel y
 // la condición SEP como información de solo lectura). Contrato completo en
@@ -674,33 +677,6 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
 /* Formateo y validación de RUT: helper compartido con /perfil (src/utils/rut.js). */
 
 /* S22-9: carga perezosa del borrador guardado (sin tope de 8 — corrige E2) */
-function cargarBorradorInicial() {
-  try {
-    const raw = localStorage.getItem(DRAFT_LIST_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed.filter((id) => Number.isInteger(id)) : []
-  } catch { return [] }
-}
-
-/* S22-13 (refinamiento, 2026-09-02): siembra las prioridades específicas de cada
-   colegio que venga de un borrador guardado. Esos colegios NO pasan por
-   `agregar()` (que es donde normalmente se siembran desde `colegios.js`
-   `casoPrioridades`), así que sin esto el paso 2 mostraría "sin vínculo detectado"
-   para, p. ej., Colegio Los Andes tras recargar la página. Mismo criterio que
-   `agregar()`: se siembra para cualquier perfil (el catálogo modela una sola
-   familia). */
-function sembrarPrioridadesDeBorrador() {
-  const mapa = {}
-  for (const id of cargarBorradorInicial()) {
-    const cp = (colegiosById[id]?.casoPrioridades ?? []).filter((k) =>
-      PRIORIDADES_POR_COLEGIO.includes(k),
-    )
-    if (cp.length) mapa[id] = Object.fromEntries(cp.map((k) => [k, true]))
-  }
-  return mapa
-}
-
 /* ── Componente principal ── */
 export default function PostulacionPage() {
   const { textoGrande } = useTextSize()
@@ -714,11 +690,10 @@ export default function PostulacionPage() {
   const [perfilEstudiante, setPerfilEstudiante] = useState(cargarPerfilEstudiante)
   // S22-11 (refinamiento): prioridades específicas de colegio declaradas por la familia.
   // Forma: { [colegioId]: { hermano: bool, funcionario: bool, exalumno: bool } }
-  // S22-13 (refinamiento): se inicializa desde el borrador guardado (ver
-  // sembrarPrioridadesDeBorrador) para no perder los vínculos detectados al recargar.
-  const [prioridadesPorColegio, setPrioridadesPorColegio] = useState(sembrarPrioridadesDeBorrador)
+  const [prioridadesPorColegio, setPrioridadesPorColegio] = useState({})
   const [anuncioPrioridad, setAnuncioPrioridad] = useState('') // S22-11 (refinamiento): aria-live
-  const [lista, setLista]       = useState(cargarBorradorInicial)
+  // La lista se arma desde cero en cada visita: no se persiste ni se restaura.
+  const [lista, setLista]       = useState([])
   const [confirmado, setConfirmado] = useState(null)
   const [modoTutorial, setModoTutorial] = useState(true)
   const [modalPrioridadAbierto, setModalPrioridadAbierto] = useState(null) // S22: modal de prioridades
@@ -760,19 +735,10 @@ export default function PostulacionPage() {
   const [hermanoNivel, setHermanoNivel]   = useState('')
   const hermanoDatosOk =
     rutValido(hermanoRut) && hermanoNombre.trim().length >= 3 && !!hermanoNivel
-  const [borradorGuardado, setBorradorGuardado] = useState(false)   // S22-9
   const [anuncioOrden, setAnuncioOrden]         = useState('')      // S22-8
   const [dragIdx, setDragIdx]           = useState(null)            // S22-8
   const [dragOverIdx, setDragOverIdx]   = useState(null)            // S22-8
   const [comprobanteDescargado, setComprobanteDescargado] = useState(false) // S22-7
-
-  // S22-9: aviso de reanudación si llegamos con un borrador guardado (fijado al primer render)
-  const [borradorCargado] = useState(lista.length > 0)
-
-  // S22-9: persistencia del borrador; el indicador visible se activa en cada acción del usuario
-  useEffect(() => {
-    localStorage.setItem(DRAFT_LIST_KEY, JSON.stringify(lista))
-  }, [lista])
 
   /* Mantenimiento correctivo (2026-09-03): el flujo cambia de vista sin cambiar de
      ruta (los 3 pasos comparten /postulacion), así que ScrollToTop.jsx —que se
@@ -817,7 +783,6 @@ export default function PostulacionPage() {
       else delete entrada[clave]
       return { ...mapa, [colegioId]: entrada }
     })
-    setBorradorGuardado(true) // S22-9
     const col = colegiosById[colegioId]
     const info = PRIORIDADES_INFO[clave]
     setAnuncioPrioridad(
@@ -840,7 +805,6 @@ export default function PostulacionPage() {
     const [movido] = copia.splice(desde, 1)
     copia.splice(hasta, 0, movido)
     setLista(copia)
-    setBorradorGuardado(true) // S22-9
     const col = colegiosById[movido]
     setAnuncioOrden(`${col ? col.nombre : 'Colegio'} ahora es tu opción número ${hasta + 1} de ${copia.length}.`)
   }
@@ -849,7 +813,6 @@ export default function PostulacionPage() {
 
   const agregar = (id) => {
     setLista((prev) => (prev.includes(id) ? prev : [...prev, id]))
-    setBorradorGuardado(true) // S22-9
     // S22-11 (refinamiento) · S4 (refinamiento): pre-marca las prioridades específicas
     // que la familia del caso de estudio tiene en este colegio (colegios.js
     // `casoPrioridades`). Ya no depende de chips globales: se siembra directo al
@@ -872,7 +835,6 @@ export default function PostulacionPage() {
 
   const quitar = (id) => {
     setLista((prev) => prev.filter((item) => item !== id))
-    setBorradorGuardado(true) // S22-9
     // S22-11 (refinamiento): al sacar el colegio, se descartan sus prioridades declaradas
     setPrioridadesPorColegio((mapa) => {
       if (!(id in mapa)) return mapa
@@ -918,14 +880,12 @@ export default function PostulacionPage() {
     }
   }
 
-  /* S22-9 (refinamiento, 2026-09-06) — reset para la prueba de usabilidad: entre
-     un/a participante y el/la siguiente, el borrador guardado (DRAFT_LIST_KEY), la
-     postulación enviada (STORAGE_KEY) y el perfil (PERFIL_KEY) no deben
-     arrastrarse. Este botón los borra y recarga a un paso 1 limpio. La
-     funcionalidad de borrador/reanudación (S22-9) en sí no cambia. */
+  /* Reset para la prueba de usabilidad: entre un/a participante y el/la siguiente,
+     el perfil (PERFIL_KEY) y la última postulación enviada (STORAGE_KEY) no deben
+     arrastrarse. Este botón los borra y recarga a un paso 1 limpio. (La lista de
+     colegios ya se arma desde cero en cada visita, no hace falta borrarla.) */
   const limpiarTodo = () => {
     try {
-      localStorage.removeItem(DRAFT_LIST_KEY)
       localStorage.removeItem(STORAGE_KEY)
       localStorage.removeItem(PERFIL_KEY)
     } catch { /* almacenamiento no disponible */ }
@@ -970,19 +930,8 @@ export default function PostulacionPage() {
     setHermanoRut(hRut)
     setHermanoNivel(hNivel)
     setLoginOk(true)
-    // Si ya hay colegios en la lista (p. ej. de un borrador guardado), siembra sus
-    // prioridades detectadas desde `casoPrioridades` para que el modo "detección"
-    // del paso 2 muestre el estado correcto sin depender de re-agregarlos.
-    setPrioridadesPorColegio((mapa) => {
-      const copia = { ...mapa }
-      for (const id of lista) {
-        const cp = (colegiosById[id]?.casoPrioridades ?? []).filter((k) =>
-          PRIORIDADES_POR_COLEGIO.includes(k),
-        )
-        if (cp.length) copia[id] = { ...(copia[id] ?? {}), ...Object.fromEntries(cp.map((k) => [k, true])) }
-      }
-      return copia
-    })
+    // La lista arranca vacía en cada visita: las prioridades por colegio se
+    // siembran al agregar cada colegio en el paso 2 (ver `agregar`).
   }
 
   const confirmar = () => {
@@ -1121,22 +1070,6 @@ export default function PostulacionPage() {
       {modoTutorial && (
         <InfoBox icono="💡" titulo="Modo tutorial activado" tipo="info">
           <p>En cada paso verás explicaciones de lo que significa cada decisión y qué implica para tu postulación. Puedes desactivarlo con el botón de arriba.</p>
-        </InfoBox>
-      )}
-
-      {/* S22-9: aviso de reanudación al volver con un borrador guardado */}
-      {borradorCargado && !confirmado && (
-        <InfoBox icono="📂" titulo="Retomaste tu borrador" tipo="info">
-          <p>
-            Guardamos tu lista con {lista.length} {lista.length === 1 ? 'colegio' : 'colegios'} la última vez.
-            Puedes seguir donde quedaste: tu avance se guarda automáticamente en este dispositivo.
-          </p>
-          {/* S22-9 (refinamiento): descartar el borrador y empezar de cero
-              (útil para un/a usuario/a real que no reconoce ese borrador, y para
-              limpiar entre participantes de la prueba). */}
-          <button type="button" className="btn--text-link" onClick={limpiarTodo}>
-            ¿No es tuyo? Empezar una postulación nueva
-          </button>
         </InfoBox>
       )}
 
@@ -1281,9 +1214,10 @@ export default function PostulacionPage() {
                     sesión.
                   </p>
                   <p>
-                    <strong>Limpiar y empezar de cero:</strong> borra el borrador guardado,
-                    la postulación enviada y el perfil de este dispositivo. Úsalo entre
-                    un/a participante y el/la siguiente. Solo para la demo: no toca el SAE real.
+                    <strong>Limpiar y empezar de cero:</strong> borra el perfil guardado y
+                    la última postulación enviada de este dispositivo. Úsalo entre un/a
+                    participante y el/la siguiente. (La lista de colegios ya parte vacía en
+                    cada visita.) Solo para la demo: no toca el SAE real.
                   </p>
                   <div className="post-demo__botones">
                     <button
@@ -1986,10 +1920,6 @@ export default function PostulacionPage() {
               <div className="post-order-wrap">
                 <p className="post-order-titulo">
                   Tu lista en orden de preferencia:
-                  {/* S22-9: indicador visible de guardado del borrador */}
-                  {borradorGuardado && (
-                    <span className="post-draft-badge" role="status">✓ Borrador guardado</span>
-                  )}
                   <span className="form-hint" style={{ display: 'block', fontWeight: 400 }}>
                     Arrastra las tarjetas o usa los botones ↑ y ↓ para reordenar. El 1 es el que más quieres.
                   </span>

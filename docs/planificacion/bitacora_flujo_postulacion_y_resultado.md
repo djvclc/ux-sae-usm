@@ -510,9 +510,48 @@ Los pendientes **P3–P6** no provienen de las guías de UX-IA sino de la tabla 
    - **¿La postulación de bloque hace una asignación real para el hermano/a?** Hoy se captura (`hermano: {…}`) pero `calcularResultado` corre solo para el estudiante principal.
    - ~~¿Recalibrar `probAsignacion`?~~ / ~~¿Argumentar de dónde salen los porcentajes?~~ → **RESUELTO por el Bloque R (2026-09-03):** se reemplazó la tabla entera por una **simulación DA-por-colegio + Monte Carlo** (`simulacionSae.js`). Los `%` ya no se eligen a mano: salen de simular la competencia real por los cupos, con datos reales (`vacantes`, `postulantesAnterior`) y parámetros de población documentados. Queda para el writing-agent redactar esto en el Cap. 3.
 
+10. **Reorientación de la prueba a diseño comparativo (reunión profesora guía, 2026-09-03).** Ver **sec. 7** (roadmap en 3 fases: F1 caso y orden canónico → F2 explicatividad del algoritmo → F3 modo control). Reencuadra varios puntos de esta sección: el nº 1 (S23) y el nº 6 (variantes de grupo) se subordinan al nuevo diseño entre-sujetos N≈30; el nº 5 (comité de ética) gana peso. Decisiones abiertas concretas listadas en sec. 7.3.
+
 ---
 
-## 7. Protocolo de actualización (para `bitacora-agent`)
+## 7. Reorientación del estudio a diseño comparativo — roadmap (reunión con la profesora guía, 2026-09-03)
+
+**Estado:** `— sin código (planificación)`. Ninguna de las tres fases está implementada; esta sección existe para no perder de vista el rumbo acordado. Se cierra cada fase moviéndola a un Bloque de la sec. 4 cuando se ejecute.
+
+### 7.1 Qué cambió de rumbo
+
+En la reunión, la profesora guía sugirió **reorientar la prueba de usabilidad**: de un estudio **formativo de final abierto** (el/la participante elige el orden de los colegios; se observa su estrategia y comprensión, N≈8) a un **estudio comparativo controlado**:
+
+- **Orden de postulación fijo**, entregado al participante. Acota el espacio de opciones, elimina el confound "a fulano le tocó una lista más fácil que a mengano" y hace que **todos vean el mismo resultado** → se mide limpiamente "¿esta UX me ayudó a entender *este* resultado?".
+- **Dos condiciones:** (A) UX que **explica** el algoritmo — el prototipo actual, construido sobre las guías de `investigacion_ux_guide_ai_systems.md` (HAX / PAIR-ET / NNG-XAI / BROOK / RISK-NUM); (B) UX que **no** lo explica — un proxy fiel del SAE / vitrina real (`investigacion_vitrina_sae.md`).
+- **Objetivo reafirmado:** el foco es **explicar el algoritmo apoyándose en esas guías ya documentadas**. La condición B es el control que permite atribuir a la explicación las diferencias de comprensión / confianza / percepción de justicia.
+- **Diseño entre-sujetos**, N≈30 (≈15 por condición). Dentro-sujetos no sirve: una vez que se entiende el algoritmo no se puede "desentender" para el control. Esto explica el "al menos 30" que pidió la profesora.
+
+### 7.2 Roadmap en tres fases (orden acordado con el usuario, 2026-09-03)
+
+| Fase | Qué | Fundamento / insumo | Entregables | Depende de |
+|---|---|---|---|---|
+| **F1 — Caso y orden canónico** | Fijar la lista de 6 colegios y su **orden de postulación** que se entrega a todos los participantes. Escenario candidato: **San Martín (el "colegio en mente") 1.º** → no queda → asignación en **Colegio Los Andes (2.ª preferencia, por hermano/a)**. Verificar con la semilla definitiva. Resolver el asunto de `SEED_CASO` / demanda media (hoy Simón Bolívar y Los Quillayes sientan de forma determinista con la semilla actual aunque marquen ~48 % — con el orden fijo esto puede o no importar, hay que decidirlo). Decidir si se entrega como "postulá exactamente estos 6 en este orden" o "estos 6, y ordenás con esta lógica que te doy". | `caso_estudio_prueba_usabilidad_postulacion.md` §3 / §3.1 · `mapa_resultados_caso_munoz_gonzalez.md` · Bloque R (modelo actual) · `investigacion_algoritmo_sae.md §4.2` (strategy-proofness) | `caso_estudio…md`, `mapa_resultados…md`, `guion_moderador…md`, `guion_participante…md` actualizados + PDFs. Confirmación funcional del escenario con la semilla elegida. | — |
+| **F2 — Explicatividad del algoritmo en la página** | Repaso **punto a punto** de toda la superficie de explicación del prototipo y su refuerzo según las guías de Google/Microsoft: `AlgoritmoPage.jsx`, `AlgoSimuladorPasos.jsx`, `ResultadoProvisional` (Bloque Q), `ColegioAnalisis`, `SeguimientoPage.generarExplicacion`, el InfoBox de "cómo se decide tu resultado" del paso 1, `ProbabilidadVisual` (Bloque I). Es la **condición de tratamiento**: tiene que estar tan sólida como las guías permitan **antes** de que la comparación signifique algo. | `investigacion_ux_guide_ai_systems.md` completo — HAX **G1** (qué puede/no puede), **G2** (qué tan bien / incertidumbre), **G4** (info contextual), **G11** (por qué este resultado), **G16** (consecuencia de la acción); **PAIR-ET** (calibrar confianza, explicación específica vs. general, visualizar certeza); **NNG-XAI** (ubicación visible, lenguaje accionable, no antropomórfico); **BROOK** (qué NO puede hacer el sistema; video animado); **RISK-NUM** (formato de frecuencia, icon arrays) | Cambios en `sae-react/` con trazabilidad en esta bitácora (Bloque nuevo por cada pieza tocada). `npm run lint`/`build`/`test`. | F1 (para saber qué resultado se está explicando) |
+| **F3 — Modo control** | Versión del flujo que **oculta** la capa de explicación del algoritmo (link a `/algoritmo`, `ResultadoProvisional`, la visual "X de cada 100", el "por qué te asignaron este colegio", el InfoBox inicial de "cómo se decide"). Implementación candidata: `?modo=control` o ruta paralela + bandera de sesión. **Anclar el control a la vitrina / SAE real** (`investigacion_vitrina_sae.md`, `analisis_video_paso_a_paso_sae.md`), no a una versión mutilada a propósito. Mecanismo de asignación entre-sujetos (número de participante → condición). | `investigacion_vitrina_sae.md` · `analisis_flujo_postulacion.md` · diseño experimental del Cap. 3 | Modo control en `sae-react/` + doc de metodología comparativa. Plan de implementación revisado por el usuario **antes** de tocar código. | F1, F2 |
+
+### 7.3 Implicancias y decisiones abiertas
+
+- **Cap. 3 (Metodología) — reescritura mayor (writing-agent).** De "prueba de usabilidad formativa N≈8, tareas dirigidas, guion de moderador, Likert 11 ítems" a "estudio comparativo entre-sujetos N≈30, dos condiciones (UX con/sin explicación del algoritmo), tarea de postulación con **lista y orden fijos**, mismo desenlace para todos". Es más grande que el pendiente ya anotado de reescribir la descripción del simulador (Bloque R) — **conviene hacer las dos cosas juntas**. El instrumento (comprensión / confianza / percepción de justicia + pregunta abierta) se conserva pero pasa a ser **comparativo entre condiciones**; el ítem línea base "tómbola" queda como covariable.
+- **El mapa de las 720 ordenaciones** (discutido el 2026-09-03, ver `mapa_resultados_caso_munoz_gonzalez.md`) **queda aparcado**: con orden fijo no hace falta enumerar el espacio de resultados. Se retoma solo si se decide dar libertad de orden en alguna variante.
+- **Comité de ética UTFSM** (sec. 6 nº 5): un estudio comparativo con N≈30 y reclutamiento por conveniencia refuerza la necesidad de pasar por el comité, aunque los datos sean ficticios.
+- **Cuidado 1 — el control no debe ser un espantapájaros.** Si la condición B es una versión deliberadamente pobre, el hallazgo es trivial ("obvio que la que explica ganó"). Debe representar de forma justa el SAE/vitrina que ya se documentó.
+- **Cuidado 2 — no perder lo cualitativo.** Dejar 1–2 preguntas abiertas tipo "¿habrías ordenado distinto? ¿por qué?" para conservar la lectura del *falso riesgo estratégico*, aunque ya no sea la medida principal.
+- **Decisión de F1 pendiente:** semilla definitiva y si Simón Bolívar/Los Quillayes deben poder *no* sentar (variar la semilla por participante) o da igual con orden fijo.
+- **Decisión de F3 pendiente:** alcance exacto de lo que oculta el control; `?modo=control` vs. ruta paralela; cómo se asigna la condición en terreno.
+
+### 7.4 Lectura del usuario para la reunión (registrada)
+
+"No conforme con el estado actual, pero avanzando hacia algo que me gusta." Defendible: el prototipo pasó de un `%` inventado en una tabla (`archivo/CLAUDE_v2.md §3`, sin calibración) a un `%` derivado de datos reales + un mecanismo documentado con limitaciones explícitas (Bloque R); y la prueba pasa de observación formativa a un diseño que **puede contrastar la hipótesis central** de la tesis.
+
+---
+
+## 8. Protocolo de actualización (para `bitacora-agent`)
 
 1. Se dispara **después** de cualquier cambio a `PostulacionPage.jsx` (flujo) o a la parte de `SeguimientoPage.jsx` que consume el resultado de la postulación, y después de cambios de datos en `colegios.js`/`asignacion.js` que afecten el % estimado o las prioridades.
 2. Para cada cambio, agregar fila/entrada en el Bloque correspondiente de sec. 4 con: **ID / código de trazabilidad**, fecha, qué se cambió (1–2 frases), **fundamento de origen**, **mapeo a guía** (sigla del sec. 2 + número o concepto), **ancla** (`archivo` + código `S..-..` o nº de línea aproximado), **capítulo(s) de la memoria**, **estado de validación**.

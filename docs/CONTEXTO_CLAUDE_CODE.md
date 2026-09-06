@@ -601,3 +601,20 @@ Lectura: **prioridad legal → ~99 %** (fiel: el SAE reserva a hermanos/funciona
 **Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (14/14) — 2026-09-03. Verificado end-to-end en navegador: los 6 `%` del flujo coinciden con el snapshot; `/colegio` y `/algoritmo` sin errores de consola.
 
 **Pendiente writing-agent (grande):** `proyecto-tesis/capitulos/03_metodologia.tex` describe el simulador como "lógica Gale-Shapley simplificada" con estimación por (demanda, prioridad). Reescribir esa parte del Cap. 3 con el modelo nuevo, sus limitaciones declaradas y los parámetros de población como supuesto metodológico. **Subsume** la tarea previa de "argumentar de dónde salen los porcentajes".
+
+---
+
+## 28. Paso 1 de `/postulacion` en modo verificación (2026-09-06 — refinamiento S22-12 / S4)
+
+**Decisión del usuario (opción "a", comportamiento permanente).** El SAE real precarga identidad y domicilio del/de la estudiante desde ClaveÚnica; la familia los **verifica**, no los tipea. Extiende el patrón de la sección 25 (Bloque N, "el sistema lo detecta, no lo pregunta") de las prioridades a la identidad.
+
+**`PostulacionPage.jsx`:**
+- `IDENTIDAD_CLAVEUNICA_DEMO` — identikit ficticio (Sofía Ríos Contreras, RUN, 4° básico, RM / La Florida / Pasaje Los Copihues 145) que hace de "lo que devolvió ClaveÚnica" para un visitante sin datos en `/perfil`.
+- `ingresarConClaveUnica()` — al pulsar "Ingresar con ClaveÚnica" o "Continuar con RUT": `setLoginOk(true)` + siembra nombre/RUN/nivel/región/comuna/calle con `((v) => v || DEMO.x)` (no pisa `/perfil` ni el caso de ejemplo). Ambos botones de login lo usan.
+- Estado `editandoIdentidad` (default `false`). Con `false`: el bloque de identidad y el de dirección se muestran como **recap de solo lectura** (`<dl class="post-identidad-verif__lista">`: Nombre / RUN / Nivel / Domicilio) + botón "Algún dato no está bien — corregir". Con `true`: los inputs editables actuales + el `post-direccion-block` + botón "Listo, datos verificados". Título del bloque: "Verifica los datos del estudiante".
+- **Se conservan como pasos activos:** la confirmación explícita del nivel (S22-12, "Verifica el curso") y la casilla "Declaro ser apoderado/a legal" — no se premarcan. La casilla + campos del hermano/a quedan igual (la familia declara el hecho).
+- `index.css`: `.post-identidad-verif` + `.post-identidad-verif__lista` (grid responsive, colapsa a 1 columna < 420px).
+
+**No se tocó** `asignacion.js` / `simulacionSae.js` / la cifra 87/87. `npm run lint` (0/0), `npm run build` (limpio, `PostulacionPage` 63.4 kB), `npm test` (14/14) — 2026-09-06. Verificado end-to-end en navegador por inspección de DOM.
+
+**Pendiente writing-agent / material (fase F1):** `03_metodologia.tex` §3.5/§6.2, `caso_estudio_prueba_usabilidad_postulacion.md` (tareas 1 y 3) y `guion_*` — la tarea de identificación pasa de "rellenar" a "verificar los datos precargados". Sube la fidelidad frente a `analisis_video_paso_a_paso_sae.md` brecha B. Bitácora del flujo: Bloque S.

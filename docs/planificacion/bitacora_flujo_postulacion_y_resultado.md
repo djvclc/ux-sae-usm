@@ -476,6 +476,31 @@ Lectura pedagógica: **tener una prioridad legal → casi seguro (~99 %)** — e
 
 ---
 
+### Bloque S — Paso 1 en modo verificación: identidad y domicilio precargados (2026-09-06)
+
+**Fundamento de origen:** decisión del usuario (opción "a" — comportamiento permanente del flujo). El SAE real, tras ClaveÚnica, **precarga** los datos de identidad y domicilio del/de la estudiante desde el Estado; la familia los **verifica**, no los tipea. El paso 1 del prototipo todavía pedía rellenarlos en campos vacíos. Extiende el patrón de Bloque N ("el sistema lo detecta, no lo pregunta") de las prioridades a la identidad.
+
+**Mapeo a guía:**
+- **HAX G1** (`investigacion_ux_guide_ai_systems.md` L27 — explicitar, antes de pedir datos, qué sabe el sistema). El recap "Verifica los datos del estudiante" hace explícito qué recuperó ClaveÚnica.
+- **PAIR — "Explainability + Trust"** (procedencia del dato; concepto): la nota *"en el sistema real, estos son los datos de tu hijo/a tal como están registrados en el Estado"*.
+- **FORM-MS** (lectura extendida — campos claros, menos fricción): verificar en vez de tipear reduce el trabajo de un formulario multipaso.
+
+**Cambios en código (`PostulacionPage.jsx` + `index.css`):**
+
+| # | Cambio | Ancla |
+|---|---|---|
+| **S1** | `IDENTIDAD_CLAVEUNICA_DEMO` (identikit ficticio) + `ingresarConClaveUnica()`: al ingresar (ClaveÚnica o RUT) se siembran nombre/RUN/nivel/región/comuna/calle desde `/perfil` si existe, o del identikit demo si no. `|| ` guard: no pisa datos de `/perfil` ni del caso de ejemplo. | `PostulacionPage.jsx` `IDENTIDAD_CLAVEUNICA_DEMO` (~51), `ingresarConClaveUnica` (~877), ambos botones de login |
+| **S2** | Bloque de identidad + bloque de dirección se muestran como **recap de solo lectura** (nombre, RUN, nivel, domicilio) con botón *"Algún dato no está bien — corregir"* (`editandoIdentidad`) que abre los campos editables + *"Listo, datos verificados"*. Título del bloque: *"Verifica los datos del estudiante"*. | `PostulacionPage.jsx` `editandoIdentidad` state (~715), recap/edit en `post-alumno-block` (~1300), gate del `post-direccion-block` (~1544); `index.css` `.post-identidad-verif` (~6319) |
+| **S3** | Se conservan como **actos activos**, no precargados: la confirmación explícita del nivel (S22-12, *"Verifica el curso"*) y la casilla *"Declaro ser apoderado/a legal"* (declaración jurada). La lista de hermano/a queda igual (la familia declara el hecho; solo identidad y domicilio entran en modo verificación). | sin cambios funcionales en esas piezas |
+| **S4b** | Microcopy: el hint de la región dice que *"viene de tu domicilio registrado; puedes cambiarla"*; el aviso `post-login-ok` ya decía *"Tus datos fueron cargados desde ClaveÚnica"* (ahora literal). | `PostulacionPage.jsx` hint de región (~1256) |
+
+**Trazabilidad en código:** `S22-12 / S4 (refinamiento)`. **`asignacion.js` / `simulacionSae.js` intactos. 87/87 intacto** (`plan_mejora_sae.md` e `incisos.js` sin cambios).
+**Estado de validación:** ✅ `npm run lint` (0/0), `npm run build` (limpio; `PostulacionPage` 63.4 kB), `npm test` (14/14) — en esta sesión. Verificado end-to-end en navegador (por inspección de DOM; la captura del panel salía en blanco): login → recap con Sofía Ríos Contreras / 21.457.883-4 / 4° básico / Pasaje Los Copihues 145, La Florida y región RM preseleccionada → "corregir" abre los inputs + el bloque de dirección + "Listo" → marcar apoderado/a habilita "Vincular" → "Verifica el curso" → tarjeta de vinculado. El atajo "Cargar familia Muñoz González" carga esos datos en el recap, con el panel de vínculos y Mateo precargado. Sin errores de consola.
+**Impacto en cifras de la memoria:** ninguno.
+**Pendiente writing-agent / material (fase F1):** `03_metodologia.tex` §3.5 y §6.2, `caso_estudio…md` (tareas 1 y 3), `guion_*` — la tarea de identificación pasa de *"rellenar"* a *"verificar los datos que la página precarga"*. Sube la fidelidad frente a `analisis_video_paso_a_paso_sae.md` brecha B (el SAE real precarga más de lo que hacía el prototipo).
+
+---
+
 ## 5. Pendientes propuestos por las guías (aún NO implementados)
 
 De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G; la auditoría de microcopy que figuraba como **P3** y **P4** se implementó el 2026-08-26 — ver Bloque H; la versión visual del formato de frecuencia —**P1**— y el encuadre del algoritmo en la primera pantalla —**P2**— se implementaron el 2026-08-26 — ver Bloque I; el lenguaje antropomórfico del `AlgoSimuladorPasos` —**P1** en la última numeración— se implementó el 2026-08-26 — ver Bloque J.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.

@@ -691,7 +691,13 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
         ) : null}
         <li>
           <span>Tu prioridad aquí:</span>
-          <strong>{prioridadLabels[nivel]}</strong>
+          {/* Microcopy 2026-09-07: para nivel 5 (sin vínculo legal) NO se muestra
+              `prioridadLabels[5]` ("Sorteo público transparente") — es un mal
+              "por qué" del % (HAX G11 / PAIR: la explicación real es demanda vs.
+              vacantes, filas de arriba) y confunde "sin ventaja" con "el sorteo
+              es tu prioridad". Mismo criterio que el resumen del paso 3, que ya
+              gatea `nivel < 5`. */}
+          <strong>{nivel < 5 ? prioridadLabels[nivel] : 'Sin vínculo con este colegio'}</strong>
         </li>
       </ul>
     </div>

@@ -4,7 +4,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios, colegiosById, totalVacantes } from '../data/colegios'
-import { calcularResultado, prioridadLabels, probabilidadCupo, probPorcentaje, tramoFamiliaEnColegio, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
+import { calcularResultado, etiquetaPrioridad, probabilidadCupo, probPorcentaje, tramoFamiliaEnColegio, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
 import { formatearRut, rutValido } from '../utils/rut'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
@@ -691,13 +691,11 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
         ) : null}
         <li>
           <span>Tu prioridad aquí:</span>
-          {/* Microcopy 2026-09-07: para nivel 5 (sin vínculo legal) NO se muestra
-              `prioridadLabels[5]` ("Sorteo público transparente") — es un mal
-              "por qué" del % (HAX G11 / PAIR: la explicación real es demanda vs.
-              vacantes, filas de arriba) y confunde "sin ventaja" con "el sorteo
-              es tu prioridad". Mismo criterio que el resumen del paso 3, que ya
-              gatea `nivel < 5`. */}
-          <strong>{nivel < 5 ? prioridadLabels[nivel] : 'Sin vínculo con este colegio'}</strong>
+          {/* Microcopy 2026-09-07: `etiquetaPrioridad` no muestra "Sorteo público
+              transparente" para nivel 5 — la razón del % es demanda vs. vacantes
+              (HAX G11 / PAIR). Mismo criterio en /algoritmo, /seguimiento y el
+              comprobante. */}
+          <strong>{etiquetaPrioridad(nivel)}</strong>
         </li>
       </ul>
     </div>
@@ -1024,13 +1022,13 @@ export default function PostulacionPage() {
       '',
       // S22-11 (refinamiento): la "prioridad aplicada" es la del colegio asignado;
       // el detalle por colegio va en la lista de abajo (la prioridad puede cambiar).
-      `Prioridad en el colegio asignado: ${prioridadLabels[resultado.nivel]}`,
+      `Prioridad en el colegio asignado: ${etiquetaPrioridad(resultado.nivel)}`,
       '',
       '── LISTA EN ORDEN DE PREFERENCIA ──',
       ...lista.map((id, i) => {
         const c = colegiosById[id]
         const n = nivelPrioridadEnColegio(perfilCompleto, id)
-        return `${i + 1}. ${c ? `${c.nombre} — ${c.comuna}` : 'Colegio'} · prioridad: ${prioridadLabels[n]}`
+        return `${i + 1}. ${c ? `${c.nombre} — ${c.comuna}` : 'Colegio'} · prioridad: ${etiquetaPrioridad(n)}`
       }),
       '',
       '── PRÓXIMAS FECHAS (ADMISIÓN 2027) ──',

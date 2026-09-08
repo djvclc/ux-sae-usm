@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios } from '../data/colegios'
-import { prioridadLabels } from '../utils/asignacion'
+import { prioridadLabels, etiquetaPrioridad } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
@@ -121,7 +121,7 @@ export default function SeguimientoPage() {
       '',
       `Comprobante: ${comprobante}`,
       `Fecha: ${new Date(data.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}`,
-      `Prioridad: ${prioridadLabels[resultado?.nivel]}`,
+      `Prioridad: ${etiquetaPrioridad(resultado?.nivel)}`,
       '',
       '── RESULTADO ──',
       asignado ? `Colegio asignado: ${asignado.nombre}` : 'Sin asignación',
@@ -243,7 +243,7 @@ export default function SeguimientoPage() {
                 <span className="seg-hero-stat__lbl">Probabilidad</span>
               </div>
               <div className="seg-hero-stat">
-                <span className="seg-hero-stat__num">{prioridadLabels[resultado?.nivel]?.split('/')[0] ?? '—'}</span>
+                <span className="seg-hero-stat__num">{resultado?.nivel && resultado.nivel < 5 ? prioridadLabels[resultado.nivel].split('/')[0] : (resultado?.nivel === 5 ? 'Sin vínculo' : '—')}</span>
                 <span className="seg-hero-stat__lbl">Prioridad</span>
               </div>
               <div className="seg-hero-stat">
@@ -263,7 +263,7 @@ export default function SeguimientoPage() {
         )}
 
         <div className="seg-result-hero__meta">
-          <span>Prioridad aplicada: <strong>{prioridadLabels[resultado?.nivel]}</strong></span>
+          <span>Prioridad aplicada: <strong>{etiquetaPrioridad(resultado?.nivel)}</strong></span>
           <span>Fecha postulación: <strong>{new Date(data.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></span>
         </div>
       </div>

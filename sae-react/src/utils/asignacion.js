@@ -16,6 +16,17 @@ export const prioridadLabels = {
   5: 'Sorteo público transparente',
 }
 
+/* Etiqueta de prioridad para MOSTRAR al usuario en el flujo y el seguimiento.
+   Para nivel 5 (sin vínculo legal) NO se usa `prioridadLabels[5]` ("Sorteo
+   público transparente") como si fuera una prioridad de la familia: es un mal
+   "por qué" del % (la razón real es demanda vs. vacantes) y roza el estigma de
+   "tómbola". El término "sorteo" se reserva para explicar el mecanismo en
+   `/algoritmo`. `null`/`undefined` → '—'. Ver bitácora 2026-09-07. */
+export function etiquetaPrioridad(nivel) {
+  if (nivel == null) return '—'
+  return nivel < 5 ? prioridadLabels[nivel] : 'Sin vínculo con este colegio'
+}
+
 /* S22-11 (refinamiento) · S22-6:
    La prioridad NO es global. Solo `prioritario` (cuota SEP 15 %) es transversal:
    es un atributo del estudiante y aplica en todos los colegios. En cambio

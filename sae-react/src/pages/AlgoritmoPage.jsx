@@ -9,7 +9,7 @@ import {
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import { colegios } from '../data/colegios'
-import { calcularResultado, prioridadLabels } from '../utils/asignacion'
+import { calcularResultado, etiquetaPrioridad } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import AlgoSimuladorPasos from '../components/AlgoSimuladorPasos'
@@ -470,7 +470,7 @@ export default function AlgoritmoPage() {
               ) : null}
               <p>
                 Probabilidad estimada: <strong>{resultado.asignado.prob}%</strong> ·{' '}
-                Prioridad: <strong>{prioridadLabels[resultado.nivel]}</strong>
+                Prioridad: <strong>{etiquetaPrioridad(resultado.nivel)}</strong>
               </p>
               <ul className="sim-list" aria-label="Detalle por cada colegio seleccionado">
                 {resultado.detalles.map((d) => (

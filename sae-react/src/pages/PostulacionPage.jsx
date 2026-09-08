@@ -533,8 +533,8 @@ function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda, 
             <span className="form-hint" style={{ display: 'block' }}>
               No detectamos ningún vínculo con {colegio.nombre}.{' '}
               {tieneSEP
-                ? <>Aquí entras por tu cuota de estudiante prioritario/a (SEP) o por el sorteo general.</>
-                : <>Aquí entras <strong>solo por el sorteo</strong>: no tienes ninguna prioridad en este colegio.</>}
+                ? <>Aquí tu cupo se resuelve por la reserva del 15&nbsp;% para estudiantes prioritarios/as y, fuera de ella, por la demanda y las vacantes del colegio.</>
+                : <>Sin una prioridad aquí, tu cupo depende de cuántas familias pidan este colegio y de las vacantes que tenga.</>}
             </span>
           )}
           <details className="post-prio-colegio__correccion">

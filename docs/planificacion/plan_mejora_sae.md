@@ -195,7 +195,7 @@
 |---|---|---|---|---|
 | 15.1 | Sin información del algoritmo | Módulo completo: 4 pasos interactivos + detalle expandible + simulador con perfil real | ✅ | `AlgoritmoPage.jsx` |
 | 15.2 | Sin estadísticas de resultados públicas | Agregar sección "Resultados de años anteriores" con datos ficticios representativos | ✅ 🟢 | `AlgoritmoPage.jsx` |
-| 15.3 | Sin explicación contextualizada del resultado | `generarExplicacion()` en `SeguimientoPage`: "Quedaste en X porque tienes hermano/a ahí" | ✅ | `SeguimientoPage.jsx` |
+| 15.3 | Sin explicación contextualizada del resultado | `generarExplicacion()` en `SeguimientoPage`: "Quedaste en X porque tienes hermano/a ahí". *Refinamiento 2026-09-09 (bitácora Bloque U / `caso_estudio §3.2`): el "por qué no quedaste en tu opción de más arriba" pasa a explicación específica del colegio no obtenido (más familias que cupos + sin vínculo ni reserva 15 % + desempate como trato igual entre iguales + BROOK "no crea cupos"), formato "X de cada 100", + párrafo de strategy-proofness.* | ✅ | `SeguimientoPage.jsx` |
 | 15.4 | Sin visibilidad del proceso de asignación | Timeline horizontal de 4 etapas (Postulación → Validación → Asignación → Resultado) con estados visuales | ✅ | `SeguimientoPage.jsx`, `index.css` |
 | 15.5 | Sin acción sobre la oferta de matrícula | Botones "Aceptar asignación" / "Rechazar y pasar a lista de espera" con feedback contextual | ✅ | `SeguimientoPage.jsx`, `index.css` |
 | 15.6 | Sin comprobante descargable | Función `descargarComprobante()` genera archivo .txt con detalle completo de la postulación | ✅ | `SeguimientoPage.jsx` |
@@ -300,17 +300,32 @@
 
 ## Resumen de estado por prioridad
 
-### ✅ Aplicados — 87 de 87 puntos aplicables (100%) — sección S22 (15 puntos) añadida el 2026-08-04
+### ⚠️ Nota sobre el conteo (2026-09-08 — corrección de integridad)
 
-Todos los puntos de prioridad 🔴 alta y 🟡 media están implementados. La actualización v4.2 cerró autocompletado predictivo (5.3) y chat de ayuda simulado (10.1). El 2026-07-21 se cerró el último punto pendiente del informe original, 15.2 (sección "Resultados de años anteriores" con Chart.js en `AlgoritmoPage.jsx`). El 2026-08-04 se añadieron y cerraron S21 (10 puntos, vista /proceso) y S22 (15 puntos, rediseño del flujo de postulación con correcciones de fidelidad E1–E6).
+Una auditoría independiente (`docs/auditoria_independiente_sae_2026-09-08.md`) detectó que la cifra **"87/87 puntos aplicables (100 %)"** citada aquí y en la memoria **no es reproducible desde esta matriz**:
 
-> ✅ **Sincronización con la memoria (2026-07-29):** capítulos 00, 04 y 06 actualizados a "100 % (62/62 aplicables)"; compilación verificada sin errores.
+- Las tablas de las secciones 1–22 contienen **102 filas numeradas** (77 en S1–S20, 10 en S21, 15 en S22), no 87. El histórico "62 puntos" para S1–S20 nunca cuadró con las 77 filas visibles, y no existe una tabla de consolidación que explique qué filas se agrupan o descartan para llegar a 62 (y de ahí a 87).
+- De esas 102 filas, **4 están marcadas "—" / no aplican** al prototipo: **4.3** (panel "Programas" inexistente), **8.1** (redirección HTTP→HTTPS, infraestructura), **8.2** (cabeceras HTTP, servidor de producción) y **9.3** (redirección del dominio `www`, DNS). → **98 requisitos aplicables.** (El bloque "No aplica al prototipo — 1 punto" de más abajo, que solo listaba 8.2, quedaba corto.)
+- Además, las propias tablas de sección marcan varios puntos como **⚠️ Parcial** o **❌** (p. ej. 5.2, 5.3, 8.2, 14.2, 14.3, 10.1), lo que ya contradice el "100 %".
 
-### ⚠️ No aplica al prototipo — 1 punto
+**Cifra reproducible: 98 requisitos aplicables.** El estado por fila está en las tablas de cada sección; **no se cita una cifra agregada de cumplimiento** (`X/98`) hasta recalcularla fila por fila con un criterio de veredicto explícito y, de preferencia, con un segundo evaluador. La auditoría, con veredictos binarios estrictos, estimó ~55 filas de cumplimiento completo, pero varios de sus ❌ son discutibles (guías aspiracionales de microcopy puntuadas como binarias, features reemplazadas por decisión de diseño contadas como fallos); esa cifra tampoco debe citarse sin revisión.
+
+**Pendiente (decisión del autor):** (a) reconstruir la consolidación 102→? con criterio documentado, o (b) adoptar **98** como denominador y re-tabular el estado. Hasta entonces, la memoria (caps. 00/03/04/06) sustituye "100 % / 87 de 87" por "la totalidad de los puntos aplicables de la matriz fue abordada a nivel de código" con esta salvedad — es una **autoevaluación de implementación**, no una medición de cumplimiento.
+
+### ✅ Aplicados — cobertura a nivel de código de las 22 categorías (S1–S22)
+
+Todos los puntos de prioridad 🔴 alta y 🟡 media fueron abordados en el código. La actualización v4.2 cerró autocompletado predictivo (5.3) y chat de ayuda simulado (10.1). El 2026-07-21 se cerró el último punto pendiente del informe original, 15.2 (sección "Resultados de años anteriores" con Chart.js en `AlgoritmoPage.jsx`). El 2026-08-04 se añadieron y cerraron S21 (10 puntos, vista /proceso) y S22 (15 puntos, rediseño del flujo de postulación con correcciones de fidelidad E1–E6). Ver la nota de integridad de arriba para el conteo agregado.
+
+> **Sincronización con la memoria (2026-07-29):** capítulos 00, 04 y 06 se habían actualizado a "100 % (62/62 aplicables)"; ese conteo queda revisado por la nota de integridad del 2026-09-08.
+
+### ⚠️ No aplica al prototipo — 4 puntos
 
 | # | Punto | Justificación |
 |---|---|---|
+| 4.3 | Resolver panel "Programas" ambiguo | Ese panel de filtros no existe en el prototipo. |
+| 8.1 | Redirección HTTP→HTTPS | Configuración de servidor de producción. |
 | 8.2 | Cabeceras HTTP de seguridad | Configuración de servidor de producción (Nginx). Documentadas las 6 cabeceras requeridas: `Strict-Transport-Security`, `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`. |
+| 9.3 | Redirección del dominio `www` | Requiere configuración de DNS/servidor. |
 
 ### 📋 Puntos cerrados en v4.1 (2026-06-09)
 
@@ -353,4 +368,4 @@ Todos los puntos de prioridad 🔴 alta y 🟡 media están implementados. La ac
 
 ---
 
-*Plan actualizado el 2026-08-04 (v4.5). Cambios v4.5: sección S22 — rediseño del flujo de postulación (correcciones de fidelidad E1–E6, comprobante descargable, drag-and-drop accesible, borrador visible, edición desde confirmación, datos v2 en el análisis por colegio, verificación de nivel, postulación en bloque, consejo estratégico, bloque "¿y si no quedo?"). Cambios v4.4: sección S21 — vista /proceso. Cambios v4.2: autocompletado predictivo en buscador, chat de ayuda simulado con 8 FAQ. Cambios v4.1: paleta institucional #0057B7, ilustraciones SVG, hero con etapa actual, contraste AAA, metadescripciones + OG dinámicos. Cambios v3: rediseño SeguimientoPage. 87/87 puntos cerrados (100%). Referencia: feedback_sae_problemas.md — Morales-Vargas et al., 2026.*
+*Plan actualizado el 2026-08-04 (v4.5). Cambios v4.5: sección S22 — rediseño del flujo de postulación (correcciones de fidelidad E1–E6, comprobante descargable, drag-and-drop accesible, borrador visible, edición desde confirmación, datos v2 en el análisis por colegio, verificación de nivel, postulación en bloque, consejo estratégico, bloque "¿y si no quedo?"). Cambios v4.4: sección S21 — vista /proceso. Cambios v4.2: autocompletado predictivo en buscador, chat de ayuda simulado con 8 FAQ. Cambios v4.1: paleta institucional #0057B7, ilustraciones SVG, hero con etapa actual, contraste AAA, metadescripciones + OG dinámicos. Cambios v3: rediseño SeguimientoPage. **Conteo: ver "Nota sobre el conteo (2026-09-08)" — la matriz tiene 102 filas, 4 no aplican → 98 requisitos aplicables; la cifra "87/87 (100 %)" no era reproducible.** Referencia: feedback_sae_problemas.md — Morales-Vargas et al., 2026.*

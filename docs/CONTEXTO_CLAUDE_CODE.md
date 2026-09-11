@@ -1,6 +1,6 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-08-26 (prioridad por colegio en el flujo de postulación — refinamiento S22-11)  
-**Estado del proyecto:** v4.5 — 87/87 puntos aplicables implementados (100%); S22 optimizado  
+**Fecha:** 2026-09-10 (enriquecimiento de la ficha de resultado `/seguimiento` — ver §34; calibración de las bandas de probabilidad del paso 3 — §33; F3 / modo control — §32)  
+**Estado del proyecto:** v4.5. Matriz `plan_mejora_sae.md`: 102 filas, 4 no aplican → **98 requisitos aplicables** abordados a nivel de código (la cifra histórica "87/87 (100%)" no era reproducible — ver §29 y la nota de integridad del plan).  
 **Directorio principal:** `USM/sae-react/`
 
 ---
@@ -69,7 +69,9 @@ sae-react/
 
 ---
 
-## 3. Estado actual — 87/87 puntos aplicables implementados (100%)
+## 3. Estado actual — cobertura de las 22 categorías del plan a nivel de código
+
+> **Conteo corregido el 2026-09-08 (§29 / T6):** la cifra "87/87 (100 %)" que este documento citaba **no era reproducible** desde `plan_mejora_sae.md` (102 filas numeradas; 4 no aplican → **98 requisitos aplicables**; varias filas ya estaban ⚠️/❌). Las menciones a "87/87" en las secciones 15–27 de más abajo son **históricas** (significaban "este cambio no tocó el conteo de la matriz" en su fecha) y se conservan como registro. Ver la "Nota sobre el conteo (2026-09-08)" de `plan_mejora_sae.md`.
 
 El plan completo está en `plan_mejora_sae.md`. Resumen de lo que YA está hecho:
 
@@ -182,7 +184,7 @@ Consumidores: `PostulacionPage.jsx` (pasa el nivel del estudiante), `ColegioPage
 
 ## 10. Próximos pasos recomendados (en orden de prioridad)
 
-Los puntos del plan están todos cerrados (87/87 aplicables). Queda trabajo de pulido opcional:
+Los puntos del plan están todos abordados a nivel de código (98 requisitos aplicables tras el conteo corregido del 2026-09-08 — ver §3 y §29). Queda trabajo de pulido opcional:
 
 1. **Documentar cabeceras HTTP** en `vite.config.js` como comentario de producción (Nginx) — punto 8.2 (no aplica al prototipo, solo documentación).
 2. **Marcar páginas internas** (`/cumplimiento`, `/roadmap`, `/notas`) con meta `noindex` — no son parte del flujo público.
@@ -621,3 +623,142 @@ Lectura: **prioridad legal → ~99 %** (fiel: el SAE reserva a hermanos/funciona
 **No se tocó** `asignacion.js` / `simulacionSae.js` / la cifra 87/87. `npm run lint` (0/0), `npm run build` (limpio, `PostulacionPage` 63.4 kB), `npm test` (14/14) — 2026-09-06. Verificado end-to-end en navegador por inspección de DOM.
 
 **Pendiente writing-agent / material (fase F1):** `03_metodologia.tex` §3.5/§6.2, `caso_estudio_prueba_usabilidad_postulacion.md` (tareas 1 y 3) y `guion_*` — la tarea de identificación pasa de "rellenar" a "verificar los datos precargados". Sube la fidelidad frente a `analisis_video_paso_a_paso_sae.md` brecha B. Bitácora del flujo: Bloque S.
+
+---
+
+## 29. Correcciones tras la auditoría independiente (2026-09-08)
+
+`docs/auditoria_independiente_sae_2026-09-08.md` (inspección de código y docs; **no la escribió este proyecto, no editarla**) planteó hallazgos reales. Se ejecutó un subconjunto acotado; el resto queda como decisión del autor o trabajo posterior. Detalle y trazabilidad a guías en la **bitácora del flujo, Bloque T**.
+
+### Cambios de código
+
+| # | Archivo | Cambio |
+|---|---|---|
+| **T1** | `src/utils/asignacion.js` | **Sorteo del recorrido independiente por colegio.** `calcularResultado` creaba **un** `mulberry32(SEED_CASO)` y lo consumía recorriendo la lista en orden: como cada `simularCupo` gasta `3·postulantesAnterior + 1` llamadas a `rng()`, mover un colegio cambiaba su tramo del flujo pseudoaleatorio y podía cambiar su desenlace *queda/no queda* — incoherente con la regla real *Multiple Tie-Breaking* (`investigacion_algoritmo_sae.md` §3.2). Ahora cada colegio del recorrido usa `mulberry32((SEED_CASO ^ (d.id * 0x9e3779b1)) >>> 0)`, igual que `probabilidadCupo` para el `%`. El `%` por colegio ya era independiente del orden; esto lo alinea para el sorteo puntual. **Escenario canónico (San Martín 1.º → Los Andes 2.ª preferencia) y snapshot de `%` (99/99/99/50/46/26) intactos.** |
+| **T2** | `src/pages/SeguimientoPage.jsx` | **El fallback deja de narrarse como asignación real.** Si ningún colegio de la lista sienta a la familia, `calcularResultado` marca el de mayor `%` como `asignado` + `sinAsignacionEnPreferencias: true`. `generarExplicacion` **no** miraba la bandera y decía *"Quedaste en el {colegio}… a través del sorteo público y transparente"* (cupo inexistente + lenguaje de "tómbola"). Firma nueva `generarExplicacion(asignado, sinAsignacion)`: sin cupo → *"el sistema recorrió tu lista y ningún colegio te dejó un cupo… en el proceso real pasarías al Periodo Complementario… {colegio} es el de mayor probabilidad estimada ({p}%), pero eso no es una asignación"*. El `badge` y la línea de preferencia del hero, y el bloque *"¿Qué significa no quedar en tu primera opción?"*, se condicionan a `!sinAsignacion`. **No dispara en el caso canónico** (Los Andes sienta al 99 %); es un bug latente. |
+| **T3** | `src/utils/simulacionSae.js` | La clave de caché de `probabilidadCupo` (`id\|nivel\|esSep\|general\|iteraciones`) omitía `params`; se le añadió un hash de los 5 parámetros de población. Bug latente (la app no pasa `params` custom). |
+| **T4** | `src/pages/PostulacionPage.jsx` | Stepper del flujo con `role="progressbar"` + `aria-valuemin/max/now/text` (el plan 20.2 lo pedía y faltaba); se conserva `aria-current="step"` por paso. |
+| **T5** | `tests/flujo-postulacion.test.js` | 14 → **16 tests**: (a) *fallback* — `calcularResultado([SAN_MARTIN])` → `sinAsignacionEnPreferencias: true`, `asignado.id === SAN_MARTIN`, `estado === 'asignado'`, `prob === 26`; (b) *independencia por colegio* — San Martín 1.º nunca sienta y el desenlace no cambia con la cola de la lista. Comentario en el test: con los 6 colegios del caso no se puede "alcanzar" un colegio en posición > 1 (San Martín es el único que no sienta), así que la independencia total es estructural, no observable. |
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio; `PostulacionPage` 64.16 kB, `SeguimientoPage` 15.52 kB, ningún chunk > 500 kB), `npm test` (16/16) — 2026-09-08.
+
+### Cambios de documentación (T6 — sin tocar `sae-react/`)
+
+La cifra **"87/87 puntos aplicables (100 %)"** no era reproducible desde `plan_mejora_sae.md`: sus tablas tienen **102 filas numeradas** (77 en S1–S20, 10 en S21, 15 en S22); el histórico "62" para S1–S20 nunca cuadró con las 77 visibles y no hay tabla de consolidación 102→87; y varias filas ya estaban ⚠️/❌ (5.2, 5.3, 8.2, 14.2, 14.3, 10.1). **4 filas no aplican** (4.3 panel inexistente, 8.1 HTTP→HTTPS, 8.2 cabeceras, 9.3 dominio `www`) → **98 requisitos aplicables**.
+- `plan_mejora_sae.md`: nueva "Nota sobre el conteo (2026-09-08)"; el bloque "No aplica — 1 punto" pasa a "4 puntos".
+- Memoria (`00_resumen.tex`, `03_metodologia.tex` nota tras Tabla 3.1 + "Estado actual", `04_resultados.tex`, `06_conclusiones.tex`): "el 100 % / 87 de 87" → "la totalidad de los puntos aplicables… a nivel de código", con el conteo agregado pendiente de re-tabular fila por fila. Además, `03_metodologia.tex` gana una fila de septiembre en la Tabla 3.1 (reescritura del modelo Monte Carlo) y la nota post-tabla deja de afirmar que "no se alteró la lógica de asignación" (Bloque R sí la reescribió); la descripción del caso deja de decir que activa "la cuota del 15 %".
+
+### No hecho (decisión del autor / trabajo posterior)
+
+Teclado en el autocomplete de `InicioPage`; reclasificar/implementar videos y tutoriales de `/algoritmo`; decidir si PIE y hermanos-en-bloque entran al modelo o se retira la afirmación; unificar consecuencias de aceptar/rechazar (`/seguimiento` vs `/proceso`); invalidación efectiva del comprobante al modificar; limpieza de CSS huérfano / breakpoint 768 px / quick cards / "foto real"; **reescritura mayor de §3.5** (prueba formativa N=8 → estudio comparativo entre-sujetos N≈30) — sigue en el roadmap F1 y en `prompt_pendientes_revision_caso_sin_sep.md`. (`material_prueba_usabilidad_postulacion.pdf` ya se regeneró el 2026-09-09, con `material_…md` como fuente.)
+
+---
+
+## 30. Explicación del resultado en `/seguimiento` según `caso_estudio §3.2` (2026-09-09)
+
+**Origen:** la reflexión de `docs/investigacion/caso_estudio_prueba_usabilidad_postulacion.md` §3.2 — argumento técnico de por qué la familia del caso no queda en el Colegio San Martín (fila única del colegio por grupos de prioridad legal + sorteo por colegio; la familia en el último grupo; cuenta cupos − postulantes con prioridad = remanente; estabilidad = rechazo justo; strategy-proofness; garantía de recorrido) y su **traducción para el usuario** según HAX / PAIR-ET / NNG-XAI / BROOK / RISK-NUM. Se llevó el texto B de §3.2 al copy real. **Refinamiento de S15-3** (explicación contextualizada del resultado); no crea sección del plan; `asignacion.js` / `simulacionSae.js` / snapshot de `%` / cifra de la matriz intactos. Bitácora del flujo: **Bloque U**.
+
+**`src/pages/SeguimientoPage.jsx` — `generarExplicacion`:**
+- Firma nueva `generarExplicacion(asignado, sinAsignacion = false, detalles = [])`; el call site pasa `resultado?.detalles ?? []`.
+- **`asignado.idx > 1` (no quedó en su preferencia de más arriba):** con `previas = detalles.filter(d => d.idx < asignado.idx && d.estado !== 'no_evaluado')`. Si hay **una** previa y su `nivel > 2` (sin vínculo): (1) "Al {colegio}, tu {ordinal} opción, postularon más familias que los cupos… no tenías un vínculo (hermano/a, funcionario/a, exalumno/a) ni la reserva del 15 %… competías por los cupos que quedaban" (BROOK + HAX G11/G5-G6); (2) "La probabilidad estimada de quedar ahí… era de {prob} de cada 100" (RISK-NUM); (3) "Entre las familias en tu misma situación… cada establecimiento elige con su propio sorteo, el mismo para todas… ese sorteo vale **solo para el {colegio}**: no afectó tus posibilidades en los demás" (trato igual + strategy-proofness; "sorteo" describe el mecanismo, criterio 2026-09-07). Si `nivel ≤ 2` (tenía prioridad pero `sin_cupos`): "tenías prioridad, pero postularon tantas familias con esa prioridad o mayor que los cupos no alcanzaron". Si hay **varias** previas: una frase combinada compacta.
+- Cierre BROOK: "Por eso el sistema **siguió con tu lista** y te asignó al {asignado}. El SAE reparte los cupos que existen: no puede crear cupos nuevos ni asegurar la primera opción cuando hay más familias que vacantes".
+- **Formato de frecuencia** "X de cada 100" en toda la prosa de la función (incluida la del asignado y la rama `sinAsignacion`). Los chips/stats del hero y del detalle por preferencia siguen en "%".
+- **Rama `default` (nivel 5, quedó por el desempate sin vínculo):** reencuadrada — ya no encabeza con "a través del sorteo público y transparente… desempate aleatorio"; ahora "no tenías un vínculo… competías con las familias en tu misma situación… cada colegio elige con su propio sorteo, el mismo para todas — y este año tu cupo salió". `prioridadLabels[5]` (string compartido con `/algoritmo`) **no se tocó**.
+- Constante nueva `ORDINALES = ['primera'…'sexta']`.
+
+**Tarjeta "¿Qué significa no quedar en tu primera opción?"** (`asignado.idx > 1 && !sinAsignacion`): párrafo nuevo de strategy-proofness — "Poner ese colegio primero en tu lista no te quitó ninguna posibilidad en los demás: cada establecimiento revisa tu postulación por separado, sin importar en qué lugar de tu lista lo pusiste".
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-09. Verificado en navegador (`/seguimiento` con el payload del caso canónico Sofía: San Martín 1.º 26 / Los Andes 2.ª 99): las 6 frases nuevas aparecen en orden, sin errores de consola.
+
+**En el estudio comparativo:** toda esta explicación es **exclusiva de la condición A**; la condición B (F3, sin implementar) solo mostrará "quedaste en {colegio}". Ítems del instrumento que la miden: C4, C5, J2 (comprensión/justicia del "por qué no San Martín"), F3 + abierta A1 (strategy-proofness).
+
+---
+
+## 31. `ResultadoProvisional` reformulado + inventario de la capa de explicabilidad para F3 (2026-09-09)
+
+### `ResultadoProvisional` — de "pronóstico" a "ilustración de la regla"
+
+**Origen:** duda del usuario — el recuadro "Con este orden, ¿dónde quedarías?" (`PostulacionPage.jsx` ~566, render en paso 2 ~2055 y paso 3 ~2189) **no existe en una postulación real** y "predice un resultado sin ejecutar el algoritmo". Diagnóstico: sí ejecuta el algoritmo (`calcularResultado`), pero presentaba una simulación con `SEED_CASO` fijo como un **pronóstico confiado** (*"la estimación te deja en {X}… tu cupo es muy probable ({p} de cada 100)"*), actualizado en vivo al arrastrar, con el descargo (*"es una estimación… el resultado real en octubre puede salir distinto"*) **oculto tras el modo tutorial**. Contra **Arteaga et al. 2022** (las familias del SAE sobreestiman sus chances: subjetiva ≈76 % vs. objetiva ≈44 %), **PAIR-ET** (calibrar la confianza, no maximizarla) y **BROOK** (gestión de expectativas).
+
+**Cambios (`PostulacionPage.jsx`):**
+- Encabezado `"Con este orden, ¿dónde quedarías?"` → **`"¿Qué hace el orden de tu lista?"`**; icono `🎯` → `📋`.
+- El cuerpo **encabeza con la regla** (el sistema recorre tu lista en este orden; cambiar el orden no cambia tus probabilidades por colegio, solo en cuál preferencia quedas; conviene poner primero el que más quieres). El colegio queda en una frase secundaria (*"con los datos del año pasado, este orden te llevaría a {X}, tu preferencia N° {idx}"*), **sin** *"muy probable"* ni repetir el `%`.
+- El descargo pasa a estar **siempre visible** (se eliminó el gate `modoTutorial` y el prop `modoTutorial` del componente y de los dos call sites): *"Es una simulación con los datos del año pasado, no tu resultado. El sistema lo calcula en octubre, con las postulaciones reales de este año… Muchas familias creen tener más posibilidades de las que después resultan; por eso conviene incluir varios colegios."* (nota anclada a Arteaga).
+- Se conserva el enlace *"Ver cómo se decide"* → `/algoritmo` (PAIR: explicaciones parciales) y la rama `sinAsignacion` (BROOK: "agrega colegios con más vacantes").
+- El comentario del componente marca que **es explicabilidad del prototipo, no existe en el SAE real → se oculta en la condición B**.
+
+**Trazabilidad:** `S22-13 (refinamiento)` · Bloque Q de la bitácora del flujo. `asignacion.js`/`simulacionSae.js`/cifra de la matriz intactos. `npm run lint` (0/0), `npm run build` (`PostulacionPage` 63.90 kB), `npm test` (16/16) — 2026-09-09. Sincronizados `caso_estudio…md` §6.2 y `guion_moderador…md` (Tarea 4) que citaban el nombre del recuadro.
+
+### Inventario de la capa de explicabilidad (spec de la condición B — F3)
+
+Nuevo **`docs/planificacion/f3_modo_control_inventario.md`**: identifica **todos** los componentes/piezas que aportan explicabilidad y define, por pieza, qué hace la condición **B** del estudio comparativo — **OCULTAR** (explicabilidad pura, sin equivalente real), **SIMPLIFICAR** (dejar el núcleo de fidelidad, quitar la capa pedagógica) o **MANTENER** (fidelidad al SAE real, va en A y B). Invariante: **el resultado de asignación es idéntico en A y B** (mismo `SEED_CASO`, mismo `calcularResultado`); B solo **no muestra** la capa. Enfoque técnico recomendado: contexto `ModoEstudio` (`esControl`) leído de `?modo=control` + flag de sesión, con una mini pantalla `/estudio` para el moderador; la lista de 6 colegios se entrega en papel, no por URL. Resumen en la bitácora del flujo §7.7. **Implementado el 2026-09-09 — ver §32.**
+
+---
+
+## 32. F3 implementada — modo control / condición B (2026-09-09, bitácora Bloque V)
+
+**Qué es:** la condición de control del estudio comparativo (§7 de la bitácora del flujo) — el mismo flujo de postulación **sin la capa de explicabilidad**, para aislar su efecto sobre comprensión / confianza / percepción de justicia. Implementación del spec de §31 / `f3_modo_control_inventario.md`.
+
+**Mecanismo — un switch, no una copia:**
+
+| Archivo nuevo | Rol |
+|---|---|
+| `src/context/ModoEstudioContext.jsx` | `ModoEstudioProvider` (montado dentro de `<BrowserRouter>`, arriba de todo). `useModoEstudio()` → `{ modo: 'full'\|'control', esControl: boolean, condicion: 'A'\|'B' }`. Lee `?modo=control` / `?modo=full` (`useSearchParams`), persiste en `sessionStorage['sae_modo_estudio']`. Default `'full'` → fuera del estudio el prototipo se comporta igual que siempre. Helper `fijarCondicion(cond, n)`: fija el modo + borra `sae_react_postulacion` / `sae_react_perfil`. |
+| `src/pages/EstudioPage.jsx` (`/estudio`, lazy) | Pantalla del moderador (uso interno, no para el/la participante). `condicionDe(n)` = `n % 2 === 1 ? 'A' : 'B'` (impares → A, pares → B; se estratifica aquí si hace falta). "Empezar" → `fijarCondicion` + `window.location.href = '/'` (recarga completa, **sin query en la barra** → ceguera del participante). |
+
+**Cableado de `esControl` (todo es "ocultar/simplificar cuando `esControl`"):**
+
+- `App.jsx` — monta `<ModoEstudioProvider>`, ruta `/estudio` + entrada SEO.
+- `Navbar.jsx` — el ítem `{ to:'/algoritmo', soloA:true }` se filtra (`visibles`).
+- `AlgoritmoPage.jsx` — `if (esControl) return <Navigate to="/" replace />`.
+- `InicioPage.jsx` — `pasosRapidos` quita el paso a `/algoritmo` (2 pasos en B).
+- `ProcesoPage.jsx` — componente `EnlaceAlgoritmo` (lee el contexto) reemplaza los 2 `<Link to="/algoritmo">` → `null` en B.
+- `TourContext.jsx` + `GuidedTour.jsx` — `pasos` se filtra por `page !== '/algoritmo'` (**12 → 8** pasos en B); el provider expone `pasos` por contexto (`GuidedTour` ya no importa `tourPasos`); el paso `final` reescribe su texto para no mencionar "el algoritmo" ni "simular tu caso".
+- `PostulacionPage.jsx` — `ResultadoProvisional` → `return null`; `ColegioAnalisis` oculta el chip `tut-prob` y `ProbabilidadVisual`; InfoBox "Antes de empezar: cómo se decide tu resultado", InfoBox "Consejo: ordena por tu preferencia real", el 2.º `<p>` de "¿en qué orden se revisan las prioridades?" (se conserva la lista legal) y la coletilla "por eso el % cambia" se ocultan; paso 3 oculta el badge de probabilidad, la explicación tutorial, el "te asignarían aquí" y el hint "los porcentajes son estimaciones".
+- `SeguimientoPage.jsx` — oculta: enlace a `/algoritmo` del estado vacío, stat "Probabilidad {prob}%" del hero, tarjeta "¿Por qué te asignaron este colegio?" (`generarExplicacion`), tarjeta "¿Qué significa no quedar en tu primera opción?". Simplifica: "Detalle por preferencia" → solo "✅ Asignado" en la preferencia que corresponde (sin `estadoLabel` ni `%`); comprobante `.txt` sin estado por-preferencia salvo "— Asignado".
+- `ColegioPage.jsx` — oculta `.probviz-block` y `vacantes-infobox` (esta última con enlace a `/algoritmo`).
+- `ChatAyuda.jsx` — **sin cambios** (decisión): el FAQ describe el SAE real en términos neutros (proceso, prioridades por ley, sorteo con notario), es contenido que la vitrina oficial también tiene; se deja idéntico en A y B para no empobrecer el control.
+
+**Invariante verificado:** `asignacion.js` / `simulacionSae.js` / `SEED_CASO` **no se tocaron** → el resultado de asignación es **idéntico** en A y B (Sofía → San Martín 1.º 26 → Colegio Los Andes 2.ª 99). El guardarraíl de 16 tests sigue cubriendo el motor.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio; `index` 261 kB, `EstudioPage` 2.15 kB), `npm test` (**16/16**) — 2026-09-09. Navegador: A (`?modo=full` / default) y B (`?modo=control` y vía `/estudio` con nº par) — Navbar, `/algoritmo` (redirige), tour (8 pasos), `/postulacion` paso 1, `/estudio` (proyección de condición correcta, redirección sin query, limpieza de `localStorage`). El switch funciona en ambos sentidos.
+
+**Ajustes respecto del inventario:** `ChatAyuda` pasó de "SIMPLIFICAR" a MANTENER; `/comparador`, "Ordenar por: demanda", `PrioridadModal`, la frase "sin vínculo" y el aviso de lista corta se dejaron como en A (borderline; recorte sin beneficio claro). `f3_modo_control_inventario.md` §2 registra el estado real.
+
+**Pendiente writing-agent:** `03_metodologia.tex` §3.5 describe la condición B como implementada (no "planificada"). Queda **F2** (endurecer la explicabilidad de A).
+
+---
+
+## 33. Calibración de las bandas de probabilidad del resumen del paso 3 (2026-09-10, bitácora Bloque W)
+
+**Origen:** revisión visual del usuario sobre el resumen por colegio del paso 3 de `/postulacion` (condición A). Rotulaba todo `< 60 %` como *"🔴 Probabilidad baja"*, con un texto idéntico repetido que además afirmaba *"porque tiene alta demanda para tu nivel de prioridad"* incluso en colegios rotulados *"media demanda"* dos líneas más arriba. Un ~50 % (moneda al aire) mal calibrado induce el mismo error de expectativas que el resto del flujo corrige (**Arteaga et al. 2022**).
+
+**Cambios (solo microcopy + clases CSS; `asignacion.js` / `simulacionSae.js` / snapshot de `%` intactos):**
+
+- **Nueva banda "⚖️ Resultado parejo" (40–59 %)** en el `resultado.detalles.map` del paso 3 (`PostulacionPage.jsx` ~2284), entre "🟡 Más probable que no" (60–79) y "🔴 Probabilidad baja" (< 40). Texto: *"…puede pasar o no. En este colegio no tienes un vínculo que te dé prioridad, así que compites por los cupos que quedan."*
+- **Banda baja (< 40)** usa la demanda real del colegio (`d.demanda`) en vez de afirmar "alta demanda"; el consejo *"suma algún colegio de demanda más baja"* queda solo aquí (antes *"agrega colegios con demanda media o baja"* aparecía también sobre colegios de demanda media — circular).
+- **Umbral de color unificado a 40 %** (`≥ 80` verde · `40–79` ámbar · `< 40` rojo) en tres sitios que estaban en 60: `probClass` del chip del paso 3 (~2248), `probClass` de `ColegioAnalisis` (paso 2, ~661) y `claseProb` de `components/ProbabilidadVisual.jsx` (~12). Antes una barra al 50 % salía roja.
+- **Microcopy menor:** *"chances"* → *"posibilidades"*; *"Muy buena probabilidad"* → *"Probabilidad alta"*; *"Certeza muy alta"* → *"Casi segura"*; denominador uniforme *"De cada 100 postulantes en tu misma condición…"* en todas las bandas.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-10. Navegador (caso canónico, lista fija): San Martín 26 → 🔴 `tut-prob--baja`; Simón Bolívar 50 / Los Quillayes 46 → ⚖️ "Resultado parejo" `tut-prob--media` (ámbar, ya no rojo); 99 → ✅ "Probabilidad alta" / 🟢 "Casi segura". Consistente entre chip del paso 2, barra `ProbabilidadVisual` y resumen del paso 3. Todo el bloque está oculto en la condición B (F3, `esControl`).
+
+---
+
+## 34. Enriquecimiento de la ficha de resultado `/seguimiento` (2026-09-10, bitácora Bloque X)
+
+**Origen:** revisión de la ficha de resultado contra las guías (`docs/planificacion/propuestas_ficha_resultado.md`). De 7 propuestas, el usuario eligió implementar 5. Todo **condición A** (`!esControl`); en la condición B la ficha queda como estaba. Solo `SeguimientoPage.jsx` + CSS; `asignacion.js`/`simulacionSae.js` intactos.
+
+| # | Qué se agregó | Ubicación | Guía |
+|---|---|---|---|
+| **X1** | Tarjeta **"Qué sigue ahora"**: 3 pasos con fecha (aceptar/rechazar 15–21 oct · matrícula 9–22 dic · Complementario 10–17 nov) + aviso naranja *"si no entras antes del 21 de octubre, se acepta automáticamente"*. | tras el bloque aceptar/rechazar (~455) | GOV.UK (confirmation: "qué ocurre después") · BROOK · HAX G16 |
+| **X2** | Tabla **"por qué te asignaron este colegio"** de 2 filas (no obtenida → *No alcanzó* / asignada → *Cupo*) delante de los párrafos; `generarExplicacion` pasa a `<details>` "Ver la explicación completa". Helper `comparacionResultado(asignado, sinAsignacion, detalles)` (~123). Solo si `asignado.idx > 1 && !sinAsignacion`. | tarjeta "¿Por qué te asignaron…?" (~491) | HAX G11/G4 · divulgación progresiva (Google) |
+| **X3** | **Contrafactual concreto** en "¿Qué significa no quedar…?": *"si hubieras puesto {colegio} primero, habrías quedado igual ahí…"*. Los 3 párrafos quedan más cortos. | tarjeta `idx > 1 && !sinAsignacion` (~525) | PAIR (explicación específica) · caso_estudio §3.2 |
+| **X4** | Bloque `.seg-consecuencias` bajo los botones: *"Si aceptas… / Si rechazas: … solo lista de espera de {preferencias más arriba}; si no se libera cupo puedes quedar sin colegio"*. | tarjeta "¿Aceptas esta asignación?" (~340) | HAX G16 (consecuencia antes de la acción) |
+| **X5** | El desplegable por preferencia suma *"El año pasado: N postulantes para X–Y vacantes en {label}"* + *"Tu prioridad aquí: …"* (usa `vacantesDeNivel(col, data.alumno.nivel)`, importado de `asignacion.js`). | `seg-pref-item__detail` (~597) | HAX G2/G11 |
+| **X0** | **Fidelidad (en A y B):** `SeguimientoPage.jsx` tenía dos fechas desalineadas con `/proceso` → corregidas: aceptar/rechazar *"hasta el 21 de octubre de 2026"* (era "15 de noviembre"); matrícula *"entre el 9 y el 22 de diciembre de 2026"* (era "antes del 30 de noviembre"). | ~342, ~434 | fidelidad (`ProcesoPage.jsx`) |
+
+CSS nuevo en `index.css` tras `.result-explanation`: `.seg-consecuencias`, `.seg-next-list` / `.seg-next-alerta`, `.seg-porque-tabla` (+ `__ok` / `__pref`) / `.seg-porque-detalle`.
+
+**Validación:** `npm run lint` (0/0), `npm run build`, `npm test` (16/16) — 2026-09-10. Navegador: caso canónico (Sofía → San Martín 1.º 26 → Los Andes 2.ª 99) en A y en B, y a 375 px (sin desborde; la tabla X2 encaja).
+
+**No implementado (decisión con la profesora):** X6 (icon array del "no quedaste" en la 1.ª opción), X7 (lista de espera concreta con referencia de movimiento). X1 y X4 son *borderline* fidelidad: si se quieren también en la condición B, es quitar el `!esControl` de esos dos bloques.

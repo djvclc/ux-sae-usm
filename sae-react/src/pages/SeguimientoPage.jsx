@@ -1,11 +1,12 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios } from '../data/colegios'
-import { prioridadLabels, etiquetaPrioridad } from '../utils/asignacion'
+import { prioridadLabels, etiquetaPrioridad, vacantesDeNivel } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
+import { useModoEstudio } from '../context/ModoEstudioContext'
 
 const STORAGE_KEY = 'sae_react_postulacion'
 
@@ -17,12 +18,35 @@ const ETAPAS_PROCESO = [
   { id: 'resultado', icon: '🎓', label: 'Resultado', desc: 'Tu resultado está listo para revisarlo' },
 ]
 
+const ORDINALES = ['primera', 'segunda', 'tercera', 'cuarta', 'quinta', 'sexta']
+
 /* Genera la explicacion contextualizada del resultado en terminos del usuario.
    S22-11 (refinamiento): la prioridad se explica según el nivel REAL en el
    colegio asignado (asignado.nivel), no según una prioridad global del perfil —
-   hermano/funcionario/exalumno solo valen en el colegio donde hay ese vínculo. */
-function generarExplicacion(asignado) {
+   hermano/funcionario/exalumno solo valen en el colegio donde hay ese vínculo.
+
+   Auditoría 2026-09-08: si `sinAsignacion` es true, la asignación que muestra
+   `calcularResultado` es un FALLBACK (el colegio de mayor % estimado, porque
+   ningún colegio de la lista sentó a la familia en la simulación). En ese caso
+   NO se narra "Quedaste en X" ni se usa el lenguaje de "sorteo": se dice
+   explícitamente que no hubo cupo y qué pasaría en el proceso real.
+
+   S15-3 (refinamiento) · caso_estudio §3.2 (2026-09-09): el "por qué no quedaste
+   en tu opción de más arriba" pasa de una línea genérica a una explicación
+   específica del/de los colegio(s) que no te sentaron: más familias que cupos +
+   no tenías un vínculo ni la reserva del 15 % ahí + el desempate entre familias
+   en tu misma situación es un sorteo por colegio (trato igual entre iguales, no
+   "azar") + qué NO puede hacer el sistema (no crea cupos — BROOK). Formato de
+   frecuencia "X de cada 100" (RISK-NUM). Recibe `detalles` de `calcularResultado`. */
+function generarExplicacion(asignado, sinAsignacion = false, detalles = []) {
   if (!asignado) return null
+
+  if (sinAsignacion) {
+    return [
+      `En esta simulación, el sistema recorrió tu lista y <strong>ningún colegio te dejó un cupo</strong> en la ronda principal.`,
+      `En el proceso real, si esto ocurre pasas al <strong>Periodo Complementario</strong> (y conservas tu colegio de origen, si lo tienes, mientras tanto). Como referencia, el colegio de tu lista con la probabilidad estimada más alta era <strong>${asignado.nombre}</strong> (${asignado.prob} de cada 100), pero <strong>eso no es una asignación</strong>.`,
+    ]
+  }
 
   const partes = []
 
@@ -49,28 +73,88 @@ function generarExplicacion(asignado) {
       break
     default:
       partes.push(
-        `Quedaste en el <strong>${asignado.nombre}</strong> a través del <strong>sorteo público y transparente</strong>. En ese colegio no tenías una prioridad especial, así que entraste al desempate aleatorio que hace cada colegio cuando hay más postulantes que vacantes.`
+        `Quedaste en el <strong>${asignado.nombre}</strong>. Ahí no tenías un vínculo (hermano/a matriculado/a, hijo/a de funcionario/a o exalumno/a), así que competías con las demás familias en tu misma situación por los cupos que quedaban después de aplicar las prioridades que fija la ley. Cuando hay más familias que vacantes, cada colegio elige entre esas familias con su propio sorteo, el mismo para todas — y este año tu cupo salió.`
       )
   }
 
   if (asignado.idx > 1) {
-    // S22-13 (refinamiento): concordancia singular/plural — con la variante sin SEP
-    // este mensaje aparece por primera vez de verdad (antes era código muerto).
-    const nPrevias = asignado.idx - 1
-    const cuales = nPrevias === 1 ? 'tu primera opción' : `tus primeras ${nPrevias} opciones`
-    const eseColegio = nPrevias === 1 ? 'ese colegio tenía' : 'esos colegios tenían'
+    const previas = detalles.filter((d) => d.idx < asignado.idx && d.estado !== 'no_evaluado')
+    if (previas.length === 1) {
+      const p = previas[0]
+      const ord = ORDINALES[p.idx - 1] ?? `N.º ${p.idx}`
+      if ((p.nivel ?? 5) > 2) {
+        partes.push(
+          `Al <strong>${p.nombre}</strong>, tu ${ord} opción, postularon más familias que los cupos que tenía para tu nivel. Ahí no tenías un vínculo (hermano/a, hijo/a de funcionario/a o exalumno/a) ni la reserva del 15 % para estudiantes prioritarios/as, así que competías por los cupos que quedaban después de aplicar esas prioridades.`
+        )
+        if (p.prob != null) {
+          partes.push(
+            `La probabilidad estimada de quedar ahí con tu perfil era de <strong>${p.prob} de cada 100</strong>.`
+          )
+        }
+        partes.push(
+          `Entre las familias en tu misma situación —sin un vínculo con ese colegio—, cada establecimiento elige con su propio sorteo, el mismo para todas. Esta vez tu número no alcanzó uno de esos cupos. Ese sorteo vale <strong>solo para el ${p.nombre}</strong>: no afectó tus posibilidades en los demás colegios de tu lista.`
+        )
+      } else {
+        partes.push(
+          `En el <strong>${p.nombre}</strong>, tu ${ord} opción, tenías prioridad, pero postularon tantas familias con esa prioridad o una mayor que los cupos no alcanzaron para todas.`
+        )
+      }
+    } else if (previas.length > 1) {
+      const nombres = previas.map((d) => d.nombre).join(', ')
+      partes.push(
+        `No quedaste en tus primeras ${previas.length} opciones (${nombres}) porque en todas postularon más familias que cupos y en ninguna tenías un vínculo o una prioridad que asegurara el lugar. En esos casos el cupo depende de la demanda del colegio y del sorteo que cada uno hace entre las familias en tu misma situación.`
+      )
+    }
     partes.push(
-      `No quedaste en ${cuales} porque ${eseColegio} más postulantes con prioridad mayor o no había vacantes disponibles para tu nivel de prioridad.`
+      `Por eso el sistema <strong>siguió con tu lista</strong> y te asignó al ${asignado.nombre}. El SAE reparte los cupos que existen: no puede crear cupos nuevos en un colegio ni asegurar la primera opción cuando hay más familias que vacantes.`
     )
   } else {
     partes.push('¡Quedaste en tu primera opción!')
   }
 
   partes.push(
-    `La probabilidad estimada para este colegio con tu perfil era de <strong>${asignado.prob}%</strong>.`
+    `La probabilidad estimada para el ${asignado.nombre} con tu perfil era de <strong>${asignado.prob} de cada 100</strong>.`
   )
 
   return partes
+}
+
+/* Opción 2 (2026-09-10) — comparación de un vistazo "por qué este colegio y no
+   el anterior". Devuelve las filas (preferencias no obtenidas + la asignada) o
+   null si no hay contraste (quedó en la 1.ª opción o fue el fallback sin cupo).
+   Guías: HAX G11/G4 — la razón real, junto a la decisión; una tabla se procesa
+   más rápido que tres párrafos. Solo condición A. */
+function comparacionResultado(asignado, sinAsignacion, detalles = []) {
+  if (!asignado || sinAsignacion || asignado.idx <= 1) return null
+
+  const situacion = (nivel) => {
+    if (nivel == null || nivel >= 5) return 'Sin vínculo de prioridad'
+    return prioridadLabels[nivel].split('/')[0] // "Hermano" en vez de "Hermano/a matriculado/a"
+  }
+
+  const previas = detalles
+    .filter((d) => d.idx < asignado.idx && d.estado !== 'no_evaluado')
+    .map((d) => ({
+      idx: d.idx,
+      nombre: d.nombre,
+      situacion: `${situacion(d.nivel)} · demanda ${d.demanda}`,
+      resultado: 'No alcanzó',
+      obtuvo: false,
+    }))
+
+  return [
+    ...previas,
+    {
+      idx: asignado.idx,
+      nombre: asignado.nombre,
+      situacion:
+        asignado.nivel != null && asignado.nivel < 5
+          ? situacion(asignado.nivel)
+          : `Sin vínculo · demanda ${asignado.demanda}`,
+      resultado: 'Cupo',
+      obtuvo: true,
+    },
+  ]
 }
 
 const estadoLabel = {
@@ -89,6 +173,7 @@ const estadoColor = {
 
 export default function SeguimientoPage() {
   const { textoGrande } = useTextSize()
+  const { esControl } = useModoEstudio() // F3 — condición de control del estudio
   const [data, setData] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
@@ -128,7 +213,12 @@ export default function SeguimientoPage() {
       asignado ? `Preferencia N°${asignado.idx}` : '',
       '',
       '── LISTA DE POSTULACIÓN ──',
-      ...resultado?.detalles?.map((d) => `  ${d.idx}. ${d.nombre} (${d.comuna}) — ${estadoLabel[d.estado]?.replace(/[^\w\sáéíóúñ/]/g, '').trim() ?? d.estado}`) ?? [],
+      // F3: en control, sin el diagnóstico por preferencia (solo la marca de asignado).
+      ...resultado?.detalles?.map((d) =>
+        esControl
+          ? `  ${d.idx}. ${d.nombre} (${d.comuna})${d.estado === 'asignado' ? ' — Asignado' : ''}`
+          : `  ${d.idx}. ${d.nombre} (${d.comuna}) — ${estadoLabel[d.estado]?.replace(/[^\w\sáéíóúñ/]/g, '').trim() ?? d.estado}`,
+      ) ?? [],
       '',
       '══════════════════════════════════════════',
       'Documento generado desde el prototipo SAE.',
@@ -166,9 +256,11 @@ export default function SeguimientoPage() {
             <Link className="btn btn--primary btn--grande" to="/postulacion">
               Ir a Postulación
             </Link>
-            <Link className="btn btn--secondary" to="/algoritmo">
-              ¿Cómo funciona?
-            </Link>
+            {!esControl && (
+              <Link className="btn btn--secondary" to="/algoritmo">
+                ¿Cómo funciona?
+              </Link>
+            )}
           </div>
         </div>
       </main>
@@ -177,8 +269,17 @@ export default function SeguimientoPage() {
 
   const { resultado, comprobante } = data
   const asignado = resultado?.asignado
-  const explicacion = generarExplicacion(asignado)
+  const sinAsignacion = !!resultado?.sinAsignacionEnPreferencias
+  const explicacion = generarExplicacion(asignado, sinAsignacion, resultado?.detalles ?? [])
+  const comparacion = comparacionResultado(asignado, sinAsignacion, resultado?.detalles ?? [])
   const colegioAsignado = asignado ? colegios.find((c) => c.id === asignado.id) : null
+  const alumnoNivel = data.alumno?.nivel ?? null
+  // Preferencias que estaban MÁS ARRIBA que la asignada: son las únicas a las que
+  // se puede optar por lista de espera (regla real del SAE). Alimenta las líneas
+  // de consecuencia de aceptar/rechazar (opción 4) y el "qué sigue ahora" (opción 1).
+  const previasNombres = (resultado?.detalles ?? [])
+    .filter((d) => asignado && d.idx < asignado.idx && d.estado !== 'no_evaluado')
+    .map((d) => d.nombre)
 
   return (
     <main className={`page page--seguimiento${textoGrande ? ' page--texto-grande' : ''}`}>
@@ -225,9 +326,15 @@ export default function SeguimientoPage() {
                 height={200}
               />
               <div className="seg-hero-img-content seg-hero-img-content--solid">
-                <span className="seg-hero-badge">Resultado disponible</span>
+                <span className="seg-hero-badge">
+                  {sinAsignacion ? 'Sin cupo en la ronda principal' : 'Resultado disponible'}
+                </span>
                 <span className="seg-hero-pref">
-                  {asignado.idx === 1 ? '⭐ Tu primera opción' : `Preferencia N°${asignado.idx}`}
+                  {sinAsignacion
+                    ? 'No quedaste en ninguna de tus preferencias'
+                    : asignado.idx === 1
+                      ? '⭐ Tu primera opción'
+                      : `Preferencia N°${asignado.idx}`}
                 </span>
                 <h2 className="seg-hero-name">{asignado.nombre}</h2>
                 <p className="seg-hero-addr">
@@ -238,10 +345,14 @@ export default function SeguimientoPage() {
 
             {/* Stats debajo de la imagen */}
             <div className="seg-hero-stats-bar">
-              <div className="seg-hero-stat">
-                <span className="seg-hero-stat__num">{asignado.prob}%</span>
-                <span className="seg-hero-stat__lbl">Probabilidad</span>
-              </div>
+              {/* F3: la probabilidad es explicabilidad → no va en la condición de control.
+                  El SAE real no muestra una probabilidad en la pantalla de resultado. */}
+              {!esControl && (
+                <div className="seg-hero-stat">
+                  <span className="seg-hero-stat__num">{asignado.prob}%</span>
+                  <span className="seg-hero-stat__lbl">Probabilidad</span>
+                </div>
+              )}
               <div className="seg-hero-stat">
                 <span className="seg-hero-stat__num">{resultado?.nivel && resultado.nivel < 5 ? prioridadLabels[resultado.nivel].split('/')[0] : (resultado?.nivel === 5 ? 'Sin vínculo' : '—')}</span>
                 <span className="seg-hero-stat__lbl">Prioridad</span>
@@ -274,7 +385,7 @@ export default function SeguimientoPage() {
           <CardContent>
             <h3 style={{ margin: '0 0 8px', color: 'var(--acento)' }}>¿Aceptas esta asignación?</h3>
             <p style={{ margin: '0 0 16px', color: 'var(--texto-suave)', fontSize: '0.92rem' }}>
-              Tienes hasta el <strong>15 de noviembre de 2026</strong> para aceptar o rechazar.
+              Tienes hasta el <strong>21 de octubre de 2026</strong> para aceptar o rechazar.
               Si rechazas, pasas a la lista de espera.
             </p>
             <div className="hero__actions">
@@ -293,6 +404,24 @@ export default function SeguimientoPage() {
                 Rechazar y pasar a lista de espera
               </button>
             </div>
+            {/* Opción 4 (2026-09-10) — HAX G16: comunicar la consecuencia ANTES de
+                la acción, no después. Solo condición A (apoyo a la decisión). */}
+            {!esControl && (
+              <div className="seg-consecuencias" aria-hidden="false">
+                <p>
+                  <strong>Si aceptas:</strong> tu cupo en {asignado.nombre} queda asegurado.
+                  {previasNombres.length > 0
+                    ? ` Puedes seguir en lista de espera de las preferencias que estaban más arriba (${previasNombres.join(', ')}).`
+                    : ''}
+                </p>
+                <p>
+                  <strong>Si rechazas:</strong> renuncias a este cupo.
+                  {previasNombres.length > 0
+                    ? ` Solo quedas en lista de espera de ${previasNombres.join(', ')}; si no se libera un cupo ahí, puedes quedar sin colegio asignado.`
+                    : ' Puedes quedar sin colegio asignado y tendrías que postular en el Periodo Complementario.'}
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -303,8 +432,9 @@ export default function SeguimientoPage() {
           <div>
             <strong>¡Asignación aceptada!</strong>
             <p style={{ margin: '4px 0 0' }}>
-              Ahora debes completar la matrícula en el establecimiento antes del
-              <strong> 30 de noviembre de 2026</strong>.
+              Ahora debes matricularte en persona en el establecimiento
+              <strong> entre el 9 y el 22 de diciembre de 2026</strong>. Si no vas en ese plazo,
+              pierdes el cupo.
             </p>
           </div>
         </div>
@@ -322,18 +452,90 @@ export default function SeguimientoPage() {
         </div>
       )}
 
-      {/* ── Explicación contextualizada ── */}
-      {explicacion && (
+      {/* ── Opción 1 (2026-09-10) — "Qué sigue ahora" ──
+          GOV.UK ("qué ocurre después" en la confirmación) · Brookings (el proceso
+          no terminó) · HAX G16 (consecuencia de NO actuar). Fechas alineadas con
+          `/proceso`. Solo condición A. */}
+      {!esControl && asignado && !sinAsignacion && (
+        <Card className="card--module" style={{ marginTop: 16 }}>
+          <CardHeader>
+            <CardTitle>Qué sigue ahora</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ol className="seg-next-list">
+              <li>
+                <strong>Ahora:</strong> acepta o rechaza tu asignación, entre el
+                <strong> 15 y el 21 de octubre de 2026</strong>.
+              </li>
+              <li>
+                <strong>Si aceptas:</strong> matricúlate en persona en {asignado.nombre} entre el
+                <strong> 9 y el 22 de diciembre de 2026</strong>.
+              </li>
+              <li>
+                <strong>Si quieres seguir intentando</strong> por un colegio que estaba más arriba en
+                tu lista: puedes volver a postular en el <strong>Periodo Complementario</strong> (10 al
+                17 de noviembre), con los colegios que aún tengan vacantes.
+              </li>
+            </ol>
+            <p className="seg-next-alerta" role="note">
+              ⏰ Si no entras a esta página antes del <strong>21 de octubre</strong>, el sistema
+              acepta la asignación automáticamente.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ── Explicación contextualizada ──
+          F3: es el núcleo de la condición A → no va en la de control (B solo
+          muestra el colegio asignado, sin el porqué). */}
+      {!esControl && explicacion && (
         <Card className="card--module" style={{ marginTop: 16 }}>
           <CardHeader>
             <CardTitle>¿Por qué te asignaron este colegio?</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="result-explanation" aria-live="polite">
-              {explicacion.map((texto, i) => (
-                <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
-              ))}
-            </div>
+            {/* Opción 2 (2026-09-10) — comparación de un vistazo antes de los
+                párrafos. Si hay contraste (no quedó en su 1.ª opción), la tabla
+                resume el porqué y la explicación completa queda en un desplegable. */}
+            {comparacion ? (
+              <>
+                <table className="seg-porque-tabla">
+                  <thead>
+                    <tr>
+                      <th scope="col">Colegio</th>
+                      <th scope="col">Tu situación ahí</th>
+                      <th scope="col">Resultado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comparacion.map((f) => (
+                      <tr key={f.idx} className={f.obtuvo ? 'seg-porque-tabla__ok' : ''}>
+                        <td>
+                          <strong>{f.nombre}</strong>
+                          <span className="seg-porque-tabla__pref"> · tu {ORDINALES[f.idx - 1] ?? `N.º ${f.idx}`} opción</span>
+                        </td>
+                        <td>{f.situacion}</td>
+                        <td>{f.obtuvo ? '✅ Cupo' : 'No alcanzó'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <details className="seg-porque-detalle">
+                  <summary>Ver la explicación completa</summary>
+                  <div className="result-explanation">
+                    {explicacion.map((texto, i) => (
+                      <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
+                    ))}
+                  </div>
+                </details>
+              </>
+            ) : (
+              <div className="result-explanation" aria-live="polite">
+                {explicacion.map((texto, i) => (
+                  <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -365,13 +567,20 @@ export default function SeguimientoPage() {
                     </span>
                   </div>
                   <div className="seg-pref-item__right">
-                    <span
-                      className="seg-pref-item__estado"
-                      style={{ color: estadoColor[d.estado] ?? 'var(--texto-suave)' }}
-                    >
-                      {estadoLabel[d.estado] ?? d.estado}
-                    </span>
-                    <span className="seg-pref-item__prob">{d.prob}%</span>
+                    {/* F3: en control solo se marca la preferencia asignada; el
+                        diagnóstico por preferencia ("prioridad insuficiente"…) y el
+                        % son explicabilidad. */}
+                    {(!esControl || d.estado === 'asignado') && (
+                      <span
+                        className="seg-pref-item__estado"
+                        style={{ color: estadoColor[d.estado] ?? 'var(--texto-suave)' }}
+                      >
+                        {esControl
+                          ? '✅ Asignado'
+                          : estadoLabel[d.estado] ?? d.estado}
+                      </span>
+                    )}
+                    {!esControl && <span className="seg-pref-item__prob">{d.prob}%</span>}
                   </div>
                   {/* Botón para ver detalle del colegio */}
                   {col && (
@@ -385,11 +594,22 @@ export default function SeguimientoPage() {
                       {detalleAbierto === d.id ? '▲' : '▼'}
                     </button>
                   )}
-                  {detalleAbierto === d.id && col && (
+                  {detalleAbierto === d.id && col && (() => {
+                    const vac = vacantesDeNivel(col, alumnoNivel)
+                    return (
                     <div className="seg-pref-item__detail">
                       <p>📍 {col.direccion}, {col.comuna}</p>
-                      <p>🕐 Jornada {col.vacantes?.[0]?.jornada?.toLowerCase() ?? 'no especificada'}</p>
+                      <p>🕐 Jornada {(vac?.jornada ?? col.vacantes?.[0]?.jornada ?? 'no especificada').toLowerCase()}</p>
                       <p>{col.nee?.programa ? '♿ Con programa PIE' : 'Sin programa PIE'}</p>
+                      {/* Opción 5 (2026-09-10) — los datos que EXPLICAN el % de este
+                          colegio (HAX G2/G11). Van dentro del desplegable, no suman
+                          carga en la vista principal. Solo condición A. */}
+                      {!esControl && vac && (
+                        <>
+                          <p>👥 El año pasado: <strong>{vac.postulantesAnterior} postulantes</strong> para {vac.min}–{vac.max} vacantes en {vac.label}</p>
+                          <p>🎟️ Tu prioridad aquí: <strong>{d.nivel < 5 ? (d.prioridadLabel ?? prioridadLabels[d.nivel]) : 'sin vínculo con este colegio'}</strong></p>
+                        </>
+                      )}
                       <Link
                         className="btn btn--secondary btn--mini"
                         to={`/colegio?id=${col.id}`}
@@ -398,7 +618,8 @@ export default function SeguimientoPage() {
                         Ver ficha completa
                       </Link>
                     </div>
-                  )}
+                    )
+                  })()}
                 </div>
               )
             })}
@@ -406,21 +627,33 @@ export default function SeguimientoPage() {
         </CardContent>
       </Card>
 
-      {/* Mensaje tranquilizador si no quedó en primera opción */}
-      {asignado && asignado.idx > 1 && (
+      {/* Mensaje tranquilizador si no quedó en primera opción (no aplica al
+          fallback sin cupo: ese caso lo cubre la explicación de arriba).
+          F3: incluye strategy-proofness → no va en la condición de control. */}
+      {!esControl && asignado && asignado.idx > 1 && !sinAsignacion && (
         <Card className="card--module" style={{ marginTop: 16 }}>
           <CardHeader>
             <CardTitle>¿Qué significa no quedar en tu primera opción?</CardTitle>
           </CardHeader>
           <CardContent>
             <p>
-              No quedar en la primera opción no significa que el sistema falló. El SAE evalúa todos
-              los colegios de tu lista en orden. Quedaste en la opción {asignado.idx} porque es
-              donde había cupos disponibles para tu perfil.
+              No quedar en tu primera opción no significa que el sistema falló. El SAE revisa todos
+              los colegios de tu lista y te deja en el primero donde hay un cupo para tu situación —
+              en tu caso, el <strong>{asignado.nombre}</strong>.
             </p>
             <p>
-              El resultado es <strong>objetivo y transparente</strong>: se basa en las prioridades
-              definidas por la Ley de Inclusión y en la disponibilidad de vacantes.
+              {/* Opción 3 (2026-09-10) — contrafactual concreto con ESTA lista. Hace
+                  verificable la propiedad de "el orden no perjudica" (caso_estudio §3.2),
+                  que antes se afirmaba en abstracto. */}
+              <strong>¿Y si hubieras ordenado la lista distinto?</strong> El resultado sería el mismo.
+              Si hubieras puesto el {asignado.nombre} en primer lugar, habrías quedado igual ahí:
+              cada colegio revisa tu postulación por separado, sin mirar en qué puesto de tu lista lo
+              dejaste.
+            </p>
+            <p>
+              Por eso poner primero el colegio que más quieres <strong>nunca te perjudica</strong>. El
+              resultado se basa solo en las prioridades que fija la Ley de Inclusión y en las vacantes
+              disponibles.
             </p>
           </CardContent>
         </Card>

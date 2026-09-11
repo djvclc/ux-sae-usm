@@ -2538,6 +2538,77 @@ abbr[title] {
   margin-bottom: 0;
 }
 
+/* ── Ficha de resultado — opciones 1/2/4 (2026-09-10) ── */
+/* Opción 4: consecuencias de aceptar / rechazar, bajo los botones */
+.seg-consecuencias {
+  margin-top: var(--esp-md);
+  padding-top: var(--esp-sm);
+  border-top: 1px dashed var(--borde);
+}
+.seg-consecuencias p {
+  margin: 4px 0;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+/* Opción 1: "Qué sigue ahora" */
+.seg-next-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.seg-next-list li {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+.seg-next-alerta {
+  margin: var(--esp-md) 0 0;
+  padding: var(--esp-sm) var(--esp-md);
+  background: var(--naranja-cl);
+  border-left: 4px solid var(--naranja);
+  border-radius: var(--radio);
+  font-size: 0.9rem;
+  color: #6b2d07;
+}
+
+/* Opción 2: tabla "por qué este colegio y no el anterior" */
+.seg-porque-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--esp-sm);
+  font-size: 0.9rem;
+}
+.seg-porque-tabla th,
+.seg-porque-tabla td {
+  border: 1px solid var(--borde);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.seg-porque-tabla th {
+  background: var(--gris-cl);
+  font-weight: 600;
+}
+.seg-porque-tabla__ok td {
+  background: var(--verde-cl);
+}
+.seg-porque-tabla__pref {
+  color: var(--texto-suave);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+.seg-porque-detalle {
+  margin-top: var(--esp-sm);
+}
+.seg-porque-detalle > summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--acento);
+  font-weight: 600;
+}
+.seg-porque-detalle[open] > summary {
+  margin-bottom: var(--esp-sm);
+}
+
 .confirm-dialog {
   background: #fff8f8;
   border: 2px solid var(--rojo);

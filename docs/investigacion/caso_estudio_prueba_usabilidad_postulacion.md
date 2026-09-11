@@ -2,7 +2,28 @@
 
 **Fecha:** 2026-08-08 · actualizado 2026-08-13 · **revisión mayor 2026-09-03** (Bloques O y R) · **reorientación a estudio comparativo 2026-09-06** (bitácora `bitacora_flujo_postulacion_y_resultado.md` §7).
 
-**Estado:** el caso y la familia ficticia están cerrados. La **metodología de validación cambió de rumbo** tras la reunión con la profesora guía: de una prueba de usabilidad **formativa de final abierto** (N≈8, la persona elige el orden de la lista) a un **estudio comparativo entre-sujetos** (N≈30, dos condiciones, lista y orden fijos, mismo desenlace para todos). Este documento ya refleja esa reorientación; los `guion_*` y `material_*.pdf` se re-sincronizan en la fase **F1** del roadmap (bitácora §7.2). El Cap. 3 de la memoria (`03_metodologia.tex`) requiere una reescritura mayor por el `writing-agent` (descripción del simulador → Bloque R; §3.5 → diseño comparativo).
+**Estado:** el caso y la familia ficticia están cerrados. La **metodología de validación cambió de rumbo** tras la reunión con la profesora guía: de una prueba de usabilidad **formativa de final abierto** (N≈8, la persona elige el orden de la lista) a un **estudio comparativo entre-sujetos** (N≈30, dos condiciones, lista y orden fijos, mismo desenlace para todos). Este documento ya refleja esa reorientación.
+
+### Estado del documento (2026-09-09) — para revisión de la profesora guía
+
+| Bloque del diseño | Estado |
+|---|---|
+| Familia ficticia y caso (§1–§2) | ✅ Cerrado |
+| Lista y orden canónico de 6 colegios (§3) | ✅ Cerrado y **verificado contra el código** (`SEED_CASO = 20260903`; `calcularResultado`; 16/16 tests de `flujo-postulacion.test.js`) — San Martín 1.º (26 %, no queda) → **Colegio Los Andes, 2.ª preferencia** (99 %, por hermano/a) |
+| Las dos condiciones A / B (§6.1) | ✅ Definidas **e implementadas en código** (2026-09-09, bitácora Bloque V). B (modo control) se activa vía la pantalla `/estudio` del moderador; contexto `ModoEstudioContext` que oculta la capa de explicabilidad. `asignacion.js`/`simulacionSae.js` intactos → resultado idéntico en A y B |
+| **§3.2 — por qué no queda en San Martín** (argumento técnico + traducción de usuario por las guías) | ✅ Añadido 2026-09-09. Fija el texto de referencia para la explicación de `/seguimiento` en la condición A |
+| Tareas dirigidas (§6.2) | ✅ 8 tareas, con ramas `[A]` / `[B]` |
+| Instrumento: línea base + Likert 13 ítems + abiertas (§8) | ✅ Cerrado |
+| **Hipótesis explícitas (§8.4)** | ✅ Añadidas 2026-09-09 |
+| **Plan de análisis (§8.5)** | ✅ Añadido 2026-09-09 |
+| **Amenazas a la validez (§10)** | ✅ Consolidadas 2026-09-09 |
+| Comité de ética UTFSM | ⚠️ **Acción del autor:** confirmar con la Dirección de la carrera / comité si es exigible para una memoria de título con datos ficticios; el consentimiento informado simple ya está redactado (§7.1). No bloquea la aprobación del diseño, sí el reclutamiento |
+| `guion_moderador…md` / `guion_participante…md` | ✅ Re-sincronizados a la lista fija y a las ramas A/B el 2026-09-09 |
+| **PDF** de este documento + los dos guiones + el material para participantes | ✅ Regenerados el 2026-09-09 (`docs/investigacion/*.pdf`) |
+| `material_prueba_usabilidad_postulacion.md` + `.pdf` | ✅ Cuadernillo del participante nuevo (consentimiento, familia sin SEP/PIE, lista fija, cuestionario pre y post) — reemplaza el material de agosto que asumía SEP/PIE |
+| `03_metodologia.tex` §3.5 | ⚠️ Reescritura mayor pendiente (`writing-agent`): de "prueba formativa N=8" a "estudio comparativo N≈30". La descripción del caso y del simulador ya se corrigió el 2026-09-08 |
+
+**Qué falta para poder ejecutar el estudio (no para aprobar el diseño):** (1) ~~implementar la condición B (F3)~~ — hecho el 2026-09-09 (Bloque V); (2) confirmar el trámite de ética; (3) reclutar (~15 por condición); (4) piloto: recorrer la condición B end-to-end en 375 px confirmando que es un proxy fiel del SAE real (bitácora §7.7 / `f3_modo_control_inventario.md` §4).
 
 > **Reorientación 2026-09-06 (bitácora §7).** En la reunión, la profesora guía sugirió pasar a un **estudio comparativo controlado**: se entrega a cada participante la **misma lista de 6 colegios en el mismo orden**, de modo que **todos vean el mismo resultado**, y se contrastan **dos condiciones** — (A) el prototipo, que explica el algoritmo apoyado en las guías de `investigacion_ux_guide_ai_systems.md`; (B) un control fiel a la vitrina / SAE real (`investigacion_vitrina_sae.md`), que **no** lo explica. El foco de la memoria es **explicar el algoritmo apoyándose en esas guías**; la condición B es el control que permite atribuir a la explicación las diferencias de comprensión, confianza y percepción de justicia. Diseño **entre-sujetos**, N≈30 (~15 por condición): dentro-sujetos no sirve porque, una vez que se entiende el algoritmo, no se puede "desentender" para el control. Decisiones del autor sobre el diseño en la bitácora §7.5.
 
@@ -54,7 +75,7 @@ Se usan los 6 colegios reales de `sae-react/src/data/colegios.js`. **En el estud
 
 Con 6 colegios se cumple la recomendación oficial de listar al menos 6 (E2) y se cubren los tres grupos de prioridad legal (cada uno en su establecimiento), la regla de comuna/región, la continuidad de colegio de origen y la postulación familiar en bloque.
 
-**Resultado canónico (verificado contra el código real — `calcularResultado` + `SEED_CASO = 20260903`, 4.º básico, familia sin SEP; coincide con el test `escenario clave` de `flujo-postulacion.test.js`, 14/14 verde):**
+**Resultado canónico (verificado contra el código real — `calcularResultado` + `SEED_CASO = 20260903`, 4.º básico, familia sin SEP; coincide con el test `escenario clave` de `flujo-postulacion.test.js`, 16/16 verde el 2026-09-09):**
 
 - Posición 1 · **Colegio San Martín** → el sorteo **no** la sienta (≈26 %) → `prioridad_insuficiente`.
 - Posición 2 · **Colegio Los Andes** → **ASIGNADO**, preferencia N.º 2, por el vínculo de hermano/a (≈99 %).
@@ -73,6 +94,82 @@ Colegio San Martín es el que la familia **quiere de verdad**, sin que ese deseo
 
 *Antecedente de diseño (2026-08-13):* `investigacion_ux_guide_ai_systems.md` §4 detectó que el paso 3 del prototipo contradecía al paso 2 (el paso 2 dice "ordena por tu preferencia real"; el paso 3 sugería "considera ponerlo más abajo en tu lista", reforzando el mito). Las 5 recomendaciones de ese documento se implementaron en `PostulacionPage.jsx` (`S22-14 (refinamiento)`): se retiró la sugerencia de reordenar, se separó el dato que fundamenta la probabilidad baja de una frase explícita de que reordenar no cambia esa cifra ni las chances en los demás colegios, se extendió el formato de frecuencia a los tres niveles de probabilidad y se añadió la categoría "Certeza muy alta" (prioridad hermano/a, prob. ≥ 90 %). Ese texto corregido es parte de la **condición A**; el estudio comparativo verifica si cambia el comportamiento observado, no solo si es correcto en el papel.
 
+### 3.2 Por qué no queda en el Colegio San Martín: el argumento del algoritmo y su traducción para el usuario
+
+Añadido 2026-09-09. La explicación que la **condición A** entrega en `/seguimiento` (ítems **C4**, **C5**, **J2**) debe ir más allá de "no cumple con las prioridades". Esta sección fija el argumento técnico y su versión en lenguaje de usuario.
+
+#### A. El argumento técnico (efecto de las condiciones del algoritmo)
+
+En Aceptación Diferida, **San Martín ordena a todos sus postulantes en una sola fila** y retiene tentativamente a los ~26 primeros (sus cupos de 4.º básico), rechazando al resto en cada ronda. La fila se arma (`investigacion_algoritmo_sae.md` §3.2):
+
+1. **Por grupo de prioridad legal, en orden estricto:** reserva PIE → hermanos/as → reserva del 15 % para estudiantes prioritarios/as → hijos/as de funcionario/a → exalumnos/as → **familias sin ningún vínculo con ese colegio**.
+2. **Dentro de cada grupo, por el número de sorteo propio de San Martín** (cada colegio sortea el suyo — regla de *Multiple Tie-Breaking*, no una lotería nacional única).
+
+La familia Muñoz González cae en el **último grupo** en San Martín (sin hermano/a, sin funcionario/a, sin exalumno/a, sin cuota SEP). El "corte" —el puesto 26— queda por encima de ella. El resultado sale de una **cuenta aritmética**, no de un juicio:
+
+```
+cupos de San Martín (4.º básico)                         ≈ 26
+– postulantes con prioridad o con la reserva del 15 %
+  que también pidieron San Martín                        ≈ 20   (ilustrativo)
+────────────────────────────────────────────────────────────────
+cupos que quedan para familias sin vínculo               ≈  6
+familias sin vínculo que pidieron San Martín             ≈ 31
+→ Sofía necesita quedar entre las ~6 primeras de ~31  ≈ 1 de cada 5 en un sorteo puntual
+→ repetido 1000 veces (Monte Carlo, `simulacionSae.js`) → queda dentro en ≈ 26 de cada 100
+```
+
+*(20 / 6 / 31 son ilustrativos del orden de magnitud, no las cifras internas exactas del modelo; lo que importa es la estructura: la mayoría de los cupos se los llevan familias con prioridad + la reserva SEP, y un remanente pequeño se decide por sorteo entre las familias sin vínculo.)*
+
+**Propiedades del mecanismo que hacen del rechazo algo justo, no un error:**
+
+- **Estabilidad / ausencia de envidia justificada.** Toda familia que quedó en San Martín *o tiene una prioridad que la familia Muñoz González no tiene ahí, o estaba en su misma situación y su número de sorteo salió antes*. El sistema **nunca** deja fuera a una familia para dejar dentro a otra con *menos* prioridad. Ese es el estándar de asignación "objetiva y no discriminatoria" que exige la Ley de Inclusión.
+- **Strategy-proofness** (`investigacion_algoritmo_sae.md` §4.2). San Martín evaluó a Sofía **igual la hubiera puesto primera o última** en su lista. Poner San Martín primero **no le costó ninguna posibilidad** en los demás colegios: por eso igual quedó en Los Andes.
+- **Garantía de recorrido.** Al no sentarla San Martín, DA **siguió bajando por su lista** y la dejó en el **primer colegio donde sí alcanzaba: Colegio Los Andes** (2.ª opción), donde tiene a su hermana Martina. "Quedas en el mejor colegio de tu lista que te aceptaría" — se cumplió.
+
+**Caso hipotético (contrafactual) — qué habría cambiado el resultado, con los mismos 26 cupos y la misma demanda:**
+
+| Cambio | Efecto sobre el resultado en San Martín |
+|---|---|
+| Sofía tuviera un hermano/a matriculado/a en San Martín | Sube al grupo "hermanos" → ≈ 99 % (como Los Andes). **Lo único que cambia es su grupo en la fila.** |
+| San Martín tuviera ~40 cupos (misma demanda) | Crece el remanente para "sin vínculo" → su probabilidad sube |
+| Solo ~40 familias hubieran pedido San Martín (mismos cupos) | Igual: más cupos por familia sin vínculo |
+| Su número de sorteo en San Martín hubiera salido más bajo | En *ese* sorteo entra. El sorteo es independiente por colegio: un mal número ahí **no dice nada** de sus chances en los demás |
+| Reordenar su lista / postular otro día / "esconder" San Martín más abajo | **Nada.** (Strategy-proofness.) |
+
+#### B. La traducción para el usuario (según HAX / PAIR-ET / NNG-XAI / BROOK / RISK-NUM)
+
+Texto de referencia para la explicación contextualizada de `/seguimiento` en la **condición A** ("¿Por qué no quedaste en el Colegio San Martín?"). **Implementado en `SeguimientoPage.generarExplicacion` el 2026-09-09** (bitácora Bloque U): reemplazó la línea genérica anterior (*"…tenía más postulantes con prioridad mayor o no había vacantes…"*) por esta versión específica del colegio no obtenido, con formato de frecuencia "X de cada 100" y el cierre BROOK; la tarjeta "¿Qué significa no quedar en tu primera opción?" sumó el párrafo de strategy-proofness. El texto en producción es una adaptación fiel de lo que sigue:
+
+> Al **Colegio San Martín postularon más familias que los cupos** que tenía para 4.º básico. Cuando eso pasa, la ley define un orden para repartir los cupos: primero las familias con un vínculo con ese colegio —un hermano o hermana matriculado/a, ser hijo/a de un funcionario/a, o haber sido estudiante ahí— y la reserva del 15 % para estudiantes prioritarios/as. **Tu familia no tiene ninguno de esos vínculos con el Colegio San Martín**, así que competías por los cupos que quedaban después.
+>
+> Entre las familias que están en tu misma situación —sin un vínculo con ese colegio—, el colegio elige con un **sorteo propio, el mismo para todas**. Esta vez tu número no alcanzó uno de esos cupos. Ese sorteo vale **solo para el Colegio San Martín**: no afectó tus posibilidades en los otros colegios de tu lista.
+>
+> Por eso el sistema **siguió con tu lista** y te asignó al **Colegio Los Andes**, tu segunda opción, donde tienes a tu hija matriculada y por eso tenías prioridad.
+>
+> El sistema reparte los cupos que existen: **no puede crear cupos nuevos en un colegio ni asegurar la primera opción cuando hay más familias que vacantes.**
+
+**Versión de una línea** (chip / resumen): *"Al Colegio San Martín postularon más familias que cupos, y las que tienen un vínculo con ese colegio o la reserva del 15 % van primero por ley. Tu familia no tenía ese vínculo ahí."*
+
+**El dato crudo al lado** (HAX G2 — que se vea de qué está hecho el número): *"Colegio San Martín · 4.º básico · demanda alta. El año pasado postularon 71 familias para 24–28 cupos. Sin un vínculo con este colegio, ≈ 26 de cada 100 familias en tu situación obtuvieron cupo."*
+
+#### C. Por qué está redactado así (mapeo a las guías)
+
+| Elección de redacción | Guía | Razón |
+|---|---|---|
+| "postularon más familias que cupos" como **primera** frase | BROOK · HAX G11 | La causa estructural (escasez) va antes que nada; dirige la lectura a la demanda real, no al algoritmo |
+| "la ley define un orden" / "van primero **por ley**" | HAX G11 · justicia | El resultado es una regla pública, no una decisión del colegio ni del software |
+| "**tu familia no tiene** ninguno de esos vínculos **con el Colegio San Martín**" | HAX G5/G6 · PAIR-ET | Hecho verificable y acotado a *ese* colegio; no dice "no calificaste" ni "apuntaste alto" — nada que suene a juicio o carencia de la familia |
+| "el colegio elige con un **sorteo propio, el mismo para todas**" | precisión del mecanismo + justicia | Se nombra el sorteo (es el desempate real), pero enmarcado como **trato igual entre iguales**, que es su función; no como "mala suerte" |
+| "Ese sorteo vale **solo para el Colegio San Martín**… no afectó tus posibilidades en los otros" | PAIR-ET (no inducir acción errónea) · strategy-proofness | Corta el mito del riesgo estratégico y la sensación de "el azar me arruinó todo" |
+| "el sistema **siguió con tu lista** y te asignó a…" | HAX G1 · NNG-XAI | Describe el proceso ("recorre la lista", "asigna al primero donde alcanzas"), no una intención; muestra que el sistema **sí hizo algo** por la familia |
+| "**no puede crear cupos** ni asegurar la primera opción" | BROOK | Comunicar qué **no** puede hacer el sistema → la frustración va a la escasez, no a la arbitrariedad |
+| "**≈ 26 de cada 100**" en vez de "26 %" | RISK-NUM | Formato de frecuencia para numeracidad básica-intermedia |
+| Sin "tómbola", sin "te tocó", sin "lamentablemente" | encuadre 2026-09-07 (bitácora) | "Sorteo" solo donde describe el mecanismo; nunca como encuadre del resultado |
+
+#### D. Relación con el estudio comparativo
+
+Esta explicación completa (ya en producción, ver Bloque U de la bitácora) es **exclusiva de la condición A**. La **condición B** solo muestra "quedaste en el Colegio Los Andes", sin el porqué (implementado el 2026-09-09, Bloque V: `esControl` oculta la tarjeta completa en `/seguimiento`). El ítem **C4** ("puedo explicar con mis palabras por qué era poco probable San Martín"), **C5** ("entendí por qué el resultado fue ese") y **J2** ("me pareció justa la razón") miden si esta traducción funciona; la pregunta abierta **A1** y el ítem **F3** capturan si el argumento de strategy-proofness caló. El único uso de "sorteo" en el texto —el desempate entre familias sin vínculo, enmarcado como trato igual— es coherente con el criterio de microcopy del 2026-09-07 (se evita en el encuadre y la predicción; se conserva donde describe el mecanismo).
+
 ## 4. Nota de alcance: alta exigencia académica
 
 Esta cuota (30–85 % de cupos en colegios preseleccionados por Mineduc, solo 7.º básico/1.º medio, con examen) no está representada porque ningún colegio de `colegios.js` tiene esa modalidad hoy, y la persona Daniela no prioriza ese tipo de establecimiento. Queda como extensión opcional — requeriría agregar un colegio con esa modalidad al set de datos.
@@ -87,10 +184,10 @@ El gap original: `colegios.js` no distinguía `funcionario` ni `exalumno` como p
 
 Asignación **entre-sujetos**: cada participante hace la tarea en **una sola** condición.
 
-- **Condición A — UX que explica el algoritmo (tratamiento).** El prototipo actual, con toda su capa de explicabilidad construida sobre `investigacion_ux_guide_ai_systems.md` (HAX / PAIR-ET / NNG-XAI / BROOK / RISK-NUM): el módulo `/algoritmo` y el simulador paso a paso, el recuadro *"con este orden, ¿dónde quedarías?"* (`ResultadoProvisional`), la probabilidad por colegio con su fundamento y su visual "X de cada 100" (`ProbabilidadVisual`), la explicación contextualizada *"por qué te asignaron este colegio"* de `/seguimiento`, y el recuadro inicial *"cómo se decide tu resultado"*.
+- **Condición A — UX que explica el algoritmo (tratamiento).** El prototipo actual, con toda su capa de explicabilidad construida sobre `investigacion_ux_guide_ai_systems.md` (HAX / PAIR-ET / NNG-XAI / BROOK / RISK-NUM): el módulo `/algoritmo` y el simulador paso a paso, el recuadro *"¿qué hace el orden de tu lista?"* (`ResultadoProvisional`), la probabilidad por colegio con su fundamento y su visual "X de cada 100" (`ProbabilidadVisual`), la explicación contextualizada *"por qué te asignaron este colegio"* de `/seguimiento`, y el recuadro inicial *"cómo se decide tu resultado"*.
 - **Condición B — control, sin explicación (proxy del SAE real).** Una versión del mismo flujo que **oculta toda esa capa** (bitácora §7.5, D4): sin `/algoritmo`, sin resultado provisional, sin probabilidades ni "X de cada 100", sin el "por qué te asignaron", sin el recuadro "cómo se decide". Queda el flujo pelado —buscar, armar la lista en el orden dado, confirmar, descargar el comprobante, ver el colegio asignado **a secas**— anclado a la vitrina / SAE real ya documentado (`investigacion_vitrina_sae.md`, `analisis_video_paso_a_paso_sae.md`). **No** debe ser una versión deliberadamente pobre (bitácora §7.3, Cuidado 1): las partes que son fidelidad al SAE real (panel de condiciones que el sistema ya conoce, prioridad por colegio de solo lectura, gates de aceptación) se conservan.
 
-> **Dependencia.** La condición B corresponde a la fase **F3** del roadmap (bitácora §7.2) y **todavía no está implementada**. El estudio no puede ejecutarse hasta que F3 exista. F1 produce la parte compartida (tarjeta del caso, orden canónico, instrumento, consentimiento) y los materiales de la condición A.
+> **Dependencia — resuelta.** La condición B (fase **F3** del roadmap, bitácora §7.2) **está implementada desde el 2026-09-09** (bitácora Bloque V): un contexto `ModoEstudioContext` (`esControl`) que cada pieza de explicabilidad consulta para ocultarse o simplificarse, activado por la pantalla `/estudio` del moderador. `asignacion.js`/`simulacionSae.js` no se tocaron, así que el resultado de asignación es idéntico en A y B. Antes del piloto queda recorrer B end-to-end en 375 px y confirmar que es un proxy fiel del SAE real (`f3_modo_control_inventario.md` §4).
 
 ### 6.2 Tareas dirigidas
 
@@ -104,7 +201,7 @@ Pre-tarea (antes de la #1): ítem de línea base **B1** sobre la percepción "t�
 2. **Agregar los 6 colegios en el orden exacto de la tarjeta** (§3): San Martín · Los Andes · República de Chile · Villa del Sol · Simón Bolívar · Los Quillayes. Se entrega el orden por escrito; **la persona no lo elige ni lo reordena** — el moderador lo recuerda si intenta cambiarlo.
 3. **Vincular la postulación familiar en bloque con Mateo:** marcar que el hermano también postula e ingresar sus datos básicos (nombre, RUN, nivel). El prototipo aclara que la postulación de Mateo va aparte y que en la sesión se completa **solo la de Sofía**.
 4. **Revisar la lista antes de confirmar.**
-   `[A]` leer lo que la página muestra de cada colegio (demanda, postulantes/vacantes, probabilidad) y el recuadro *"con este orden, ¿dónde quedarías?"*; pensar en voz alta sobre San Martín en 1.ª posición con ≈26 %. Probe: *"¿qué entiendes de lo que muestra la página aquí?"*.
+   `[A]` leer lo que la página muestra de cada colegio (demanda, postulantes/vacantes, probabilidad) y el recuadro *"¿qué hace el orden de tu lista?"*; pensar en voz alta sobre San Martín en 1.ª posición con ≈26 %. Probe: *"¿qué entiendes de lo que muestra la página aquí?"*.
    `[B]` revisar la lista tal como la muestra el proxy, sin esa capa. Probe: *"¿qué esperas que pase con esta lista?"*.
 5. **Confirmar la postulación y descargar el comprobante.**
 6. **Predecir el resultado (antes de verlo).** Probe: *"¿en qué colegio crees que va a quedar Sofía, y por qué?"*.
@@ -120,7 +217,7 @@ Pre-tarea (antes de la #1): ítem de línea base **B1** sobre la percepción "t�
 ### 7.1 Participantes y asignación a condición
 
 - **N objetivo: ≈30** (~15 por condición). Un diseño entre-sujetos con dos grupos necesita más participantes que una prueba formativa; el "al menos 30" recoge la indicación de la profesora guía. El estudio previo del mismo equipo (maqueta Figma del módulo de explicación, Cap. 3 §3.2) usó 10 personas en un diseño de un solo grupo.
-- **Asignación a condición:** por número de participante (p. ej. alternancia o bloques), definida antes de reclutar, para equilibrar los grupos en tamaño y en la covariable de experiencia previa con el SAE. El mecanismo exacto se fija al planificar F3.
+- **Asignación a condición:** por número de participante, definida antes de reclutar, para equilibrar los grupos en tamaño y en la covariable de experiencia previa con el SAE. Implementado en la pantalla `/estudio`: `condicionDe(n)` = impares → A, pares → B; se ajusta ahí si se decide estratificar por la covariable.
 - **Criterios de inclusión**, alineados con la persona Daniela González: (a) madre, padre o apoderado/a legal con al menos un hijo/a en edad de postular a educación parvularia, básica o media en Chile (no es necesario que postule este año — el caso usa datos ficticios); (b) autopercepción de alfabetización digital básica-intermedia — excluir explícitamente a personas con perfil técnico/UX que evaluarían la interfaz en vez de vivir el caso como usuario final; (c) acceso principal a internet vía smartphone.
 - **Covariable:** experiencia previa con el SAE real (ya postuló alguna vez / nunca). Se registra y se procura balancear entre condiciones; junto con B1 permite leer los resultados en contexto.
 - **Reclutamiento:** por conveniencia/bola de nieve (red personal, no muestreo probabilístico) — limitación metodológica que se declara explícitamente en el Cap. 3, igual que en el estudio Figma previo.
@@ -134,7 +231,7 @@ Sesión moderada individual, presencial, ~45–55 minutos:
 |---|---|---|
 | Bienvenida y consentimiento | 5 min | Explicar el propósito sin adelantar el caso San Martín ni la existencia de dos condiciones |
 | Cuestionario pre-tarea | 3–5 min | Perfil breve + covariable (experiencia SAE) + ítem de línea base B1 (§8.1) |
-| Tareas dirigidas 1–7 (§6.2) | 20–25 min | Pensar en voz alta; el moderador sigue la rama A o B según la condición y no ayuda salvo bloqueo total |
+| Tareas dirigidas 1–7 (§6.2; la tarea 8 es el cuestionario, bloque siguiente) | 20–25 min | Pensar en voz alta; el moderador sigue la rama A o B según la condición y no ayuda salvo bloqueo total |
 | Cuestionario post-tarea | 10 min | Batería Likert (§8.2) + preguntas abiertas (§8.3) |
 | Cierre | 5 min | Agradecimiento |
 
@@ -189,25 +286,81 @@ Tres constructos, alineados con la pregunta de investigación del Cap. 1 (compre
 - **A1 (falso riesgo estratégico).** *"Si tú hubieras armado esta lista, ¿la habrías ordenado distinto? En particular, ¿dónde habrías puesto el Colegio San Martín, y por qué?"*
 - **A2 (hallazgos fuera del instrumento).** *"¿Hubo algo que te generó desconfianza o que no entendiste, aunque no te lo haya preguntado recién?"*
 
+### 8.4 Hipótesis
+
+Todas se contrastan **entre condiciones** (A = con capa de explicación del algoritmo; B = control sin esa capa), sobre el **mismo caso, la misma lista y el mismo desenlace** (Colegio Los Andes en 2.ª preferencia).
+
+- **H1 (comprensión).** Las personas de la condición A puntúan más alto en el constructo de comprensión (C1–C5) que las de la condición B. Es la hipótesis principal: la capa de explicación está construida precisamente para eso.
+- **H2 (confianza).** Las personas de la condición A puntúan más alto en el constructo de confianza (F1–F5) que las de la condición B, y en particular reportan menos miedo a ubicar primero el colegio preferido sin ventaja (F2, F3).
+- **H3 (percepción de justicia).** Se espera una diferencia **menor o nula** a favor de A en el constructo de justicia (J1–J3). La literatura de gestión de expectativas (Springer & Whittaker; Brookings) sugiere que explicar un resultado mejora la comprensión y la confianza sin necesariamente cambiar cuán *justo* se percibe *no haber obtenido* el colegio preferido. H3 se plantea como hipótesis exploratoria, no direccional fuerte.
+- **H4 (mito del riesgo estratégico — cualitativa).** En las preguntas abiertas (A1) y en el probe de la tarea 4, las personas de la condición A verbalizan con más frecuencia que ubicar primero el colegio preferido **no** perjudica, y menos frecuentemente la intención de "esconderlo" más abajo, que las de la condición B.
+
+**Covariables:** B1 (percepción "tómbola" pre-tarea) y experiencia previa con el SAE real. No se usan para "corregir" el efecto sino para leer los resultados en contexto (p. ej., si el efecto de A se concentra en quienes llegaban con más desconfianza).
+
+### 8.5 Plan de análisis
+
+El N es pequeño para estándares inferenciales (≈15 por condición); el análisis es **principalmente descriptivo y cualitativo**, con pruebas no paramétricas como apoyo y con tamaños de efecto reportados siempre junto al valor *p*.
+
+**Cuantitativo (Likert 1–5, §8.2):**
+1. **Descriptivo por ítem y por constructo**, por condición: mediana, rango intercuartílico, y distribución de respuestas (gráfico de barras apiladas 1–5). El puntaje de constructo es la media de sus ítems por participante (comprensión: C1–C5; confianza: F1–F5; justicia: J1–J3), reportada como media ± DE y como mediana [RIC].
+2. **Comparación entre condiciones:** prueba **U de Mann-Whitney** sobre el puntaje de cada constructo (A vs. B), y sobre los ítems individuales de mayor interés teórico (C4, C5, F2, F3, J2). Tamaño de efecto: **r = Z/√N** (o *rank-biserial*), interpretado con los cortes convencionales 0,1 / 0,3 / 0,5.
+3. **Covariables:** análisis estratificado —repetir la comparación A vs. B **por separado** en el grupo "ya postuló al SAE" y en "nunca postuló", y en tramos de B1 (bajo: 1–2 / alto: 4–5)— en vez de un ANCOVA, por el tamaño de muestra. Si algún subgrupo queda con <5 personas por celda, se reporta solo de forma descriptiva.
+4. **Consistencia interna** de cada constructo: alfa de Cronbach (o McDonald's ω), reportado como referencia, no como criterio de exclusión de ítems dado el N.
+5. **B1 pre/nada:** B1 se mide **solo antes** de la tarea (es covariable, no medida de cambio). Un eventual efecto sobre la percepción "tómbola" se lee de forma indirecta vía J1/J3 y la pregunta abierta A2, no como pre-post.
+
+**Cualitativo (pensar en voz alta + A1/A2 + probes de las tareas 4 y 7):**
+6. **Codificación temática** de las transcripciones, con un libro de códigos derivado de los tres constructos + categorías emergentes. Foco: (a) cómo la persona explica *por qué* no quedó en San Martín; (b) presencia/ausencia del razonamiento de "esconder" el colegio preferido (mito estratégico); (c) momentos de confusión y qué elemento de la interfaz los origina o los resuelve.
+7. **Doble codificación** de una submuestra (≈20–30 % de las sesiones) por una segunda persona y acuerdo entre codificadores (κ de Cohen o porcentaje de acuerdo) como control de confiabilidad.
+8. **Triangulación:** los hallazgos cualitativos se contrastan con los cuantitativos por constructo (p. ej., si A puntúa más alto en C4 y además verbaliza mejor el porqué de San Martín).
+
+**Criterio de "resultado positivo" para la memoria:** que la condición A muestre una ventaja **consistente** (misma dirección en el descriptivo, la prueba no paramétrica y la evidencia cualitativa) en comprensión (H1) y, deseablemente, en confianza (H2), reconociendo explícitamente si la percepción de justicia (H3) no se mueve.
+
 ## 9. Pendientes y decisiones
 
 **Decisiones ya tomadas (bitácora §7.5, 2026-09-06):** orden de lista fijo estricto (D1); semilla `SEED_CASO` única, sin variación por participante (D2); resultado canónico = San Martín 1.º → Colegio Los Andes en 2.ª preferencia (D3); el modo control oculta toda la capa de explicabilidad (D4).
 
-**Abiertas / de tu parte:**
-- **F3 (modo control) — pendiente técnico:** `?modo=control` vs. ruta paralela vs. bandera de sesión; y el mecanismo exacto de asignación de condición en terreno (número de participante → A/B). Se decide al planificar F3, con revisión antes de tocar código. **Bloquea la ejecución del estudio.**
-- **Comité de ética UTFSM:** confirmar si es exigible para esta prueba dentro de una memoria de título (ahora con más peso por ser N≈30 comparativo).
-- **Alta exigencia académica (§4):** ¿se aborda o queda fuera de alcance?
-- **Paso de resultado inmediato:** ¿entra a la matriz de `plan_mejora_sae.md` como sección nueva (p. ej. S23) o queda como funcionalidad exclusiva de la prueba? Mientras no se defina, el código quedó comentado como "extensión fuera de la matriz" y la cifra 87/87 no se toca.
+**Recomendaciones firmes (para llevar a la reunión — el autor decide con la profesora):**
+- **Alta exigencia académica (§4): fuera de alcance.** Ningún colegio del set tiene esa modalidad, la persona Daniela no prioriza ese tipo de establecimiento, y añadirla no aporta al contraste A/B (el caso ya cubre los tres grupos de prioridad legal). Se declara como limitación y línea futura en la memoria.
+- **Paso de "resultado inmediato": herramienta de la prueba, no punto del plan de mejora.** Es un artefacto para poder observar la reacción al resultado en la misma sesión (en el SAE real tarda meses); no es una mejora de UX del SAE. Se mantiene comentado como "extensión fuera de la matriz"; la cifra del plan no se toca. No se crea una sección S23.
+- **Comité de ética UTFSM:** el consentimiento informado simple está redactado (§7.1) y el caso no recoge datos personales sensibles reales. **Acción del autor antes de reclutar:** consultar a la Dirección de la carrera / al comité si el trámite es exigible para una memoria; si lo es, presentar este documento + el guion + el consentimiento. No bloquea la aprobación del diseño.
 
-**Re-sincronización pendiente (fase F1 del roadmap):**
-- `docs/investigacion/guion_moderador_prueba_usabilidad.md` (+ PDF) — reescribir con las dos ramas A/B, la lista entregada fija, y los números del Bloque R (San Martín ≈26 %).
-- `docs/investigacion/guion_participante_prueba_postulacion.md` (+ PDF) — la tarjeta de familia y la lista de 6 colegios en orden; sin "ordená como prefieras".
-- `docs/investigacion/material_prueba_usabilidad_postulacion.pdf` — regenerar (familia sin SEP/PIE, lista fija, números nuevos).
-- `docs/planificacion/mapa_resultados_caso_munoz_gonzalez.md` — con orden fijo, la enumeración de recorridos posibles pasa a ser secundaria; anotar que el escenario vigente es el canónico.
-- `proyecto-tesis/capitulos/03_metodologia.tex` — **trabajo del `writing-agent`:** corregir la descripción del caso (ya no activa la cuota del 15 %), reescribir la descripción del simulador (modelo Monte Carlo DA-por-colegio del Bloque R) y reescribir la §3.5 de prueba formativa N=8 a estudio comparativo entre-sujetos N≈30. Prompt desglosado en `docs/planificacion/prompt_pendientes_revision_caso_sin_sep.md`.
-- Este `.md` — regenerar su PDF (`caso_estudio_prueba_usabilidad_postulacion.pdf`).
+**Antes de la ejecución (no de la aprobación del diseño):**
+- **F3 (modo control) — ✅ implementado el 2026-09-09 (bitácora Bloque V).** Se resolvió como un contexto `ModoEstudioContext` (`esControl`, de `?modo=control` + `sessionStorage`) que cada pieza de explicabilidad consulta; la asignación de condición en terreno la hace la pantalla `/estudio` (número de participante → `condicionDe(n)`). `asignacion.js`/`simulacionSae.js` intactos → resultado idéntico en A y B. **Queda:** recorrer B end-to-end en 375 px antes del piloto (chequeo de "proxy fiel", `f3_modo_control_inventario.md` §4).
+
+**Re-sincronización — estado 2026-09-09:**
+- ✅ `guion_moderador_prueba_usabilidad.md` (+ PDF) — reescrito a la lista fija + ramas A/B + 8 tareas + duración 45–55 min.
+- ✅ `guion_participante_prueba_postulacion.md` v3 (+ PDF) — tarjeta de familia + los 6 colegios en el orden canónico; se quitó "ordena como prefieras".
+- ✅ `material_prueba_usabilidad_postulacion.md` (+ PDF, **nuevo**) — cuadernillo del participante: consentimiento, cuestionario pre-tarea (P1 experiencia SAE + B1), tarjeta de familia sin SEP/PIE, lista fija, cuestionario post-tarea (C1–C5 / F1–F5 / J1–J3 + A1/A2). Reemplaza el material de agosto que asumía familia SEP+PIE.
+- ✅ Este `.md` — PDF regenerado (`caso_estudio_prueba_usabilidad_postulacion.pdf`, 2026-09-09). *(La tabla de estado y §6.1/§9 se actualizaron el 2026-09-09 tras implementar F3 — Bloque V; conviene regenerar el PDF de nuevo.)*
+- ✅ **Condición B implementada en `sae-react/`** (2026-09-09, bitácora Bloque V): `context/ModoEstudioContext.jsx` + `pages/EstudioPage.jsx` (`/estudio`) + cableado de `esControl` en Navbar / `AlgoritmoPage` / `InicioPage` / `ProcesoPage` / tour / `PostulacionPage` / `SeguimientoPage` / `ColegioPage`. `lint`/`build`/`test` (16/16) limpios; A y B verificados en navegador.
+- ✅ `docs/planificacion/mapa_resultados_caso_munoz_gonzalez.md` — nota al inicio: el escenario vigente para el estudio es el canónico (orden fijo); la enumeración de recorridos queda como material de respaldo.
+- ⚠️ `proyecto-tesis/capitulos/03_metodologia.tex` §3.5 — **`writing-agent`:** reescribir de "prueba formativa N=8" a "estudio comparativo entre-sujetos N≈30" (usar §6–§10 de este documento). La descripción del caso y del simulador ya se corrigió el 2026-09-08. Prompt en `docs/planificacion/prompt_pendientes_revision_caso_sin_sep.md`.
+
+*Los PDF se generaron con `marked` + Chrome headless (`docs/investigacion/*.pdf`), no con pandoc/LaTeX; si se editan los `.md` hay que regenerarlos.*
 
 **Ya resuelto (antes bloqueaba):**
 - ~~`colegios.js` no distingue `funcionario`/`exalumno`~~ → resuelto, ver §5.
 - ~~¿un solo grupo de N=8 o variantes?~~ → superado por la reorientación a estudio comparativo entre-sujetos N≈30.
-- ~~verificar `npm run lint`/`npm run build`~~ → validación automatizada: `npm run lint`, `npm run build` y `npm test` (14 tests que ejercitan `asignacion.js` + `simulacionSae.js` + `colegios.js` con este caso) corren limpios; un guardarraíl de regresión avisa si alguien cambia `PARAMS_POBLACION`, el número de iteraciones Monte Carlo o `SEED_CASO`.
+- ~~verificar `npm run lint`/`npm run build`~~ → validación automatizada: `npm run lint`, `npm run build` y `npm test` (**16 tests** que ejercitan `asignacion.js` + `simulacionSae.js` + `colegios.js` con este caso) corren limpios el 2026-09-09; guardarraíles de regresión sobre `PARAMS_POBLACION`, iteraciones Monte Carlo, `SEED_CASO`, el escenario canónico y el fallback sin cupo.
+
+## 10. Amenazas a la validez y limitaciones
+
+Se declaran explícitamente en la memoria (Cap. 3 §3.5 y Cap. 5).
+
+**De validez interna**
+- **Moderador no ciego a la condición.** El moderador conoce si el participante está en A o B y sigue la rama correspondiente del guion. Mitigación: guion de lectura textual, probes idénticos en lo que se puede, no ayudar salvo bloqueo total, y —de ser posible— que una segunda persona codifique una submuestra de las grabaciones.
+- **Ítems que presuponen información solo de A.** Varios ítems Likert (C2, C4, C5, F5, J2) preguntan por algo que solo la condición A muestra en pantalla (probabilidades, explicación del resultado). Es **deliberado**: una puntuación más baja en B es la señal que el estudio busca, no un defecto del instrumento. Se interpreta como "B no tuvo los elementos para responder alto", no como "B entendió menos con la misma información".
+- **Efecto de demanda / deseabilidad social.** El encuadre neutro ("evalúo la página, no a ti") y el anonimato de la grabación buscan reducirlo; aun así, se reporta como limitación.
+- **Un solo caso, un solo desenlace.** Todo el estudio gira en torno a "no obtuve mi 1.ª opción, quedé en la 2.ª por el hermano". No se puede generalizar a "quedé en mi 1.ª opción" ni a "no quedé en ninguna"; esos escenarios quedan como línea futura.
+
+**De validez externa**
+- **Muestra por conveniencia / bola de nieve**, no probabilística. Los resultados describen a estas ~30 personas, no a la población de apoderados del SAE. Se declara igual que en el estudio Figma previo.
+- **Prototipo, no el SAE real.** El flujo es fiel en inputs pero la asignación la produce un **simulador didáctico** (Monte Carlo DA-por-colegio, `simulacionSae.js`), no el mecanismo real; los `%` son salida de ese modelo con parámetros de población documentados, no probabilidades validadas del SAE. La condición B se ancla a la vitrina / SAE real documentado, pero sigue siendo un proxy.
+- **Sesión de laboratorio, presencial y guiada**, distinta de una postulación real hecha en casa, sola, bajo presión de plazo.
+
+**De constructo**
+- La "comprensión" se mide por autorreporte Likert + verbalización, no con un test de conocimiento objetivo. C4 ("puedo explicar con mis palabras…") y la codificación cualitativa de A1/A2 acercan la medida a comprensión demostrada, pero no la vuelven objetiva.
+- La percepción de "tómbola" (B1) se mide con un solo ítem; es covariable, no constructo.
+
+**Estadísticas**
+- N≈15 por grupo → potencia baja para efectos pequeños; el análisis es **descriptivo + no paramétrico + cualitativo**, con tamaños de efecto siempre reportados. No se hará corrección por comparaciones múltiples formal; se prioriza la **consistencia** del patrón entre las tres fuentes de evidencia (§8.5).

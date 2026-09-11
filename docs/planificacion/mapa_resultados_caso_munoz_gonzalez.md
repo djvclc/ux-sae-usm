@@ -1,8 +1,10 @@
 # Mapa de resultados del caso Muñoz González
 
-**Fecha:** 2026-09-03 (reescrito para el modelo nuevo — bitácora Bloque R)
-**Para qué:** entender qué colegio puede quedar asignado según el orden que elija el/la participante, para el diseño de tareas de la prueba de usabilidad y para el `writing-agent`.
+**Fecha:** 2026-09-03 (reescrito para el modelo nuevo — bitácora Bloque R) · nota de estado 2026-09-09
+**Para qué:** entender qué colegio puede quedar asignado según el orden de la lista, para el diseño de tareas de la prueba de usabilidad y para el `writing-agent`.
 **Estado del caso:** familia sin cuota SEP ni PIE (Bloque O). Nivel: 4° básico.
+
+> **Nota (2026-09-09).** Desde la reorientación a **estudio comparativo con lista y orden fijos** (bitácora §7.5, D1), la **enumeración de recorridos posibles de este documento es material de respaldo**, no el diseño vigente. El **escenario canónico y único del estudio** es: lista `San Martín · Los Andes · República de Chile · Villa del Sol · Simón Bolívar · Los Quillayes`, en ese orden → San Martín (posición 1) **no** queda (≈26 %) → asignación en **Colegio Los Andes, 2.ª preferencia** (≈99 %, por hermano/a). `sinAsignacionEnPreferencias: false`. Verificado contra `calcularResultado` + `SEED_CASO = 20260903` y el test `escenario clave` (`flujo-postulacion.test.js`, 16/16, 2026-09-09). El resto del documento sigue siendo útil para el `writing-agent` (explicar qué decide el orden y qué no) y para una eventual variante con orden libre.
 
 ---
 

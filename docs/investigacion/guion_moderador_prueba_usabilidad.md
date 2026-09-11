@@ -1,5 +1,5 @@
 ---
-title: "Guion del moderador"
+title: "Guion del moderador — estudio comparativo A/B"
 lang: es
 geometry: margin=2.5cm
 mainfont: "DejaVu Sans"
@@ -11,12 +11,18 @@ colorlinks: true
 
 Este documento es para ti, Diego, no para la persona que participa. Dos tipos de texto:
 
-- **Texto entre comillas, en letra normal: leelo en voz alta, tal cual.** No hace falta memorizarlo, pero trata de decirlo con naturalidad, no como quien lee un aviso legal.
-- *Texto en cursiva y entre corchetes son notas para ti: que hacer, cuando entregar algo, que observar.* Esto no se lee en voz alta.
+- **Texto entre comillas, en letra normal: leelo en voz alta, tal cual.** Con naturalidad, no como quien lee un aviso legal.
+- *Texto en cursiva y entre corchetes: notas para ti. Que hacer, cuando entregar algo, que observar. No se lee en voz alta.*
 
-Antes de cada sesion: ten a mano la tarjeta de familia (impresa o en pantalla aparte), el cuestionario impreso, algo para grabar pantalla y audio, y el prototipo cargado en /postulacion con el navegador limpio (sin borrador guardado de una sesion anterior).
+**Estudio comparativo (v3, 2026-09-09).** Hay **dos versiones de la pagina**: la condicion **A** (explica el algoritmo: probabilidades por colegio, recuadro "que hace el orden de tu lista?", "por que te asignaron este colegio", modulo /algoritmo) y la condicion **B** (control: el mismo flujo sin esa capa de explicacion). **Cada participante usa una sola.** El participante NO debe saber que existen dos versiones ni en cual esta.
 
-*Atajo opcional para no perder tiempo tipeando:* en el paso 1, dentro de "Ingresar con ClaveUnica", hay un desplegable "Cargar caso de ejemplo". Si lo usas antes de que la persona empiece, deja precargados el nombre, el RUN y el nivel de Sofia, la direccion y los datos de Mateo. La persona igual tiene que leer el panel de "lo que el sistema ya sabe", marcar la casilla de apoderado/a y pulsar "Vincular estudiante". Si prefieres que la persona lo escriba todo, no uses el atajo.
+*Antes de cada sesion:*
+
+1. *Confirma en tu planilla que condicion (A o B) le toca a este participante, segun el orden de asignacion balanceada que fijaste antes de reclutar. Deja abierta la URL correcta.*
+2. *Ten a mano: la tarjeta de familia y la lista de 6 colegios en orden (impresas o en pantalla aparte), el cuestionario pre-tarea y el post-tarea impresos, algo para grabar pantalla y audio, y el prototipo cargado en /postulacion con el navegador limpio (sin borrador de una sesion anterior).*
+3. *Atajo opcional para no perder tiempo tipeando: en el paso 1, dentro de "Ingresar con ClaveUnica", el desplegable "Cargar caso de ejemplo" precarga nombre, RUN, nivel de Sofia, direccion y datos de Mateo. La persona igual lee el panel, marca la casilla de apoderado/a y pulsa "Vincular estudiante". Si prefieres que lo escriba todo, no uses el atajo. Usa el mismo criterio en A y en B para no introducir diferencias.*
+
+*La sesion dura entre 45 y 55 minutos.*
 
 \newpage
 
@@ -24,106 +30,122 @@ Antes de cada sesion: ten a mano la tarjeta de familia (impresa o en pantalla ap
 
 *Recibe a la persona, ofrecele asiento, ten agua a mano si es presencial.*
 
-"Hola, muchas gracias por venir / por tu tiempo. Te cuento rapidamente de que se trata esto.
+"Hola, muchas gracias por venir / por tu tiempo. Te cuento rapidamente de que se trata.
 
 Estoy probando una pagina web que simula el Sistema de Admision Escolar, el SAE, el sistema que usa el Ministerio de Educacion para asignar cupos en los colegios en Chile. Te voy a pedir que uses la pagina como si fueras otra persona, en una situacion inventada que te voy a explicar.
 
-Esto no es un examen. No estoy evaluandote a ti, estoy evaluando la pagina. Si algo te cuesta entender o te genera dudas, eso es exactamente lo que necesito que me digas, no hay respuesta correcta ni incorrecta.
+Esto no es un examen. No estoy evaluandote a ti, estoy evaluando la pagina. Si algo te cuesta entender o te genera dudas, eso es exactamente lo que necesito que me digas. No hay respuesta correcta ni incorrecta.
 
-Te voy a pedir que pienses en voz alta mientras usas la pagina: que me cuentes que estas mirando, que esperas que pase, que no te queda claro. Al principio se siente raro, pero es lo mas util para mi.
+Te voy a pedir que pienses en voz alta mientras usas la pagina: que estas mirando, que esperas que pase, que no te queda claro. Al principio se siente raro, pero es lo mas util para mi.
 
-La sesion deberia durar entre 50 minutos y una hora. Vamos a grabar la pantalla y el audio, solo para que yo pueda revisar despues la sesion con calma. Nadie mas va a ver la grabacion, y en cualquier momento puedes pedirme que la detenga.
+La sesion dura entre 45 minutos y una hora. Vamos a grabar la pantalla y el audio, solo para que yo pueda revisar despues con calma. Nadie mas va a ver la grabacion y en cualquier momento puedes pedirme que la detenga.
 
 Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que grabemos?"
 
-*Espera la respuesta. Si acepta, dale la hoja de consentimiento para que la firme (o pide su acuerdo verbal si es remoto, y dilo en voz alta para que quede en la grabacion: "Quiero dejar registrado que aceptaste participar y que grabemos la sesion"). Luego entrega o muestra el cuestionario pre-tarea.*
+*Espera la respuesta. Si acepta, dale la hoja de consentimiento para que la firme (o pide su acuerdo verbal si es remoto, y dilo en voz alta para la grabacion: "Quiero dejar registrado que aceptaste participar y que grabemos la sesion"). Luego pasa al cuestionario pre-tarea.*
 
-## 2. Cuestionario pre-tarea
+## 2. Cuestionario pre-tarea (igual en A y en B)
 
-"Antes de empezar, quiero hacerte una sola pregunta rapida, para tener una idea de como ves el sistema hoy, sin haber usado nada todavia."
+"Antes de empezar, dos cosas rapidas para tener una idea de tu punto de partida, sin haber usado nada todavia."
 
-*Lee o entrega la pregunta B1: "El sistema de admision escolar es como una tombola: no se entienden bien sus reglas." Pide que marque del 1 al 5 que tan de acuerdo esta. No comentes ni corrijas la respuesta.*
+*1. Registra si la persona alguna vez postulo al SAE real (si / no). Es un dato de contexto, no lo comentes.*
 
-## 3. Entrega de la tarjeta de familia
+*2. Lee o entrega la pregunta B1: "El sistema de admision escolar es como una tombola: no se entienden bien sus reglas." Pide que marque del 1 al 5 que tan de acuerdo esta. No comentes ni corrijas.*
 
-"Ahora te voy a pasar una tarjeta con la historia de una familia. Tu vas a hacer como si fueras la mama de esa familia, que se llama Daniela, y vas a postular a dos de sus hijos. Tomate el tiempo que necesites para leerla, no hay apuro. Cuando estes lista o listo, seguimos."
+## 3. Entrega de la tarjeta de familia y de la lista (igual en A y en B)
 
-*Entrega la tarjeta de familia (del material para participantes). Deja que la lea en silencio. No adelantes nada sobre el Colegio San Martin, las prioridades ni el objetivo del estudio.*
+"Ahora te paso una tarjeta con la historia de una familia. Vas a hacer como si fueras la mama, que se llama Daniela, y vas a postular a una de sus hijas, Sofia. Tomate el tiempo que necesites para leerla, no hay apuro."
 
-"Alguna duda sobre quien es quien en la familia? Puedes volver a mirar la tarjeta en cualquier momento durante la prueba, no hace falta que la memorices."
+*Entrega la tarjeta de familia. Deja que la lea en silencio. No adelantes nada sobre el Colegio San Martin, las prioridades ni el objetivo del estudio.*
 
-## 4. Tareas: instruccion general antes de empezar
+"Tambien te paso la lista de los seis colegios a los que la familia ya decidio postular, en el orden que decidieron. Tu tarea es ingresar esa lista tal cual, en ese orden. No hace falta que la cambies."
 
-"Ahora si, vamos a la pagina. Te voy a ir pidiendo que hagas ciertas cosas, paso a paso. En cada paso, cuentame en voz alta que estas viendo, que crees que significa, y que esperas que pase antes de hacer clic en algo. Yo no te voy a ayudar a menos que estes realmente atascada o atascado, quiero ver como lo resuelves tu."
+*Entrega la lista de 6 colegios en orden: 1. Colegio San Martin, 2. Colegio Los Andes, 3. Escuela Republica de Chile, 4. Colegio Villa del Sol, 5. Liceo Tecnico Simon Bolivar, 6. Escuela Basica Los Quillayes.*
+
+"Alguna duda sobre quien es quien en la familia? Puedes volver a mirar las dos hojas cuando quieras."
+
+## 4. Instruccion general antes de empezar (igual en A y en B)
+
+"Ahora vamos a la pagina. Te voy a ir pidiendo cosas paso a paso. En cada paso, cuentame en voz alta que estas viendo, que crees que significa, y que esperas que pase antes de hacer clic. Yo no te voy a ayudar salvo que estes realmente atascada, quiero ver como lo resuelves tu."
+
+\newpage
+
+## 5. Tareas
+
+*Las tareas 1 a 8 siguen `caso_estudio_prueba_usabilidad_postulacion.md` §6.2. Donde diga **[A]** o **[B]**, sigue solo la rama de la condicion de este participante. Lo que no tiene marca es igual en ambas.*
 
 ### Tarea 1: Identificarse
 
 "Primero, identificate en la pagina como si fueras Daniela."
 
-*Observa si usa ClaveUnica o la opcion de RUT. No corrijas.*
+*Observa si usa ClaveUnica o la opcion de RUT. No corrijas. Que marque la casilla "declaro ser apoderada legal".*
 
-*Cuando aparezca el recuadro "Esto es lo que el sistema ya sabe de tu hijo/a", pregunta:* "Que te esta diciendo la pagina que ya sabe de la familia? Eso te calza con la tarjeta?" *Solo escucha, no expliques.*
+**[A]** *Cuando aparezca el recuadro "Esto es lo que el sistema ya sabe de tu hijo/a", pregunta:* "Que te dice la pagina que ya sabe de la familia? Te calza con la tarjeta?" *Solo escucha, no expliques.*
 
-### Tarea 2: Agregar los colegios
+**[B]** *Ese panel no aparece. Sigue directo a la tarea 2.*
 
-"Ahora busca y agrega estos seis colegios a la lista de postulacion de Sofia y Mateo."
+### Tarea 2: Agregar los 6 colegios en el orden dado
 
-*Muestrale o leele la lista de los 6 colegios (Colegio Los Andes, Colegio Villa del Sol, Escuela Republica de Chile, Escuela Basica Los Quillayes, Liceo Tecnico Simon Bolivar, Colegio San Martin). Puedes dejarla escrita en una tarjeta aparte para que no tenga que memorizarla.*
+"Ahora busca y agrega a la lista de postulacion de Sofia estos seis colegios, en este orden."
 
-### Tarea 3: Ordenar la lista
+*Tiene la lista en la mano. Si intenta reordenarla o cambiar un colegio, recuerdaselo con amabilidad ("el orden ya esta decidido, ingresa esos seis asi") y ANOTA que lo intento y que dijo. No lo dejes reordenar.*
 
-"Ahora ordena la lista, en el orden que tu creas que le conviene mas a esta familia. Ve contandome por que pones cada colegio donde lo pones."
+### Tarea 3: Postulacion familiar en bloque con Mateo
 
-*Probe obligatorio cuando llegue a Colegio San Martin:* "Por que lo pusiste ahi?"
+"En el paso 1, marca que Sofia tiene un hermano que tambien postula este ano, Mateo, y completa sus datos si no vienen cargados."
 
-*Si mas adelante, despues de leer alguna advertencia, mueve el Colegio San Martin de lugar, pregunta:* "Por que lo moviste?" / "Que crees que pasa si lo dejabas donde estaba antes?" *Sin corregir la respuesta en el momento, solo escucha y anota.*
+*La pagina aclara que en esta demo se completa solo la postulacion de Sofia; la de Mateo iria por separado. Observa si eso le queda claro o si cree que esta postulando a los dos aqui.*
 
-### Tarea 4: Postulacion familiar en bloque
+### Tarea 4: Revisar la lista antes de confirmar
 
-"En el paso 1, marca que Sofia tiene un hermano que tambien postula este ano (Mateo), y completa sus datos si no vienen cargados."
+**[A]** "Antes de confirmar, tomate un momento para leer lo que la pagina te muestra de cada colegio y sobre el orden que tienes. Cuentame que vas entendiendo."
 
-*La pagina aclara que en esta demo se completa solo la postulacion de Sofia; la de Mateo iria por separado. Observa si a la persona le queda claro esa distincion o si cree que esta postulando a los dos aqui.*
+*En el Colegio San Martin (posicion 1) la pagina muestra "~26% estimado" y "No detectamos ningun vinculo con Colegio San Martin. Sin una prioridad aqui, tu cupo depende de cuantas familias pidan este colegio y de las vacantes que tenga". Tambien el recuadro "que hace el orden de tu lista?". Observa la reaccion al numero bajo de San Martin y si entiende el recuadro.*
 
-### Tarea 5: Leer las explicaciones
+*Probe:* "Que entiendes de lo que muestra la pagina aca?"
 
-"Antes de confirmar, tomate un momento para leer lo que la pagina te muestra sobre cada colegio y sobre el orden que elegiste. Cuentame que vas entendiendo."
+**[B]** "Antes de confirmar, revisa la lista tal como te la muestra la pagina. Cuentame que ves y que esperas que pase con esta lista."
 
-*En el Colegio San Martin la pagina muestra "~26% estimado" y "No detectamos ningun vinculo con Colegio San Martin. Sin una prioridad aqui, tu cupo depende de cuantas familias pidan este colegio y de las vacantes que tenga". Observa la reaccion a ese numero bajo.*
+*El proxy no muestra probabilidades ni el recuadro "que hace el orden de tu lista?". Probe:* "Que esperas que pase con esta lista?"
 
-*La pagina tambien muestra un recuadro "Con este orden, donde quedarias?" que se actualiza si la persona reordena la lista. Si la persona mueve algun colegio, observa si mira ese recuadro y si entiende que los porcentajes no cambian pero si cambia en cual colegio queda.*
+### Tarea 5: Confirmar y descargar el comprobante (igual en A y en B)
 
-*Probe:* "Esto te hace querer cambiar algo de tu lista? Por que?"
+"Cuando te sientas lista, confirma la postulacion y descarga el comprobante."
 
-### Tarea 6: Confirmar y descargar el comprobante
+### Tarea 6: Predecir el resultado, antes de verlo (igual en A y en B)
 
-"Cuando te sientas lista o listo, confirma la postulacion y descarga el comprobante."
+*Probe:* "En que colegio crees que va a quedar Sofia, y por que?"
 
-### Tarea 7: Ver el resultado
+**[A]** *La persona ya vio la probabilidad y el recuadro "que hace el orden de tu lista?". Mide si conecta esa informacion con su prediccion:* "Esto coincide con lo que la pagina te venia diciendo?"
 
-"Ahora, en esta pagina vas a encontrar un boton para ver el resultado de la postulacion ya mismo, en vez de esperar."
+**[B]** *Prediccion a ciegas. Deja que responda con lo que tenga.*
 
-*Nota: desde el paso 2 la pagina ya mostro la asignacion estimada (recuadro "Con este orden, donde quedarias?"), asi que no pidas una prediccion a ciegas. En vez de eso:*
+### Tarea 7: Ver el resultado y reaccionar
 
-"Recuerdas lo que la pagina te venia diciendo sobre donde ibas a quedar? Toca el boton y cuentame si el resultado coincide."
+"Ahora, en esta pagina hay un boton para ver el resultado de la postulacion ya mismo, en vez de esperar. Tocalo y cuentame."
 
-*Deja que haga clic y lea el resultado.*
+*Desenlace de este caso, igual en A y en B: San Martin (posicion 1) NO queda (~26%) y el sistema asigna a Sofia al **Colegio Los Andes**, su 2.a preferencia, por el hermano. Observa la reaccion a no haber obtenido el colegio en mente.*
 
-*Desenlace esperado con este caso: si puso San Martin primero, NO queda ahi (~26%) y el sistema la asigna a Colegio Los Andes en 2a preferencia, por el hermano. Observa la reaccion a no haber obtenido el colegio en mente.*
+*Probes (ambas condiciones):* "Era lo que esperabas? Por que crees que paso esto? Te queda claro por que no quedo en San Martin?"
 
-"Era lo que esperabas? Por que crees que paso esto?"
+**[A]** *Deja que lea la explicacion "Por que te asignaron este colegio?" en la pagina y luego pregunta:* "Esa explicacion te hace sentido? Cambia lo que pensabas?"
 
-*Deja que lea la explicacion de "Por que te asignaron este colegio?" en la pagina, y luego pregunta:* "Esa explicacion te hace sentido? Cambia lo que pensabas?"
+**[B]** *En el control no hay esa explicacion. No la muestres. Solo registra su interpretacion espontanea.*
 
-## 5. Cuestionario post-tarea
+### Tarea 8: Cuestionario post-tarea
 
-"Ya para terminar, te voy a pasar un cuestionario cortito. Son puras frases donde marcas que tan de acuerdo o en desacuerdo estas. No hay respuestas buenas ni malas, y puedes preguntarme si algo no se entiende."
+*Ver seccion 6.*
 
-*Entrega el cuestionario post-tarea completo (comprension, confianza, percepcion de justicia, y la pregunta abierta de cierre). Dale tiempo, no lo apures.*
+## 6. Cuestionario post-tarea (misma bateria en A y en B)
 
-## 6. Cierre
+"Ya para terminar, un cuestionario cortito. Son frases donde marcas que tan de acuerdo o en desacuerdo estas, del 1 al 5. No hay respuestas buenas ni malas, y puedes preguntarme si algo no se entiende."
 
-"Eso seria todo. Muchas gracias de verdad por tu tiempo y por contarme lo que ibas pensando, me sirve muchisimo para mejorar la pagina.
+*Entrega el cuestionario post-tarea completo: comprension (C1-C5), confianza (F1-F5), percepcion de justicia (J1-J3), y las dos preguntas abiertas de cierre (A1 sobre el orden de la lista y el Colegio San Martin; A2 sobre cualquier duda o desconfianza). Dale tiempo, no lo apures. Algunos items preguntan por informacion que solo la version A mostraba: es esperado, deja que responda como pueda.*
+
+## 7. Cierre
+
+"Eso seria todo. Muchas gracias de verdad por tu tiempo y por contarme lo que ibas pensando, me sirve muchisimo.
 
 Hay algo mas que quieras comentarme, algo que te haya generado dudas o desconfianza y que no te haya preguntado?"
 
-*Escucha, agradece de nuevo, y cierra la grabacion.*
+*Escucha, agradece de nuevo, cierra la grabacion. Anota de inmediato tus observaciones de la sesion mientras las tienes frescas: condicion, si intento reordenar, reaccion a San Martin, reaccion al resultado, momentos de confusion.*

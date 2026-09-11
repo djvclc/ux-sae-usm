@@ -192,7 +192,11 @@ export function probabilidadCupo(
   const vac = vacantesDeNivel(colegio, nivelAlumno)
   if (!vac) return null
 
-  const clave = `${colegio.id}|${nivelAlumno}|${familiaTramo.esSep ? 1 : 0}|${familiaTramo.general}|${iteraciones}`
+  // La clave incluye los parámetros de población: si un consumidor pasa `params`
+  // distintos, no debe reutilizarse un resultado calculado con otros (auditoría
+  // 2026-09-08 — la clave omitía `params`).
+  const pKey = `${params.pSep},${params.pHermano},${params.pFuncionario},${params.pExalumno},${params.cuotaSep}`
+  const clave = `${colegio.id}|${nivelAlumno}|${familiaTramo.esSep ? 1 : 0}|${familiaTramo.general}|${iteraciones}|${pKey}`
   if (_cacheProb.has(clave)) return _cacheProb.get(clave)
 
   // Semilla determinista a partir del id del colegio y el nivel.

@@ -167,6 +167,48 @@ test('lista vacía: calcularResultado devuelve error y sin asignación', () => {
 })
 
 // ───────────────────────────────────────────────────────────────────────────────
+// Auditoría 2026-09-08.
+//
+// (a) Fallback sin cupo: si NINGÚN colegio de la lista sienta a la familia en la
+//     simulación, `calcularResultado` NO deja `asignado` en null: marca el colegio
+//     de mayor `%` como `asignado` y levanta `sinAsignacionEnPreferencias: true`.
+//     `SeguimientoPage.generarExplicacion(asignado, sinAsignacion)` DEBE ramificar
+//     por esa bandera y no narrar "Quedaste en…" (no testeable aquí — es un
+//     componente; sí se testea que la bandera exista y sea correcta).
+test('fallback: San Martín solo/a en la lista → sin cupo, marca la bandera y NO deja asignado en null', () => {
+  const r = calcularResultado([SAN_MARTIN], perfilCaso([SAN_MARTIN]), NIVEL_CASO)
+  assert.equal(r.sinAsignacionEnPreferencias, true)
+  assert.equal(r.asignado.id, SAN_MARTIN)      // fallback = el de mayor % estimado
+  assert.equal(r.detalles[0].estado, 'asignado')
+  assert.equal(r.asignado.prob, 26)            // el % NO se infla: sigue siendo el estimado
+})
+
+// (b) Sorteo del recorrido independiente por colegio: cada colegio se sortea con
+//     su propia semilla derivada de (SEED_CASO, id), así su desenlace no depende
+//     de qué colegios van antes en la lista (regla real del SAE, §3.2). Antes se
+//     compartía un PRNG recorrido en orden de lista.
+//     Con los 6 colegios del caso, el único que NO sienta en el recorrido es San
+//     Martín (sin vínculo, demanda alta), así que no se puede "alcanzar" un
+//     colegio en posición > 1 para observar su sorteo aislado. Se verifica lo
+//     observable: San Martín 1.º nunca sienta y la familia cae a Los Andes,
+//     sea cual sea el resto de la lista.
+test('recorrido: San Martín 1.º nunca sienta, sea cual sea el resto de la lista (independencia por colegio)', () => {
+  const colas = [
+    [LOS_ANDES, REPUBLICA, SIMON_BOLIVAR, VILLA_DEL_SOL, LOS_QUILLAYES],
+    [VILLA_DEL_SOL, LOS_QUILLAYES, LOS_ANDES, SIMON_BOLIVAR, REPUBLICA],
+    [SIMON_BOLIVAR, LOS_QUILLAYES, VILLA_DEL_SOL, REPUBLICA, LOS_ANDES],
+  ]
+  for (const cola of colas) {
+    const lista = [SAN_MARTIN, ...cola]
+    const { detalles, asignado } = calcularResultado(lista, perfilCaso(lista), NIVEL_CASO)
+    assert.equal(detalles[0].id, SAN_MARTIN)
+    assert.equal(detalles[0].estado, 'prioridad_insuficiente') // San Martín 1.º nunca sienta
+    assert.notEqual(asignado.id, SAN_MARTIN)
+    assert.equal(asignado.idx, 2) // cae al 1.º colegio de la cola, que en los 3 casos sienta
+  }
+})
+
+// ───────────────────────────────────────────────────────────────────────────────
 // Núcleo del modelo (antes era la tabla probAsignacion): si alguien cambia los
 // parámetros de población, la semilla o las iteraciones sin quererlo, esto avisa.
 test('núcleo del modelo: parámetros de población y semilla estables', () => {

@@ -113,13 +113,23 @@ export function calcularResultado(listaIds = [], perfil = {}, nivelAlumno = NIVE
     })
     .filter(Boolean)
 
-  // Recorrido determinista de la lista, un solo sorteo por colegio (semilla fija).
-  const rng = mulberry32(SEED_CASO)
+  // Recorrido determinista de la lista: un sorteo de cupo por colegio, cada uno
+  // con su PROPIA semilla derivada de (SEED_CASO, id del colegio). Así el
+  // desenlace de un colegio (queda / no queda) NO depende de su posición en la
+  // lista ni de cuántos competidores tienen los colegios que van antes — que es
+  // la regla real del SAE: "el desempate se sortea de forma independiente en
+  // cada colegio" (investigacion_algoritmo_sae.md §3.2). Antes se compartía un
+  // único PRNG recorrido en orden de lista y mover un colegio cambiaba su tramo
+  // del flujo pseudoaleatorio, contradiciendo esa independencia (auditoría
+  // 2026-09-08). El % por colegio ya era independiente del orden (semilla propia
+  // por (colegio, nivel) en `probabilidadCupo`); esto lo alinea para el sorteo
+  // puntual del recorrido.
   let idxAsignado = -1
   const detalles = base.map((d, i) => {
     if (!d.ofreceNivel) return { ...d, estado: 'sin_nivel' }
     const colegio = colegios.find((c) => c.id === d.id)
     const tramo = tramoFamiliaEnColegio(perfil, d.id)
+    const rng = mulberry32((SEED_CASO ^ (d.id * 0x9e3779b1)) >>> 0)
     const sim = simularCupo(colegio, nivel, tramo, rng)
     const salida = { ...d, simulacion: sim }
     if (idxAsignado === -1 && sim.seated) {

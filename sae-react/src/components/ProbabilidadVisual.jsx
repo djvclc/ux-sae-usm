@@ -1,7 +1,7 @@
 // ProbabilidadVisual — representación visual del formato de frecuencia
 // P1 · S22-11 (refinamiento): RISK-NUM / PAIR-ET
 // (docs/investigacion/investigacion_ux_guide_ai_systems.md §6 y §3).
-// Acompaña —no reemplaza— al texto y a la categoría cualitativa (alta/media/baja).
+// Acompaña —no reemplaza— al texto y a la categoría cualitativa (alta / parejo / baja).
 // Muestra la MISMA cifra que devuelve probAsignacion() como "X de cada 100":
 //   - variante "barra": barra proporcional segmentada, compacta (espacios angostos).
 //   - variante "grid":  icon array de 10×10 celdas (cuando hay más aire).
@@ -9,8 +9,11 @@
 // la cifra en palabras va en el aria-label del contenedor (role="img") y en un
 // texto visible, para no depender del color (relleno + borde + número).
 
+// Bandas calibradas (2026-09-10): ámbar ("media") cubre 40–79 — un ~50 % es un
+// resultado parejo, no "bajo"; el rojo se reserva para < 40. Mismo criterio que
+// las etiquetas cualitativas del flujo de postulación.
 function claseProb(prob) {
-  return prob >= 80 ? 'alta' : prob >= 60 ? 'media' : 'baja'
+  return prob >= 80 ? 'alta' : prob >= 40 ? 'media' : 'baja'
 }
 
 export default function ProbabilidadVisual({ prob, sentencia, variante = 'barra' }) {

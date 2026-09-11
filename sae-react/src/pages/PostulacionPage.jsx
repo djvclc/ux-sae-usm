@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import ProbabilidadVisual from '../components/ProbabilidadVisual'
 import { useTextSize } from '../context/TextSizeContext'
+import { useModoEstudio } from '../context/ModoEstudioContext'
 
 const STORAGE_KEY = 'sae_react_postulacion'
 // Nota (2026-09-06): la lista de colegios ya NO se persiste ni se restaura entre
@@ -563,70 +564,81 @@ function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda, 
   )
 }
 
-/* ── Resultado provisional con el orden actual de la lista ──
+/* ── "¿Qué hace el orden de tu lista?" (ex "Resultado provisional") ──
    S22-13 (refinamiento, 2026-09-03): al reordenar, los porcentajes por colegio NO
    cambian (es lo correcto: el mecanismo es a prueba de estrategia). Lo que sí
    cambia es EN CUÁL COLEGIO quedas asignado, porque el sistema recorre la lista
-   en orden y para en el primero donde la probabilidad estimada alcanza el umbral.
-   Antes eso solo se veía tras confirmar; ahora se muestra en vivo en el paso 2 y
-   en el paso 3 (HAX G16 — comunicar la consecuencia de la acción del usuario).
-   Usa `resultado` (useMemo sobre `lista`), así que se actualiza al arrastrar. */
+   en orden y para en el primero donde la familia consigue cupo (recorrido
+   determinista con SEED_CASO — ya no hay umbral, Bloque R). Se muestra en vivo en
+   el paso 2 y en el paso 3 (HAX G16 — comunicar la consecuencia de la acción del
+   usuario). Usa `resultado` (useMemo sobre `lista`), se actualiza al arrastrar.
+   ⚠️ Es explicabilidad del prototipo, NO existe en el SAE real → se oculta en la
+   condición B del estudio comparativo (F3, `f3_modo_control_inventario.md`). */
 /* Bloque Q (refinamiento, 2026-09-06): comunica la CONSECUENCIA del orden de la
    lista (HAX G16) sin lenguaje de "sorteo" / "azar" — el proyecto combate el
-   estigma de que el SAE es una "tómbola". El resultado se atribuye a las
-   prioridades legales, las vacantes y la demanda (razón estructural), no a un
-   sorteo. La incertidumbre se comunica en formato de frecuencia ("X de cada 100",
-   RISK-NUM) y encuadrada como estimación con datos del año pasado; el detalle de
-   cómo se resuelven los empates vive en /algoritmo (PAIR: explicaciones
-   parciales). Ya NO hay umbral 65 % (Bloque R): el desenlace sale de
-   `resultado.sinAsignacionEnPreferencias` y `asignado.idx`. */
-function ResultadoProvisional({ resultado, modoTutorial }) {
-  if (resultado.error || !resultado.asignado) return null
+   estigma de que el SAE es una "tómbola".
+
+   2026-09-09 (reformulación): de "pronóstico" a "ilustración de la regla".
+   - Encabeza con la REGLA (el sistema recorre tu lista en orden; reordenar no
+     cambia tus probabilidades por colegio, solo en cuál quedas), no con el
+     colegio; el nombre del colegio queda secundario y sin lenguaje de certeza.
+   - Se quita "muy probable" y se deja de repetir el %: mostrar un desenlace
+     confiado mientras se arma la lista alimenta el sobre-optimismo que Arteaga
+     et al. (2022) documentan en las familias del SAE chileno (creencia subjetiva
+     ≈76 % vs. objetiva ≈44 %). PAIR-ET: calibrar la confianza, no maximizarla.
+   - El descargo ("es una simulación con datos del año pasado, no tu resultado;
+     el sistema lo calcula en octubre con las postulaciones reales de este año")
+     pasa a estar SIEMPRE visible, ya no solo en modo tutorial (HAX G2 / NN/g:
+     los avisos no se esconden tras un modo). BROOK: gestión de expectativas. */
+function ResultadoProvisional({ resultado }) {
+  const { esControl } = useModoEstudio()
+  // F3: es explicabilidad del prototipo, no existe en el SAE real → no va en B.
+  if (esControl || resultado.error || !resultado.asignado) return null
   const a = resultado.asignado
   const sinAsignacion = resultado.sinAsignacionEnPreferencias
   const arriba = a.idx === 2 ? 'tu 1.ª opción' : `tus ${a.idx - 1} primeras opciones`
   return (
     <InfoBox
-      icono={sinAsignacion ? '⚠️' : '🎯'}
-      titulo="Con este orden, ¿dónde quedarías?"
+      icono={sinAsignacion ? '⚠️' : '📋'}
+      titulo="¿Qué hace el orden de tu lista?"
       tipo={sinAsignacion ? 'alerta' : 'info'}
     >
+      <p style={{ marginTop: 0 }}>
+        El sistema recorrerá tu lista <strong>en este orden</strong> y te dejará en el primer
+        colegio donde consigas un cupo, según las prioridades que fija la ley y las vacantes
+        de cada colegio. <strong>Cambiar el orden no cambia tus probabilidades por
+        colegio</strong> — solo cambia en cuál de tus preferencias podrías quedar. Por eso
+        conviene poner primero el que más quieres.
+      </p>
+
       {sinAsignacion ? (
-        <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
-          Con los datos de este año, en ningún colegio de tu lista consigues un cupo:
-          todos tienen más familias que los piden que vacantes, y tu familia no tiene una
-          prioridad en ellos. La estimación te deja en el de mayor probabilidad
-          (<strong>{a.nombre}</strong>, {a.prob} de cada 100), pero podrías quedar sin
-          asignación en la etapa principal. Agrega colegios con más vacantes disponibles
-          para tu nivel.
+        <p>
+          Con los datos del año pasado, este orden <strong>no te llevaría a ningún colegio de
+          tu lista</strong>: en todos hay más familias que los piden que vacantes, y tu
+          familia no tiene una prioridad en ellos. Conviene agregar colegios con más
+          vacantes disponibles para tu nivel.
         </p>
       ) : a.idx === 1 ? (
-        <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
-          Con los datos de este año, la estimación te deja en <strong>{a.nombre}</strong> —
-          es tu <strong>primera opción</strong>.
+        <p>
+          Con los datos del año pasado, este orden te llevaría a <strong>{a.nombre}</strong>,
+          tu primera opción.
         </p>
       ) : (
-        <p style={{ marginTop: 0, marginBottom: modoTutorial ? undefined : 0 }}>
-          Con los datos de este año, la estimación te deja en <strong>{a.nombre}</strong> —
-          tu <strong>preferencia N° {a.idx}</strong>, donde tu cupo es muy probable
-          ({a.prob} de cada 100). En {arriba} no consigues cupo: son colegios con más
-          familias que los piden que vacantes, y no tienes una prioridad ahí que asegure
-          el lugar.
+        <p>
+          Con los datos del año pasado, este orden te llevaría a <strong>{a.nombre}</strong>,
+          tu preferencia N° {a.idx}. En {arriba} no consigues cupo: son colegios con más
+          familias que los piden que vacantes, y no tienes una prioridad ahí que asegure el
+          lugar.
         </p>
       )}
-      {modoTutorial && (
-        <p style={{ marginBottom: 0 }}>
-          El sistema revisa tu lista <strong>en el orden que elegiste</strong> y te deja en
-          el primer colegio donde consigues un cupo, según las prioridades que fija la ley
-          y las vacantes de cada colegio. <strong>Cambiar el orden no cambia estas
-          probabilidades</strong>, solo puede cambiar en cuál quedas — por eso conviene
-          poner primero el que más quieres. Esta es una estimación con los datos del año
-          pasado; el resultado real lo calcula el sistema en octubre, con las mismas
-          reglas y las postulaciones reales de este año, y puede salir distinto según
-          cuántas familias pidan cada colegio.{' '}
-          <Link to="/algoritmo" className="link-inline">Ver cómo se decide</Link>.
-        </p>
-      )}
+
+      <p style={{ marginBottom: 0 }}>
+        <strong>Es una simulación con los datos del año pasado, no tu resultado.</strong> El
+        sistema lo calcula en octubre, con las mismas reglas y las postulaciones reales de
+        este año, y puede ser distinto. Muchas familias creen tener más posibilidades de las
+        que después resultan; por eso conviene incluir varios colegios.{' '}
+        <Link to="/algoritmo" className="link-inline">Ver cómo se decide</Link>.
+      </p>
     </InfoBox>
   )
 }
@@ -636,6 +648,7 @@ function ResultadoProvisional({ resultado, modoTutorial }) {
    postulantes, prioridad). Los tips se trasladan al tutorial del paso 2.
    S22-11 (refinamiento): el nivel y el % son los DE ESTE COLEGIO. */
 function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
+  const { esControl } = useModoEstudio()
   const nivel = nivelPrioridadEnColegio(perfilCompleto, colegio.id)
   // Modelo nuevo (plan C): la probabilidad se estima simulando la competencia real
   // por los cupos de ESTE colegio (`probabilidadCupo` en simulacionSae.js).
@@ -645,21 +658,28 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
   // S22-11: postulantes del año anterior y vacantes por nivel como fundamento del % estimado
   const vacNivel = vacantesDeNivel(colegio, nivelAlumno)
 
-  const probClass = prob === null ? 'media' : prob >= 80 ? 'alta' : prob >= 60 ? 'media' : 'baja'
+  // Bandas calibradas (2026-09-10): ámbar para 40–79 (un ~50 % es parejo, no "bajo");
+  // rojo solo para < 40. Mismo criterio que el resumen del paso 3.
+  const probClass = prob === null ? 'media' : prob >= 80 ? 'alta' : prob >= 40 ? 'media' : 'baja'
 
   return (
     <div className="tut-colegio-info">
       <div className="tut-colegio-info__header">
         <span className="tut-colegio-info__orden">Opción {orden}</span>
-        <span className={`tut-prob tut-prob--${probClass}`}>
-          {prob === null ? 'sin nivel' : `${prob}% estimado`}
-        </span>
+        {/* F3: el % estimado y su visual son explicabilidad → no van en la
+            condición de control; quedan los datos crudos (demanda, vacantes,
+            postulantes) y la prioridad detectada, que son fidelidad a la vitrina. */}
+        {!esControl && (
+          <span className={`tut-prob tut-prob--${probClass}`}>
+            {prob === null ? 'sin nivel' : `${prob}% estimado`}
+          </span>
+        )}
       </div>
       <p className="tut-colegio-info__nombre">{colegio.nombre}</p>
       {/* P1 · S22-11 (refinamiento): versión visual del formato de frecuencia
           (RISK-NUM). Variante "barra" por el ancho reducido dentro de .post-item
           a 375px. Acompaña al chip "{prob}% estimado" y a la categoría cualitativa. */}
-      {prob !== null && (
+      {!esControl && prob !== null && (
         <ProbabilidadVisual
           prob={prob}
           variante="barra"
@@ -686,7 +706,7 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
           /* S22-11 (refinamiento) · auditoría P3 (NN/g: aviso accionable, no genérico):
              además de avisar la falta del dato, dice de qué se calcula el % y qué hacer. */
           <li style={{ fontSize: '0.9rem', color: 'var(--texto-suave)' }}>
-            ℹ️ Este colegio aún no publica vacantes para {nivelAlumno}. El porcentaje se calcula solo con su demanda general. Abre la ficha del colegio para confirmar que ofrece ese nivel antes de dejarlo en tu lista.
+            ℹ️ Este colegio aún no publica vacantes para {nivelAlumno}.{esControl ? '' : ' El porcentaje se calcula solo con su demanda general.'} Abre la ficha del colegio para confirmar que ofrece ese nivel antes de dejarlo en tu lista.
           </li>
         ) : null}
         <li>
@@ -708,6 +728,7 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
 /* ── Componente principal ── */
 export default function PostulacionPage() {
   const { textoGrande } = useTextSize()
+  const { esControl } = useModoEstudio() // F3 — condición de control del estudio
   const [paso, setPaso]         = useState(1)
   const [loginOk, setLoginOk]   = useState(false)
   const [region, setRegion]     = useState('')
@@ -1101,8 +1122,19 @@ export default function PostulacionPage() {
         </InfoBox>
       )}
 
-      {/* ── Barra de progreso con etiquetas ── */}
-      <nav className="stepper" aria-label={`Progreso de postulación: paso ${paso} de 3`}>
+      {/* ── Barra de progreso con etiquetas (S20-2) ──
+          role="progressbar" + aria-valuenow/min/max/text para que los lectores
+          de pantalla anuncien "paso N de 3"; aria-current="step" marca el activo.
+          (Auditoría 2026-09-08: el plan 20.2 pedía role="progressbar" y faltaba.) */}
+      <nav
+        className="stepper"
+        role="progressbar"
+        aria-valuemin={1}
+        aria-valuemax={3}
+        aria-valuenow={paso}
+        aria-valuetext={`Paso ${paso} de 3: ${['Identifícate', 'Tus colegios', 'Confirma'][paso - 1]}`}
+        aria-label={`Progreso de postulación: paso ${paso} de 3`}
+      >
         {[
           { n: 1, label: 'Identifícate' },
           { n: 2, label: 'Tus colegios' },
@@ -1139,6 +1171,9 @@ export default function PostulacionPage() {
                 ni /proceso. Siempre visible (no depende del modo tutorial): es
                 información básica, no un tip. Relacionado con S22-6 (orden legal de
                 prioridades) y S13 (transparencia). */}
+            {/* F3: este encuadre del algoritmo antes de pedir datos es capa de
+                explicabilidad (P2/HAX G1) → no va en la condición de control. */}
+            {!esControl && (
             <InfoBox icono="⚖️" titulo="Antes de empezar: cómo se decide tu resultado" tipo="info">
               <p>
                 El sistema arma la asignación con tres cosas: <strong>el orden de tu lista</strong>,
@@ -1156,6 +1191,7 @@ export default function PostulacionPage() {
                 <Link to="/algoritmo" className="link-inline">Ver cómo funciona en detalle</Link>.
               </p>
             </InfoBox>
+            )}
 
             {/* Acción principal: ClaveÚnica */}
             {!loginOk && (
@@ -1842,8 +1878,12 @@ export default function PostulacionPage() {
                   <abbr title="Programa de Integración Escolar">PIE</abbr>, 2.º hermanos/as, 3.º reserva
                   del 15 % para estudiantes de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr>, 4.º hijos/as de funcionarios/as, 5.º exalumnos/as.
                 </p>
-                {/* S22-6 (refinamiento) · P4 (HAX G6): sin repetir "vulnerabilidad" como rótulo */}
-                <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio reserva para estudiantes prioritarios/as, definidos por la situación socioeconómica que el Estado ya tiene registrada.</p>
+                {/* S22-6 (refinamiento) · P4 (HAX G6): sin repetir "vulnerabilidad" como rótulo.
+                    F3: la aclaración de cómo funciona la cuota es explicabilidad → no en control
+                    (la lista legal de arriba sí es fidelidad y se mantiene). */}
+                {!esControl && (
+                  <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio reserva para estudiantes prioritarios/as, definidos por la situación socioeconómica que el Estado ya tiene registrada.</p>
+                )}
               </InfoBox>
             )}
 
@@ -2034,7 +2074,7 @@ export default function PostulacionPage() {
 
                 {/* S22-13 (refinamiento): resultado provisional con el orden actual —
                     se actualiza al arrastrar/mover, para que se vea qué hace reordenar */}
-                <ResultadoProvisional resultado={resultado} modoTutorial={modoTutorial} />
+                <ResultadoProvisional resultado={resultado} />
 
                 {/* S22-2: progreso hacia la recomendación de al menos 6 + refuerzo positivo */}
                 {modoTutorial && lista.length >= 2 && lista.length < 6 && (
@@ -2048,10 +2088,13 @@ export default function PostulacionPage() {
                   </InfoBox>
                 )}
 
-                {/* S22-14: consejo estratégico — ordenar por preferencia real */}
+                {/* S22-14: consejo estratégico — ordenar por preferencia real.
+                    F3: es pedagogía de strategy-proofness → no va en la condición de control. */}
+                {!esControl && (
                 <InfoBox icono="🧠" titulo="Consejo: ordena por tu preferencia real" tipo="info" className="tut-box--sm">
                   <p>El sistema está hecho para que te convenga poner primero el colegio que <strong>más quieres</strong>. Poner primero uno "más fácil" no mejora tus opciones y puedes perder el que preferías.</p>
                 </InfoBox>
+                )}
 
                 {/* S22-14 (refinamiento): aviso de lista corta con todas las opciones de alta demanda.
                     Auditoría P4 (HAX G6): el riesgo se atribuye a que hay más postulantes que
@@ -2163,12 +2206,14 @@ export default function PostulacionPage() {
               <InfoBox tipo="neutro" className="tut-box--sm">
                 {/* S22-11 (refinamiento): corrige el texto anterior, que decía que la
                     prioridad era única para toda la lista */}
-                <p>Algunas prioridades (hermano/a matriculado/a, hijo/a de funcionario/a, exalumno/a) valen <strong>solo en el colegio</strong> donde tienes ese vínculo. La cuota de estudiante prioritario/a (15 %) sí vale en todos. Por eso el porcentaje estimado puede cambiar de un colegio a otro.</p>
+                {/* F3: la 1.ª parte (dónde vale un vínculo) es fidelidad; "por eso el
+                    porcentaje estimado cambia" es explicabilidad → se omite en control. */}
+                <p>Algunas prioridades (hermano/a matriculado/a, hijo/a de funcionario/a, exalumno/a) valen <strong>solo en el colegio</strong> donde tienes ese vínculo. La cuota de estudiante prioritario/a (15 %) sí vale en todos.{esControl ? '' : ' Por eso el porcentaje estimado puede cambiar de un colegio a otro.'}</p>
               </InfoBox>
             )}
 
             {/* S22-13 (refinamiento): mismo resultado provisional que en el paso 2 */}
-            <ResultadoProvisional resultado={resultado} modoTutorial={modoTutorial} />
+            <ResultadoProvisional resultado={resultado} />
 
             {/* S22-10: edición por sección — lista de colegios */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 14 }}>
@@ -2195,21 +2240,34 @@ export default function PostulacionPage() {
                      vacantes y postulantes año anterior del esquema v2) de una frase
                      explícita de que el orden en la lista no afecta las chances en los
                      demás colegios (riesgo real vs. falso riesgo estratégico, PAIR §3).
-                   - #3: formato de frecuencia ("de cada 100...") extendido a los tres
-                     niveles de probabilidad, no solo al alto.
-                   - #4: categoría cualitativa ("certeza muy alta") para el caso de mayor
+                   - #3: formato de frecuencia ("de cada 100...") en todas las bandas.
+                   - #4: categoría cualitativa ("casi segura") para el caso de mayor
                      certeza rastreado por el prototipo (prioridad de hermano/a matriculado/a
                      con probabilidad ≥90%), en vez de solo el porcentaje puntual. PIE y
                      continuidad del colegio de origen no se modelan como checkbox en este
-                     prototipo, por lo que no se les aplica esta categoría aquí. */
-                const probClass = d.prob >= 80 ? 'alta' : d.prob >= 60 ? 'media' : 'baja'
+                     prototipo, por lo que no se les aplica esta categoría aquí.
+                   Revisión 2026-09-10: se añadió la banda "resultado parejo" (40–59) para
+                   no rotular un ~50 % como "probabilidad baja"; el texto usa la demanda
+                   real de cada colegio (`d.demanda`) en vez de afirmar "alta demanda"; el
+                   consejo de sumar colegios solo aparece en la banda baja. */
+                /* Bandas calibradas (2026-09-10): un ~50 % es un resultado PAREJO,
+                   no "probabilidad baja" — etiquetarlo de menos induce el mismo mito
+                   estratégico que se corrige en el resto del flujo (Arteaga et al. 2022:
+                   las familias ya sobre/infra-estiman sus chances). El rojo se reserva
+                   para < 40; 40–79 va en ámbar. */
+                const probClass = d.prob >= 80 ? 'alta' : d.prob >= 40 ? 'media' : 'baja'
                 const colegioD = colegiosById[d.id]
                 const vacNivelD = colegioD ? vacantesDeNivel(colegioD, alumnoNivel) : null
+                const vacInfoD = vacNivelD
+                  ? ` (el año pasado hubo ${vacNivelD.postulantesAnterior} postulantes para ${vacNivelD.min}–${vacNivelD.max} vacantes en ${vacNivelD.label})`
+                  : ''
                 /* S22-11 (refinamiento): d.nivel es el nivel DE ESTE COLEGIO, no global.
                    La categoría "certeza muy alta" solo aplica si en ESTE colegio la
                    prioridad es hermano/a matriculado/a (d.nivel === 1). */
                 const certezaMuyAlta = d.nivel === 1 && d.prob >= 90
-                const esAsignado = d.id === resultado.asignado?.id
+                // F3: "te asignarían aquí" y el % son resultado provisional +
+                // explicabilidad → no van en la condición de control.
+                const esAsignado = !esControl && d.id === resultado.asignado?.id
                 return (
                   <li
                     key={d.id}
@@ -2228,19 +2286,23 @@ export default function PostulacionPage() {
                           {d.demanda} demanda{d.nivel < 5 ? ` · ${d.prioridadLabel}` : ''}
                         </span>
                       </span>
-                      <span className={`tut-prob tut-prob--${probClass}`} aria-label={`Probabilidad estimada: ${d.prob}%`}>
-                        {certezaMuyAlta ? 'Muy alta' : `${d.prob}%`}
-                      </span>
+                      {!esControl && (
+                        <span className={`tut-prob tut-prob--${probClass}`} aria-label={`Probabilidad estimada: ${d.prob}%`}>
+                          {certezaMuyAlta ? 'Muy alta' : `${d.prob}%`}
+                        </span>
+                      )}
                     </div>
-                    {modoTutorial && (
+                    {modoTutorial && !esControl && (
                       <p className="tut-prob-explicacion">
                         {certezaMuyAlta
-                          ? `🟢 Certeza muy alta. Por tu prioridad de hermano/a matriculado/a, tu asignación en este colegio está prácticamente asegurada (estimado: ${d.prob} de cada 100 postulantes en tu misma condición).`
+                          ? `🟢 Casi segura. Por tu prioridad de hermano/a matriculado/a, tu asignación en este colegio es casi segura (estimado: ${d.prob} de cada 100 postulantes en tu misma condición quedan asignados).`
                           : d.prob >= 80
-                            ? `✅ Muy buena probabilidad. De cada 100 postulantes con tu misma condición en este colegio, aproximadamente ${d.prob} quedan asignados.`
+                            ? `✅ Probabilidad alta. De cada 100 postulantes en tu misma condición, aproximadamente ${d.prob} quedan asignados en este colegio.`
                             : d.prob >= 60
-                              ? `🟡 Probabilidad moderada. De cada 100 postulantes con tu misma condición, aproximadamente ${d.prob} quedan asignados. Agregar más colegios a tu lista te da más opciones en total.`
-                              : `🔴 Probabilidad baja. De cada 100 postulantes con tu misma condición, aproximadamente ${d.prob} quedan asignados en este colegio${vacNivelD ? ` (el año pasado hubo ${vacNivelD.postulantesAnterior} postulantes para ${vacNivelD.min}–${vacNivelD.max} vacantes en ${vacNivelD.label})` : ''}, porque tiene alta demanda para tu nivel de prioridad. Cambiar el orden de este colegio en tu lista no cambia esta cifra ni tus chances en los demás — el sistema siempre evalúa según tu preferencia real. Para tener más opciones, agrega colegios con demanda media o baja.`
+                              ? `🟡 Más probable que no. De cada 100 postulantes en tu misma condición, aproximadamente ${d.prob} quedan asignados en este colegio: es más probable quedar que no quedar, pero no está asegurado.`
+                              : d.prob >= 40
+                                ? `⚖️ Resultado parejo. De cada 100 postulantes en tu misma condición, aproximadamente ${d.prob} quedan asignados en este colegio${vacInfoD}: puede pasar o no. En este colegio no tienes un vínculo que te dé prioridad, así que compites por los cupos que quedan. El lugar que ocupe en tu lista no cambia esta cifra.`
+                                : `🔴 Probabilidad baja. De cada 100 postulantes en tu misma condición, aproximadamente ${d.prob} quedan asignados en este colegio${vacInfoD}. Aquí no tienes un vínculo que te dé prioridad y hay ${d.demanda} demanda, así que quedan pocos cupos para tu situación. El lugar que ocupe en tu lista no cambia esta cifra; para tener más opciones, suma algún colegio de demanda más baja.`
                         }
                       </p>
                     )}
@@ -2249,9 +2311,11 @@ export default function PostulacionPage() {
               })}
             </ul>
 
-            <span className="form-hint" style={{ marginTop: 8, display: 'block' }}>
-              Los porcentajes son estimaciones. El resultado real lo entrega el sistema el día de los resultados.
-            </span>
+            {!esControl && (
+              <span className="form-hint" style={{ marginTop: 8, display: 'block' }}>
+                Los porcentajes son estimaciones. El resultado real lo entrega el sistema el día de los resultados.
+              </span>
+            )}
 
             {modoTutorial && (
               <InfoBox icono="📅" titulo="¿Cuándo sabrás el resultado?" tipo="neutro">

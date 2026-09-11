@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { useModoEstudio } from './ModoEstudioContext'
 
 /* ══ Pasos del tour guiado ══
    Cada paso tiene:
@@ -126,6 +127,7 @@ export const tourPasos = [
 const TourContext = createContext({
   isActive: false,
   currentStep: 0,
+  pasos: tourPasos,
   startTour: () => {},
   nextStep: () => {},
   prevStep: () => {},
@@ -135,6 +137,27 @@ const TourContext = createContext({
 export function TourProvider({ children }) {
   const [isActive, setIsActive] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
+  const { esControl } = useModoEstudio()
+
+  /* F3 — en la condición de control (SAE real) el tour no recorre `/algoritmo`:
+     esa página no existe en esa condición. Se filtran esos 4 pasos y se reescribe
+     el cierre para no mencionar "el algoritmo" ni "simular tu caso" (afordancias
+     que no existen en esa condición). El resto del tour —inicio, proceso, buscador,
+     comparador, postulación— es idéntico. */
+  const pasos = useMemo(() => {
+    if (!esControl) return tourPasos
+    return tourPasos
+      .filter((p) => p.page !== '/algoritmo')
+      .map((p) =>
+        p.id === 'final'
+          ? {
+              ...p,
+              contenido:
+                'Sabes cómo conocer el proceso, buscar colegios, compararlos y postular paso a paso. Cuando estés lista/o, usa el botón "Postular ahora" — el proceso toma menos de 10 minutos.',
+            }
+          : p,
+      )
+  }, [esControl])
 
   const startTour = useCallback(() => {
     setCurrentStep(0)
@@ -143,13 +166,13 @@ export function TourProvider({ children }) {
 
   const nextStep = useCallback(() => {
     setCurrentStep((prev) => {
-      if (prev >= tourPasos.length - 1) {
+      if (prev >= pasos.length - 1) {
         setIsActive(false)
         return 0
       }
       return prev + 1
     })
-  }, [])
+  }, [pasos.length])
 
   const prevStep = useCallback(() => {
     setCurrentStep((prev) => Math.max(0, prev - 1))
@@ -161,7 +184,7 @@ export function TourProvider({ children }) {
   }, [])
 
   return (
-    <TourContext.Provider value={{ isActive, currentStep, startTour, nextStep, prevStep, endTour }}>
+    <TourContext.Provider value={{ isActive, currentStep, pasos, startTour, nextStep, prevStep, endTour }}>
       {children}
     </TourContext.Provider>
   )

@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { useModoEstudio } from '../context/ModoEstudioContext'
 
 /* Orden sigue el flujo del proceso SAE (4.1)
-   hash:true → se renderiza como <a> con scroll suave si ya estamos en "/" */
+   hash:true → se renderiza como <a> con scroll suave si ya estamos en "/"
+   soloA:true → se oculta en la condición de control del estudio (F3) */
 const links = [
   { to: '/',            label: 'Inicio',          end: true },
   { to: '/proceso',     label: 'El proceso' },
-  { to: '/algoritmo',   label: 'El sistema' },
+  { to: '/algoritmo',   label: 'El sistema',       soloA: true },
   { to: '/calendario',  label: 'Calendario' },
   { to: '/#buscador',   label: '🔎 Colegios',     hash: true },
   { to: '/comparador',  label: 'Comparar' },
@@ -18,6 +20,8 @@ const links = [
 export default function Navbar() {
   const [abierto, setAbierto] = useState(false)
   const { pathname } = useLocation()
+  const { esControl } = useModoEstudio()
+  const visibles = links.filter((l) => !(l.soloA && esControl))
 
   /* Scroll suave si ya estamos en "/" — navega normalmente si venimos de otra ruta */
   const handleHashClick = (e) => {
@@ -61,7 +65,7 @@ export default function Navbar() {
           className={`menu${abierto ? ' menu--abierto' : ''}`}
           aria-label="Navegación principal"
         >
-          {links.map((link) =>
+          {visibles.map((link) =>
             link.hash ? (
               /* Enlace de hash — usa <a> nativo para respetar el anchor */
               <a

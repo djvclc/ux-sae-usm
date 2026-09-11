@@ -7,6 +7,7 @@ import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
 import { useTour } from '../context/TourContext'
+import { useModoEstudio } from '../context/ModoEstudioContext'
 
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 
@@ -42,6 +43,12 @@ export default function InicioPage() {
   const [showWelcome, setShowWelcome] = useState(true)
   const { textoGrande } = useTextSize()
   const { startTour } = useTour()
+  const { esControl } = useModoEstudio() // F3 — condición de control del estudio
+  // El paso "Entiende cómo te asignan un colegio" (→ /algoritmo) es la capa de
+  // explicabilidad → no va en la condición de control.
+  const pasosRapidos = esControl
+    ? PASOS_RAPIDOS.filter((p) => p.link !== '/algoritmo')
+    : PASOS_RAPIDOS
   const [texto, setTexto] = useState('')
   const [comuna, setComuna] = useState('')
   const [nivel, setNivel] = useState('')
@@ -165,11 +172,11 @@ export default function InicioPage() {
           Sigue los pasos en orden — cada uno toma unos minutos y te acerca al colegio que prefieres.
         </p>
         <div className="guia-pasos__lista">
-          {PASOS_RAPIDOS.map((paso, idx) => (
+          {pasosRapidos.map((paso, idx) => (
             <div key={paso.num} className="guia-item">
               <div className="guia-item__izq" aria-hidden="true">
                 <span className="guia-item__num">{paso.num}</span>
-                {idx < PASOS_RAPIDOS.length - 1 && <span className="guia-item__linea" />}
+                {idx < pasosRapidos.length - 1 && <span className="guia-item__linea" />}
               </div>
               <div className="guia-item__cuerpo">
                 <div className="guia-item__head">

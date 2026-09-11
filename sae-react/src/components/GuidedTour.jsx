@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { tourPasos, useTour } from '../context/TourContext'
+import { useTour } from '../context/TourContext'
 
 const TOOLTIP_W = 340
 const PAD = 10     // padding around spotlight
@@ -54,13 +54,13 @@ function calcTooltipPos(spot) {
 }
 
 export default function GuidedTour() {
-  const { isActive, currentStep, nextStep, prevStep, endTour } = useTour()
+  const { isActive, currentStep, pasos, nextStep, prevStep, endTour } = useTour()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [spot, setSpot] = useState(null)   // spotlight rect (viewport coords)
   const [ready, setReady] = useState(false)
   const pollRef = useRef(null)
-  const paso = tourPasos[currentStep]
+  const paso = pasos[currentStep]
 
   /* Navegar a la página del paso cuando cambia currentStep */
   useEffect(() => {
@@ -151,7 +151,7 @@ export default function GuidedTour() {
 
   const tooltipStyle = calcTooltipPos(spot)
   const esPrimero = currentStep === 0
-  const esUltimo = currentStep === tourPasos.length - 1
+  const esUltimo = currentStep === pasos.length - 1
 
   return (
     <>
@@ -177,19 +177,19 @@ export default function GuidedTour() {
         className="tour-tooltip"
         role="dialog"
         aria-modal="true"
-        aria-label={`Paso ${currentStep + 1} de ${tourPasos.length}: ${paso.titulo}`}
+        aria-label={`Paso ${currentStep + 1} de ${pasos.length}: ${paso.titulo}`}
         style={tooltipStyle}
       >
         {/* Barra de progreso de pasos */}
-        <div className="tour-progress" aria-label={`Paso ${currentStep + 1} de ${tourPasos.length}`}>
-          {tourPasos.map((_, i) => (
+        <div className="tour-progress" aria-label={`Paso ${currentStep + 1} de ${pasos.length}`}>
+          {pasos.map((_, i) => (
             <span
               key={i}
               className={`tour-dot${i === currentStep ? ' tour-dot--on' : i < currentStep ? ' tour-dot--done' : ''}`}
               aria-hidden="true"
             />
           ))}
-          <span className="tour-progress__label">{currentStep + 1} / {tourPasos.length}</span>
+          <span className="tour-progress__label">{currentStep + 1} / {pasos.length}</span>
         </div>
 
         <h3 className="tour-tooltip__titulo">{paso.titulo}</h3>

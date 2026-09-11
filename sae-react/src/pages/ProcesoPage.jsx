@@ -3,6 +3,20 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
+import { useModoEstudio } from '../context/ModoEstudioContext'
+
+/* F3: el enlace a la explicación del algoritmo (`/algoritmo`) es capa de
+   explicabilidad → no va en la condición de control del estudio. `/proceso`
+   en sí (las 5 etapas, el calendario, las reglas) es fidelidad y se mantiene. */
+function EnlaceAlgoritmo({ children, className = 'btn btn--secondary' }) {
+  const { esControl } = useModoEstudio()
+  if (esControl) return null
+  return (
+    <Link to="/algoritmo" className={className}>
+      {children}
+    </Link>
+  )
+}
 
 // S21-b: estado calculado contra la fecha real del usuario
 const HOY = new Date()
@@ -180,11 +194,9 @@ const ETAPAS = [
             </span>
           </div>
         </div>
-        {/* S21-f: enlace a /algoritmo */}
+        {/* S21-f: enlace a /algoritmo (F3: oculto en la condición de control) */}
         <div className="proc-detalle-cta">
-          <Link to="/algoritmo" className="btn btn--secondary">
-            Ver cómo funciona el sistema →
-          </Link>
+          <EnlaceAlgoritmo>Ver cómo funciona el sistema →</EnlaceAlgoritmo>
         </div>
       </div>
     ),
@@ -588,9 +600,7 @@ export default function ProcesoPage() {
         <Link className="btn btn--primary btn--grande" to="/postulacion">
           Ir a postulación →
         </Link>
-        <Link className="btn btn--secondary" to="/algoritmo">
-          Ver cómo funciona el sistema
-        </Link>
+        <EnlaceAlgoritmo>Ver cómo funciona el sistema</EnlaceAlgoritmo>
       </div>
     </main>
   )

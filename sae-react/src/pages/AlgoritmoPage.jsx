@@ -11,9 +11,11 @@ import { Bar } from 'react-chartjs-2'
 import { colegios } from '../data/colegios'
 import { calcularResultado, etiquetaPrioridad } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Navigate } from 'react-router-dom'
 import TextSizeBar from '../components/TextSizeBar'
 import AlgoSimuladorPasos from '../components/AlgoSimuladorPasos'
 import { useTextSize } from '../context/TextSizeContext'
+import { useModoEstudio } from '../context/ModoEstudioContext'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
@@ -219,6 +221,7 @@ const tutoriales = [
 
 export default function AlgoritmoPage() {
   const { textoGrande } = useTextSize()
+  const { esControl } = useModoEstudio()
   const [perfil, setPerfil] = useState({
     hermano: false,
     prioritario: false,
@@ -279,6 +282,10 @@ export default function AlgoritmoPage() {
     sin_cupos: '🔴 Sin cupos',
     prioridad_insuficiente: '🟡 Prioridad insuficiente',
   }
+
+  // Condición de control del estudio (F3): esta página ES la capa de
+  // explicabilidad del algoritmo → no existe en modo control.
+  if (esControl) return <Navigate to="/" replace />
 
   return (
     <main className={`page page--module${textoGrande ? ' page--texto-grande' : ''}`}>

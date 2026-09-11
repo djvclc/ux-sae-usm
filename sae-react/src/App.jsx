@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { TextSizeProvider, useTextSize } from './context/TextSizeContext'
 import { TourProvider } from './context/TourContext'
+import { ModoEstudioProvider } from './context/ModoEstudioContext'
 import GuidedTour from './components/GuidedTour'
 import ChatAyuda from './components/ChatAyuda'
 import ScrollToTop from './components/ScrollToTop'
@@ -74,6 +75,7 @@ const RegistroPage     = lazy(() => import('./pages/RegistroPage'))
 const ColegioPage      = lazy(() => import('./pages/ColegioPage'))
 const ComparadorPage   = lazy(() => import('./pages/ComparadorPage'))
 const ProcesoPage      = lazy(() => import('./pages/ProcesoPage'))
+const EstudioPage      = lazy(() => import('./pages/EstudioPage'))
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage'))
 
 /* SEO por ruta — título + meta description + Open Graph (S14-t, S14-o, S5-2)
@@ -134,6 +136,11 @@ const seoData = {
     desc: 'Las 5 etapas del proceso de admisión escolar 2027: postulación, asignación, resultados, periodo complementario y matrícula.',
     og: 'El proceso SAE paso a paso — Admisión Escolar 2027',
   },
+  '/estudio': {
+    title: 'Panel del moderador — Estudio',
+    desc: 'Pantalla interna del estudio comparativo de usabilidad.',
+    og: 'Panel del moderador — Estudio',
+  },
 }
 
 const defaultSeo = {
@@ -177,6 +184,7 @@ function LoadingPage() {
 function App() {
   return (
     <BrowserRouter>
+      <ModoEstudioProvider>
       <TextSizeProvider>
         <TourProvider>
           <GlobalFontSize />
@@ -200,6 +208,7 @@ function App() {
                 <Route path="/notas"        element={<NotasPage />} />
                 <Route path="/registro"    element={<RegistroPage />} />
                 <Route path="/proceso"     element={<ProcesoPage />} />
+                <Route path="/estudio"     element={<EstudioPage />} />
                 <Route path="/cumplimiento" element={<CumplimientoPage />} />
                 <Route path="/roadmap"      element={<RoadmapPage />} />
                 <Route path="*"             element={<NotFoundPage />} />
@@ -212,6 +221,7 @@ function App() {
         </div>
         </TourProvider>
       </TextSizeProvider>
+      </ModoEstudioProvider>
     </BrowserRouter>
   )
 }

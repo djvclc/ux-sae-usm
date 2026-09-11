@@ -7,6 +7,7 @@ import ProbabilidadVisual from '../components/ProbabilidadVisual'
 import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
+import { useModoEstudio } from '../context/ModoEstudioContext'
 
 const DRAFT_LIST_KEY = 'sae_react_postulacion_draft_list'
 
@@ -123,6 +124,7 @@ function Indicador({ activo, icon, iconNo, label, labelNo, color }) {
 
 export default function ColegioPage() {
   const { textoGrande } = useTextSize()
+  const { esControl } = useModoEstudio() // F3 — condición de control del estudio
   const [params]    = useSearchParams()
   const id          = Number(params.get('id'))
   const colegio     = colegiosById[id]
@@ -374,8 +376,10 @@ export default function ColegioPage() {
           {/* P1 · S22-11 (refinamiento): versión visual del formato de frecuencia
               (RISK-NUM / PAIR-ET, investigacion_ux_guide_ai_systems.md §6 y §3).
               Icon array de 10×10. Cifra estimada por la simulación (plan C), no
-              tomada de una tabla. */}
-          {probSinPrioridad !== null && (
+              tomada de una tabla.
+              F3: estimación de probabilidad de cupo = explicabilidad → no va en la
+              condición de control (la vitrina real no la muestra). */}
+          {!esControl && probSinPrioridad !== null && (
           <div className="probviz-block">
             <p className="probviz-block__titulo">Si postulas sin ninguna prioridad</p>
             <ProbabilidadVisual
@@ -392,7 +396,8 @@ export default function ColegioPage() {
           </div>
           )}
 
-          {/* S16-1: conexión con el algoritmo */}
+          {/* S16-1: conexión con el algoritmo — F3: enlace a la explicación → no en control */}
+          {!esControl && (
           <div className="vacantes-infobox">
             <InfoBox tipo="info" icono="🔗">
               <p>
@@ -401,6 +406,7 @@ export default function ColegioPage() {
               </p>
             </InfoBox>
           </div>
+          )}
         </section>
 
         {/* ── SIMCE ── */}

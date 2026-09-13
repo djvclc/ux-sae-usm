@@ -56,9 +56,12 @@ const CASO_EJEMPLO = {
   // No postula este año; se muestra solo para dar identidad concreta a ese
   // vínculo (antes era abstracto: "hermano/a matriculado/a en Colegio Los Andes",
   // sin decir de quién). NO entra en calcularResultado.
-  hermanaMatriculadaNombre: 'Antonia Muñoz González',
+  // Nombre y curso ajustados el mismo día: colegios.js ya la nombraba en un
+  // comentario ("la hija mayor (Martina)") y, como hija mayor, corresponde 3°
+  // medio, no básico.
+  hermanaMatriculadaNombre: 'Martina Muñoz González',
   hermanaMatriculadaRut: '23.987.654-3',
-  hermanaMatriculadaNivel: '6° básico',
+  hermanaMatriculadaNivel: '3° medio',
   hermanaMatriculadaColegio: 'Colegio Los Andes',
 }
 

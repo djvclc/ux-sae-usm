@@ -50,6 +50,16 @@ const CASO_EJEMPLO = {
   hermanoNombre: 'Mateo Muñoz González',
   hermanoRut: '25.234.567-8',
   hermanoNivel: '7° básico',
+  // 2026-09-13 (feedback profesora guía): hermana YA matriculada en Colegio Los
+  // Andes — es de ahí que sale la prioridad "hermano/a matriculado/a" que
+  // colegios.js declara para ese establecimiento (`casoPrioridades: ['hermano']`).
+  // No postula este año; se muestra solo para dar identidad concreta a ese
+  // vínculo (antes era abstracto: "hermano/a matriculado/a en Colegio Los Andes",
+  // sin decir de quién). NO entra en calcularResultado.
+  hermanaMatriculadaNombre: 'Antonia Muñoz González',
+  hermanaMatriculadaRut: '23.987.654-3',
+  hermanaMatriculadaNivel: '6° básico',
+  hermanaMatriculadaColegio: 'Colegio Los Andes',
 }
 
 /* S22-12 / S4 (refinamiento, 2026-09-06) — modo verificación del paso 1.
@@ -742,9 +752,14 @@ function VerificacionDatosCard({ campos, hint, onCorregir, corregirLabel = 'Alg�
           </div>
         ))}
       </dl>
-      <button type="button" className="btn--text-link" onClick={onCorregir}>
-        {corregirLabel}
-      </button>
+      {/* onCorregir es opcional: un registro puramente informativo (p. ej. un
+          hermano/a ya matriculado/a, que el sistema conoce por el propio
+          registro de matrícula) se muestra sin la acción de editar. */}
+      {onCorregir && (
+        <button type="button" className="btn--text-link" onClick={onCorregir}>
+          {corregirLabel}
+        </button>
+      )}
       {hint && <p className="form-hint" style={{ margin: '6px 0 0' }}>{hint}</p>}
     </div>
   )
@@ -1463,6 +1478,38 @@ export default function PostulacionPage() {
                       </select>
                     </div>
                     </>
+                    )}
+
+                    {/* 2026-09-13 (feedback profesora guía — claridad): hermano/a
+                        YA MATRICULADO/A en otro colegio — distinto del que postula en
+                        bloque más abajo. Es de aquí que sale la prioridad "hermano/a
+                        matriculado/a" (colegios.js `casoPrioridades`), hoy abstracta
+                        en el panel "esto es lo que el sistema ya sabe" (solo decía el
+                        colegio, no de quién). Mismo módulo VerificacionDatosCard, sin
+                        "corregir" (es un registro del Estado, no algo que se declare).
+                        Solo con el caso de ejemplo cargado — mismo gate que
+                        CondicionesDetectadas/mostrarVinculos. No entra en
+                        calcularResultado. */}
+                    {perfilEstudiante.caso === 'munoz-gonzalez' && (
+                      <div className="post-hermano-datos">
+                        <h4 className="post-alumno-block__titulo" style={{ fontSize: '1rem', margin: '0 0 4px' }}>
+                          Hermano/a ya matriculado/a
+                        </h4>
+                        <p className="form-hint" style={{ margin: '0 0 10px' }}>
+                          El sistema ve que {alumnoNombre || 'tu hijo/a'} tiene un hermano/a{' '}
+                          <strong>ya matriculado/a</strong> en otro colegio — por eso tiene prioridad de
+                          hermano/a ahí. No postula este año; se confirma al agregar ese colegio en el
+                          paso 2.
+                        </p>
+                        <VerificacionDatosCard
+                          campos={[
+                            { label: 'Nombre', valor: CASO_EJEMPLO.hermanaMatriculadaNombre },
+                            { label: 'RUN', valor: CASO_EJEMPLO.hermanaMatriculadaRut },
+                            { label: 'Nivel actual', valor: CASO_EJEMPLO.hermanaMatriculadaNivel },
+                            { label: 'Colegio actual', valor: CASO_EJEMPLO.hermanaMatriculadaColegio },
+                          ]}
+                        />
+                      </div>
                     )}
 
                     {/* S22-13: postulación familiar en bloque.

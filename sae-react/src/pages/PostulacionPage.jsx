@@ -724,6 +724,32 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
 
 /* Formateo y validación de RUT: helper compartido con /perfil (src/utils/rut.js). */
 
+/* S22-12/S4 (refinamiento, 2026-09-13, feedback profesora guía — claridad):
+   módulo de verificación reutilizable. Antes solo el/la estudiante principal
+   mostraba sus datos como un recap de solo lectura ("verifícalos, no los
+   tipeas") con un enlace "corregir"; el bloque del hermano/a, aunque decía
+   "Verifica los datos...", mostraba directo los campos editables — mismo
+   dato, dos tratamientos distintos. Este componente es EL MISMO para
+   ambos: recap de solo lectura primero, "corregir" revela los campos. */
+function VerificacionDatosCard({ campos, hint, onCorregir, corregirLabel = 'Algún dato no está bien — corregir' }) {
+  return (
+    <div className="post-identidad-verif">
+      <dl className="post-identidad-verif__lista">
+        {campos.map(({ label, valor }) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{valor || '—'}</dd>
+          </div>
+        ))}
+      </dl>
+      <button type="button" className="btn--text-link" onClick={onCorregir}>
+        {corregirLabel}
+      </button>
+      {hint && <p className="form-hint" style={{ margin: '6px 0 0' }}>{hint}</p>}
+    </div>
+  )
+}
+
 /* S22-9: carga perezosa del borrador guardado (sin tope de 8 — corrige E2) */
 /* ── Componente principal ── */
 export default function PostulacionPage() {
@@ -784,6 +810,11 @@ export default function PostulacionPage() {
   const [hermanoNivel, setHermanoNivel]   = useState('')
   const hermanoDatosOk =
     rutValido(hermanoRut) && hermanoNombre.trim().length >= 3 && !!hermanoNivel
+  // Feedback profesora guía (2026-09-13, claridad): el hermano/a usa el MISMO
+  // módulo de verificación que el/la estudiante principal (recap de solo
+  // lectura + "corregir"), en vez de campos editables directos — ver
+  // VerificacionDatosCard más abajo.
+  const [editandoHermano, setEditandoHermano] = useState(false)
   const [anuncioOrden, setAnuncioOrden]         = useState('')      // S22-8
   const [dragIdx, setDragIdx]           = useState(null)            // S22-8
   const [dragOverIdx, setDragOverIdx]   = useState(null)            // S22-8
@@ -1372,28 +1403,16 @@ export default function PostulacionPage() {
                         (S22-12, más abajo) y la declaración de apoderado/a sigue siendo un
                         acto activo. */}
                     {!editandoIdentidad ? (
-                      <div className="post-identidad-verif">
-                        <dl className="post-identidad-verif__lista">
-                          <div><dt>Nombre</dt><dd>{alumnoNombre || '—'}</dd></div>
-                          <div><dt>RUN</dt><dd>{alumnoRut || '—'}</dd></div>
-                          <div><dt>Nivel al que postula</dt><dd>{alumnoNivel || '—'}</dd></div>
-                          <div>
-                            <dt>Domicilio</dt>
-                            <dd>{[dirCalle, dirNumero, comuna].filter((s) => s && s.trim()).join(', ') || '—'}</dd>
-                          </div>
-                        </dl>
-                        <button
-                          type="button"
-                          className="btn--text-link"
-                          onClick={() => setEditandoIdentidad(true)}
-                        >
-                          Algún dato no está bien — corregir
-                        </button>
-                        <p className="form-hint" style={{ margin: '6px 0 0' }}>
-                          En el sistema real, estos son los datos de tu hijo/a tal como están
-                          registrados en el Estado (Registro Civil y domicilio).
-                        </p>
-                      </div>
+                      <VerificacionDatosCard
+                        campos={[
+                          { label: 'Nombre', valor: alumnoNombre },
+                          { label: 'RUN', valor: alumnoRut },
+                          { label: 'Nivel al que postula', valor: alumnoNivel },
+                          { label: 'Domicilio', valor: [dirCalle, dirNumero, comuna].filter((s) => s && s.trim()).join(', ') },
+                        ]}
+                        onCorregir={() => setEditandoIdentidad(true)}
+                        hint="En el sistema real, estos son los datos de tu hijo/a tal como están registrados en el Estado (Registro Civil y domicilio)."
+                      />
                     ) : (
                     <>
                     <div className="rg-campo">
@@ -1471,7 +1490,11 @@ export default function PostulacionPage() {
                     {/* S22-13 (refinamiento): datos básicos del hermano/a (nombre + RUN +
                         nivel). Vienen precargados de ClaveÚnica (S4, 2026-09-06); la
                         familia los verifica. Sirven para vincular las dos postulaciones;
-                        NO entran en la asignación de este flujo. */}
+                        NO entran en la asignación de este flujo.
+                        2026-09-13 (feedback profesora guía — claridad): usa el MISMO
+                        módulo de verificación que el/la estudiante principal
+                        (VerificacionDatosCard) — recap de solo lectura + "corregir" —
+                        en vez de mostrar los campos editables directo. */}
                     {postulaHermanos && (
                       <div className="post-hermano-datos">
                         <h4 className="post-alumno-block__titulo" style={{ fontSize: '1rem', margin: '0 0 4px' }}>
@@ -1482,54 +1505,75 @@ export default function PostulacionPage() {
                           postulaciones</strong>. La postulación de {hermanoNombre.trim() || 'tu otro/a hijo/a'}{' '}
                           se hace por separado, con su propia lista de colegios.
                         </p>
-                        <div className="rg-campo">
-                          <label className="form-label" htmlFor="herm-nombre">Nombre completo</label>
-                          <input
-                            id="herm-nombre"
-                            type="text"
-                            className="form-input rg-input"
-                            value={hermanoNombre}
-                            onChange={(e) => setHermanoNombre(e.target.value)}
-                            placeholder="Ej. Mateo Muñoz González"
-                            autoCapitalize="words"
-                            aria-required="true"
+                        {!editandoHermano ? (
+                          <VerificacionDatosCard
+                            campos={[
+                              { label: 'Nombre', valor: hermanoNombre },
+                              { label: 'RUN', valor: hermanoRut },
+                              { label: 'Nivel al que postula', valor: hermanoNivel },
+                            ]}
+                            onCorregir={() => setEditandoHermano(true)}
                           />
-                        </div>
-                        <div className="rg-campo">
-                          <label className="form-label" htmlFor="herm-run">RUN</label>
-                          <input
-                            id="herm-run"
-                            type="text"
-                            inputMode="numeric"
-                            className="form-input rg-input"
-                            value={hermanoRut}
-                            onChange={(e) => setHermanoRut(formatearRut(e.target.value))}
-                            placeholder="Ej. 25.234.567-8"
-                            maxLength={12}
-                            aria-required="true"
-                          />
-                        </div>
-                        <div className="rg-campo">
-                          <label className="form-label" htmlFor="herm-nivel">Nivel al que postula</label>
-                          <select
-                            id="herm-nivel"
-                            className="form-select"
-                            value={hermanoNivel}
-                            onChange={(e) => setHermanoNivel(e.target.value)}
-                            style={{ maxWidth: '100%' }}
-                            aria-required="true"
-                          >
-                            <option value="">Selecciona un nivel…</option>
-                            <option value="Prekínder">Prekínder</option>
-                            <option value="Kínder">Kínder</option>
-                            {[1,2,3,4,5,6,7,8].map(n => (
-                              <option key={n} value={`${n}° básico`}>{n}° básico</option>
-                            ))}
-                            {[1,2,3,4].map(n => (
-                              <option key={n} value={`${n}° medio`}>{n}° medio</option>
-                            ))}
-                          </select>
-                        </div>
+                        ) : (
+                          <>
+                            <div className="rg-campo">
+                              <label className="form-label" htmlFor="herm-nombre">Nombre completo</label>
+                              <input
+                                id="herm-nombre"
+                                type="text"
+                                className="form-input rg-input"
+                                value={hermanoNombre}
+                                onChange={(e) => setHermanoNombre(e.target.value)}
+                                placeholder="Ej. Mateo Muñoz González"
+                                autoCapitalize="words"
+                                aria-required="true"
+                              />
+                            </div>
+                            <div className="rg-campo">
+                              <label className="form-label" htmlFor="herm-run">RUN</label>
+                              <input
+                                id="herm-run"
+                                type="text"
+                                inputMode="numeric"
+                                className="form-input rg-input"
+                                value={hermanoRut}
+                                onChange={(e) => setHermanoRut(formatearRut(e.target.value))}
+                                placeholder="Ej. 25.234.567-8"
+                                maxLength={12}
+                                aria-required="true"
+                              />
+                            </div>
+                            <div className="rg-campo">
+                              <label className="form-label" htmlFor="herm-nivel">Nivel al que postula</label>
+                              <select
+                                id="herm-nivel"
+                                className="form-select"
+                                value={hermanoNivel}
+                                onChange={(e) => setHermanoNivel(e.target.value)}
+                                style={{ maxWidth: '100%' }}
+                                aria-required="true"
+                              >
+                                <option value="">Selecciona un nivel…</option>
+                                <option value="Prekínder">Prekínder</option>
+                                <option value="Kínder">Kínder</option>
+                                {[1,2,3,4,5,6,7,8].map(n => (
+                                  <option key={n} value={`${n}° básico`}>{n}° básico</option>
+                                ))}
+                                {[1,2,3,4].map(n => (
+                                  <option key={n} value={`${n}° medio`}>{n}° medio</option>
+                                ))}
+                              </select>
+                            </div>
+                            <button
+                              type="button"
+                              className="btn--text-link"
+                              style={{ marginTop: 4, alignSelf: 'flex-start' }}
+                              onClick={() => setEditandoHermano(false)}
+                            >
+                              Listo, datos verificados
+                            </button>
+                          </>
+                        )}
                         {postulaHermanos && !hermanoDatosOk && (
                           <span className="form-hint" style={{ color: 'var(--rojo)', display: 'block' }} role="alert">
                             Completa el nombre, el RUN y el nivel del hermano o la hermana para continuar.

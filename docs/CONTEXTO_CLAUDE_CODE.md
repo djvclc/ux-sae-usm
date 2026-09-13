@@ -1,5 +1,5 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-09-10 (enriquecimiento de la ficha de resultado `/seguimiento` — ver §34; calibración de las bandas de probabilidad del paso 3 — §33; F3 / modo control — §32)  
+**Fecha:** 2026-09-13 (módulo de verificación del hermano/a unificado con el del/de la estudiante — ver §35; enriquecimiento de la ficha de resultado `/seguimiento` — §34; calibración de bandas — §33; F3 / modo control — §32)  
 **Estado del proyecto:** v4.5. Matriz `plan_mejora_sae.md`: 102 filas, 4 no aplican → **98 requisitos aplicables** abordados a nivel de código (la cifra histórica "87/87 (100%)" no era reproducible — ver §29 y la nota de integridad del plan).  
 **Directorio principal:** `USM/sae-react/`
 
@@ -762,3 +762,17 @@ CSS nuevo en `index.css` tras `.result-explanation`: `.seg-consecuencias`, `.seg
 **Validación:** `npm run lint` (0/0), `npm run build`, `npm test` (16/16) — 2026-09-10. Navegador: caso canónico (Sofía → San Martín 1.º 26 → Los Andes 2.ª 99) en A y en B, y a 375 px (sin desborde; la tabla X2 encaja).
 
 **No implementado (decisión con la profesora):** X6 (icon array del "no quedaste" en la 1.ª opción), X7 (lista de espera concreta con referencia de movimiento). X1 y X4 son *borderline* fidelidad: si se quieren también en la condición B, es quitar el `!esControl` de esos dos bloques.
+
+---
+
+## 35. Módulo de verificación del hermano/a unificado con el del/de la estudiante (2026-09-13, bitácora Bloque Y)
+
+**Origen:** feedback de la profesora guía (captura de `/postulacion` paso 1). El bloque del/de la estudiante mostraba un recap de solo lectura (Nombre/RUN/Nivel/Domicilio) + "Algún dato no está bien — corregir" (Bloque S, modo verificación). El bloque del hermano/a, pese al título "Verifica los datos del hermano o la hermana", mostraba directo los `<input>`/`<select>` editables — sin el paso de verificación. Falta de claridad por dos tratamientos distintos del mismo tipo de dato.
+
+**Cambio:** `PostulacionPage.jsx` gana un componente local `VerificacionDatosCard({ campos, hint, onCorregir, corregirLabel })` (recap `<dl>` + botón "corregir"), usado en **ambos** bloques:
+- Estudiante: migrado a `VerificacionDatosCard` (mismo comportamiento que antes).
+- Hermano/a: ahora usa el mismo componente — recap (Nombre/RUN/Nivel) → "corregir" → los mismos 3 campos editables de antes → botón nuevo **"Listo, datos verificados"** (mismo texto que ya cerraba la edición del/de la estudiante) → vuelve al recap. Estado nuevo `editandoHermano` (arranca `false`).
+
+**Validación:** `npm run lint` (0/0), `npm run build`, `npm test` (16/16) — 2026-09-13. Navegador: identidad demo genérica (Sofía Ríos Contreras / hermano Tomás Ríos Contreras, `IDENTIDAD_CLAVEUNICA_DEMO`) y caso Muñoz González — recap correcto, ciclo corregir↔verificado sin errores de consola, sin desborde a 375 px.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js` intactos; el hermano/a sigue sin entrar en `calcularResultado` (aditivo, como siempre).

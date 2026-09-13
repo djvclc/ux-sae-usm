@@ -611,6 +611,25 @@ Lectura pedagógica: **tener una prioridad legal → casi seguro (~99 %)** — e
 
 ---
 
+### Bloque Y — Módulo de verificación del hermano/a unificado con el del/de la estudiante (2026-09-13)
+
+**Fundamento de origen:** feedback de la profesora guía, relayado por el usuario con una captura de `/postulacion` paso 1. Es un **refinamiento de S22-13 / S4** (postulación familiar en bloque). No proviene de una guía de UX-IA sino de una inconsistencia de patrón detectada por revisión externa: el bloque del/de la estudiante principal (`.post-identidad-verif`) ya mostraba sus datos como un **recap de solo lectura** con un enlace *"Algún dato no está bien — corregir"* que revela los campos editables ("el sistema los trae, la familia los verifica, no los tipea" — Bloque S). El bloque del hermano/a, aunque su título decía *"Verifica los datos del hermano o la hermana"*, mostraba **directo los tres campos editables** (`<input>`/`<select>`) sin ese paso de verificación — mismo dato, dos tratamientos de interacción distintos, lo que la profesora marcó como falta de claridad.
+
+**Cambio:** se extrajo un componente compartido `VerificacionDatosCard({ campos, hint, onCorregir, corregirLabel })` — el recap `<dl>` + botón "corregir" — y se usa **el mismo componente, literalmente**, en ambos bloques: el del/de la estudiante (ahora consumiéndolo, sin cambio de comportamiento) y el del hermano/a (que antes no lo tenía). El bloque del hermano/a gana el ciclo completo: recap de solo lectura (Nombre / RUN / Nivel al que postula) → "corregir" → campos editables → **"Listo, datos verificados"** (nuevo, mismo texto que cierra la edición del/de la estudiante) → vuelve al recap. Estado nuevo `editandoHermano` (arranca en `false`, igual que `editandoIdentidad`, sea que los datos vengan precargados de ClaveÚnica o vacíos).
+
+**Estado de validación:** ✅ `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-13. Verificado en navegador con la identidad demo genérica (Sofía Ríos Contreras / hermano Tomás Ríos Contreras) y con el caso Muñoz González: el recap del hermano/a muestra los datos correctos, "corregir" revela los campos, "Listo, datos verificados" vuelve al recap; sin errores de consola; sin desborde horizontal a 375 px.
+**Impacto en cifras de la memoria:** ninguno — `asignacion.js`/`simulacionSae.js` intactos; el hermano/a sigue sin entrar en `calcularResultado`. Solo `PostulacionPage.jsx`.
+
+| # | Cambio | Ancla | Mapeo | Cap. memoria |
+|---|---|---|---|---|
+| **Y1** | Componente `VerificacionDatosCard` (nuevo, local a `PostulacionPage.jsx`): recap `<dl>` de solo lectura + botón "corregir", parametrizado por `campos`/`hint`. | `PostulacionPage.jsx` (~725, antes del componente principal) | consistencia de patrón (feedback profesora guía) | 3 |
+| **Y2** | Bloque del/de la estudiante migrado a `VerificacionDatosCard` (mismo comportamiento, sin cambios visibles). | `PostulacionPage.jsx` (~1374) | ídem | 3 |
+| **Y3** | Bloque del hermano/a: recap de solo lectura + "corregir" + "Listo, datos verificados" (antes: campos editables directos, sin recap). Estado `editandoHermano`. | `PostulacionPage.jsx` (~786, ~1471) | ídem | 3 |
+
+**Para la memoria (observación):** ajuste de consistencia de interacción dentro de la fase F1/pasada de fidelidad; no reabre S22-13 como sección nueva del plan.
+
+---
+
 ## 5. Pendientes propuestos por las guías (aún NO implementados)
 
 De `investigacion_ux_guide_ai_systems.md` sec. 8 y observaciones sec. 2–sec. 3. (El gap de datos que figuraba aquí como **P6** se implementó el 2026-08-26 — ver Bloque G; la auditoría de microcopy que figuraba como **P3** y **P4** se implementó el 2026-08-26 — ver Bloque H; la versión visual del formato de frecuencia —**P1**— y el encuadre del algoritmo en la primera pantalla —**P2**— se implementaron el 2026-08-26 — ver Bloque I; el lenguaje antropomórfico del `AlgoSimuladorPasos` —**P1** en la última numeración— se implementó el 2026-08-26 — ver Bloque J.) Estos son el insumo del "repaso punto a punto" para cerrar el desarrollo antes de la prueba.

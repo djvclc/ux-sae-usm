@@ -56,13 +56,19 @@ const CASO_EJEMPLO = {
   // No postula este año; se muestra solo para dar identidad concreta a ese
   // vínculo (antes era abstracto: "hermano/a matriculado/a en Colegio Los Andes",
   // sin decir de quién). NO entra en calcularResultado.
-  // Nombre y curso ajustados el mismo día: colegios.js ya la nombraba en un
-  // comentario ("la hija mayor (Martina)") y, como hija mayor, corresponde 3°
-  // medio, no básico.
-  hermanaMatriculadaNombre: 'Martina Muñoz González',
-  hermanaMatriculadaRut: '23.987.654-3',
-  hermanaMatriculadaNivel: '3° medio',
-  hermanaMatriculadaColegio: 'Colegio Los Andes',
+  // Nombre y curso: colegios.js ya la nombraba en un comentario ("la hija mayor
+  // (Martina)") y, como hija mayor, corresponde 3° medio, no básico.
+  // 2026-09-14 (mismo feedback, corrección): esta info es tan "estándar" como el
+  // resto de lo que trae ClaveÚnica — `PrioridadColegioControl` ya verifica
+  // hermano/a de solo lectura para CUALQUIER identidad (no solo este caso), así
+  // que la tarjeta del paso 1 no debe depender de cargar el caso de ejemplo. La
+  // identidad genérica (`IDENTIDAD_CLAVEUNICA_DEMO`, más abajo) tiene la suya.
+  hermanaMatriculada: {
+    nombre: 'Martina Muñoz González',
+    rut: '23.987.654-3',
+    nivel: '3° medio',
+    colegio: 'Colegio Los Andes',
+  },
 }
 
 /* S22-12 / S4 (refinamiento, 2026-09-06) — modo verificación del paso 1.
@@ -80,6 +86,15 @@ const IDENTIDAD_CLAVEUNICA_DEMO = {
   calle: 'Pasaje Los Copihues 145',
   // Hermano/a que el Estado detecta también con una postulación abierta este año.
   hermano: { nombre: 'Tomás Ríos Contreras', rut: '22.984.116-5', nivel: '7° básico' },
+  // 2026-09-14 (feedback profesora guía): hermano/a YA matriculado/a en otro
+  // colegio — dato tan "estándar" como el resto de lo que trae ClaveÚnica, no
+  // exclusivo del caso de ejemplo Muñoz González (ver comentario en CASO_EJEMPLO).
+  hermanoMatriculado: {
+    nombre: 'Valentina Ríos Contreras',
+    rut: '24.112.789-0',
+    nivel: '2° medio',
+    colegio: 'Colegio Los Andes',
+  },
 }
 
 /* Lee el perfil del estudiante guardado en /perfil. Devuelve siempre un objeto
@@ -833,6 +848,14 @@ export default function PostulacionPage() {
   // lectura + "corregir"), en vez de campos editables directos — ver
   // VerificacionDatosCard más abajo.
   const [editandoHermano, setEditandoHermano] = useState(false)
+  // 2026-09-14 (feedback profesora guía): hermano/a YA MATRICULADO/A en otro
+  // colegio — distinto del anterior (que postula este año). No es editable (es
+  // un registro del Estado); { nombre, rut, nivel, colegio } | null. Se siembra
+  // al ingresar (ver ingresarConClaveUnica / cargarCasoEjemplo más abajo) desde
+  // IDENTIDAD_CLAVEUNICA_DEMO.hermanoMatriculado o CASO_EJEMPLO.hermanaMatriculada
+  // — es información tan "estándar" como el resto de lo que trae ClaveÚnica, NO
+  // exclusiva del caso de ejemplo.
+  const [hermanoMatriculado, setHermanoMatriculado] = useState(null)
   const [anuncioOrden, setAnuncioOrden]         = useState('')      // S22-8
   const [dragIdx, setDragIdx]           = useState(null)            // S22-8
   const [dragOverIdx, setDragOverIdx]   = useState(null)            // S22-8
@@ -976,6 +999,9 @@ export default function PostulacionPage() {
       setHermanoNivel((v) => v || h.nivel)
       setPostulaHermanos(true)
     }
+    // 2026-09-14: hermano/a YA matriculado/a — info estándar de ClaveÚnica,
+    // no exclusiva del caso de ejemplo (ver comentario junto al estado).
+    setHermanoMatriculado((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.hermanoMatriculado || null)
   }
 
   /* Reset para la prueba de usabilidad: entre un/a participante y el/la siguiente,
@@ -994,6 +1020,7 @@ export default function PostulacionPage() {
     const {
       region: reg, comuna: com, calle,
       hermanoNombre: hNombre, hermanoRut: hRut, hermanoNivel: hNivel,
+      hermanaMatriculada,
       ...perfil
     } = CASO_EJEMPLO
     try {
@@ -1027,6 +1054,9 @@ export default function PostulacionPage() {
     setHermanoNombre(hNombre)
     setHermanoRut(hRut)
     setHermanoNivel(hNivel)
+    // 2026-09-14: hermano/a YA matriculado/a — info estándar de ClaveÚnica,
+    // no exclusiva del caso de ejemplo (ver comentario junto al estado).
+    setHermanoMatriculado(hermanaMatriculada ?? null)
     setLoginOk(true)
     // La lista arranca vacía en cada visita: las prioridades por colegio se
     // siembran al agregar cada colegio en el paso 2 (ver `agregar`).
@@ -1483,17 +1513,18 @@ export default function PostulacionPage() {
                     </>
                     )}
 
-                    {/* 2026-09-13 (feedback profesora guía — claridad): hermano/a
+                    {/* 2026-09-13/14 (feedback profesora guía — claridad): hermano/a
                         YA MATRICULADO/A en otro colegio — distinto del que postula en
                         bloque más abajo. Es de aquí que sale la prioridad "hermano/a
                         matriculado/a" (colegios.js `casoPrioridades`), hoy abstracta
                         en el panel "esto es lo que el sistema ya sabe" (solo decía el
                         colegio, no de quién). Mismo módulo VerificacionDatosCard, sin
                         "corregir" (es un registro del Estado, no algo que se declare).
-                        Solo con el caso de ejemplo cargado — mismo gate que
-                        CondicionesDetectadas/mostrarVinculos. No entra en
-                        calcularResultado. */}
-                    {perfilEstudiante.caso === 'munoz-gonzalez' && (
+                        Es información ESTÁNDAR de ClaveÚnica (como el resto del recap
+                        de arriba) — no exclusiva del caso de ejemplo: se muestra con
+                        cualquier identidad que la traiga (`hermanoMatriculado`, sembrado
+                        en el login). No entra en calcularResultado. */}
+                    {hermanoMatriculado && (
                       <div className="post-hermano-datos">
                         <h4 className="post-alumno-block__titulo" style={{ fontSize: '1rem', margin: '0 0 4px' }}>
                           Hermano/a ya matriculado/a
@@ -1506,10 +1537,10 @@ export default function PostulacionPage() {
                         </p>
                         <VerificacionDatosCard
                           campos={[
-                            { label: 'Nombre', valor: CASO_EJEMPLO.hermanaMatriculadaNombre },
-                            { label: 'RUN', valor: CASO_EJEMPLO.hermanaMatriculadaRut },
-                            { label: 'Nivel actual', valor: CASO_EJEMPLO.hermanaMatriculadaNivel },
-                            { label: 'Colegio actual', valor: CASO_EJEMPLO.hermanaMatriculadaColegio },
+                            { label: 'Nombre', valor: hermanoMatriculado.nombre },
+                            { label: 'RUN', valor: hermanoMatriculado.rut },
+                            { label: 'Nivel actual', valor: hermanoMatriculado.nivel },
+                            { label: 'Colegio actual', valor: hermanoMatriculado.colegio },
                           ]}
                         />
                       </div>

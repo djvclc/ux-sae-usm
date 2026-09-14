@@ -3862,143 +3862,62 @@ button[disabled],
   background: linear-gradient(90deg, var(--verde) 0%, #3a8a65 100%);
 }
 
-/* ── Result Hero Card ── */
-.seg-result-hero {
+/* ── Resultado en texto plano ── */
+/* 2026-09-14: reemplaza la tarjeta .seg-result-hero (ilustración + insignias +
+   stats en cajas de color) — feedback: se sentía sobrecargada. Mismo
+   contenido, solo texto. */
+.seg-result-plano {
   background: var(--blanco);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
-  overflow: hidden;
-  box-shadow: var(--sombra-lg);
+  padding: var(--esp-lg);
   margin-bottom: var(--esp-md);
 }
 
-/* Image wrapper — contiene imagen, overlay y texto */
-.seg-hero-img-wrap {
-  position: relative;
-  /* Sin alto fijo: el bloque .seg-hero-img-content--solid (nombre del colegio,
-     dirección) fluye DESPUÉS de la ilustración y con un height fijo + overflow
-     hidden quedaba recortado. La ilustración ya trae su propio height. */
-  overflow: hidden;
+.seg-result-plano__estado {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+  color: var(--texto-suave);
 }
 
-.seg-hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.seg-hero-img-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(15,42,74,0.1) 0%, rgba(15,42,74,0.55) 40%, rgba(15,42,74,0.92) 75%);
-}
-
-.seg-hero-img-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: var(--esp-lg);
-  padding-top: 40px;
-  z-index: 2;
-  color: var(--blanco);
-  background: linear-gradient(180deg, transparent 0%, rgba(15,42,74,0.6) 30%);
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-/* Variante sólida — sin overlay sobre imagen, fondo azul propio */
-.seg-hero-img-content--solid {
-  position: relative;
-  background: linear-gradient(170deg, var(--azul) 0%, var(--azul-osc) 100%);
-  padding: var(--esp-lg);
-  padding-bottom: var(--esp-lg);
-  color: var(--blanco);
-  box-sizing: border-box;
-}
-
-.seg-hero-badge {
-  display: inline-block;
-  background: var(--verde);
-  color: var(--blanco);
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin-bottom: 8px;
-  letter-spacing: 0.02em;
-}
-
-.seg-hero-pref {
-  display: inline-block;
-  background: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 999px;
-  padding: 3px 12px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  backdrop-filter: blur(4px);
-  margin-left: 8px;
-}
-
-/* Selector con elemento para superar la especificidad de `.page h2`,
-   que pintaba el título oscuro sobre el fondo azul (contraste WCAG) */
-h2.seg-hero-name {
-  font-size: clamp(1.3rem, 3vw, 1.8rem);
+.seg-result-plano__nombre {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
   font-weight: 800;
-  margin: 8px 0 4px;
-  color: var(--blanco);
-  text-shadow: 0 2px 16px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.4);
-  line-height: 1.3;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  margin: 0 0 4px;
+  color: var(--texto);
 }
 
-.seg-hero-addr {
-  margin: 0;
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.9);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+.seg-result-plano__addr {
+  margin: 0 0 var(--esp-sm);
+  font-size: 0.92rem;
+  color: var(--texto-suave);
 }
 
-/* Stats bar debajo de la imagen */
-.seg-hero-stats-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--borde);
-}
-
-.seg-hero-stat {
+.seg-result-plano__datos {
+  list-style: none;
+  margin: 0 0 var(--esp-sm);
+  padding: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 20px var(--esp-sm);
-  background: var(--blanco);
-  text-align: center;
+  gap: 4px;
 }
 
-.seg-hero-stat__num {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--acento);
-  line-height: 1.2;
-}
-
-.seg-hero-stat__lbl {
-  font-size: 0.80rem;
-  color: var(--texto-suave);
-  margin-top: 2px;
-  font-weight: 600;
-}
-
-.seg-result-hero__meta {
+.seg-result-plano__datos li {
   display: flex;
-  gap: var(--esp-lg);
-  flex-wrap: wrap;
-  padding: var(--esp-sm) var(--esp-lg);
-  background: var(--gris-cl);
+  justify-content: space-between;
+  gap: var(--esp-sm);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--borde);
+  font-size: 0.92rem;
+}
+
+.seg-result-plano__datos li:last-child {
+  border-bottom: none;
+}
+
+.seg-result-plano__meta {
+  margin: var(--esp-sm) 0 0;
+  padding-top: var(--esp-sm);
   border-top: 1px solid var(--borde);
   font-size: 0.82rem;
   color: var(--texto-suave);
@@ -4216,31 +4135,6 @@ h2.seg-hero-name {
     right: calc(-50% + 26px);
   }
 
-  .seg-hero-img-content {
-    padding: var(--esp-md);
-  }
-
-  .seg-hero-name {
-    font-size: 1.3rem;
-  }
-
-  .seg-hero-stats-bar {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-  }
-
-  .seg-hero-stat {
-    padding: 16px var(--esp-sm);
-  }
-
-  .seg-hero-stat__num {
-    font-size: 1.15rem;
-  }
-
-  .seg-hero-stat__lbl {
-    font-size: 0.75rem;
-  }
-
   .seg-pref-item {
     grid-template-columns: 40px 1fr auto;
   }
@@ -4255,9 +4149,8 @@ h2.seg-hero-name {
     flex-direction: column;
   }
 
-  .seg-result-hero__meta {
-    flex-direction: column;
-    gap: var(--esp-sm);
+  .seg-result-plano__meta {
+    text-align: left;
   }
 }
 
@@ -5194,6 +5087,15 @@ h2.seg-hero-name {
   padding: 10px 12px;
   margin-bottom: 6px;
   font-size: 0.84rem;
+}
+
+/* 2026-09-14 (feedback: aplastar las cartas para ver más de una a la vez) —
+   `.tut-colegio-info` pasó de `<div>` a `<details>`; el resumen (Opción N + %)
+   vive en `<summary>` y queda siempre visible, el resto se colapsa detrás de
+   la flecha nativa. Sin `list-style` propio: se deja el marcador ▶/▼ nativo
+   del navegador como única señal de "esto se puede abrir". */
+.tut-colegio-info > summary {
+  cursor: pointer;
 }
 
 .tut-colegio-info__header {

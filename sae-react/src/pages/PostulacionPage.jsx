@@ -716,18 +716,26 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
   const probClass = prob === null ? 'media' : prob >= 80 ? 'alta' : prob >= 40 ? 'media' : 'baja'
 
   return (
-    <div className="tut-colegio-info">
-      <div className="tut-colegio-info__header">
-        <span className="tut-colegio-info__orden">Opción {orden}</span>
-        {/* F3: el % estimado y su visual son explicabilidad → no van en la
-            condición de control; quedan los datos crudos (demanda, vacantes,
-            postulantes) y la prioridad detectada, que son fidelidad a la vitrina. */}
-        {!esControl && (
-          <span className={`tut-prob tut-prob--${probClass}`}>
-            {prob === null ? 'sin nivel' : `${prob}% estimado`}
-          </span>
-        )}
-      </div>
+    /* 2026-09-14 (feedback: a 100% de zoom, con el análisis siempre expandido,
+       no entraba ni un colegio completo en pantalla — mucho menos dos). El
+       resumen (Opción N + % estimado) queda siempre visible como `<summary>`;
+       el resto (nombre, barra visual, demanda/vacantes/prioridad) se colapsa
+       detrás de la flecha nativa del `<details>`, igual que "¿Cómo funcionan
+       las prioridades acá?" en esta misma página. */
+    <details className="tut-colegio-info">
+      <summary>
+        <div className="tut-colegio-info__header">
+          <span className="tut-colegio-info__orden">Opción {orden}</span>
+          {/* F3: el % estimado y su visual son explicabilidad → no van en la
+              condición de control; quedan los datos crudos (demanda, vacantes,
+              postulantes) y la prioridad detectada, que son fidelidad a la vitrina. */}
+          {!esControl && (
+            <span className={`tut-prob tut-prob--${probClass}`}>
+              {prob === null ? 'sin nivel' : `${prob}% estimado`}
+            </span>
+          )}
+        </div>
+      </summary>
       <p className="tut-colegio-info__nombre">{colegio.nombre}</p>
       {/* P1 · S22-11 (refinamiento): versión visual del formato de frecuencia
           (RISK-NUM). Variante "barra" por el ancho reducido dentro de .post-item
@@ -771,7 +779,7 @@ function ColegioAnalisis({ colegio, orden, perfilCompleto, nivelAlumno }) {
           <strong>{etiquetaPrioridad(nivel)}</strong>
         </li>
       </ul>
-    </div>
+    </details>
   )
 }
 

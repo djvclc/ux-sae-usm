@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { colegios } from '../data/colegios'
 import { prioridadLabels, etiquetaPrioridad, vacantesDeNivel } from '../utils/asignacion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import SchoolIllustration from '../components/SchoolIllustration'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
 import { useModoEstudio } from '../context/ModoEstudioContext'
@@ -313,70 +312,53 @@ export default function SeguimientoPage() {
         ))}
       </div>
 
-      {/* ── Tarjeta principal del resultado ── */}
-      <div className="seg-result-hero" ref={comprobanteRef}>
+      {/* ── Resultado, en texto plano ── */}
+      {/* 2026-09-14 (feedback: la tarjeta con ilustración, insignias y stats en
+          cajas de color se sentía como un "modal" sobrecargado). Mismo
+          contenido (estado, nombre, dirección, probabilidad, prioridad,
+          demanda, comprobante), sin ilustración ni tarjetas — solo texto. */}
+      <div className="seg-result-plano" ref={comprobanteRef}>
         {asignado && colegioAsignado ? (
           <>
-            {/* Ilustración + info del colegio asignado */}
-            <div className="seg-hero-img-wrap">
-              <SchoolIllustration
-                colegioId={colegioAsignado.id}
-                demanda={colegioAsignado.demanda}
-                width="100%"
-                height={200}
-              />
-              <div className="seg-hero-img-content seg-hero-img-content--solid">
-                <span className="seg-hero-badge">
-                  {sinAsignacion ? 'Sin cupo en la ronda principal' : 'Resultado disponible'}
-                </span>
-                <span className="seg-hero-pref">
-                  {sinAsignacion
-                    ? 'No quedaste en ninguna de tus preferencias'
-                    : asignado.idx === 1
-                      ? '⭐ Tu primera opción'
-                      : `Preferencia N°${asignado.idx}`}
-                </span>
-                <h2 className="seg-hero-name">{asignado.nombre}</h2>
-                <p className="seg-hero-addr">
-                  {'📍 ' + colegioAsignado.direccion + ', ' + colegioAsignado.comuna}
-                </p>
-              </div>
-            </div>
-
-            {/* Stats debajo de la imagen */}
-            <div className="seg-hero-stats-bar">
+            <p className="seg-result-plano__estado">
+              <strong>{sinAsignacion ? 'Sin cupo en la ronda principal' : 'Resultado disponible'}</strong>
+              {' — '}
+              {sinAsignacion
+                ? 'no quedaste en ninguna de tus preferencias'
+                : asignado.idx === 1
+                  ? 'tu primera opción'
+                  : `preferencia N°${asignado.idx}`}
+            </p>
+            <h2 className="seg-result-plano__nombre">{asignado.nombre}</h2>
+            <p className="seg-result-plano__addr">
+              📍 {colegioAsignado.direccion}, {colegioAsignado.comuna}
+            </p>
+            <ul className="seg-result-plano__datos">
               {/* F3: la probabilidad es explicabilidad → no va en la condición de control.
                   El SAE real no muestra una probabilidad en la pantalla de resultado. */}
               {!esControl && (
-                <div className="seg-hero-stat">
-                  <span className="seg-hero-stat__num">{asignado.prob}%</span>
-                  <span className="seg-hero-stat__lbl">Probabilidad</span>
-                </div>
+                <li><span>Probabilidad</span><strong>{asignado.prob}%</strong></li>
               )}
-              <div className="seg-hero-stat">
-                <span className="seg-hero-stat__num">{resultado?.nivel && resultado.nivel < 5 ? prioridadLabels[resultado.nivel].split('/')[0] : (resultado?.nivel === 5 ? 'Sin vínculo' : '—')}</span>
-                <span className="seg-hero-stat__lbl">Prioridad</span>
-              </div>
-              <div className="seg-hero-stat">
-                <span className="seg-hero-stat__num" style={{ textTransform: 'capitalize' }}>{asignado.demanda}</span>
-                <span className="seg-hero-stat__lbl">Demanda</span>
-              </div>
-              <div className="seg-hero-stat">
-                <span className="seg-hero-stat__num">{comprobante}</span>
-                <span className="seg-hero-stat__lbl">Comprobante</span>
-              </div>
-            </div>
+              <li>
+                <span>Prioridad</span>
+                <strong>{resultado?.nivel && resultado.nivel < 5 ? prioridadLabels[resultado.nivel].split('/')[0] : (resultado?.nivel === 5 ? 'Sin vínculo' : '—')}</strong>
+              </li>
+              <li>
+                <span>Demanda</span>
+                <strong style={{ textTransform: 'capitalize' }}>{asignado.demanda}</strong>
+              </li>
+              <li><span>Comprobante</span><strong>{comprobante}</strong></li>
+            </ul>
           </>
         ) : (
-          <div style={{ padding: 'var(--esp-lg)', textAlign: 'center' }}>
-            <p>Sin asignación disponible.</p>
-          </div>
+          <p>Sin asignación disponible.</p>
         )}
 
-        <div className="seg-result-hero__meta">
-          <span>Prioridad aplicada: <strong>{etiquetaPrioridad(resultado?.nivel)}</strong></span>
-          <span>Fecha postulación: <strong>{new Date(data.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></span>
-        </div>
+        <p className="seg-result-plano__meta">
+          Prioridad aplicada: <strong>{etiquetaPrioridad(resultado?.nivel)}</strong>
+          {' · '}
+          Fecha postulación: <strong>{new Date(data.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+        </p>
       </div>
 
       {/* ── Acción: Aceptar o rechazar oferta ── */}

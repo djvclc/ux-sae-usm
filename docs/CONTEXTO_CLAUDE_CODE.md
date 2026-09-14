@@ -981,3 +981,25 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 **Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; `PostulacionPage.jsx` sin cambios; no crea sección nueva del plan; **98 aplicables sin cambio**.
 
 **Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16). La herramienta de captura de pantalla falló repetidamente en esta sesión (problema del panel, no del sitio) — se verificó con `getComputedStyle`/`getBoundingClientRect` en 1024px (botones comparten fila con el nombre) y 375px (botones en su propia fila completa), sin overflow horizontal en ninguno.
+
+## 50. Colapsa `ColegioAnalisis` (Opción N / % / demanda / vacantes / prioridad) en "Tu lista" (2026-09-14, bitácora Bloque Z19)
+
+**Origen:** con la fuente ya subida (Z16) y 2+ colegios en la lista, el bloque `ColegioAnalisis` de cada colegio (nombre + barra de probabilidad + lista de demanda/vacantes/prioridad) ocupaba bastante alto, dejando ver como mucho un colegio y medio en pantalla a la vez sin hacer scroll. El usuario preguntó si convenía "aplastar las cartas"; tras confirmar que quería aplicar el cambio antes de revisarlo, se implementó como colapsable.
+
+**Cambio en `PostulacionPage.jsx`:** el `<div className="tut-colegio-info">` de `ColegioAnalisis` pasa a `<details className="tut-colegio-info">`, con la fila de cabecera (`Opción N` + badge de `%`) dentro de un `<summary>`. Colapsado por defecto muestra solo "Opción N · X% estimado"; al expandir se ve el nombre del colegio, la barra `ProbabilidadVisual` y la lista de demanda/vacantes/prioridad — mismo contenido de antes, sin quitar nada. CSS nuevo mínimo: `.tut-colegio-info > summary { cursor: pointer; }`.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16). Herramienta de captura de pantalla no disponible en esta sesión — verificado con `getBoundingClientRect` (altura cerrada ~78px vs. abierta ~272px por colegio, `isOpen: false` por defecto, toggle funcional al hacer clic en el `<summary>`) y confirmando que el contenido (nombre del colegio, etc.) sigue en el DOM cuando está cerrado (comportamiento nativo de `<details>`). El usuario aprobó el resultado ("me gustó").
+
+## 51. `/seguimiento`: la tarjeta de resultado pasa de tarjeta ilustrada a texto plano (2026-09-14, bitácora Bloque Z20)
+
+**Origen:** el usuario pidió simplificar la tarjeta principal de resultado en `SeguimientoPage.jsx` (`.seg-result-hero`): ilustración del colegio + insignias de color + fondo degradado azul + 4 datos en cajas separadas. Tras varias rondas de aclaración se confirmó el alcance: reemplazar toda la tarjeta por un bloque de texto simple, sin ilustración ni colores llamativos, conservando exactamente los mismos datos.
+
+**Cambios en `SeguimientoPage.jsx`:** el bloque `.seg-result-hero` (ilustración `SchoolIllustration`, insignias `seg-hero-badge`/`seg-hero-pref`, `h2.seg-hero-name`, dirección, y la barra de 4 stats en cajas) se reemplaza por `.seg-result-plano`: un párrafo de estado (`Resultado disponible`/`Sin cupo` + preferencia), el nombre del colegio como `<h2>`, la dirección, una lista `<ul>` de Probabilidad/Prioridad/Demanda/Comprobante como pares texto-valor, y el mismo párrafo de "Prioridad aplicada / Fecha postulación" al final. Mismos datos y mismas condiciones (`!esControl` sigue ocultando la probabilidad en el modo control; `sinAsignacion` sigue con su propio mensaje). Se retira el import de `SchoolIllustration` (el componente sigue existiendo y se usa en `ColegioPage.jsx`/`InicioPage.jsx`, solo se deja de usar aquí).
+
+**Cambios en `index.css`:** se elimina todo el CSS de `.seg-result-hero`/`.seg-hero-*` (bloque base + las reglas específicas dentro del media query de `/seguimiento`, con cuidado de no tocar las reglas vecinas no relacionadas — `.seg-timeline__connector`, `.seg-pref-item*`, `.seg-actions-bar`, que se mantienen intactas) y se agrega CSS nuevo mínimo para `.seg-result-plano` (tarjeta con borde simple, sin sombra ni degradado; lista de datos con separadores finos).
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; el resultado de asignación (colegio, %, prioridad) no cambia, solo su presentación; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16). Verificado en navegador end-to-end: caso Muñoz González con San Martín 1.º (no queda, 26%) → Los Andes 2.ª preferencia (99%, hermano/a) — la tarjeta de texto plano muestra correctamente estado, nombre, dirección, y los 4 datos, sin errores de consola nuevos y sin overflow horizontal introducido por el cambio (el `.seg-result-plano` no desborda; hay un desborde preexistente y no relacionado en el `topbar` a 1024px, fuera del alcance de este cambio).

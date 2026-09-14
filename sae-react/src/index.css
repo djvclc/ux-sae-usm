@@ -83,7 +83,7 @@ body,
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--texto);
   background: var(--bg-app);
   line-height: 1.6;
@@ -1426,6 +1426,132 @@ select:focus {
   padding: 6px 10px;
 }
 
+/* 2026-09-13 (feedback profesora guía — más llamativo, más contraste, menos
+   texto, más grande): rediseño de ConfirmarVinculacionModal. Ya no reutiliza
+   `.prio-modal__header/__titulo/__dl` (esos siguen igual para AgregarColegioModal
+   y PrioridadModal, sin tocar) — este modal tiene su propio look: ícono +
+   título grandes y centrados, nombre/nivel como resumen destacado, el aviso de
+   "curso incorrecto" como bloque de color (no un párrafo largo), botones
+   apilados a ancho completo y más grandes (`.btn--grande`), y el botón
+   secundario con borde más marcado para que no se pierda contra el fondo blanco. */
+/* Este `<dialog>` se abre con el atributo `open` (no `.showModal()`), así que
+   `::backdrop` nunca se pinta — sin esto el popup no oscurece la página de
+   atrás y pierde protagonismo. Se agrega solo a este modal (no a
+   AgregarColegioModal/PrioridadModal, que comparten `.prio-modal` y no
+   fueron parte de este pedido) con selector más específico. */
+.prio-modal.confirmar-modal {
+  background: rgba(20, 24, 33, 0.55);
+}
+
+.confirmar-modal__content {
+  position: relative;
+  padding: 32px 24px 24px;
+  text-align: center;
+}
+
+.confirmar-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gris-cl);
+  border: none;
+  border-radius: 50%;
+  color: var(--texto);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.confirmar-modal__close:hover {
+  background: var(--gris-borde);
+}
+
+.confirmar-modal__close:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 2px;
+}
+
+.confirmar-modal__icono {
+  display: block;
+  font-size: 2.75rem;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.confirmar-modal__titulo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--texto);
+  margin: 0 0 14px;
+}
+
+.confirmar-modal__alumno {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.confirmar-modal__alumno strong {
+  font-size: 1.25rem;
+  color: var(--texto);
+}
+
+.confirmar-modal__nivel {
+  display: inline-block;
+  background: var(--azul-cl);
+  color: var(--azul-osc);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 4px 14px;
+  border-radius: 999px;
+}
+
+.confirmar-modal__hermano {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  background: var(--azul-cl);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  margin: 0 0 20px;
+}
+
+.confirmar-modal__hermano span {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.confirmar-modal__hermano p {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.confirmar-modal__acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.confirmar-modal__acciones .btn {
+  width: 100%;
+}
+
+.confirmar-modal__btn-secundario {
+  border: 2px solid var(--gris-med);
+  color: var(--texto);
+  font-weight: 600;
+}
+
 .sim-school-grid {
   display: grid;
   gap: var(--esp-sm);
@@ -2719,7 +2845,7 @@ abbr[title] {
   }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    font-size: 16px;
+    font-size: 1rem;
     color: #242b33;
     background: #ffffff;
     line-height: 1.6;
@@ -5748,114 +5874,6 @@ h2.seg-hero-name {
 }
 
 /* Grid de tarjetas de colegios */
-.post-school-picker {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.post-school-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px;
-  border: 2px solid var(--gris-borde);
-  border-radius: var(--radio);
-  background: var(--bg-card);
-  position: relative;
-  transition: border-color 0.15s;
-}
-
-.post-school-card--added {
-  border-color: var(--azul);
-  background: var(--azul-cl);
-}
-
-.post-school-card--bloq {
-  opacity: 0.5;
-}
-
-.post-school-card__badge {
-  position: absolute;
-  top: -10px;
-  left: 10px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--azul);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.post-school-card__info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.post-school-card__nombre {
-  font-size: 0.88rem;
-  color: var(--texto);
-  line-height: 1.3;
-}
-
-.post-school-card__meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  font-size: 0.78rem;
-  color: var(--gris-med);
-}
-
-/* Botones dentro de la card del colegio */
-.post-school-card__btn {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: var(--radio);
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  border: 2px solid transparent;
-  font-family: inherit;
-  transition: background 0.15s, border-color 0.15s;
-  min-height: 38px;
-}
-
-.post-school-card__btn--agregar {
-  background: var(--azul);
-  color: #fff;
-}
-
-.post-school-card__btn--agregar:hover:not(:disabled),
-.post-school-card__btn--agregar:focus-visible {
-  background: var(--azul-osc);
-  outline: none;
-}
-
-.post-school-card__btn--agregar:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.post-school-card__btn--quitar {
-  background: transparent;
-  border-color: var(--azul);
-  color: var(--azul);
-}
-
-.post-school-card__btn--quitar:hover,
-.post-school-card__btn--quitar:focus-visible {
-  background: var(--azul);
-  color: #fff;
-  outline: none;
-}
-
 /* Lista ordenada de colegios */
 .post-order-wrap {
   margin-top: 20px;
@@ -5922,17 +5940,6 @@ h2.seg-hero-name {
   margin: 0;
   font-size: 0.86rem;
   color: #6b2d07;
-}
-
-/* S4 (refinamiento, 2026-09-02): modo "detección" — cuando el sistema ya resolvió
-   las prioridades del colegio (caso de ejemplo), el bloque se muestra informativo
-   (azul), no de acción pendiente (naranja). */
-.post-item > .post-prio-colegio--deteccion {
-  background: var(--azul-cl);
-  border-color: var(--azul);
-}
-.post-prio-colegio--deteccion .post-prio-colegio__titulo {
-  color: var(--azul-osc);
 }
 
 .post-prio-colegio__detectadas {
@@ -6003,9 +6010,15 @@ h2.seg-hero-name {
 
 /* Botones de reordenar (↑↓) — grandes y tocables */
 .post-item__acciones {
+  /* 2026-09-14 (feedback: aprovechar el espacio en escritorio): antes columna
+     siempre — con ancho de sobra, el nombre quedaba a la izquierda y los 3
+     botones apilados en una columna angosta a la derecha, con mucho vacío en
+     el medio. En fila usan el ancho disponible junto al nombre; a 599px o
+     menos, el media query de abajo los sigue bajando a su propia fila
+     completa (ahí sí no entran junto al nombre sin apretarlo). */
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  flex-direction: row;
+  gap: 6px;
   flex-shrink: 0;
 }
 
@@ -6035,17 +6048,102 @@ h2.seg-hero-name {
   cursor: not-allowed;
 }
 
-@media (max-width: 599px) {
-  .post-school-picker {
-    grid-template-columns: 1fr;
-  }
+/* Bloque Z (2026-09-13): quitar un colegio ahora vive en la vista "Tu lista",
+   junto a los botones ↑↓ — botón de texto, no cuadrado como los de reordenar. */
+.post-item__btn--quitar {
+  width: auto;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--rojo, #C0392B);
+  background: transparent;
+  border-color: var(--rojo, #C0392B);
+  white-space: nowrap;
+}
 
+.post-item__btn--quitar:hover,
+.post-item__btn--quitar:focus-visible {
+  background: var(--rojo, #C0392B);
+  color: #fff;
+  outline: none;
+}
+
+/* Bloque Z (2026-09-13): catálogo de colegios como lista de una columna
+   (filas), reemplaza el grid de 2 columnas de .post-school-card en la
+   vista 'catalogo' del paso 2 de /postulacion. */
+.post-colegio-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.post-colegio-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 2px solid var(--gris-borde);
+  border-radius: var(--radio);
+  background: var(--bg-card);
+  transition: border-color 0.15s, opacity 0.15s;
+}
+
+.post-colegio-fila--agregada {
+  opacity: 0.65;
+  border-color: var(--azul);
+  background: var(--azul-cl);
+}
+
+.post-colegio-fila__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.post-colegio-fila__nombre {
+  font-size: 0.9rem;
+  color: var(--texto);
+  line-height: 1.3;
+}
+
+.post-colegio-fila__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--gris-med);
+}
+
+.post-colegio-fila__estado {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--azul);
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
   .post-clave-block {
     padding: 12px;
   }
 
   .post-item__acciones {
     flex-direction: row;
+    /* 2026-09-13 (verificación tras subir la fuente base): con el nombre del
+       colegio + los 3 botones (↑ ↓ ✕ Quitar) compitiendo por el mismo ancho de
+       fila, `.post-item__body` (flex:1, min-width:0) se apretaba hasta partir
+       "Colegio Los Andes" en 3 líneas angostas antes de que el navegador
+       moviera los botones a su propia fila. Forzamos la fila de acciones a su
+       propio ancho completo, debajo del nombre — mismo patrón que ya usan
+       `.tut-colegio-info` y `.post-prio-colegio` en este mismo `.post-item`. */
+    flex-basis: 100%;
+    justify-content: flex-end;
+    margin-top: 4px;
   }
 }
 
@@ -6441,6 +6539,53 @@ h2.seg-hero-name {
   border-radius: var(--radio);
   padding: 12px var(--esp-md);
   margin: 8px 0;
+}
+
+/* 2026-09-13 (feedback profesora guía) — distinguir por color al hermano/a YA
+   matriculado/a (verde, no se mueve de colegio) del que está POSTULANDO este
+   año (naranja, en trámite): antes ambas cards heredaban el mismo azul de
+   .post-hermano-datos y se confundían entre sí. */
+.post-hermano-datos--matriculado {
+  border-left-color: var(--verde);
+  background: var(--verde-cl);
+}
+
+.post-hermano-datos--postulando {
+  border-left-color: var(--naranja);
+  background: var(--naranja-cl);
+}
+
+/* 2026-09-13 (feedback profesora guía) — "Hermanos y hermanas" como sub-bloque
+   propio (fondo claro y borde propio) dentro de .post-alumno-block (que es
+   azul): antes las cards de hermanos vivían sueltas sobre el mismo azul del
+   contenedor y el conjunto se veía desordenado. */
+.post-hermanos-section {
+  background: var(--fondo, #fff);
+  border: 1px solid rgba(0, 87, 183, 0.18);
+  border-radius: var(--radio);
+  padding: var(--esp-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-md);
+}
+
+.post-hermanos-section__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-hermanos-section__titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--texto);
+}
+
+.post-hermanos-section__sep {
+  border: none;
+  border-top: 1px dashed rgba(0, 87, 183, 0.2);
+  margin: 0;
 }
 
 /* S4 (refinamiento): panel de "condiciones detectadas" (lista dentro del InfoBox)

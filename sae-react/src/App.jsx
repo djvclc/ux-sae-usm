@@ -9,11 +9,16 @@ import GuidedTour from './components/GuidedTour'
 import ChatAyuda from './components/ChatAyuda'
 import ScrollToTop from './components/ScrollToTop'
 
-/* Escala global de fuente — cambia font-size en html para que todos los rem escalen (S13-g) */
+/* Escala global de fuente — cambia font-size en html para que todos los rem escalen (S13-g).
+   2026-09-14 (feedback: subir más la fuente de toda la página): el salto anterior
+   (16→17px normal, 18→20px grande, Bloque Z8) resultó demasiado sutil para notarse.
+   Nuevo salto, más perceptible: 19px normal / 23px grande (root), manteniendo la
+   diferencia de ~4px entre modos. Se combina con `.page--texto-grande { font-size:
+   1.06rem }` (index.css, sin tocar) para el extra de "Grande" sobre esta base. */
 function GlobalFontSize() {
   const { textoGrande } = useTextSize()
   useEffect(() => {
-    document.documentElement.style.fontSize = textoGrande ? '18px' : ''
+    document.documentElement.style.fontSize = textoGrande ? '23px' : '19px'
   }, [textoGrande])
   return null
 }

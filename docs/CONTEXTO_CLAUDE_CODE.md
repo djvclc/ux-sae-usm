@@ -1,5 +1,5 @@
 # Contexto para Claude Code — Proyecto SAE UX
-**Fecha:** 2026-09-13 (módulo de verificación del hermano/a unificado con el del/de la estudiante — ver §35; enriquecimiento de la ficha de resultado `/seguimiento` — §34; calibración de bandas — §33; F3 / modo control — §32)  
+**Fecha:** 2026-09-13 (reordenamiento visual del paso 1 de `/postulacion` (dirección + hermanos) — ver §36; módulo de verificación del hermano/a unificado con el del/de la estudiante — §35; enriquecimiento de la ficha de resultado `/seguimiento` — §34; calibración de bandas — §33; F3 / modo control — §32)  
 **Estado del proyecto:** v4.5. Matriz `plan_mejora_sae.md`: 102 filas, 4 no aplican → **98 requisitos aplicables** abordados a nivel de código (la cifra histórica "87/87 (100%)" no era reproducible — ver §29 y la nota de integridad del plan).  
 **Directorio principal:** `USM/sae-react/`
 
@@ -784,3 +784,200 @@ CSS nuevo en `index.css` tras `.result-explanation`: `.seg-consecuencias`, `.seg
 - `cargarCasoEjemplo()` — desde `CASO_EJEMPLO.hermanaMatriculada` (reestructurado a un solo objeto): Martina Muñoz González.
 
 El render es ahora `{hermanoMatriculado && (…)}`. `npm run lint`/`build`/`test` (16/16) — verificado en navegador con las dos identidades (Valentina para la genérica, Martina para el caso), sin errores de consola. No entra en `calcularResultado`.
+
+## 36. Reordenamiento visual del paso 1 de `/postulacion` — dirección editable junto con la identidad + sección "Hermanos y hermanas" con estado por color (2026-09-13, bitácora Bloque Y6)
+
+**Origen:** nuevo feedback de la profesora guía sobre la pantalla que dejó el §35 (Y1-Y5): "se ve muy desordenado", "no muestra el colegio anterior siempre", pedir aclarar si un hermano/a está matriculado/a o "en trámite", poder editar la dirección del/de la estudiante, y dejar explícito que la postulación en bloque es con **un solo** hermano/a — la hermana ya matriculada no se mueve de colegio.
+
+**Cambios, todos en `PostulacionPage.jsx` + `index.css`** (sin tocar `asignacion.js`/`simulacionSae.js`/`colegios.js`):
+
+1. **Dirección fusionada con la identidad.** `post-direccion-block` vivía después de toda la sección de hermanos y del checkbox de apoderado/a — lejos del "corregir" del recap de arriba, que la familia no asociaba con poder editar la dirección. Ahora comuna/calle/número están **dentro** de la misma rama `editandoIdentidad` que RUN/nombre/nivel: un solo "corregir" abre todo, un solo "Listo, datos verificados" lo cierra todo. Se eliminó el bloque y botón duplicados que quedaban después del checkbox de apoderado/a.
+2. **Sección "Hermanos y hermanas" como sub-bloque propio:** nuevo `<div className="post-hermanos-section">` (fondo blanco, borde propio, encabezado con ícono 👨‍👩‍👧‍👦) que envuelve la card del hermano/a matriculado/a, el checkbox, la card del que postula y la InfoBox de mecánica de bloque — antes sueltos sobre el mismo azul de `.post-alumno-block` y difíciles de distinguir entre sí.
+3. **Color + badge por estado:** card del hermano/a **ya matriculado/a** → verde (`.post-hermano-datos--matriculado`, `badge badge--ok` "✓ Ya matriculado/a — no postula este año") + frase explícita de que **no** es parte de la postulación en bloque de abajo y no se mueve de colegio. Card del hermano/a que **postula este año** → naranja (`.post-hermano-datos--postulando`, `badge badge--progress` "🕓 Postulando este año — en trámite"). Antes ambas cards usaban el mismo azul de `.post-hermano-datos`.
+4. **Campo nuevo "Colegio actual" del hermano/a que postula** (informativo, no entra en `calcularResultado`): antes solo la card del ya matriculado mostraba de dónde venía. Estado `hermanoColegioActual`; sembrado en `IDENTIDAD_CLAVEUNICA_DEMO.hermano.colegioActual` = "Escuela Básica Los Aromos" (identidad genérica, Tomás Ríos Contreras) y `CASO_EJEMPLO.hermanoColegioActual` = "Escuela Bernardo O'Higgins" (caso Muñoz González, Mateo) — nombres ficticios, verificados sin coincidencia con los 6 colegios de `colegios.js`. Se suma como 4.º campo de `VerificacionDatosCard` (recap) y como input libre en modo edición; también se agregó a `confirmar()` (`hermano.colegioActual`) y a la línea del comprobante `.txt`.
+5. **Checkbox reformulado:** "tiene **otro/a** hermano o hermana que también postula" (antes ambiguo, se confundía con el ya matriculado/a de la card de arriba).
+6. **InfoBox genérico de `modoTutorial` retirada** de este punto por redundancia con la InfoBox específica "Postulación familiar en bloque" (que se mantiene, algo recortada). El resto de usos de `modoTutorial` en la página sigue igual.
+
+CSS nuevo: `.post-hermano-datos--matriculado` / `--postulando` (modificadores de color) y `.post-hermanos-section` / `__header` / `__titulo` / `__sep`.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-13. **Verificación visual en navegador** (sesión siguiente, mismo día, 375px): confirmó las 6 secciones de arriba con las dos identidades (ClaveÚnica genérica: Valentina/Tomás Ríos Contreras; "Cargar familia Muñoz González": Martina/Mateo), incluido el ciclo "corregir" abriendo RUN+nombre+nivel+dirección juntos y el campo "Colegio actual" del hermano/a que postula.
+
+**Bug encontrado y corregido en esa verificación:** el checkbox `check-hermanos` (`.post-hermanos-check`, `display:flex; align-items:center`) tenía su texto suelto directo como hijos del `<label>` junto a **dos** `<strong>` ("otro/a" y "postula este año"). Con `display:flex` en el label, cada fragmento de texto entre elementos se vuelve su propio ítem flex — es decir, cada trozo de oración pasaba a ser una "columna" en vez de fluir como texto continuo, partiendo la frase en fragmentos verticales ilegibles. El resto de checkboxes del archivo (`acepta-jornada`, `acepta-proyecto`) ya evitan esto envolviendo el texto en un solo `<span>`; `check-hermanos` no lo hacía (tampoco lo hacía su versión anterior de un solo `<strong>`, pero el problema no era visible con un solo punto de quiebre). Fix: envolver todo el contenido en un `<span>` (un solo ítem flex) + `alignItems: 'flex-start'` en el label, ya que el texto ahora ocupa 3-4 líneas en 375px. Re-verificado tras el fix; `npm run lint`/`build`/`test` (16/16) siguen limpios.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+## 37. Simplificar el hermano/a que postula (sin "corregir") + un solo popup de confirmación para vincular y avanzar (2026-09-13, bitácora Bloque Y8)
+
+**Origen:** tercer round de feedback de la profesora guía sobre el mismo paso 1. (a) El ciclo recap+"corregir" que el §35 (Y3) le agregó al hermano/a que postula resultó sobreingeniería — se pidió un solo checkbox con los campos editables directo debajo, sin recap ni ciclo. (b) La casilla de declaración de apoderado/a legal **no se toca**. (c) "Vincular estudiante" abría un `InfoBox` de confirmación de nivel y, tras aceptarlo, había que hacer un segundo clic aparte en el botón global "Siguiente →" para llegar al paso 2 — se pidió un solo botón con un popup de confirmación final que también avance el paso.
+
+**Cambios en `PostulacionPage.jsx`:**
+- Card del hermano/a que postula: se retiró el ternario `!editandoHermano ? <VerificacionDatosCard onCorregir=.../> : <inputs/>` del §35; ahora los 4 campos (nombre/RUN/nivel/colegio actual) quedan **siempre editables**, directo bajo `check-hermanos`. Se eliminó el estado `editandoHermano` (sin más usos). La card verde del hermano/a **ya matriculado/a** (§35 Y4/Y5) no se tocó — nunca tuvo ciclo de edición.
+- Nuevo componente `ConfirmarVinculacionModal` (mismo patrón `<dialog>`/`.prio-modal*` que `AgregarColegioModal`): reemplaza el `InfoBox` "Verifica el curso antes de continuar". Muestra el mismo párrafo de confirmación de nivel y, si `postulaHermanos`, un segundo párrafo que nombra al hermano/a y advierte que se van a postular **2 hijos/as sin cupo asegurado todavía** (la postulación del hermano/a es aparte). El botón "Sí, esto es correcto — continuar" hace `setAlumnoOk(true); setConfirmandoVinculacion(false); setPaso(2)` en un solo clic; "Revisar de nuevo" solo cierra el modal.
+- Estado `confirmandoNivel` renombrado a `confirmandoVinculacion` (incluida la referencia en el `onChange` del `<select>` de nivel, que lo reseteaba); el botón "Vincular estudiante" solo abre el modal, con el mismo `disabled`/`title` de antes. El botón global "Siguiente →" y `siguiente()` no se tocaron — quedan como red de seguridad para el paso 2→3.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-13. **Verificación visual** (sesión siguiente, mismo día): confirmado en navegador con ambas identidades — checkbox → 4 campos prellenados sin "corregir"; modal con/sin el párrafo de "2 hijos/as" según `postulaHermanos`; "Sí, esto es correcto" avanza directo a paso 2 en un clic; "Revisar de nuevo" cierra sin avanzar; resumen "Estudiante vinculado" al volver con "← Atrás" sigue funcionando. Sin errores de consola, sin bugs encontrados.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+## 38. Hermano/a que postula pasa a solo lectura + Domicilio con "Editar" propio + se quita "Siguiente →" del paso 1 (2026-09-13, bitácora Bloque Y10)
+
+**Origen:** cuarto round de feedback de la profesora guía sobre el mismo paso 1, tras ver una captura del estado del §37 (card naranja del hermano/a que postula con 4 campos siempre editables, sin ciclo "corregir", bajo un checkbox).
+
+**Cambios en `PostulacionPage.jsx`:**
+1. **Card del hermano/a que postula → solo lectura, sin checkbox.** Se eliminó el checkbox `check-hermanos` y el estado `postulaHermanos`/`setPostulaHermanos`; los 4 campos editables (§37) se reemplazaron por `VerificacionDatosCard` **sin `onCorregir`** (mismo patrón que el hermano/a ya matriculado/a del §35). Nueva constante derivada `hayHermanoPostulante = hermanoNombre.trim().length > 0` gatea el bloque por la **presencia del dato**, no por una casilla. `postulaHermanos` se reemplazó por `hayHermanoPostulante` en todos sus usos (prop del `ConfirmarVinculacionModal` sin renombrar, `confirmar()`, `descargarComprobante()`, las dos tarjetas "Estudiante vinculado", y la condición `disabled`/`title` de "Vincular estudiante", de donde se quitó la cláusula `(postulaHermanos && !hermanoDatosOk)` — ya no hay nada editable ahí). Se eliminó `hermanoDatosOk` (sin uso) y las llamadas `setPostulaHermanos(true)` de `ingresarConClaveUnica()`/`cargarCasoEjemplo()`. La card verde del ya matriculado/a no se tocó.
+2. **Domicilio recupera su propio botón "Editar".** El §36 (Y6) había fusionado dirección dentro del `editandoIdentidad` de RUN/nombre/nivel; ahora `VerificacionDatosCard` de identidad vuelve a 3 campos y, justo debajo (mismo `.post-alumno-block`), un bloque de Domicilio nuevo con su propio ciclo `editandoDomicilio` reutiliza `VerificacionDatosCard` con `corregirLabel="Editar"` para el recap y los mismos 3 campos de dirección de siempre (validación `dirTocada` intacta) al editar.
+3. **Se quita el botón global "Siguiente →" del paso 1.** Desde el §37, confirmar en el popup ya avanza directo a paso 2 en el mismo clic — el botón global sobraba. Render cambiado de `{paso < 3 && (...)}` a `{paso === 2 && (...)}`, `disabled`/`title` simplificados (sin las cláusulas de `paso === 1`, inalcanzables). El paso 3 tiene su propio botón "Confirmar postulación", verificado por grep, no depende de este.
+
+**Revisión de la sospecha "se rompe" (sin navegador en esta sesión):** se inspeccionó `ConfirmarVinculacionModal.onConfirmar` — las tres actualizaciones (`setAlumnoOk(true); setConfirmandoVinculacion(false); setPaso(2)`) se agrupan en el mismo handler de React; el único `useEffect` del modal es de foco al montar, no hay lógica que asuma el `<dialog>` sigue montado tras desmontarse. No se encontró señal de ruptura en el código.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-13. **Verificación visual** (sesión siguiente, mismo día): confirmado en navegador con el caso Muñoz González — card del hermano/a de solo lectura sin checkbox; "Editar" del Domicilio y "corregir" de identidad abren campos independientes (verificado por presencia/ausencia de los ids `dir-comuna` vs. `alum-run` en el DOM); "Siguiente →" ausente en el paso 1; popup → paso 2 sin errores de consola. **La sospecha de "se rompe" no se confirmó** — transición limpia.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+## 39. Rediseño visual de `ConfirmarVinculacionModal` — más llamativo, más contraste, menos texto, más grande (2026-09-13, bitácora Bloque Y12)
+
+**Origen:** quinto round de feedback sobre el mismo paso 1, esta vez sobre el popup de confirmación del §37/38: "hay que mejorar el pop up a algo más llamativo y simple, mejorar el contraste y menos texto y más grande".
+
+**Cambios en `PostulacionPage.jsx` (solo `ConfirmarVinculacionModal`) + `index.css`:**
+1. Contenido reestructurado de dos párrafos largos a un resumen escaneable: ícono 🎒 + título corto ("¿Confirmas estos datos?"), nombre + nivel como chip azul, aviso de "curso incorrecto" como callout de una línea (fondo ámbar, borde naranja) en vez de oración dentro de párrafo, aviso del hermano/a acortado a una frase en tarjeta azul con ícono.
+2. Botones apilados a ancho completo con `btn--grande`; el secundario "Revisar de nuevo" pasa de `border: 1px solid var(--borde)` (gris casi invisible sobre blanco) a `border: 2px solid var(--gris-med)`.
+3. Se agregó fondo oscurecido detrás del modal (`rgba(20,24,33,.55)` vía selector específico `.prio-modal.confirmar-modal`) — el `<dialog>` se abre con el atributo `open`, no `.showModal()`, así que `::backdrop` nunca se pintaba; scoped solo a este modal, no a `AgregarColegioModal`/`PrioridadModal` (mismo bug latente, fuera de alcance de este pedido).
+
+CSS nuevo: `.confirmar-modal__*` (no reutiliza `.prio-modal__header/__titulo/__dl`, que siguen sirviendo a los otros dos modales sin cambios).
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16). Verificado en navegador a 375px (caso Muñoz González): contenido correcto con y sin el bloque de hermano, clic fuera cierra, "Sí, continuar" avanza a paso 2 sin errores de consola.
+
+**Ajuste el mismo día (Y13):** se quitó el callout "⚠️ Revisa el curso: postular a uno incorrecto es el error más común" — el usuario notó que ya no aplica: el nivel viene precargado desde ClaveÚnica/`/perfil` (modo verificación, Bloque S) y se corrige en el "corregir" de identidad si hace falta, no se tipea a mano en este popup. Se eliminó el `<p className="confirmar-modal__aviso">` y su regla CSS (sin más usos). `npm run lint`/`build`/`test` (16/16) limpios tras el ajuste.
+
+**Segundo ajuste el mismo día (Y14):** el texto del bloque del hermano/a — "postula aparte, sin cupo asegurado todavía" — sonaba inseguro/negativo para un popup de confirmación. Se cambió a **"con su propia postulación"** (más corto, sin el matiz de riesgo, que ya se explica en otras partes del flujo). `npm run lint`/`build`/`test` (16/16) limpios.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+## 40. Reestructuración del paso 2 de `/postulacion` en dos vistas: catálogo (lista) y "Tu lista" (2026-09-13, bitácora Bloque Z)
+
+**Origen:** feedback de la profesora guía sobre el paso 2 ("Agrega y ordena tus colegios"): el grid de 2 columnas mezclaba catálogo y lista de orden en una sola pantalla, "quitar" solo existía en la tarjeta del catálogo (no en la lista ordenada), y el aviso de mayor riesgo ("Postula solo si necesitas cambiar de colegio") era lo primero que se mostraba, antes de elegir cualquier colegio.
+
+**Cambios en `PostulacionPage.jsx` (paso 2) + `index.css`:**
+1. Nuevo estado `vistaColegios` (`'catalogo'` | `'mia'`, default `'catalogo'`).
+2. **Vista catálogo:** el grid `.post-school-card` (2 columnas) se reemplaza por una lista de una columna (`.post-colegio-lista` / `.post-colegio-fila`, clases nuevas). Colegios ya agregados se ven atenuados con check, sin botón; los no agregados muestran "+ Agregar" (abre `AgregarColegioModal`, sin cambios internos). Botón "Ver mi lista (N) →" salta a la otra vista si `lista.length > 0`.
+3. Al confirmar `AgregarColegioModal` se agrega `setVistaColegios('mia')` — agregar aterriza en la lista ordenada.
+4. **Vista "Tu lista":** el bloque de orden existente (drag-and-drop, ↑↓, `PrioridadColegioControl`, `ColegioAnalisis`, `ResultadoProvisional`, InfoBoxes) gana: botón "+ Agregar otro colegio" (vuelve al catálogo) y un botón "✕ Quitar" por `<li>` (`.post-item__btn--quitar`, llama a `quitar(id)` ya existente). Edge case sin colegios: mensaje + link al catálogo.
+5. El aviso "Postula solo si necesitas cambiar de colegio" (D · fidelidad, S22-15) se mueve al final de la vista "Tu lista" — mismo texto, solo cambia de ubicación.
+
+CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-lista`, `.post-colegio-fila` (+ `--agregada`, `__info`, `__nombre`, `__meta`, `__estado`), `.post-item__btn--quitar`.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; el bloque de prioridades/tutorial (chips + InfoBoxes) no se tocó ni de posición ni de contenido; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-13. **Verificación visual** (sesión siguiente, mismo día, 375px, caso Muñoz González): confirmados los 7 puntos — vista inicial = catálogo en lista; agregar Los Andes → modal → aterriza en "Tu lista"; "+ Agregar otro colegio" vuelve al catálogo con el agregado atenuado ("✓ Ya en tu lista"); se agregó San Martín, se reordenó con ↑ y se sacó con "✕ Quitar" sin problemas; aviso de riesgo justo antes de "← Atrás/Siguiente →" (al final); sin errores de consola; sin overflow a 375px. Sin bugs.
+
+**Limpieza (mismo día):** se eliminaron `.post-school-picker`/`.post-school-card*` (grid de 2 columnas, sin uso desde este bloque) de `index.css`, incluido su override en el media query de 599px — confirmado por grep que ningún JSX las referenciaba. `npm run lint`/`build`/`test` (16/16) sin regresiones tras la limpieza.
+
+**Tercer ajuste el mismo día (Z3):** el bloque de prioridades/tutorial ("¿Cómo funciona este paso?" + "Prioridades que puede tener tu familia..." + chip row + "¿En qué orden..." + "¿Dónde tienes esa prioridad?") vivía sin condicionar a `vistaColegios`, así que se repetía en ambas vistas. Se movió (contenido intacto) para que viva solo dentro de `{vistaColegios === 'mia' && lista.length > 0 && (...)}`, antes de "+ Agregar otro colegio" — el texto habla explícitamente de "cada colegio de tu lista", así que no aplicaba en el catálogo (vista inicial, siempre con `lista` vacía). Efecto: catálogo inicial más liviano, bloque solo visible una vez agregado al menos un colegio. `npm run lint`/`build`/`test` (16/16); verificado en navegador (catálogo inicial sin el bloque, aparece en "Tu lista" tras agregar, no se repite al volver al catálogo).
+
+**Cuarto ajuste el mismo día (Z4):** el usuario aclaró que "el flujo debe empezar con la lista vacía" se refería a la vista de ENTRADA al paso 2, no al bloque de prioridades — debe verse primero "Tu lista" (vacía), no el catálogo. Cambio de una línea: `const [vistaColegios, setVistaColegios] = useState('catalogo')` → `useState('mia')`. El catálogo pasa a ser la vista secundaria, alcanzable desde el estado vacío de "Tu lista" (ya existía el link "Ir al catálogo de colegios →" desde Z1) o desde "+ Agregar otro colegio". `npm run lint`/`build`/`test` (16/16); verificado en navegador.
+
+## 41. Reducción de texto (Tarea 1) + subida de fuente base site-wide (Tarea 2) + bloque de prioridades colapsable (Tarea 5) (2026-09-13, bitácora Bloque Z8)
+
+**Origen:** plan de `docs/planificacion/carga_de_texto_flujo_postulacion.md` §6.4, aprobado por el usuario tras el feedback de la profesora guía sobre carga de texto y tamaño de fuente (persona objetivo con alfabetización digital básica-intermedia, respaldo PISA/PIAAC). Ejecuta las tareas 1, 2 y 5 del plan; la tarea 4 (consolidar más InfoBoxes de "Tu lista") se pospone (esa vista ya bajó de 6-8 cajas a 2-4 condicionales tras los bloques Y/Z anteriores); la tarea 6 (gateo por toggle Tutorial ON/OFF + default) sigue pendiente de decisión del usuario.
+
+1. **Tarea 1 — `PostulacionPage.jsx`, paso 1.** El primer `<p>` de la `InfoBox` "Antes de empezar: cómo se decide tu resultado" (una sola oración de 65 palabras enumerando las 5 prioridades) se reemplazó por una oración corta + `<ul className="cond-detectadas">` de 5 viñetas (reutiliza la clase existente de `CondicionesDetectadas`, sin CSS nuevo) + una oración de cierre corta sobre el sorteo. Sin cambio de contenido/significado.
+2. **Tarea 2 — fuente base del sitio, no solo el toggle "Grande".** `App.jsx` (`GlobalFontSize`): `document.documentElement.style.fontSize = textoGrande ? '20px' : '17px'` (antes `textoGrande ? '18px' : ''` — en modo Normal el font-size raíz quedaba en el default del navegador). `index.css`: las dos declaraciones `body { font-size: 16px }` (regla base ~línea 86 y el reset de Tailwind en `@layer base` ~línea 2848) pasan a `font-size: 1rem`, para que el `<body>` también escale con el nuevo tamaño raíz (antes el valor fijo en px del body ignoraba el `<html>` y el texto sin clase propia no subía con el toggle). `.page--texto-grande { font-size: 1.06rem }` sin tocar. Efecto neto: ~17px de raíz en Normal (antes 16), ~21px efectivos en Grande (antes ~19).
+3. **Tarea 5 — bloque de prioridades del paso 2 pasa a `<details>` colapsable.** El bloque que el Bloque Z3 dejó viviendo solo en la vista "Tu lista" (InfoBox "¿Cómo funciona este paso?" + título "Prioridades que puede tener tu familia en un colegio" + chip row + nota SEP + hasta 3 InfoBox más) se envolvió en `<details className="post-demo"><summary>📋 ¿Cómo funcionan las prioridades acá?</summary>...</details>` — mismo patrón/clase que "⚙️ Herramientas de la prueba de usabilidad" (mismo archivo) y que `/proceso`. Colapsado por defecto; contenido interno sin cambios; el `Fragment` con los `PrioridadModal` sigue anidado sin problemas.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16) — 2026-09-13.
+
+**Verificación visual (sesión siguiente, mismo día):** confirmado en navegador real a 375px, Normal y Grande (root 17px/20px vía `getComputedStyle`), en `/`, `/postulacion` (los 3 pasos), `/colegio?id=1`. Sin overflow horizontal en ninguna. **Se encontró y corrigió un bug real:** en la vista "Tu lista" del paso 2, en modo Grande, `.post-item__acciones` (botones ↑/↓/✕ Quitar) no tenía `flex-basis: 100%` dentro del media query de 599px — a diferencia de `.tut-colegio-info`/`.post-prio-colegio`, que sí fuerzan su propia fila. El nombre del colegio (`.post-item__body`, flex:1, min-width:0) absorbía todo el apriete y se partía en 3 líneas angostas en vez de que los botones bajaran de línea. Fix: se agregó `flex-basis: 100%; justify-content: flex-end; margin-top: 4px;` a esa regla — ahora el nombre ocupa toda la fila y los botones quedan alineados a la derecha, debajo. `npm run lint`/`build`/`test` (16/16) tras el fix, sin regresiones.
+
+## 42. La confirmación de jornada/proyecto educativo se mueve de "agregar un colegio" a "confirmar y enviar" (2026-09-13, bitácora Bloque Z10)
+
+**Origen:** el usuario probó el flujo del §41 y notó que el popup de las dos casillas (brecha C, S22-2, desde 2026-08-27) se repetía una vez por cada colegio agregado — con los 6 colegios mostrando la misma jornada, era la misma pregunta seis veces sin variación real ("todos los colegios eran lo mismo, estaba de más ese pop up").
+
+**Cambios en `PostulacionPage.jsx`:**
+1. "+ Agregar" del catálogo ya no abre modal — llama directo a `agregar(c.id)` + `setVistaColegios('mia')`.
+2. `AgregarColegioModal` (por colegio, con `jornadaDeColegio`) se reemplazó por `ConfirmarEnvioModal` (`lista`, `colegiosById`), mismas dos casillas en plural genérico ("cada colegio de mi lista") + contador de cuántos colegios. Se eliminaron `jornadaDeColegio` y el estado `colegioPendiente` (reemplazado por `confirmandoEnvio`).
+3. "Confirmar y enviar postulación" (paso 3) abre `ConfirmarEnvioModal`; su botón interno "Sí, confirmar y enviar" (deshabilitado hasta marcar ambas casillas) es el que llama a `confirmar()`.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; sigue siendo la brecha C (S22-2), solo cambia el momento; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16); verificado en navegador con el caso Muñoz González — agregar 2 colegios sin ningún popup, el modal aparece solo al hacer clic en "Confirmar y enviar postulación" con el texto genérico correcto, botón deshabilitado hasta marcar ambas casillas, envío exitoso, sin errores de consola.
+
+## 43. `ConfirmarEnvioModal` sin checkboxes + "Postulación enviada" pasa a ser su propia vista (2026-09-13, bitácora Bloque Z11)
+
+**Origen:** el usuario probó el §42 y pidió dos ajustes más: (1) las dos casillas del modal le parecieron innecesarias como gate — mejor texto informativo; (2) el bloque "Postulación enviada" se sumaba al final de la misma pantalla de revisión (con la lista, `ResultadoProvisional` y las InfoBoxes de "cuándo sabrás el resultado"/"qué pasa si no quedo" todavía visibles arriba), lo que se sentía mezclado.
+
+**Cambios en `PostulacionPage.jsx`:**
+1. `ConfirmarEnvioModal`: se eliminaron `aceptaJornada`/`aceptaProyecto` y los dos `<label>` con checkbox — ahora es un `<p>` + `<ul className="cond-detectadas">` de 2 viñetas informativas (sin gate). El botón pasa de "Sí, confirmar y enviar" (deshabilitado hasta marcar ambas) a **"Siguiente"** (siempre habilitado). El foco inicial pasa de la primera casilla al botón principal. Se corrigió también la concordancia singular/plural ("tu único colegio" con 1 colegio, "los N colegios de tu lista" con más de uno).
+2. Paso 3 se reestructuró de una sola `<Card>` con contenido condicional al final, a `{paso === 3 && (!confirmado ? <Card>(revisión completa)</Card> : <Card>(solo confirmación)</Card>)}` — dos tarjetas distintas con su propio `CardTitle`. La rama de revisión ya no envuelve los enlaces "Editar" en `{!confirmado && (...)}` (redundante, siempre true en esa rama). La rama de "Postulación enviada" quedó con su propio contenido exclusivamente (comprobante, descarga, avisos de reenvío, enlace a "Ver mi resultado ahora"), sin la lista de colegios ni el resumen de arriba.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16); verificado en navegador con el caso Muñoz González (1 colegio) — modal sin casillas, "tu único colegio" en singular, botón "Siguiente"; al confirmar, la vista muestra solo la confirmación (sin "Tu lista de colegios:" ni el resto del resumen); sin errores de consola persistentes (un 500 transitorio de HMR durante el guardado se resolvió al recargar, confirmado sin ser un error real por `npm run build`).
+
+## 44. `PrioridadColegioControl` unificado en un solo diseño simple: texto + "Editar" (2026-09-13, bitácora Bloque Z12)
+
+**Origen:** parte del objetivo general de reducir texto (feedback de la profesora guía). El bloque "Prioridad en {colegio}" de cada colegio en "Tu lista" tenía dos diseños distintos según `soloDeteccion` (`perfilEstudiante.caso === 'munoz-gonzalez'`): uno mostraba las prioridades resueltas con un "¿Algo no calza? Corregir" oculto; el otro (identidad genérica) mostraba siempre la fila de hermano/a + una oración invitando a declarar funcionario/a o exalumno/a + los chips ya abiertos.
+
+**Cambio en `PostulacionPage.jsx`:** `PrioridadColegioControl` se unificó en un solo diseño — un texto breve (la prioridad detectada, o "Sin vínculo con {colegio}. Tu cupo depende de la demanda y las vacantes de este colegio.") + un `<details>`/`<summary>` mini "Editar" que revela los chips de funcionario/a y exalumno/a. Hermano/a sigue de solo lectura, nunca entra al `<details>`. Se eliminó el prop `soloDeteccion` (del componente y de su invocación) y la clase CSS `.post-prio-colegio--deteccion` (sin uso tras la unificación).
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16); verificado en navegador con ambas identidades (genérica y caso Muñoz González) — mismo comportamiento visual en las dos, la distinción `soloDeteccion` no aportaba nada que valiera la pena mantener.
+
+## 45. Consolidación de InfoBoxes al final de "Tu lista" — la Tarea 4 pospuesta en §41 (2026-09-13, bitácora Bloque Z13)
+
+**Origen:** con una lista real (2 colegios, ambos alta demanda) se apilaban 5 InfoBox al final de "Tu lista" con contenido repetido entre ellas. Era la Tarea 4 de `carga_de_texto_flujo_postulacion.md` §6.4 que el §41 (Z8) había pospuesto por parecer ya resuelta — no lo estaba.
+
+**Cambios en `PostulacionPage.jsx` (solo texto/estructura):**
+1. 3 InfoBox (progreso hacia 6, consejo de orden, lista corta y alta demanda) → 1, mutuamente excluyentes por estado (`listaCortaYAlta` > `< 6` con tutorial > `>= 6`). Se eliminó el consejo de orden como caja aparte — ya lo dice `ResultadoProvisional` arriba.
+2. `ResultadoProvisional`: párrafo 1 y el disclaimer final recortados (sin perder los hechos, solo comprimidos).
+3. "Postula solo si necesitas cambiar de colegio": 3 párrafos → 2, fusionando oraciones.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; `listaCortaYAlta` sin cambios; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16); verificado en navegador (San Martín + Los Andes, ambos alta demanda) — de 5 cajas a 3, sin errores de consola.
+
+## 46. "+ Agregar otro colegio" se mueve al final de la lista, antes de la advertencia (2026-09-13, bitácora Bloque Z14)
+
+**Origen:** el botón vivía al inicio de la vista "Tu lista", antes de ver la lista misma. El usuario pidió moverlo al final, antes de la advertencia de riesgo que ya cierra esta vista desde el Bloque Z1.
+
+**Cambio en `PostulacionPage.jsx`:** solo posición en el JSX — el botón "+ Agregar otro colegio" pasa de estar justo después del `<details>` de prioridades a estar después de la lista ordenada, `ResultadoProvisional` y la caja de progreso/lista-corta (§45), justo antes de "Postula solo si necesitas cambiar de colegio". Mismo `onClick`, sin cambios de lógica.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16); verificado en navegador — orden confirmado por índice de texto, sin errores de consola.
+
+**Corrección (mismo día, Bloque Z15):** el usuario aclaró que el botón debía quedar pegado a la lista misma, **antes** de "¿Qué hace el orden de tu lista?" (`ResultadoProvisional`), no después de esa caja. Se movió una vez más: ahora va inmediatamente después de `</ul>` y antes de `<ResultadoProvisional>`. Orden final: lista → **botón** → "¿Qué hace el orden de tu lista?" → caja de progreso/lista-corta → advertencia final. `npm run lint`/`build`/`test` (16/16); verificado en navegador.
+
+## 47. Segundo salto de tamaño de fuente base, más perceptible (2026-09-14, bitácora Bloque Z16)
+
+**Origen:** el salto del §41/Bloque Z8 (16→17px normal, 18→20px root en Grande) resultó demasiado sutil para notarse. El usuario pidió subir la fuente de nuevo.
+
+**Cambio en `App.jsx`:** `document.documentElement.style.fontSize = textoGrande ? '23px' : '19px'` (antes `'20px' : '17px'`) — mantiene la diferencia de ~4px entre modos, sobre una base más grande. `.page--texto-grande { font-size: 1.06rem }` (index.css) no se tocó.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16). Verificación visual más exhaustiva que en §41 dado el salto mayor: `/`, `/postulacion` paso 2 "Tu lista" (donde el §41 había corregido un desborde real) y `/colegio?id=1`, en Normal (19px) y Grande (23px) — sin overflow horizontal en ninguna; el fix de `.post-item__acciones` sigue aguantando; badges/chips de la ficha de colegio se apilan verticalmente sin recortarse. Sin errores de consola.
+
+## 48. Reducción de texto en el paso 1: "Antes de empezar" colapsable + "Esto es lo que el sistema ya sabe" recortada (2026-09-14, bitácora Bloque Z17)
+
+**Origen:** parte del objetivo de reducir texto. Al inicio del paso 1 (recién ingresado con ClaveÚnica) se apilaban el InfoBox "Antes de empezar: cómo se decide tu resultado" (siempre expandido, intro + 5 prioridades + 2 párrafos) y "Esto es lo que el sistema ya sabe de tu hijo/a", ambos con bastante texto.
+
+**Cambios en `PostulacionPage.jsx`:**
+1. "Antes de empezar: cómo se decide tu resultado" pasa a `<details className="post-demo"><summary>⚖️ ¿Cómo se decide tu resultado?</summary>...` — colapsado por defecto, mismo patrón que "¿Cómo funcionan las prioridades acá?" del paso 2. Contenido interno sin cambios.
+2. `CondicionesDetectadas` ("Esto es lo que el sistema ya sabe...") se mantiene siempre visible (es personalizado) pero con la intro y el cierre recortados a una oración cada uno. Los `<li>` condicionales (SEP, PIE, vínculos) no se tocaron.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16); verificado en navegador — el `<details>` llega colapsado y se expande bien, texto de la segunda caja notablemente más corto, sin errores de consola.
+
+## 49. Botones ↑/↓/Quitar en fila también en escritorio, para aprovechar el espacio (2026-09-14, bitácora Bloque Z18)
+
+**Origen:** en escritorio, `.post-item__acciones` usaba `flex-direction: column` por defecto (solo `row` bajo los 599px del media query mobile), dejando el nombre del colegio a la izquierda con un vacío grande y los 3 botones apilados en columna angosta a la derecha. El usuario preguntó si convenía aprovechar el espacio; se acordó un ajuste acotado (no un rediseño completo de la tarjeta).
+
+**Cambio en `index.css`:** `.post-item__acciones` pasa a `flex-direction: row` siempre (antes `column`). El media query de 599px (con `flex-basis: 100%`, del §Z9/`.post-item__acciones` mobile) sigue forzando su propia fila completa en mobile, sin cambios.
+
+**Sin impacto:** `asignacion.js`/`simulacionSae.js`/`colegios.js` intactos; `PostulacionPage.jsx` sin cambios; no crea sección nueva del plan; **98 aplicables sin cambio**.
+
+**Validación:** `npm run lint` (0/0), `npm run build` (limpio), `npm test` (16/16). La herramienta de captura de pantalla falló repetidamente en esta sesión (problema del panel, no del sitio) — se verificó con `getComputedStyle`/`getBoundingClientRect` en 1024px (botones comparten fila con el nombre) y 375px (botones en su propia fila completa), sin overflow horizontal en ninguno.

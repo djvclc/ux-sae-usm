@@ -17,6 +17,7 @@ El prototipo demuestra cómo aplicar transparencia algorítmica al SAE; la memor
 
 - `docs/CONTEXTO_CLAUDE_CODE.md` — contexto técnico del prototipo React (parcialmente desactualizado: `/comparador` ya está implementado).
 - `docs/planificacion/plan_mejora_sae.md` — matriz de 22 secciones e incisos a–t del plan de mejora; origen de los códigos de trazabilidad `S<sección>-<inciso>` usados en comentarios del código. Estado: **102 filas numeradas, 4 no aplican → 98 requisitos aplicables** abordados a nivel de código (la cifra histórica "87/87 (100 %)" no era reproducible — ver la "Nota sobre el conteo (2026-09-08)" del propio plan y la sección "Estado del proyecto" más abajo).
+- `docs/planificacion/guia_diseno_agentes.md` — cómo deben estar definidos los agentes de `.claude/agents/` (investigación, principios, plantilla, lista de chequeo y auditoría de los agentes actuales). Leer antes de crear o modificar un agente.
 - `docs/investigacion/` — informe heurístico Fondecyt N.º 1250492 (baseline: 51 % sitio informativo, 61 % plataforma, 0 % en transparencia e inclusión), revisión de 96 papers sobre transparencia algorítmica y resumen ejecutivo.
 
 ## Reglas globales

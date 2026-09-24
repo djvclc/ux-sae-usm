@@ -11,4 +11,9 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
+  server: {
+    // Permite acceder desde el túnel temporal (cloudflared) usado para
+    // compartir el prototipo con otra persona. Quitar si ya no se necesita.
+    allowedHosts: ['.trycloudflare.com'],
+  },
 })

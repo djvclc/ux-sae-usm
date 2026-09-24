@@ -333,21 +333,16 @@ export default function SeguimientoPage() {
             <p className="seg-result-plano__addr">
               📍 {colegioAsignado.direccion}, {colegioAsignado.comuna}
             </p>
+            {/* 2026-09-23 (feedback profesora guía): con el resultado ya disponible,
+                la probabilidad estimada y la demanda dejan de ser relevantes → se
+                quitan. Etiqueta y valor van juntos ("Prioridad: …"), sin el espacio
+                vacío que dejaba el justify-content: space-between. */}
             <ul className="seg-result-plano__datos">
-              {/* F3: la probabilidad es explicabilidad → no va en la condición de control.
-                  El SAE real no muestra una probabilidad en la pantalla de resultado. */}
-              {!esControl && (
-                <li><span>Probabilidad</span><strong>{asignado.prob}%</strong></li>
-              )}
               <li>
-                <span>Prioridad</span>
-                <strong>{resultado?.nivel && resultado.nivel < 5 ? prioridadLabels[resultado.nivel].split('/')[0] : (resultado?.nivel === 5 ? 'Sin vínculo' : '—')}</strong>
+                <span>Prioridad:</span>
+                <strong>{etiquetaPrioridad(resultado?.nivel)}</strong>
               </li>
-              <li>
-                <span>Demanda</span>
-                <strong style={{ textTransform: 'capitalize' }}>{asignado.demanda}</strong>
-              </li>
-              <li><span>Comprobante</span><strong>{comprobante}</strong></li>
+              <li><span>Comprobante:</span><strong>{comprobante}</strong></li>
             </ul>
           </>
         ) : (
@@ -355,9 +350,8 @@ export default function SeguimientoPage() {
         )}
 
         <p className="seg-result-plano__meta">
-          Prioridad aplicada: <strong>{etiquetaPrioridad(resultado?.nivel)}</strong>
-          {' · '}
-          Fecha postulación: <strong>{new Date(data.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+          {/* 2026-09-23: la prioridad ya está arriba; aquí solo la fecha */}
+          Fecha de postulación: <strong>{new Date(data.fecha).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
         </p>
       </div>
 

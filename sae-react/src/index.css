@@ -20,9 +20,9 @@
   --naranja-cl: #fdf4eb;   /* era #fff7ed — ligeramente más cálido y menos brillante */
   --rojo:       #C0392B;
   --rojo-cl:    #faedeb;   /* era #fdf0ef — desaturado */
-  --gris:       #333333;
+  --gris:       #222222;   /* 2026-09-22 (feedback profesora guía: contraste): era #333333 → 15.9:1 sobre blanco */
   --gris-cl:    #f5f7fa;   /* era #f8fafc — ligeramente más definido */
-  --gris-med:   #666666;   /* texto secundario: 5.7:1 sobre blanco — WCAG AA */
+  --gris-med:   #404040;   /* 2026-09-22 (feedback profesora guía: "gris claro no tiene suficiente contraste"): era #666666 (5.7:1) → 10.4:1 sobre blanco, AAA */
   --gris-borde: #dde3ec;   /* era #e2e8f0 — más definido para dar estructura sin brillo */
   --blanco:     #ffffff;
 
@@ -84,9 +84,19 @@ body,
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 1rem;
+  /* 2026-09-22 (feedback profesora guía: "pon todo el texto en negrita"): todo el
+     texto base del sitio pasa a seminegrita (600). Los énfasis (<strong>/<b>) y
+     los títulos suben a 800 para no perder jerarquía. */
+  font-weight: 600;
   color: var(--texto);
   background: var(--bg-app);
   line-height: 1.6;
+}
+
+strong,
+b,
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 800;
 }
 
 a {
@@ -176,7 +186,7 @@ select:focus {
   padding: 7px 12px;
   border-radius: var(--radio);
   font-size: 1rem; /* mínimo 16px — requisito 13-g del informe */
-  font-weight: 500;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   white-space: nowrap;
   transition: color 0.15s, background 0.15s;
 }
@@ -299,7 +309,7 @@ select:focus {
   text-align: center;
   padding: 10px var(--esp-md);
   font-size: 0.88rem;
-  font-weight: 500;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
 }
 
 .stage-banner__inner {
@@ -888,7 +898,7 @@ select:focus {
 
 .criterio-card--sorteo {
   cursor: default;
-  opacity: 0.75;
+  /* 2026-09-22 (contraste): se quitó opacity 0.75, que dejaba el texto en gris claro */
 }
 
 .criterio-card__body {
@@ -2015,7 +2025,7 @@ select:focus {
   font-size: 0.72rem;
   color: var(--texto-suave);
   line-height: 1.3;
-  font-weight: 500;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
 }
 
 /* ─── CTA Zone ─── */
@@ -2376,7 +2386,7 @@ select:focus {
   margin-bottom: 8px;
   font-size: 0.88rem;
   color: var(--texto);
-  font-weight: 500;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
 }
 
 .docentes-bar-label strong {
@@ -2437,7 +2447,7 @@ select:focus {
 .ind-card--off {
   background: var(--gris-cl);
   border-color: var(--borde);
-  opacity: 0.72;
+  /* 2026-09-22 (contraste): se quitó opacity 0.72 — el estado "off" ya se distingue por fondo gris y borde */
 }
 
 .ind-card__icon {
@@ -2497,7 +2507,7 @@ select:focus {
   border-radius: var(--radio);
   border-left: 4px solid var(--azul-med);
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   color: var(--texto);
 }
 
@@ -2719,7 +2729,7 @@ abbr[title] {
 }
 .seg-porque-tabla__pref {
   color: var(--texto-suave);
-  font-weight: 400;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   font-size: 0.85rem;
 }
 .seg-porque-detalle {
@@ -2846,7 +2856,8 @@ abbr[title] {
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-size: 1rem;
-    color: #242b33;
+    color: var(--texto);
+    font-weight: 600;
     background: #ffffff;
     line-height: 1.6;
   }
@@ -3117,7 +3128,7 @@ abbr[title] {
 .algo-pasos-tabla__prob {
   font-size: 0.8rem;
   color: var(--texto-suave);
-  font-weight: normal;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
 }
 
 .algo-pasos-viz__resultado {
@@ -3636,7 +3647,7 @@ button[disabled],
 
 .chat-panel__sub {
   font-size: 0.78rem;
-  opacity: 0.75;
+  opacity: 0.95; /* 2026-09-22 (contraste): era 0.75 */
 }
 
 .chat-panel__body {
@@ -3685,7 +3696,7 @@ button[disabled],
   padding: 8px 14px;
   font-size: 0.84rem;
   color: var(--acento);
-  font-weight: 500;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   cursor: pointer;
   text-align: left;
   transition: background 0.15s, border-color 0.15s;
@@ -3904,8 +3915,8 @@ button[disabled],
 
 .seg-result-plano__datos li {
   display: flex;
-  justify-content: space-between;
-  gap: var(--esp-sm);
+  flex-wrap: wrap;
+  gap: 6px; /* 2026-09-23: etiqueta y valor juntos (antes space-between dejaba un hueco grande) */
   padding: 6px 0;
   border-bottom: 1px solid var(--borde);
   font-size: 0.92rem;
@@ -4590,7 +4601,7 @@ button[disabled],
 
 .comp-simce__ref {
   font-size: 0.78rem;
-  font-weight: 400;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   color: var(--texto-suave);
 }
 
@@ -5079,74 +5090,6 @@ button[disabled],
   align-items: flex-start;
   gap: 8px;
   padding: 10px 0;
-}
-
-.tut-colegio-info {
-  background: var(--gris-cl);
-  border-radius: var(--radio);
-  padding: 10px 12px;
-  margin-bottom: 6px;
-  font-size: 0.84rem;
-}
-
-/* 2026-09-14 (feedback: aplastar las cartas para ver más de una a la vez) —
-   `.tut-colegio-info` pasó de `<div>` a `<details>`; el resumen (Opción N + %)
-   vive en `<summary>` y queda siempre visible, el resto se colapsa detrás de
-   la flecha nativa. Sin `list-style` propio: se deja el marcador ▶/▼ nativo
-   del navegador como única señal de "esto se puede abrir". */
-.tut-colegio-info > summary {
-  cursor: pointer;
-}
-
-.tut-colegio-info__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.tut-colegio-info__orden {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--texto-suave);
-  letter-spacing: 0.04em;
-}
-
-.tut-colegio-info__nombre {
-  font-weight: 700;
-  color: var(--acento);
-  margin: 0 0 8px;
-  font-size: 0.9rem;
-}
-
-.tut-colegio-info__lista {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.tut-colegio-info__lista li {
-  display: flex;
-  gap: 6px;
-  align-items: baseline;
-  flex-wrap: wrap;
-  color: var(--texto);
-}
-
-.tut-colegio-info__lista span:first-child {
-  color: var(--texto-suave);
-  min-width: 110px;
-  flex-shrink: 0;
-}
-
-.tut-colegio-info__tip {
-  color: var(--azul-osc) !important;
-  font-style: italic;
-  margin-top: 2px;
 }
 
 .tut-hint {
@@ -5755,7 +5698,7 @@ button[disabled],
 }
 
 .post-picker-count {
-  font-weight: 400;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   font-size: 0.82rem;
   color: var(--azul);
   background: var(--azul-cl);
@@ -5994,7 +5937,7 @@ button[disabled],
 }
 
 .post-colegio-fila--agregada {
-  opacity: 0.65;
+  /* 2026-09-22 (contraste): se quitó opacity 0.65 — el "ya agregado" se distingue por fondo azul claro, borde y el check */
   border-color: var(--azul);
   background: var(--azul-cl);
 }
@@ -6146,7 +6089,7 @@ button[disabled],
 }
 
 .form-label__opt {
-  font-weight: 400;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   color: var(--gris-med);
   font-size: 0.85em;
 }
@@ -6614,7 +6557,7 @@ button[disabled],
 /* Año de medición junto al título SIMCE */
 .ficha-section__anio {
   font-size: 0.82rem;
-  font-weight: 400;
+  font-weight: 600; /* 2026-09-22: seminegrita base (feedback contraste) */
   color: var(--gris-med);
 }
 
@@ -7603,4 +7546,117 @@ button[disabled],
   font-weight: 700;
   font-size: 0.9rem;
   color: var(--texto);
+}
+
+/* ============================================================
+   POSTULACIÓN — Grupo familiar (2026-09-22, feedback profesora guía:
+   la primera pantalla tras ClaveÚnica muestra a los hijos/as y la
+   familia marca a quiénes postula)
+   ============================================================ */
+.post-familia__intro {
+  margin: 4px 0 12px;
+}
+
+.post-familia__lista {
+  border: 0;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-familia__hijo {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 2px solid var(--gris-borde);
+  border-radius: var(--radio);
+  background: var(--bg-card);
+  cursor: pointer;
+}
+
+.post-familia__hijo input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--azul);
+}
+
+.post-familia__hijo--marcado {
+  border-color: var(--azul);
+  background: var(--azul-cl);
+}
+
+.post-familia__datos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.post-familia__nombre {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.post-familia__run {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+.post-familia__aviso {
+  margin: 0 0 8px;
+  color: var(--texto-suave);
+}
+
+.post-familia-resumen {
+  border: 2px solid var(--gris-borde);
+  border-radius: var(--radio);
+  background: var(--bg-card);
+  padding: 12px 14px;
+  margin: 0 0 16px;
+}
+
+.post-familia-resumen__cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.post-familia-resumen__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.post-familia-resumen__lista li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.post-familia-resumen__lista .badge {
+  white-space: normal;
+}
+
+.badge--info {
+  background: var(--azul-cl);
+  color: var(--azul-osc); /* #004494 sobre #e4ecf7 → 8.1:1 */
+}
+
+/* 2026-09-23 (feedback profesora guía): % estimado como chip en la fila del
+   colegio de "Tu lista" (reemplaza el bloque gris .tut-colegio-info). */
+.post-item__prob {
+  flex-shrink: 0;
+  align-self: center;
+  white-space: nowrap;
 }

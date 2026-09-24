@@ -130,7 +130,7 @@ export default function ComparadorPage() {
                 <tr>
                   <th scope="col" className="comp-tabla__row-label">Característica</th>
                   {cols.map((c) => (
-                    <th key={c.id} scope="col">{c.nombre}<br /><span style={{ fontWeight: 400, fontSize: '0.8rem', opacity: 0.85 }}>{c.comuna}</span></th>
+                    <th key={c.id} scope="col">{c.nombre}<br /><span style={{ fontWeight: 600, fontSize: '0.8rem', opacity: 0.85 }}>{c.comuna}</span></th>
                   ))}
                 </tr>
               </thead>
@@ -247,7 +247,7 @@ export default function ComparadorPage() {
                     <li>
                       <span>📊 SIMCE</span>
                       <strong className={arriba ? 'comp-simce--up' : 'comp-simce--down'}>
-                        {sp} {arriba ? '↑' : '↓'} <span style={{ fontWeight: 400, fontSize: '0.78rem', color: 'var(--texto-suave)' }}>(com. {cp})</span>
+                        {sp} {arriba ? '↑' : '↓'} <span style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--texto-suave)' }}>(com. {cp})</span>
                       </strong>
                     </li>
                     <li>

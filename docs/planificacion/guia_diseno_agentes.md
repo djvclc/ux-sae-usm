@@ -70,6 +70,7 @@ Algunas fuentes (p. ej. guías de flujo con LLM para memorias en Typst, arXiv di
 |---|---|---|---|
 | `writing-agent` | `.claude/agents/writing-agent.md` | `proyecto-tesis/PLAN_REDACCION.md` | `python3 scripts/verificar_memoria.py` + `latexmk main.tex` |
 | `code-agent` | `.claude/agents/code-agent.md` | `docs/CONTEXTO_CLAUDE_CODE.md` + `CLAUDE.md` "Estado del proyecto" | `npm run lint` + `npm run build` + `npm test` |
+| `revisor-memoria` | `.claude/agents/revisor-memoria.md` | ninguno propio: lee `PLAN_REDACCION.md` y `bibliografia/bibliografia_anotada.md`; su salida es un informe, no un archivo | `verificar_memoria.py` + `latexmk` (solo los corre, no corrige) |
 | `bitacora-agent` | `.claude/agents/bitacora-agent.md` | `docs/planificacion/bitacora_flujo_postulacion_y_resultado.md` (es a la vez su entregable y su estado) | re-correr lint/build/test antes de marcar ✅ |
 
 **Por qué un archivo del repo y no `memory: project`:** el archivo de estado es visible para el autor, se versiona con git junto al trabajo que describe y sirve también a quien trabaje sin el agente. `memory: project` sigue siendo una opción para aprendizajes de estilo que no calzan en el archivo de estado; hoy no se usa.
@@ -134,7 +135,8 @@ Antes del rediseño, la definición del `writing-agent` tenía 934 palabras, la 
 
 | Agente | Cumple | Desviaciones encontradas |
 |---|---|---|
-| `writing-agent` | ✅ Rediseñado el 2026-09-24 según esta guía | — |
+| `writing-agent` | ✅ Rediseñado el 2026-09-24 según esta guía; el 2026-09-27 suma la cadena de coherencia, las afirmaciones absolutas y la bibliografía anotada | — |
+| `revisor-memoria` | ✅ Creado el 2026-09-27 según esta guía (sec. 9) | — |
 | `code-agent` | 🟡 Parcial | (a) Tiene estado dentro de la definición y está desactualizado: dice "100 % (87/87 aplicables, 22 categorías)" y "conteo X/87" (vigente: 98 aplicables, sin porcentaje agregado) y "14 tests" (hoy son 16). (b) El paso 3 del flujo valida solo con lint + build y omite `npm test`, que sí aparece en su sección de validación. (c) La `description` no tiene un disparador "Usar cuando…" explícito (aceptable: dice "Usar para cualquier tarea de código"). (d) Sin lista de autoevaluación ni formato de salida fijo más allá de "Resume:". |
 | `bitacora-agent` | 🟡 Parcial | (a) Dice "14 tests" (hoy son 16). (b) Por lo demás cumple: un solo entregable, fuentes verificadas contra `investigacion_ux_guide_ai_systems.md`, regla de no marcar ✅ sin correr los comandos y cierre con resumen fijo. |
 
@@ -142,7 +144,17 @@ Antes del rediseño, la definición del `writing-agent` tenía 934 palabras, la 
 
 ---
 
-## 9. Mantención de esta guía
+## 9. Evaluador separado del autor: `revisor-memoria` (2026-09-27)
+
+Surge de revisar la propuesta externa `AGENTE_MEMORIA_TITULO_INSTRUCCIONES.md` (entregada por el autor), que planteaba siete agentes (director, investigador, estado del arte, metodología, datos, escritura y revisor). Se adoptó **solo el revisor**:
+- **Por qué sí:** es el patrón evaluador-optimizador de F2 con el evaluador **separado** de quien escribe. Un agente tiende a validar su propio texto; un revisor independiente, de solo lectura y con salida obligatoria de evidencia (`archivo:línea` + cita textual), reduce ese sesgo.
+- **Por qué no los otros seis:** las subtareas de este repo son predecibles (F2 reserva el orquestador para lo impredecible); la literatura ya está hecha y el análisis de datos todavía no existe; y cada subagente parte sin la conversación previa (F1), así que dividir multiplica el costo de contexto sin ganancia.
+- **Diseño:** `tools` sin `Write`/`Edit`; revisa en orden (verificación automática → cadena de coherencia → respaldo de afirmaciones y citas → honestidad epistémica → consistencia → saltos lógicos); prioriza en 🔴 bloqueantes / 🟡 a revisar; no reabre las decisiones ❓ del autor ni reporta estilo por gusto personal.
+- **Uso:** después de que el `writing-agent` cierre una sección, o antes de enviar una versión a la profesora guía. El `writing-agent` trata los 🔴 como tareas.
+
+De la misma propuesta se adoptaron además, en el `writing-agent` y el verificador: la revisión de la cadena problema → objetivos → método → resultados → conclusiones, el control de afirmaciones absolutas, las conclusiones por objetivo y la bibliografía anotada (`proyecto-tesis/bibliografia/bibliografia_anotada.md`). No se adoptó la estructura de siete capítulos, porque contradice la regla "no cambiar el rumbo".
+
+## 10. Mantención de esta guía
 
 - Cuando se cree, rediseñe o audite un agente, actualizar la sec. 8 con la fecha.
 - Si se adopta una práctica nueva (p. ej. `memory: project`, `maxTurns`, un verificador nuevo), agregarla a la sec. 3 o 4 con la fuente que la respalda.

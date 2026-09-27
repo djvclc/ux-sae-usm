@@ -35,8 +35,8 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 ### Cap. 1 — Introducción (`01_introduccion.tex`)
 | Sección | Estado | Qué falta | Fuentes |
 |---|---|---|---|
-| Contexto y problema | ✅ | — | — |
-| Objetivos específicos | ❓ | Obj. 5 dice "claridad, confianza y utilidad percibida" y el instrumento mide comprensión/confianza/justicia; decidir si se alinea y si se agrega "con énfasis en el flujo de postulación" (`docs/planificacion/plan_cambio_foco_postulacion.md`) | decisión del autor |
+| Contexto y problema | 🟡 | Pregunta de investigación: "mejore **significativamente**" sugiere significancia estadística, pero el plan de análisis (N≈15/condición) es principalmente descriptivo → decisión del autor (sec. 4, n.º 5). Línea 11: "han demostrado, en decenas de estudios empíricos" → atenuar o respaldar con la revisión | Cap. 3 §3.4.1 |
+| Objetivos específicos | ❓ | **Obj. 4** dice "primero como maqueta de alta fidelidad y posteriormente como aplicación web", pero el Cap. 3 (`sec:fase2`) declara la maqueta Figma como un estudio **distinto**, no un resultado de esta memoria → contradicción. **Obj. 5** dice "claridad, confianza y utilidad percibida" y el instrumento mide comprensión/confianza/justicia; decidir si se alinea y si se agrega "con énfasis en el flujo de postulación" (`docs/planificacion/plan_cambio_foco_postulacion.md`) | decisión del autor |
 | Estructura de la memoria | 🟡 | Título corregido (2026-09-24); el párrafo aún dice "pruebas de usabilidad" → estudio comparativo | — |
 
 ### Cap. 2 — Marco teórico (`02_marco_teorico.tex`)
@@ -73,6 +73,9 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 | Discusión completa | ⏸ | Requiere datos | — |
 
 ### Cap. 6 — Conclusiones (`06_conclusiones.tex`) ⏸
+
+**Formato fijado (2026-09-27):** la versión final responde objetivo específico por objetivo específico (OE1…OE6 del Cap. 1), y cierra con aportes, limitaciones y trabajo futuro.
+
 | Sección | Estado | Qué falta | Fuentes |
 |---|---|---|---|
 | Lo que puede afirmarse | ✅ | — | — |
@@ -102,6 +105,9 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 2. HAX / PAIR citados en el Cap. 2 o solo en el Cap. 3.
 3. Comité de ética UTFSM (el Cap. 3 lo declara como trámite por confirmar).
 4. Placeholders de portada: `\carreraTesis`, `\gradoTesis`, `\directorTesis`.
+5. **Coherencia problema → objetivos → método** (detectado el 2026-09-27 con la revisión en cadena): (a) Obj. 4 menciona la maqueta Figma como parte del trabajo, mientras el Cap. 3 la declara un estudio distinto; (b) Obj. 5 mide "claridad, confianza y utilidad percibida", pero la pregunta y el instrumento miden comprensión, confianza y percepción de justicia; (c) "significativamente" en la pregunta de investigación frente a un análisis principalmente descriptivo. Propuesta mínima, para aprobar: Obj. 4 → "Construir un prototipo funcional de aplicación web…"; Obj. 5 → "Evaluar, mediante un estudio comparativo con usuarios, si la explicación del algoritmo mejora la comprensión, la confianza y la percepción de justicia"; pregunta → quitar "significativamente".
+6. **Abstract en inglés y Anexos** (cuestionario, guion de moderador, consentimiento): confirmar el formato exigido por la UTFSM antes de agregarlos.
+7. **Referencias del Bloque B con título no verificado:** 9 entradas citadas imprimen "(VERIFICAR…)" en la bibliografía del PDF. Hay que conseguir el título, venue y año reales de cada paper; ver `bibliografia/bibliografia_anotada.md`.
 
 ---
 
@@ -113,3 +119,5 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 | 2026-09-24 | Cap. 3 Tabla 3.1 | + filas de septiembre (preparación del estudio y condición de control; carga de texto y grupo familiar) | ídem |
 | 2026-09-24 | Todo el documento | El Resumen pasa a `\chapter*`: antes corría la numeración un capítulo (Metodología salía como Cap. 4 y la validación como 4.4, mientras el texto decía "Capítulo 3" y "Sección 3.5"). 56 referencias escritas a mano → `\label`/`\ref`; "Sección 3.5" → `sec:validacion` (= 3.4) | `latexmk` sin errores ni referencias indefinidas |
 | 2026-09-24 | Cap. 4 §4.2, §4.4 | Condición de control + tests; el pendiente (b) pasa al estudio comparativo | ídem |
+| 2026-09-27 | Cap. 3 §3.4.1 | + párrafo **Variables** (independiente: condición; dependientes: 3 constructos; constantes: caso/lista/orden/desenlace/tareas/instrumento; covariables) | `verificar_memoria.py` 0 errores; `latexmk` OK |
+| 2026-09-27 | Herramientas | `bibliografia/bibliografia_anotada.md` (32 fichas generadas del `.bib` y de las citas reales; verificación ⏳); verificador + avisos de afirmaciones absolutas y de marcadores VERIFICAR citados; `writing-agent` + cadena de coherencia; nuevo agente `revisor-memoria` | — |

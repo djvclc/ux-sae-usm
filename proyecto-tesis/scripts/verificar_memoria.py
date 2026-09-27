@@ -17,6 +17,7 @@ Chequeos:
     - "tesis" en el cuerpo (la convención es "memoria")
     - porcentaje sin espacio fino (51\\% en vez de 51\\,\\%)
     - marcadores de pendiente (\\pendiente, TODO, XXX)
+    - afirmaciones absolutas ("significativamente", "demostrado", "siempre"...)
     - referencias cruzadas escritas a mano ("Sección~3.5" en vez de \\ref)
   INFO
     - claves del .bib sin citar
@@ -25,6 +26,7 @@ Chequeos:
 Sale con código 1 si hay algún ERROR.
 """
 import re
+import signal
 import sys
 from pathlib import Path
 
@@ -44,6 +46,11 @@ OBSOLETOS = [
     (r"guardado visible de borrador", "borrador reanudable retirado (Bloque S5, 2026-09-06)"),
     (r"máximo de (tres|ocho) colegios", "el SAE no tiene tope (error E2)"),
 ]
+
+# Afirmaciones absolutas o de certeza: aviso, no error. Pueden ser legítimas
+# (p. ej. "siempre" describiendo la semilla fija del simulador); el agente o el
+# revisor juzgan si la afirmación está respaldada por la fuente citada.
+ABSOLUTAS = r"\b(significativamente|demostrad[oa]s?|demuestra[n]?|prueba de que|garantiza[n]?|sin duda|indudablemente|evidentemente|claramente|todos los estudios|toda la literatura|decenas de estudios)\b"
 
 ENTORNOS_IGNORADOS = {"document"}
 
@@ -114,6 +121,9 @@ def main():
                 avisos.append(f"{rel}:{n}: referencia escrita a mano (usar \\label/\\ref; los números se desfasan)")
             if re.search(r"\d\\%", linea):
                 avisos.append(f"{rel}:{n}: porcentaje sin espacio fino (usar 51\\,\\%)")
+            m = re.search(ABSOLUTAS, linea, re.I)
+            if m:
+                avisos.append(f"{rel}:{n}: afirmación absoluta «{m.group(0)}» — ¿la respalda la fuente?")
             if re.search(r"\\pendiente|\bTODO\b|\bXXX\b", crudo.split("\n")[n - 1]):
                 avisos.append(f"{rel}:{n}: marcador de pendiente")
 
@@ -127,6 +137,11 @@ def main():
         if r_ not in labels:
             errores.append(f"{donde}: \\ref{{{r_}}} sin \\label")
 
+    # Entradas del .bib con marcador VERIFICAR que se citan: el marcador se
+    # imprime en la bibliografía del PDF (ver bibliografia_anotada.md, Bloque B).
+    for m in re.finditer(r"@\w+\s*{\s*([^,\s]+)\s*,(.*?)\n}", leer(BIB), re.S):
+        if "VERIFICAR" in m.group(2) and m.group(1) in citadas:
+            avisos.append(f"bib «{m.group(1)}»: tiene marcador VERIFICAR y se cita — el marcador aparece en el PDF")
     print("== ERRORES ==" if errores else "== ERRORES: ninguno ==")
     for e in errores:
         print("  ✗", e)
@@ -142,4 +157,5 @@ def main():
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)  # permite `| head` sin traza
     main()

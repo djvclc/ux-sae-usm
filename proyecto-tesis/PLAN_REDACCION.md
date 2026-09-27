@@ -68,8 +68,8 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 | Sección | Estado | Qué falta | Fuentes |
 |---|---|---|---|
 | 5.1 Brechas cerradas por el sitio oficial | ✅ (preliminar) | — | — |
-| 5.2 Preguntas de la discusión completa | 🔄 | Pregunta 2 → formular en términos de H1–H4 del estudio comparativo | `caso_estudio…md` §8.4 |
-| 5.3 Limitaciones | 🔄 | Sumar las amenazas a la validez del estudio (moderador no ciego, un solo desenlace, muestra por conveniencia, simulador didáctico) | `caso_estudio…md` §10 |
+| 5.2 Preguntas de la discusión completa | 🔄 | Pregunta 2 → formular en términos de H1–H4 del estudio comparativo; dice "prueba de usabilidad" y atribuye a `springerwhittaker2019/2020` un hallazgo sobre justicia percibida no verificado (ver ficha en `bibliografia_anotada.md`) | `caso_estudio…md` §8.4 |
+| 5.3 Limitaciones (`sec:limitaciones`) | ✅ | (2026-09-27: + moderador no ciego, un solo desenlace, muestra por conveniencia, simulador y control como aproximaciones) | `caso_estudio…md` §10 |
 | Discusión completa | ⏸ | Requiere datos | — |
 
 ### Cap. 6 — Conclusiones (`06_conclusiones.tex`) ⏸
@@ -121,3 +121,4 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 | 2026-09-24 | Cap. 4 §4.2, §4.4 | Condición de control + tests; el pendiente (b) pasa al estudio comparativo | ídem |
 | 2026-09-27 | Cap. 3 §3.4.1 | + párrafo **Variables** (independiente: condición; dependientes: 3 constructos; constantes: caso/lista/orden/desenlace/tareas/instrumento; covariables) | `verificar_memoria.py` 0 errores; `latexmk` OK |
 | 2026-09-27 | Herramientas | `bibliografia/bibliografia_anotada.md` (32 fichas generadas del `.bib` y de las citas reales; verificación ⏳); verificador + avisos de afirmaciones absolutas y de marcadores VERIFICAR citados; `writing-agent` + cadena de coherencia; nuevo agente `revisor-memoria` | — |
+| 2026-09-27 | Cap. 3 §3.3, §3.4.1; Cap. 5 §5.3 | Primera prueba del `revisor-memoria` (1 🔴, 7 🟡), todo aplicado: nombres de 3 establecimientos corregidos según `colegios.js`; 8 tareas (identificarse y seleccionar el grupo familiar separadas); H3 sin la atribución no verificada a Springer & Whittaker; variables (sondeos por rama, predicción codificada); asignación y estratificación; comparaciones por ítem exploratorias; "prueba de usabilidad" → estudio comparativo en §3.3; Sec. 5.3 con las amenazas a la validez | verificador 0 errores; `latexmk` OK |

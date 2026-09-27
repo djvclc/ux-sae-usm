@@ -34,8 +34,8 @@ Una ficha por cada clave de `referencias.bib`. Sirve para controlar que la memor
 | `mineduc_sae` | A | misc | 2 | ⏳ |
 | `epstein2017mecanismos` | A | mastersthesis | 3 | ⏳ |
 | `moralesvargas2026informe` | A | misc | 3 | ⏳ |
-| `springerwhittaker2019` | B | misc | 4 | ⏳ |
-| `springerwhittaker2020` | B | misc | 3 | ⏳ |
+| `springerwhittaker2019` | B | misc | 3 | ⏳ |
+| `springerwhittaker2020` | B | misc | 2 | ⏳ |
 | `lu2020goodexplanation` | B | misc | 0 | ⏳ |
 | `nefedov2022` | B | misc | 2 | ⏳ |
 | `kim2021recommender` | B | misc | 2 | ⏳ |
@@ -241,9 +241,9 @@ Una ficha por cada clave de `referencias.bib`. Sirve para controlar que la memor
 - **Lo que la memoria le atribuye:**
   - `02_marco_teorico.tex:46` — «\item Divulgación progresiva: mostrar primero información esencial y revelar el detalle técnico solo si el usuario lo solicita, evitando la fijación temprana en errores o detalles irrelevantes [cita].»
   - `02_marco_teorico.tex:58` — «\item La transparencia técnica sin filtro —mostrar código, ecuaciones o el detalle interno completo del algoritmo— reduce la confianza en usuarios no técnicos en lugar de aumentarla [cita].»
-  - `03_metodologia.tex:128` — «\item H3 (percepción de justicia, exploratoria). Se espera una diferencia menor o nula: la literatura sobre gestión de expectativas sugiere que explicar un resultado mejora la comprensión y la confianza sin cambiar necesariamente cuán justo se percibe no haber obtenido la opción preferida [cita].»
   - `05_discusion.tex:17` — «\item Si los resultados de la prueba de usabilidad sobre el prototipo completo son consistentes con los del estudio previo mencionado en la Sección \ref{sec:fase2} —realizado sobre un artefacto más acotado—, en particular respecto de si la explicabilidad contextualizada mejora la comprensión y la confianza sin necesariamente resolver la percepción de justicia del resultado, tal como sugiere la literatura sobre gestió»
 - **Aporte a la memoria:** _(completar al verificar: qué problema, método y hallazgo de la fuente sostienen las afirmaciones de arriba)_
+- **Nota del revisor (2026-09-27):** el uso en `05_discusion.tex:17` le atribuye un hallazgo sobre la **percepción de justicia** (explicar mejora comprensión y confianza sin cambiar la justicia percibida) que no está registrado para esta fuente; el mismo uso se quitó de H3 en el Cap. 3. Verificar antes de mantenerlo en la reescritura de la Sec. 5.2.
 - **Verificación:** ⏳ pendiente
 
 ### `springerwhittaker2020`
@@ -252,9 +252,9 @@ Una ficha por cada clave de `referencias.bib`. Sirve para controlar que la memor
 - **Bloque:** B — título descriptivo, **verificar título, venue y año contra la fuente original**
 - **Lo que la memoria le atribuye:**
   - `02_marco_teorico.tex:46` — «\item Divulgación progresiva: mostrar primero información esencial y revelar el detalle técnico solo si el usuario lo solicita, evitando la fijación temprana en errores o detalles irrelevantes [cita].»
-  - `03_metodologia.tex:128` — «\item H3 (percepción de justicia, exploratoria). Se espera una diferencia menor o nula: la literatura sobre gestión de expectativas sugiere que explicar un resultado mejora la comprensión y la confianza sin cambiar necesariamente cuán justo se percibe no haber obtenido la opción preferida [cita].»
   - `05_discusion.tex:17` — «\item Si los resultados de la prueba de usabilidad sobre el prototipo completo son consistentes con los del estudio previo mencionado en la Sección \ref{sec:fase2} —realizado sobre un artefacto más acotado—, en particular respecto de si la explicabilidad contextualizada mejora la comprensión y la confianza sin necesariamente resolver la percepción de justicia del resultado, tal como sugiere la literatura sobre gestió»
 - **Aporte a la memoria:** _(completar al verificar: qué problema, método y hallazgo de la fuente sostienen las afirmaciones de arriba)_
+- **Nota del revisor (2026-09-27):** el uso en `05_discusion.tex:17` le atribuye un hallazgo sobre la **percepción de justicia** (explicar mejora comprensión y confianza sin cambiar la justicia percibida) que no está registrado para esta fuente; el mismo uso se quitó de H3 en el Cap. 3. Verificar antes de mantenerlo en la reescritura de la Sec. 5.2.
 - **Verificación:** ⏳ pendiente
 
 ### `lu2020goodexplanation`

@@ -14,6 +14,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const BASE = process.argv[2] || 'http://localhost:4173'
+const FECHA_SIMULADA = '2026-08-20T10:00:00-04:00'
 const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'imagenes', 'propuesta')
 mkdirSync(OUT, { recursive: true })
 
@@ -33,6 +34,10 @@ const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PAT
 
 async function nuevaPagina() {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, locale: 'es-CL' })
+  // Fecha fija dentro del período de postulación (cierra el 27-08-2026 a las 14:00),
+  // para que el comprobante, el resultado y la etapa del proceso sean coherentes
+  // con el calendario que muestran las demás pantallas, sea cual sea el día de la captura.
+  await ctx.clock.install({ time: new Date(FECHA_SIMULADA) })
   const page = await ctx.newPage()
   return { ctx, page }
 }

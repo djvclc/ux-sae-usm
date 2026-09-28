@@ -12,10 +12,10 @@ export default function TextSizeBar({ pageName }) {
     <div className="context-bar" role="status" aria-live="polite">
       <div className="context-bar__inner">
         <p>
-          Estas en: <strong>{pageName}</strong>
+          Estás en: <strong>{pageName}</strong>
         </p>
         <div className="context-bar__text-size">
-          <span>Tamano de texto</span>
+          <span>Tamaño de texto</span>
           <button
             type="button"
             className={!textoGrande ? 'is-on' : ''}

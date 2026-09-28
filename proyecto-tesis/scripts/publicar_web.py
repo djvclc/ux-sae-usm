@@ -86,7 +86,7 @@ def preparar_tex(labels):
             if lab and lab.group(1) in labels:
                 bloque = bloque.replace("\\caption{", f"\\caption{{Tabla {labels[lab.group(1)]}. ", 1)
             return bloque
-        t = re.sub(r"\\begin\{table\}.*?\\end\{table\}", tabla, t, flags=re.S)
+        t = re.sub(r"\\begin\{(long)?table\}.*?\\end\{(long)?table\}", tabla, t, flags=re.S)
         # Figuras: "Figura N." delante del caption (el número sale del .aux).
         def figura(m):
             bloque = m.group(0)

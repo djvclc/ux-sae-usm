@@ -127,7 +127,7 @@ export default function InicioPage() {
         <div className="welcome-banner" role="region" aria-label="Bienvenida primera vez">
           <div className="welcome-banner__inner">
             <span className="welcome-banner__msg">
-              Es tu primera vez aquí? Te mostramos cómo funciona el SAE en 3 pasos cortos.
+              ¿Es tu primera vez aquí? Te mostramos cómo funciona el SAE en 3 pasos cortos.
             </span>
             <div className="welcome-banner__actions">
               <button

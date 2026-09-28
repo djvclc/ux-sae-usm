@@ -111,7 +111,17 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 
 ---
 
-## 5. Registro de sesiones de redacción
+## 5. Versión web de lectura (para leer desde el celular)
+
+- **Link fijo (privado):** https://claude.ai/artifact/Mh5i39RR2g7rC8scU4iXE2
+- **Cómo se actualiza** (lo hace la sesión principal, no el `writing-agent`, que no tiene la herramienta de publicación), después de cerrar y verificar una sección:
+  1. `cd proyecto-tesis && latexmk main.tex` (los números de sección y tabla salen de `build/main.aux`).
+  2. `python3 scripts/publicar_web.py` → `build/web/memoria.html` (requiere `pandoc`; si falta, `apt-get install -y pandoc`).
+  3. Publicar ese archivo como Artifact **con `url` = el link de arriba** (en una sesión nueva, leerlo primero con `action: read`). Publicar sin `url` crea otro link.
+- La página muestra el estado de cada capítulo leído de este archivo (sec. 2): ⏸ en el título → "Espera datos"; alguna fila 🔄/🟡/❓ → "En revisión"; si no, "Vigente". Mantener esas marcas al día cambia lo que ve el autor.
+- El PDF sigue siendo el documento oficial; la web es una vista de lectura (Pandoc, citas autor-año desde `referencias.bib`).
+
+## 6. Registro de sesiones de redacción
 
 | Fecha | Sección | Cambio | Verificación |
 |---|---|---|---|

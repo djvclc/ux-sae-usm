@@ -11,6 +11,7 @@ Chequeos:
     - \\ref{...} sin \\label correspondiente
     - \\label duplicado
     - llaves { } desbalanceadas por archivo
+    - \\includegraphics que apunta a un archivo inexistente
     - entornos \\begin/\\end desbalanceados por archivo
   AVISO  (el agente decide si corresponde corregir)
     - patrones obsoletos (cifras o términos superados; ver OBSOLETOS)
@@ -88,6 +89,9 @@ def main():
                     citadas.setdefault(k.strip(), []).append(f"{rel}:{n}")
             for lab in re.findall(r"\\label{([^}]*)}", linea):
                 labels.setdefault(lab, []).append(f"{rel}:{n}")
+            for img in re.findall(r"\\includegraphics(?:\[[^\]]*\])?{([^}]*)}", linea):
+                if not any((RAIZ / c).exists() for c in (img, f"imagenes/{img}", f"{img}.png", f"imagenes/{img}.png")):
+                    errores.append(f"{rel}:{n}: figura inexistente «{img}»")
             for r_ in re.findall(r"\\(?:auto|eq|page)?ref{([^}]*)}", linea):
                 refs.append((r_, f"{rel}:{n}"))
 

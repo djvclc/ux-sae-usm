@@ -10,14 +10,15 @@ Leyenda: ✅ vigente · 🔄 escrita, requiere actualización · 🟡 parcial ·
 
 ## 1. Orden de escritura
 
-El orden de **lectura** es 0→6. El de **escritura** es otro, porque cada capítulo depende de lo que el anterior fija:
+El orden de **lectura** es 0→7. El de **escritura** es otro, porque cada capítulo depende de lo que el anterior fija:
 
 1. **Cap. 3 Metodología**: fija qué se hizo y qué se medirá. Todo lo demás lo cita.
-2. **Cap. 4 Resultados**: solo lo verificable hoy; los resultados de la validación se agregan cuando existan.
-3. **Cap. 2 Marco teórico**: se completa solo si la metodología cita algo que el marco no introduce (p. ej. HAX/PAIR, ❓).
-4. **Cap. 1 Introducción**: se ajusta al final a lo que la memoria efectivamente hace (objetivos, estructura).
-5. **Cap. 5 y 6**: ⏸ hasta tener datos del estudio comparativo.
-6. **Resumen**: al final de cada ronda; resume lo que existe, nunca lo proyectado.
+2. **Cap. 4 Propuesta**: el prototipo pantalla por pantalla; se actualiza cuando cambia una pantalla (recapturar con `scripts/capturas_propuesta.mjs`).
+3. **Cap. 5 Resultados**: solo lo verificable hoy; los resultados de la validación se agregan cuando existan.
+4. **Cap. 2 Marco teórico**: se completa solo si la metodología cita algo que el marco no introduce (p. ej. HAX/PAIR, ❓).
+5. **Cap. 1 Introducción**: se ajusta al final a lo que la memoria efectivamente hace (objetivos, estructura).
+6. **Caps. 6 y 7**: ⏸ hasta tener datos del estudio comparativo.
+7. **Resumen**: al final de cada ronda; resume lo que existe, nunca lo proyectado.
 
 Regla: una sección nunca cita como hecho algo que una sección anterior en este orden todavía no fija.
 
@@ -25,7 +26,7 @@ Regla: una sección nunca cita como hecho algo que una sección anterior en este
 
 ## 2. Índice con estado
 
-Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Introducción = Cap. 1 … Conclusiones = Cap. 6. Las referencias se escriben con `\ref`; etiquetas vigentes: `cap:introduccion|marco|metodologia|resultados|discusion|conclusiones`, `sec:prototipado-ia`, `sec:fase2`, `sec:fase3-caso`, `sec:fase3-marcos`, `sec:validacion`, `sec:estudio-comparativo`, `sec:res-diagnostico|prototipo|sitio-oficial|pendientes`, `sec:limitaciones`, `tab:iteraciones`, `tab:instrumento`.
+Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Introducción = Cap. 1 … Conclusiones = Cap. 7 (desde el 2026-09-28, con la Propuesta como Cap. 4). Las referencias se escriben con `\ref`; etiquetas vigentes: `cap:introduccion|marco|metodologia|propuesta|resultados|discusion|conclusiones`, `sec:que-funciona`, `sec:accesibilidad`, `sec:prop-general|informarse|postular|resultado|control|sintesis`, `fig:prop-inicio|algoritmo|paso1|paso2|paso3|resultado|control`, `tab:prop-sintesis`, `sec:prototipado-ia`, `sec:fase2`, `sec:fase3-caso`, `sec:fase3-marcos`, `sec:validacion`, `sec:estudio-comparativo`, `sec:res-diagnostico|prototipo|sitio-oficial|pendientes`, `sec:limitaciones`, `tab:iteraciones`, `tab:instrumento`.
 
 ### Cap. 0 — Resumen (`00_resumen.tex`)
 | Sección | Estado | Qué falta | Fuentes |
@@ -37,7 +38,7 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 |---|---|---|---|
 | Contexto y problema | 🟡 | Pregunta de investigación: "mejore **significativamente**" sugiere significancia estadística, pero el plan de análisis (N≈15/condición) es principalmente descriptivo → decisión del autor (sec. 4, n.º 5). Línea 11: "han demostrado, en decenas de estudios empíricos" → atenuar o respaldar con la revisión | Cap. 3 §3.4.1 |
 | Objetivos específicos | ❓ | **Obj. 4** dice "primero como maqueta de alta fidelidad y posteriormente como aplicación web", pero el Cap. 3 (`sec:fase2`) declara la maqueta Figma como un estudio **distinto**, no un resultado de esta memoria → contradicción. **Obj. 5** dice "claridad, confianza y utilidad percibida" y el instrumento mide comprensión/confianza/justicia; decidir si se alinea y si se agrega "con énfasis en el flujo de postulación" (`docs/planificacion/plan_cambio_foco_postulacion.md`) | decisión del autor |
-| Estructura de la memoria | 🟡 | Título corregido (2026-09-24); el párrafo aún dice "pruebas de usabilidad" → estudio comparativo | — |
+| Estructura de la memoria | ✅ | (2026-09-28: presenta la Propuesta y el estudio comparativo) | — |
 
 ### Cap. 2 — Marco teórico (`02_marco_teorico.tex`)
 | Sección | Estado | Qué falta | Fuentes |
@@ -56,23 +57,28 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 | 3.4 Fase 4 (`sec:validacion`): reevaluación heurística (5 pasos) | ✅ | (Intro reescrita para presentar los dos componentes) | — |
 | 3.4.1 Estudio comparativo (`sec:estudio-comparativo`) | ✅ | Reescrita el 2026-09-24 (antes era la prueba formativa N=8). Si el diseño cambia tras la revisión de la profesora, actualizar aquí | `caso_estudio…md` §6–§10; bitácora §7 |
 
-### Cap. 4 — Resultados (`04_resultados.tex`)
+### Cap. 4 — Propuesta (`04_propuesta.tex`)
 | Sección | Estado | Qué falta | Fuentes |
 |---|---|---|---|
-| 4.1 Diagnóstico heurístico | ✅ | — | informe Fondecyt |
-| 4.2 Estado de implementación | ✅ | (2026-09-24: condición de control y tests de determinismo/independencia de posición) | bitácora Bloque V; `sae-react/tests/` |
-| 4.3 Sitio oficial | ✅ | — | — |
-| 4.4 Resultados pendientes | ✅ | (2026-09-24: apunta al estudio comparativo) | `sec:estudio-comparativo` |
+| 4.1–4.6 (visión general, informarse, flujo de postulación, resultado, condición de control, síntesis) | ✅ | Creado el 2026-09-28 con 14 capturas del prototipo (`imagenes/propuesta/`). Si cambia una pantalla del prototipo: recapturar y revisar el texto de esa sección | capturas; bitácora; `sec:res-diagnostico`; `sec:que-funciona`; `sec:fase3-marcos` |
 
-### Cap. 5 — Discusión (`05_discusion.tex`) ⏸
+### Cap. 5 — Resultados (`05_resultados.tex`)
 | Sección | Estado | Qué falta | Fuentes |
 |---|---|---|---|
-| 5.1 Brechas cerradas por el sitio oficial | ✅ (preliminar) | — | — |
-| 5.2 Preguntas de la discusión completa | 🔄 | Pregunta 2 → formular en términos de H1–H4 del estudio comparativo; dice "prueba de usabilidad" y atribuye a `springerwhittaker2019/2020` un hallazgo sobre justicia percibida no verificado (ver ficha en `bibliografia_anotada.md`) | `caso_estudio…md` §8.4 |
-| 5.3 Limitaciones (`sec:limitaciones`) | ✅ | (2026-09-27: + moderador no ciego, un solo desenlace, muestra por conveniencia, simulador y control como aproximaciones) | `caso_estudio…md` §10 |
+| 5.1 Diagnóstico heurístico | ✅ | — | informe Fondecyt |
+| 5.2 Estado de implementación | ✅ | (2026-09-24: condición de control y tests de determinismo/independencia de posición) | bitácora Bloque V; `sae-react/tests/` |
+| 5.3 Sitio oficial | ✅ | — | — |
+| 5.4 Resultados pendientes | ✅ | (2026-09-24: apunta al estudio comparativo) | `sec:estudio-comparativo` |
+
+### Cap. 6 — Discusión (`06_discusion.tex`) ⏸
+| Sección | Estado | Qué falta | Fuentes |
+|---|---|---|---|
+| 6.1 Brechas cerradas por el sitio oficial | ✅ (preliminar) | — | — |
+| 6.2 Preguntas de la discusión completa | 🔄 | Pregunta 2 → formular en términos de H1–H4 del estudio comparativo; dice "prueba de usabilidad" y atribuye a `springerwhittaker2019/2020` un hallazgo sobre justicia percibida no verificado (ver ficha en `bibliografia_anotada.md`) | `caso_estudio…md` §8.4 |
+| 6.3 Limitaciones (`sec:limitaciones`) | ✅ | (2026-09-27: + moderador no ciego, un solo desenlace, muestra por conveniencia, simulador y control como aproximaciones) | `caso_estudio…md` §10 |
 | Discusión completa | ⏸ | Requiere datos | — |
 
-### Cap. 6 — Conclusiones (`06_conclusiones.tex`) ⏸
+### Cap. 7 — Conclusiones (`07_conclusiones.tex`) ⏸
 
 **Formato fijado (2026-09-27):** la versión final responde objetivo específico por objetivo específico (OE1…OE6 del Cap. 1), y cierra con aportes, limitaciones y trabajo futuro.
 

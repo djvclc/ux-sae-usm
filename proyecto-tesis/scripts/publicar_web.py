@@ -9,6 +9,9 @@ La página se publica como Artifact privado de claude.ai (ver PLAN_REDACCION.md,
 "Versión web"). Requiere pandoc (apt-get install pandoc). El PDF sigue siendo
 el documento oficial: esta versión es para leer el avance desde el celular.
 
+Imágenes: las figuras apuntan a imagenes/... (relativo a proyecto-tesis/); al
+publicar, se suben con el parámetro `files` del Artifact con esas mismas rutas.
+
 Qué hace:
   1. Lee los números reales de \\label desde build/main.aux, para que
      "Sección 3.4" diga lo mismo que el PDF.
@@ -37,9 +40,10 @@ CAPITULOS = {
     "cap:introduccion": 1,
     "cap:marco": 2,
     "cap:metodologia": 3,
-    "cap:resultados": 4,
-    "cap:discusion": 5,
-    "cap:conclusiones": 6,
+    "cap:propuesta": 4,
+    "cap:resultados": 5,
+    "cap:discusion": 6,
+    "cap:conclusiones": 7,
 }
 ESTADOS = {
     "vigente": ("chip--vigente", "Vigente"),
@@ -83,6 +87,14 @@ def preparar_tex(labels):
                 bloque = bloque.replace("\\caption{", f"\\caption{{Tabla {labels[lab.group(1)]}. ", 1)
             return bloque
         t = re.sub(r"\\begin\{table\}.*?\\end\{table\}", tabla, t, flags=re.S)
+        # Figuras: "Figura N." delante del caption (el número sale del .aux).
+        def figura(m):
+            bloque = m.group(0)
+            lab = re.search(r"\\label\{(fig:[^}]+)\}", bloque)
+            if lab and lab.group(1) in labels:
+                bloque = bloque.replace("\\caption{", f"\\caption{{Figura {labels[lab.group(1)]}. ", 1)
+            return bloque
+        t = re.sub(r"\\begin\{figure\}.*?\\end\{figure\}", figura, t, flags=re.S)
         # \ref → número del PDF, enlazado a su ancla.
         t = re.sub(
             r"\\ref\{([^}]+)\}",
@@ -162,6 +174,18 @@ def main():
         filas.append(f'<li><a href="#{html.escape(ident)}">{nombre}</a>{chip(est)}</li>')
     html_out = html_out.replace("<!--ESTADO_CAPS-->", "\n      ".join(filas))
     html_out = html_out.replace("<!--META-->", html.escape(meta()))
+
+    # Texto alternativo de las capturas: la leyenda de su figura + posición.
+    def alt(m):
+        fig = m.group(0)
+        cap = re.search(r"<figcaption>(.*?)</figcaption>", fig, re.S)
+        texto = html.escape(re.sub(r"<[^>]+>", "", cap.group(1)).strip()) if cap else "Captura del prototipo"
+        imgs = re.findall(r"<img [^>]*/>", fig)
+        pos = ["izquierda", "derecha"] if len(imgs) == 2 else [""] * len(imgs)
+        for img, lado in zip(imgs, pos):
+            fig = fig.replace(img, img.replace("<img ", f'<img alt="Captura {lado}: {texto}" loading="lazy" ', 1), 1)
+        return fig
+    html_out = re.sub(r"<figure.*?</figure>", alt, html_out, flags=re.S)
 
     SALIDA.write_text(html_out, encoding="utf-8")
     print(f"OK → {SALIDA.relative_to(RAIZ)} ({SALIDA.stat().st_size // 1024} KB)")

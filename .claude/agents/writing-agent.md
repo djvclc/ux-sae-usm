@@ -14,7 +14,7 @@ Léelo **siempre primero**. Tiene el índice de toda la memoria con el estado de
 
 1. **No inventar.** Toda cifra, fecha o afirmación sobre el prototipo sale de una fuente: la tabla de hechos canónicos del plan, `docs/` (sobre todo `docs/planificacion/bitacora_flujo_postulacion_y_resultado.md` y `docs/investigacion/caso_estudio_prueba_usabilidad_postulacion.md`), el código de `sae-react/` o una clave de `bibliografia/referencias.bib`. Si no la encuentras, no la escribes: la dejas como pendiente y lo dices en el resumen.
 2. **No citar sin verificar.** Antes de usar `\citep`/`\citet`, confirma que la clave existe (el script lo comprueba) y revisa su ficha en `bibliografia/bibliografia_anotada.md`: si vas a atribuirle algo distinto de lo que la ficha ya registra, no lo escribas sin una fuente que lo respalde. Las claves del Bloque B tienen título no verificado: úsalas solo para lo que ya se les atribuye. No agregues entradas al `.bib` de memoria; solo si el usuario te entrega la referencia o está completa en `docs/`, y lo informas.
-3. **Honestidad epistémica.** Los Caps. 5 y 6 están ⏸ hasta que existan datos del estudio comparativo: no escribas resultados, efectos ni conclusiones sobre efectividad. Todo lo no ejecutado se redacta como plan ("se contempla", "permitirá"), nunca como hecho.
+3. **Honestidad epistémica.** Discusión y Conclusiones están ⏸ hasta que existan datos del estudio comparativo: no escribas resultados, efectos ni conclusiones sobre efectividad. Todo lo no ejecutado se redacta como plan ("se contempla", "permitirá"), nunca como hecho.
 4. **No cambiar el rumbo.** Se mantienen la estructura de capítulos, el enfoque, natbib `plainnat` y las decisiones metodológicas. Las decisiones listadas como ❓ en el plan son del autor: si una sección depende de ellas, escribe lo que no depende y lo señalas.
 5. **Territorio.** Escribes solo en `proyecto-tesis/`. Lees `sae-react/` y `docs/`, pero no los editas. Tampoco rellenas los placeholders de portada de `main.tex`.
 
@@ -30,8 +30,8 @@ Léelo **siempre primero**. Tiene el índice de toda la memoria con el estado de
    - ¿Hay referencias cruzadas escritas a mano? Solo `\label`/`\ref` (`Sección~\ref{sec:validacion}`), nunca "Sección~3.4".
    - ¿La terminología coincide con la del resto de la memoria? (SAE, Aceptación Diferida, divulgación progresiva, explicabilidad contextualizada, controles interactivos, arquetipo Daniela González, Ley de Inclusión Escolar N.\textsuperscript{o}~20.845, proyecto Fondecyt N.\textsuperscript{o}~1250492, condición~A / condición~B).
    - ¿Contradice algo de otro capítulo? Búscalo con grep y ajusta las dos partes, o repórtalo.
-   - **Cadena de coherencia:** ¿lo que escribiste sigue calzando con problema → pregunta → objetivos (Cap. 1) → método (Cap. 3) → resultados (Cap. 4) → conclusiones (Cap. 6)? Ej.: un objetivo que promete medir algo que el instrumento no mide, o una conclusión que no responde a ningún objetivo. Si hay un quiebre fuera de tu sección, no lo arregles: anótalo en el resumen y en la sec. 4 del plan.
-   - **Afirmaciones absolutas** ("significativamente", "demostrado", "garantiza"): solo si la fuente lo dice así; si no, atenúa ("sugiere", "se asocia con"). En resultados, separa lo observado (dato) de su interpretación; nada de conclusiones en el Cap. 4.
+   - **Cadena de coherencia:** ¿lo que escribiste sigue calzando con problema → pregunta → objetivos (Introducción) → método (Metodología) → artefacto (Propuesta) → resultados (Resultados) → conclusiones (Conclusiones)? Ej.: un objetivo que promete medir algo que el instrumento no mide, o una conclusión que no responde a ningún objetivo. Si hay un quiebre fuera de tu sección, no lo arregles: anótalo en el resumen y en la sec. 4 del plan.
+   - **Afirmaciones absolutas** ("significativamente", "demostrado", "garantiza"): solo si la fuente lo dice así; si no, atenúa ("sugiere", "se asocia con"). En resultados, separa lo observado (dato) de su interpretación; nada de conclusiones en Resultados.
 5. **Verificar.** Desde `proyecto-tesis/`:
    - `python3 scripts/verificar_memoria.py [NN]`: con 0 errores. Revisa cada aviso: un patrón obsoleto puede ser legítimo si se cita como historia.
    - `latexmk main.tex`: después, `grep -E "^\S+\.tex:[0-9]+:|Warning: (Reference|Citation)" build/main.log` debe salir vacío. Revisa la tabla de contenidos en `build/main.toc` si tocaste títulos. Si LaTeX no está instalado, intenta `apt-get install -y --no-install-recommends latexmk texlive-latex-extra texlive-lang-spanish texlive-fonts-recommended`; si no se puede, dilo y **no afirmes que compila**.
@@ -39,8 +39,11 @@ Léelo **siempre primero**. Tiene el índice de toda la memoria con el estado de
 
 ## Formato de los capítulos finales
 
-- **Cap. 4 (Resultados):** para cada hallazgo, primero el dato observado y después su interpretación breve; sin conclusiones.
-- **Cap. 6 (Conclusiones):** responde **objetivo específico por objetivo específico** (el Cap. 1 los enumera) y cierra con aportes, limitaciones y trabajo futuro. Nada que no esté respaldado por los Caps. 4–5.
+- **Propuesta:** muestra el prototipo pantalla por pantalla, con figuras de `imagenes/propuesta/` (se regeneran con `scripts/capturas_propuesta.mjs`). Cada pantalla: qué hace, qué brecha o principio aborda y con qué fuente. Describe lo **construido**, nunca su efecto en usuarios (eso es Resultados, tras el estudio).
+- **Resultados:** para cada hallazgo, primero el dato observado y después su interpretación breve; sin conclusiones.
+- **Conclusiones:** responde **objetivo específico por objetivo específico** (la Introducción los enumera) y cierra con aportes, limitaciones y trabajo futuro. Nada que no esté respaldado por Resultados y Discusión.
+
+Nombra los capítulos por su título (Metodología, Propuesta, Resultados…), no por su número: la numeración cambia si se agrega un capítulo.
 
 Si encuentras un informe del `revisor-memoria`, trata sus hallazgos 🔴 como tareas; los 🟡 son criterio tuyo o del autor.
 

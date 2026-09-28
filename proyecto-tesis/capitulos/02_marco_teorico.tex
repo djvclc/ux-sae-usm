@@ -38,7 +38,7 @@ En respuesta a estos desafíos, distintas entidades internacionales han desarrol
 
 Como base empírica adicional para el diseño del prototipo, se sistematizó una revisión de \textbf{96 publicaciones académicas} sobre transparencia algorítmica que incluyen evaluación con usuarios finales, cubriendo el período 2017--2025 y consultando cuatro bases de datos (SciSpace, SciSpace Texto Completo, Google Scholar y ArXiv). Esta revisión —independiente del artículo base del proyecto— permite contrastar los hallazgos generales del campo con el caso específico del SAE.
 
-\subsection{Qué funciona}
+\subsection{Qué funciona}\label{sec:que-funciona}
 
 La evidencia converge de manera consistente en cinco enfoques de diseño efectivos:
 
@@ -81,7 +81,7 @@ El mecanismo opera de forma iterativa \citep{epstein2017mecanismos}:
 
 En Chile, este mecanismo está regido por la Ley de Inclusión Escolar N.\textsuperscript{o}~20.845 y considera cuatro criterios de prioridad: tener un hermano matriculado en el establecimiento, pertenecer al 15\,\% de estudiantes prioritarios, ser hijo o hija de un funcionario del colegio, y ser exalumno que no haya sido expulsado \citep{mineduc_sae}. Es importante notar que, si bien el SAE no tiene su código fuente públicamente disponible, existe documentación oficial y trabajos académicos —como la tesis de \citet{epstein2017mecanismos}— que permiten reconstruir su lógica interna y sus criterios de priorización. La falta de acceso completo al código limita, sin embargo, la posibilidad de una auditoría exhaustiva por parte de terceros, lo que refuerza la necesidad de una capa de comunicación explicativa dirigida al usuario final, que es precisamente el problema que aborda esta memoria.
 
-\section{Accesibilidad web como condición de transparencia}
+\section{Accesibilidad web como condición de transparencia}\label{sec:accesibilidad}
 
 Un sistema no puede considerarse transparente si una parte relevante de sus usuarios no puede, en la práctica, acceder a su contenido. Por ello, este trabajo adopta como referencia las \emph{Web Content Accessibility Guidelines} (WCAG) del World Wide Web Consortium, en particular los criterios de nivel AA: contraste mínimo de 4.5:1 entre texto y fondo, posibilidad de navegar todo el sitio exclusivamente con teclado, texto alternativo descriptivo en imágenes funcionales, y tamaños de fuente legibles en dispositivos móviles. Estos criterios no son un añadido secundario en el contexto del SAE: el diagnóstico heurístico de la Universidad de Chile encontró una dimensión de \emph{inclusión} con 0\,\% de cumplimiento en el sitio informativo real, lo que confirma que la accesibilidad es, en este caso concreto, una de las brechas más urgentes y no solo un ideal de buenas prácticas.
 

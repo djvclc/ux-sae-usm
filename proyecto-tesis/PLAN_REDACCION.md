@@ -65,7 +65,7 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 ### Cap. 5 — Resultados (`05_resultados.tex`)
 | Sección | Estado | Qué falta | Fuentes |
 |---|---|---|---|
-| 5.1 Diagnóstico heurístico | ✅ | — | informe Fondecyt |
+| 5.1 Diagnóstico heurístico | ✅ | — | diagnóstico heurístico (sin identificar) |
 | 5.2 Estado de implementación | ✅ | (2026-09-24: condición de control y tests de determinismo/independencia de posición) | bitácora Bloque V; `sae-react/tests/` |
 | 5.3 Sitio oficial | ✅ | — | — |
 | 5.4 Resultados pendientes | ✅ | (2026-09-24: apunta al estudio comparativo) | `sec:estudio-comparativo` |
@@ -94,7 +94,7 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 
 | Hecho | Valor | Fuente |
 |---|---|---|
-| Diagnóstico heurístico | 51 % sitio informativo · 61 % plataforma · 0 % transparencia y apertura · 0 % inclusión · desglose 55/57/22 | informe Fondecyt N.º 1250492 |
+| Diagnóstico heurístico | 51 % sitio informativo · 61 % plataforma · 0 % transparencia y apertura · 0 % inclusión · desglose 55/57/22 | diagnóstico heurístico (marzo 2026). **Confidencial:** en la memoria no se identifica (ver `CLAUDE.md` regla 7) |
 | Revisión de literatura | 96 publicaciones, 2017–2025 | `docs/investigacion/` |
 | Matriz del plan | 102 filas, 4 no aplican → **98 aplicables**; se escribe "la totalidad de los puntos aplicables fue abordada a nivel de código". **No usar** 87/87, 62/62, 72/72 como vigentes | `plan_mejora_sae.md` (nota 2026-09-08) |
 | Iteraciones del prototipo | mayo–septiembre 2026 | historial git |
@@ -140,3 +140,4 @@ Numeración real del PDF (desde el 2026-09-24 el Resumen no lleva número): Intr
 | 2026-09-27 | Herramientas | `bibliografia/bibliografia_anotada.md` (32 fichas generadas del `.bib` y de las citas reales; verificación ⏳); verificador + avisos de afirmaciones absolutas y de marcadores VERIFICAR citados; `writing-agent` + cadena de coherencia; nuevo agente `revisor-memoria` | — |
 | 2026-09-27 | Cap. 3 §3.3, §3.4.1; Cap. 5 §5.3 | Primera prueba del `revisor-memoria` (1 🔴, 7 🟡), todo aplicado: nombres de 3 establecimientos corregidos según `colegios.js`; 8 tareas (identificarse y seleccionar el grupo familiar separadas); H3 sin la atribución no verificada a Springer & Whittaker; variables (sondeos por rama, predicción codificada); asignación y estratificación; comparaciones por ítem exploratorias; "prueba de usabilidad" → estudio comparativo en §3.3; Sec. 5.3 con las amenazas a la validez | verificador 0 errores; `latexmk` OK |
 | 2026-09-28 | Cap. 4 Propuesta (nuevo) | Capítulo con 14 capturas; capítulos siguientes renumerados (5–7). Primera revisión del `revisor-memoria` como agente propio (2 🔴, 16 🟡), todo aplicado salvo lo que depende del autor: Inicio no calcula la etapa por fecha (sí `/proceso`); ClaveÚnica redactado neutral (decisión n.º 8); chip = porcentaje, "X de cada 100" solo en ficha/lector de pantalla; sin restricción regional (no "filtro"); simplificación de jornada/proyecto declarada; fechas del calendario oficial; "una de las dos brechas con 0 %"; tabla síntesis sin "gestión de expectativas" ni principio forzado para el buscador; audiovisualidad parcial; recuadro "cómo se decide" en paso 1 y en lo que oculta B; condición A/B; `sec:fase3`; brechas anticipadas en la intro. Prototipo: "Estás en", "Tamaño de texto", "¿Es tu primera vez…?" (lint/build/test 16/16); capturas con fecha simulada 20-08-2026. **Tabla 3.1 pasa a `longtable`**: desbordaba la página y se cortaban filas (el PDF crece de 54 a 58 páginas) | verificador 0 errores; `latexmk` OK sin "Float too large"; web republicada con figuras |
+| 2026-09-30 | Todo el documento | **Confidencialidad del diagnóstico** (decisión del autor): se quitaron de la memoria el proyecto Fondecyt y su número, la Universidad de Chile como autora, la sigla SISIB y la cita `moralesvargas2026informe` (eliminada del `.bib` y de `bibliografia_anotada.md`); se mantienen las cifras y la descripción del instrumento, sin calificar el documento de "no publicado". 13 pasajes en Resumen y Caps. 1, 2, 3, 5, 6, 7. `verificar_memoria.py` los trata como error. De paso: Resumen "mayo y agosto" → "mayo y septiembre" | verificador 0 errores; `latexmk` OK; web republicada |

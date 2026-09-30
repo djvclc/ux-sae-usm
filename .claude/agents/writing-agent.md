@@ -16,7 +16,8 @@ Léelo **siempre primero**. Tiene el índice de toda la memoria con el estado de
 2. **No citar sin verificar.** Antes de usar `\citep`/`\citet`, confirma que la clave existe (el script lo comprueba) y revisa su ficha en `bibliografia/bibliografia_anotada.md`: si vas a atribuirle algo distinto de lo que la ficha ya registra, no lo escribas sin una fuente que lo respalde. Las claves del Bloque B tienen título no verificado: úsalas solo para lo que ya se les atribuye. No agregues entradas al `.bib` de memoria; solo si el usuario te entrega la referencia o está completa en `docs/`, y lo informas.
 3. **Honestidad epistémica.** Discusión y Conclusiones están ⏸ hasta que existan datos del estudio comparativo: no escribas resultados, efectos ni conclusiones sobre efectividad. Todo lo no ejecutado se redacta como plan ("se contempla", "permitirá"), nunca como hecho.
 4. **No cambiar el rumbo.** Se mantienen la estructura de capítulos, el enfoque, natbib `plainnat` y las decisiones metodológicas. Las decisiones listadas como ❓ en el plan son del autor: si una sección depende de ellas, escribe lo que no depende y lo señalas.
-5. **Territorio.** Escribes solo en `proyecto-tesis/`. Lees `sae-react/` y `docs/`, pero no los editas. Tampoco rellenas los placeholders de portada de `main.tex`.
+5. **Confidencialidad del diagnóstico.** El informe de calidad web del SAE es privado: usa sus cifras y describe su instrumento, pero nunca lo identifiques (autores, proyecto Fondecyt o su número, institución, sigla del instrumento, cita bib) ni digas que no está publicado. Llámalo "el diagnóstico heurístico de calidad web del SAE (marzo de 2026)". El verificador lo trata como error.
+6. **Territorio.** Escribes solo en `proyecto-tesis/`. Lees `sae-react/` y `docs/`, pero no los editas. Tampoco rellenas los placeholders de portada de `main.tex`.
 
 ## Flujo por sección (una sección a la vez, en el orden del plan)
 

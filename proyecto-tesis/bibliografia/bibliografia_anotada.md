@@ -33,7 +33,6 @@ Una ficha por cada clave de `referencias.bib`. Sirve para controlar que la memor
 | `galeshapley1962` | A | article | 2 | ⏳ |
 | `mineduc_sae` | A | misc | 2 | ⏳ |
 | `epstein2017mecanismos` | A | mastersthesis | 3 | ⏳ |
-| `moralesvargas2026informe` | A | misc | 3 | ⏳ |
 | `springerwhittaker2019` | B | misc | 3 | ⏳ |
 | `springerwhittaker2020` | B | misc | 2 | ⏳ |
 | `lu2020goodexplanation` | B | misc | 0 | ⏳ |
@@ -220,17 +219,6 @@ Una ficha por cada clave de `referencias.bib`. Sirve para controlar que la memor
   - `01_introduccion.tex:7` — «En Chile, este mecanismo está regido por la Ley de Inclusión Escolar N.\textsuperscript{o} 20.845 y considera criterios de prioridad definidos legalmente: hermanos matriculados en el establecimiento, pertenencia al 15% de estudiantes prioritarios, hijos de funcionarios del colegio y condición de exalumno [cita].»
   - `02_marco_teorico.tex:73` — «El mecanismo opera de forma iterativa [cita]:»
   - `02_marco_teorico.tex:82` — «Es importante notar que, si bien el SAE no tiene su código fuente públicamente disponible, existe documentación oficial y trabajos académicos —como la tesis de [cita]— que permiten reconstruir su lógica interna y sus criterios de priorización.»
-- **Aporte a la memoria:** _(completar al verificar: qué problema, método y hallazgo de la fuente sostienen las afirmaciones de arriba)_
-- **Verificación:** ⏳ pendiente
-
-### `moralesvargas2026informe`
-
-- **Referencia:** Morales-Vargas, {et al.} (2026). *Informe de Evaluación de Calidad Web del Sistema de Admisión Escolar (SAE)*. Universidad de Chile, Proyecto Fondecyt N.\textsuperscript{o} 1250492 Instrumento de evaluación heurística SISIB aplicado al sitio informativo y a la plataforma de postulación del SAE
-- **Bloque:** A
-- **Lo que la memoria le atribuye:**
-  - `01_introduccion.tex:9` — «Esta brecha fue confirmada empíricamente por la evaluación heurística de calidad web realizada por el equipo del proyecto Fondecyt N.\textsuperscript{o} 1250492 de la Universidad de Chile en marzo de 2026 [cita], que encontró un cumplimiento de apenas 51% en el sitio informativo del SAE y 61% en su plataforma de postulación, con la dimensión de transparencia y apertura entre las peor evaluadas del sitio informativo (»
-  - `03_metodologia.tex:7` — «La primera fase consistió en diagnosticar el estado real del SAE mediante el instrumento de evaluación heurística de calidad web desarrollado por SISIB (Universidad de Chile), aplicado en marzo de 2026 por el equipo del proyecto Fondecyt N.\textsuperscript{o} 1250492 [cita] sobre dos componentes del sistema: el sitio web informativo (sistemadeadmisionescolar.cl) y la plataforma transaccional de postulación.»
-  - `04_resultados.tex:7` — «La evaluación heurística de calidad web aplicada al SAE real [cita] arrojó un cumplimiento de 51% en el sitio informativo y de 61% en la plataforma de postulación, ambos con un desglose de 55% en indicadores imprescindibles, 57% en esperables y 22% en deseables.»
 - **Aporte a la memoria:** _(completar al verificar: qué problema, método y hallazgo de la fuente sostienen las afirmaciones de arriba)_
 - **Verificación:** ⏳ pendiente
 

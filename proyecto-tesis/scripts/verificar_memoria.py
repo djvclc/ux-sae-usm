@@ -13,6 +13,7 @@ Chequeos:
     - llaves { } desbalanceadas por archivo
     - \\includegraphics que apunta a un archivo inexistente
     - entornos \\begin/\\end desbalanceados por archivo
+    - datos que identifican el informe privado de calidad web (ver CONFIDENCIALES)
   AVISO  (el agente decide si corresponde corregir)
     - patrones obsoletos (cifras o términos superados; ver OBSOLETOS)
     - "tesis" en el cuerpo (la convención es "memoria")
@@ -52,6 +53,19 @@ OBSOLETOS = [
 # (p. ej. "siempre" describiendo la semilla fija del simulador); el agente o el
 # revisor juzgan si la afirmación está respaldada por la fuente citada.
 ABSOLUTAS = r"\b(significativamente|demostrad[oa]s?|demuestra[n]?|prueba de que|garantiza[n]?|sin duda|indudablemente|evidentemente|claramente|todos los estudios|toda la literatura|decenas de estudios)\b"
+
+# Confidencialidad (decisión del autor, 2026-09-30): el informe de evaluación
+# de calidad web del SAE es un documento privado. La memoria puede usar sus
+# cifras y describir su instrumento, pero no identificarlo (autores, proyecto,
+# institución, sigla del instrumento, cita) ni calificarlo de "no publicado".
+# Cualquier coincidencia es ERROR.
+CONFIDENCIALES = [
+    (r"Fondecyt|1250492", "número/proyecto Fondecyt del informe"),
+    (r"SISIB", "sigla del instrumento del informe"),
+    (r"moralesvargas|Morales[- ]Vargas", "autoría o clave bib del informe"),
+    (r"(diagn[óo]stico|evaluaci[óo]n|instrumento|informe)[^.]{0,80}Universidad de Chile", "institución del informe"),
+    (r"no publicad|in[ée]dit|documento (privado|interno)", "no calificar el diagnóstico como no publicado"),
+]
 
 ENTORNOS_IGNORADOS = {"document"}
 
@@ -115,6 +129,10 @@ def main():
             errores.append(f"{rel}:{n}: \\begin{{{env}}} sin cerrar")
 
         for n, linea in enumerate(texto.split("\n"), 1):
+            for patron, motivo in CONFIDENCIALES:
+                m = re.search(patron, linea, re.I)
+                if m:
+                    errores.append(f"{rel}:{n}: CONFIDENCIAL «{m.group(0)}» — {motivo}")
             for patron, motivo in OBSOLETOS:
                 if re.search(patron, linea, re.I):
                     m = re.search(patron, linea, re.I)

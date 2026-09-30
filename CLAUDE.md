@@ -27,6 +27,7 @@ El prototipo demuestra cómo aplicar transparencia algorítmica al SAE; la memor
 3. **No inventar cifras.** Todo número citado debe provenir del informe heurístico, la revisión de literatura, el plan de mejora o el código. Si un cambio de código altera un número citado en la memoria, avisar al usuario.
 4. **Trazabilidad:** cambios funcionales en el prototipo llevan comentario en español con su código `S<sección>-<inciso>` del plan.
 5. `archivo/` es historia del proyecto: se conserva, no se edita.
+7. **Confidencialidad del diagnóstico (decisión del autor, 2026-09-30).** El informe de evaluación de calidad web del SAE (en `docs/investigacion/`) es un documento privado. En la **memoria y su versión web** se usan sus cifras (51 %, 61 %, 0 %…) y se describe su instrumento, pero **no se identifica**: sin autores, sin proyecto Fondecyt ni su número, sin institución, sin la sigla del instrumento, sin cita bibliográfica y sin decir que es "no publicado". Se nombra como "un diagnóstico heurístico de calidad web del SAE realizado en marzo de 2026". `verificar_memoria.py` lo marca como error.
 6. **Cierre de tarea:** todo agente termina su trabajo actualizando los archivos de contexto afectados — este `CLAUDE.md` (sección "Estado del proyecto"), `docs/CONTEXTO_CLAUDE_CODE.md` y/o `docs/planificacion/plan_mejora_sae.md` — para que la siguiente sesión retome sin re-explorar el repo. Solo se registra lo efectivamente hecho y validado, con fecha; nunca avances proyectados.
 
 ## Persona y principios de diseño (vigentes para el prototipo)

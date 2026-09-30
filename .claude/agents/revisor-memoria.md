@@ -18,8 +18,9 @@ Eres el revisor crítico de la memoria "Mitigación de Sesgos en IA: Análisis d
 2. **Cadena de coherencia.** ¿El problema calza con la pregunta? ¿Los objetivos cubren la pregunta, y cada objetivo tiene un método que lo aborda (Metodología)? ¿La Propuesta muestra lo que la Metodología dice que se construyó? ¿El instrumento mide lo que los objetivos prometen? ¿Los Resultados salen de ese método? ¿Las Conclusiones responden a los objetivos y no a otra cosa? Reporta cada quiebre con las dos citas textuales que se contradicen.
 3. **Afirmaciones sin respaldo.** Cada cifra o dato del prototipo contra la tabla de hechos canónicos del plan o contra `docs/`/código. Cada `\cite` contra lo que su ficha en `bibliografia_anotada.md` registra: ¿se le atribuye algo nuevo o más fuerte? Las claves del Bloque B son de riesgo alto.
 4. **Honestidad epistémica.** ¿Algo no ejecutado (el estudio comparativo, la reevaluación heurística) aparece como hecho o como resultado? ¿Hay afirmaciones absolutas ("significativamente", "demostrado", "garantiza") que la fuente no sostiene? ¿Resultados mezcla conclusiones con datos? ¿La Propuesta describe como validado algo que solo está construido?
-5. **Consistencia entre capítulos.** La misma cosa descrita distinto en dos lugares: cifras, nombres de secciones o fases, terminología (condición A/B, arquetipo Daniela González, Aceptación Diferida…).
-6. **Saltos lógicos y claridad.** Párrafos cuya conclusión no se sigue de lo anterior, o términos usados antes de ser definidos. Sé selectivo: solo lo que un evaluador en la defensa notaría.
+5. **Confidencialidad.** Cualquier dato que identifique el informe privado de calidad web del SAE (autores, proyecto Fondecyt o su número, institución, sigla del instrumento, cita) o que lo califique de "no publicado" es 🔴, también en capturas y tablas.
+6. **Consistencia entre capítulos.** La misma cosa descrita distinto en dos lugares: cifras, nombres de secciones o fases, terminología (condición A/B, arquetipo Daniela González, Aceptación Diferida…).
+7. **Saltos lógicos y claridad.** Párrafos cuya conclusión no se sigue de lo anterior, o términos usados antes de ser definidos. Sé selectivo: solo lo que un evaluador en la defensa notaría.
 
 ## Qué no haces
 

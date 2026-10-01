@@ -1094,3 +1094,10 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 
 - Pedido del usuario: activar la versión sin explicaciones (condición B) sin pasar por `/estudio` ni escribir `?modo=control`. En `PostulacionPage.jsx`, dentro del `<details>` "Herramientas de la prueba de usabilidad" (paso 1, antes de ingresar), bloque `.post-demo__version`: muestra "Versión de la página: con explicaciones (condición A)" / "sin explicaciones (condición B, control)" y dos botones **"A · Con explicaciones"** / **"B · Sin explicaciones"** (`aria-pressed`, el activo en primario). Cada uno llama a `fijarCondicion('A'|'B')` (exportado de `ModoEstudioContext.jsx`; fija `sessionStorage['sae_modo_estudio']` y borra la postulación/perfil guardados) y recarga `/postulacion` sin query. El modo persiste mientras la pestaña siga abierta. `/estudio` y `?modo=` intactos.
 - Verificado en navegador: A → B (desaparecen "El sistema" del menú y "¿Cómo se decide tu resultado?") → A (vuelven), URL siempre `/postulacion`. `npm run lint` (0/0), `npm run build`, `npm test` (16/16). Guion del moderador ("Antes de cada sesión") e inventario F3 actualizados.
+
+## 64. Condición B: sin tipo de prioridad en los colegios de la lista (2026-10-01, prueba del usuario)
+
+- Inicio de la revisión "B como formulario de postulación común" (propuesta completa en la conversación del 2026-10-01; pendientes de decisión del usuario el resto de los puntos). En B: el paso 2 ya no muestra `PrioridadColegioControl` ("Prioridad en {colegio}…", "Editar", chips y "?") bajo cada colegio, y la lista del paso 3 muestra solo "{Demanda} demanda" (sin "· Hermano/a matriculado/a" / "· sin vínculo"). En A sin cambios.
+- La prioridad se sigue sembrando al agregar cada colegio (`agregar` → `casoPrioridades`), así que el resultado es idéntico en A y B (verificado: San Martín no queda → Los Andes, preferencia N° 2).
+- **Sigue mostrando la prioridad en B:** `/seguimiento` ("Prioridad: Hermano/a matriculado/a" en la tarjeta y en el detalle por preferencia) — fuera del alcance de esta prueba.
+- `npm run lint` (0/0), `npm run build`, `npm test` (16/16).

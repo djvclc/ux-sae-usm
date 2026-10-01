@@ -21,6 +21,8 @@
 
 > **Activación (2026-10-01):** además de `/estudio` y `?modo=control`, el panel "Herramientas de la prueba de usabilidad" (paso 1 de `/postulacion`, colapsado) tiene un interruptor **"A · Con explicaciones" / "B · Sin explicaciones"** que usa `fijarCondicion` y recarga `/postulacion` sin query; muestra la versión activa.
 
+> **2026-10-01 (prueba del usuario):** `PrioridadColegioControl` (paso 2) y el tipo de prioridad en la lista del paso 3 → **OCULTAR en B** (implementado). La prioridad sigue calculándose igual. Inicio de la revisión de B como "formulario de postulación común".
+
 ---
 
 ## 1. Inventario por ubicación

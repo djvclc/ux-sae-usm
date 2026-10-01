@@ -2308,14 +2308,20 @@ export default function PostulacionPage() {
                         {/* S22-11 (refinamiento): declaración de prioridad específica
                             (hermano/funcionario/exalumno) para ESTE colegio. Funcional
                             (no depende del modo tutorial). Fila completa dentro del <li>. */}
-                        <PrioridadColegioControl
-                          colegio={col}
-                          claves={clavesEspecificas}
-                          valores={prioridadesPorColegio[col.id] ?? {}}
-                          onToggle={togglePrioridadColegio}
-                          onAyuda={abrirModalPrioridad}
-                          tieneSEP={perfilEstudiante.prioritario}
-                        />
+                        {/* 2026-10-01 (prueba del usuario): en la condición B (sin
+                            explicaciones) no se muestra el tipo de prioridad por colegio.
+                            La prioridad se sigue sembrando al agregar el colegio (agregar →
+                            casoPrioridades), así que el resultado es idéntico en A y B. */}
+                        {!esControl && (
+                          <PrioridadColegioControl
+                            colegio={col}
+                            claves={clavesEspecificas}
+                            valores={prioridadesPorColegio[col.id] ?? {}}
+                            onToggle={togglePrioridadColegio}
+                            onAyuda={abrirModalPrioridad}
+                            tieneSEP={perfilEstudiante.prioritario}
+                          />
+                        )}
                       </li>
                     )
                   })}
@@ -2500,7 +2506,9 @@ export default function PostulacionPage() {
                     <span className="post-revision__colegio">
                       <strong>{d.nombre}</strong>
                       <span>
-                        {d.demanda.charAt(0).toUpperCase() + d.demanda.slice(1)} demanda · {d.nivel < 5 ? d.prioridadLabel : 'sin vínculo'}
+                        {d.demanda.charAt(0).toUpperCase() + d.demanda.slice(1)} demanda
+                        {/* 2026-10-01: sin tipo de prioridad en la condición B */}
+                        {!esControl && <> · {d.nivel < 5 ? d.prioridadLabel : 'sin vínculo'}</>}
                       </span>
                     </span>
                   </li>

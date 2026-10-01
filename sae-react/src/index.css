@@ -8018,3 +8018,111 @@ button[disabled],
   font-size: 0.9rem;
   color: var(--texto-suave);
 }
+
+/* 2026-10-01: RecorridoVisual (/seguimiento, "¿Por qué te asignaron este colegio?") */
+.recorrido {
+  margin-top: 10px;
+}
+
+.recorrido__paso {
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  margin: 0 0 10px;
+  background: var(--bg-card);
+}
+
+.recorrido__paso--ok {
+  border: 2px solid var(--verde);
+}
+
+.recorrido__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+
+.recorrido__opcion {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.recorrido__estado {
+  margin-left: auto;
+  font-weight: 800;
+  color: #7b1c1c;
+}
+
+.recorrido__estado--ok {
+  color: #145f2c;
+}
+
+.recorrido__datos {
+  margin: 2px 0 8px;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.recorrido__asientos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+}
+
+.recorrido__asiento {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.recorrido__asiento--reserva { background: #1D9E75; }
+.recorrido__asiento--mejor   { background: var(--azul); }
+.recorrido__asiento--resto   { background: #c9ced6; }
+
+.recorrido__asiento--tu {
+  box-shadow: 0 0 0 3px var(--naranja);
+}
+
+.recorrido__asiento--fuera {
+  background: transparent;
+  border: 2px dashed var(--naranja);
+}
+
+.recorrido__separador {
+  margin: 0 4px;
+  color: var(--texto-suave);
+}
+
+.recorrido__texto {
+  margin: 8px 0 0;
+}
+
+.recorrido__leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 4px 0 6px;
+}
+
+.recorrido__leyenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recorrido__leyenda .recorrido__asiento {
+  width: 12px;
+  height: 12px;
+}
+
+.recorrido__nota {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}

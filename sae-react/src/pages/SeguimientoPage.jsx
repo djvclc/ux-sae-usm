@@ -118,6 +118,91 @@ function generarExplicacion(asignado, sinAsignacion = false, detalles = []) {
   return partes
 }
 
+/* 2026-10-01 (pedido del usuario: "mini ayuda visual de una iteración de la
+   postulación", como desplegable adicional — no reemplaza la tabla ni la
+   explicación). Muestra, colegio por colegio y en el orden de la lista, cómo se
+   repartieron los cupos en la SIMULACIÓN que produjo este resultado: cupos de la
+   reserva del 15 % (fase 1), cupos generales ocupados por quienes tenían más
+   prioridad, el resto, y el lugar de la familia en la fila. Usa los datos reales
+   del recorrido (`detalles[i].simulacion` de calcularResultado: S, sSep, sGen,
+   conMejorRango, posGeneral, via) — no estima nada aparte. Solo condición A.
+   Guías: PAIR (mostrar el mecanismo), HAX G11 (por qué), información con gráficos
+   (Glazerman, principio del prototipo). */
+function RecorridoVisual({ detalles = [] }) {
+  const revisados = detalles.filter(
+    (d) => d.estado !== 'no_evaluado' && d.simulacion?.ofreceNivel,
+  )
+  if (!revisados.length) return null
+  return (
+    <div className="recorrido">
+      {revisados.map((d) => {
+        const sim = d.simulacion
+        const obtuvo = sim.seated
+        const mejor = Math.min(sim.conMejorRango ?? 0, sim.sGen)
+        const pos = sim.posGeneral
+        const porReserva = sim.via === 'cuota-sep'
+        // Asiento de la familia (índice 0-based dentro de los S cupos), o -1 si quedó fuera.
+        const asiento = !obtuvo ? -1 : porReserva ? 0 : sim.sSep + pos - 1
+        const asientos = Array.from({ length: sim.S }, (_, i) => {
+          if (i < sim.sSep) return 'reserva'
+          if (i < sim.sSep + mejor) return 'mejor'
+          return 'resto'
+        })
+        const ord = ORDINALES[d.idx - 1] ?? `N.º ${d.idx}`
+        const resumen = porReserva
+          ? `Obtuviste uno de los ${sim.sSep} cupos de la reserva del 15 %.`
+          : obtuvo
+            ? (sim.conMejorRango === 0
+              ? `Tu prioridad te puso adelante en la fila: quedaste en el lugar ${pos} y había ${sim.sGen} cupos.`
+              : `Quedaste en el lugar ${pos} de la fila y había ${sim.sGen} cupos.`)
+            : `${sim.conMejorRango} postulantes tenían más prioridad que tú. En el sorteo quedaste en el lugar ${pos} de la fila y había ${sim.sGen} cupos.`
+        return (
+          <div key={d.id} className={`recorrido__paso${obtuvo ? ' recorrido__paso--ok' : ''}`}>
+            <div className="recorrido__cabecera">
+              <strong>{d.idx}. {d.nombre}</strong>
+              <span className="recorrido__opcion">tu {ord} opción</span>
+              <span className={obtuvo ? 'recorrido__estado recorrido__estado--ok' : 'recorrido__estado'}>
+                {obtuvo ? '✅ Cupo' : 'No alcanzó'}
+              </span>
+            </div>
+            <p className="recorrido__datos">{sim.S} cupos · {sim.A} postulantes el año pasado</p>
+            <div
+              className="recorrido__asientos"
+              role="img"
+              aria-label={`${d.nombre}: ${sim.sSep} cupos de reserva del 15 %, ${mejor} cupos para quienes tenían más prioridad y ${sim.S - sim.sSep - mejor} cupos restantes. ${resumen}`}
+            >
+              {asientos.map((tipo, i) => (
+                <span
+                  key={i}
+                  className={`recorrido__asiento recorrido__asiento--${tipo}${i === asiento ? ' recorrido__asiento--tu' : ''}`}
+                />
+              ))}
+              {!obtuvo && (
+                <>
+                  <span className="recorrido__separador" aria-hidden="true">…</span>
+                  <span className="recorrido__asiento recorrido__asiento--fuera" title={`Tu lugar: ${pos}`} />
+                </>
+              )}
+            </div>
+            <p className="recorrido__texto">{resumen}</p>
+          </div>
+        )
+      })}
+      <div className="recorrido__leyenda" aria-hidden="true">
+        <span><i className="recorrido__asiento recorrido__asiento--reserva" />Reserva del 15 %</span>
+        <span><i className="recorrido__asiento recorrido__asiento--mejor" />Más prioridad que tú</span>
+        <span><i className="recorrido__asiento recorrido__asiento--resto" />Resto de los cupos</span>
+        <span><i className="recorrido__asiento recorrido__asiento--tu" />Tú</span>
+      </div>
+      <p className="recorrido__nota">
+        Simulación con datos del año pasado. Primero se asignan los cupos de la reserva del 15 %
+        entre estudiantes prioritarios/as; el resto se ordena por prioridad y, dentro de cada
+        grupo, por sorteo.
+      </p>
+    </div>
+  )
+}
+
 /* Opción 2 (2026-09-10) — comparación de un vistazo "por qué este colegio y no
    el anterior". Devuelve las filas (preferencias no obtenidas + la asignada) o
    null si no hay contraste (quedó en la 1.ª opción o fue el fallback sin cupo).
@@ -512,6 +597,11 @@ export default function SeguimientoPage() {
                 ))}
               </div>
             )}
+            {/* 2026-10-01: ayuda visual adicional (no reemplaza lo anterior). */}
+            <details className="seg-porque-detalle">
+              <summary>Ver cómo se revisó tu lista, paso a paso</summary>
+              <RecorridoVisual detalles={resultado?.detalles ?? []} />
+            </details>
           </CardContent>
         </Card>
       )}

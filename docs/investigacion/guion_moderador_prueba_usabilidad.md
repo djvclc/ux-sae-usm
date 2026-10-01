@@ -134,7 +134,7 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 *Probes (ambas condiciones):* "Era lo que esperabas? Por que crees que paso esto? Te queda claro por que no quedo en San Martin?"
 
-**[A]** *Deja que lea la explicacion "Por que te asignaron este colegio?" en la pagina y luego pregunta:* "Esa explicacion te hace sentido? Cambia lo que pensabas?"
+**[A]** *Deja que lea la explicacion "Por que te asignaron este colegio?" en la pagina. Ahi hay un desplegable opcional, "Ver como se reviso tu lista, paso a paso" (cupos de cada colegio como cuadritos y el lugar de Sofia en la fila): no lo sugieras; anota si lo abre por iniciativa propia y que dice al verlo. Luego pregunta:* "Esa explicacion te hace sentido? Cambia lo que pensabas?"
 
 **[B]** *En el control no hay esa explicacion. No la muestres. Solo registra su interpretacion espontanea.*
 

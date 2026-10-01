@@ -23,6 +23,8 @@
 
 > **2026-10-01 (prueba del usuario):** `PrioridadColegioControl` (paso 2) y el tipo de prioridad en la lista del paso 3 → **OCULTAR en B** (implementado). La prioridad sigue calculándose igual. Inicio de la revisión de B como "formulario de postulación común".
 
+> **2026-10-01:** desplegable **"Ver cómo se revisó tu lista, paso a paso"** (`RecorridoVisual`, `/seguimiento`) dentro de la tarjeta "¿Por qué te asignaron este colegio?" → solo A (la tarjeta completa ya está oculta en B).
+
 ---
 
 ## 1. Inventario por ubicación

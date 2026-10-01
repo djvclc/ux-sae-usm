@@ -210,7 +210,7 @@ Pre-tarea (antes de la #1): ítem de línea base **B1** sobre la percepción "t�
    `[A]` ya vio la probabilidad y el resultado provisional → mide si conectó esa información con su predicción.
    `[B]` predicción a ciegas → línea base de qué se puede inferir sin la capa de explicación.
 7. **Ver el resultado y reaccionar.** Resultado = **Colegio Los Andes, 2.ª preferencia** (por el hermano).
-   `[A]` leer también la explicación *"por qué te asignaron este colegio"*. Probes: *"¿esperabas esto? ¿entiendes por qué no quedaste en San Martín? ¿esa explicación te hace sentido?"*.
+   `[A]` leer también la explicación *"por qué te asignaron este colegio"*; ahí hay un desplegable opcional *"Ver cómo se revisó tu lista, paso a paso"* (ayuda visual de la simulación, 2026-10-01): no se sugiere, se registra si la persona lo abre. Probes: *"¿esperabas esto? ¿entiendes por qué no quedaste en San Martín? ¿esa explicación te hace sentido?"*.
    `[B]` solo se ve el colegio asignado. Probes: *"¿esperabas esto? ¿por qué crees que pasó? ¿te queda claro por qué no quedaste en San Martín?"*.
 8. **Cuestionario post-tarea** (§8): batería Likert de 13 ítems (comprensión / confianza / percepción de justicia) —**la misma en ambas condiciones; se compara entre grupos**— y las preguntas abiertas (§8.3).
 

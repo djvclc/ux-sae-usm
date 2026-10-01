@@ -41,6 +41,8 @@ El prototipo demuestra cómo aplicar transparencia algorítmica al SAE; la memor
 
 ## Estado del proyecto (septiembre 2026)
 
+- **Desplegable "Ver cómo se revisó tu lista, paso a paso" (`RecorridoVisual`) en "¿Por qué te asignaron este colegio?" de `/seguimiento`: cupos por colegio como cuadritos y el lugar de la familia en la fila, con los datos reales de la simulación; solo condición A (2026-10-01; `CONTEXTO_CLAUDE_CODE.md` §65; bitácora AA17).** lint/build/test (16/16) OK.
+
 - **Condición B: se oculta el tipo de prioridad en los colegios de la lista (paso 2 y paso 3) — prueba hacia una B "como postulación común" (2026-10-01; `CONTEXTO_CLAUDE_CODE.md` §64; bitácora AA16).** Resultado idéntico en A y B; `/seguimiento` aún muestra la prioridad en B. lint/build/test (16/16) OK.
 
 - **Interruptor "A · Con explicaciones / B · Sin explicaciones" en "Herramientas de la prueba de usabilidad" para activar la condición de control sin `/estudio` ni `?modo=` (2026-10-01; `CONTEXTO_CLAUDE_CODE.md` §63; bitácora AA15).** lint/build/test (16/16) OK; A↔B verificado.

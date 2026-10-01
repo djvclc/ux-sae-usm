@@ -1101,3 +1101,10 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 - La prioridad se sigue sembrando al agregar cada colegio (`agregar` → `casoPrioridades`), así que el resultado es idéntico en A y B (verificado: San Martín no queda → Los Andes, preferencia N° 2).
 - **Sigue mostrando la prioridad en B:** `/seguimiento` ("Prioridad: Hermano/a matriculado/a" en la tarjeta y en el detalle por preferencia) — fuera del alcance de esta prueba.
 - `npm run lint` (0/0), `npm run build`, `npm test` (16/16).
+
+## 65. Ayuda visual del recorrido en "¿Por qué te asignaron este colegio?" (2026-10-01)
+
+- Nuevo `<details>` **"Ver cómo se revisó tu lista, paso a paso"** al final de la tarjeta (se agrega; la tabla y "Ver la explicación completa" siguen igual). Componente `RecorridoVisual` en `SeguimientoPage.jsx`: por cada colegio revisado (estado ≠ `no_evaluado`, hasta el asignado), cabecera "{N}. {colegio} · tu {ordinal} opción · ✅ Cupo / No alcanzó", "{S} cupos · {A} postulantes el año pasado", fila de cuadritos (`role="img"` con `aria-label` descriptivo): reserva del 15 % (verde), cupos generales tomados por quienes tenían más prioridad (azul), resto (gris), la familia con contorno naranja (o un cuadrito punteado fuera de la fila si no alcanzó), y una frase ("8 postulantes tenían más prioridad que tú. En el sorteo quedaste en el lugar 54 de la fila y había 22 cupos."). Leyenda y nota "Simulación con datos del año pasado…".
+- **Datos:** los del recorrido determinista guardado en la postulación (`resultado.detalles[i].simulacion` de `simularCupo`: `S`, `A`, `sSep`, `sGen`, `conMejorRango`, `posGeneral`, `via`). No se calcula nada nuevo; `asignacion.js`/`simulacionSae.js` intactos.
+- Solo condición A (la tarjeta completa ya se oculta en B). CSS `.recorrido*` en `index.css`. Tarea 7 del caso de estudio y del guion del moderador: el desplegable no se sugiere, se registra si la persona lo abre.
+- `npm run lint` (0/0), `npm run build`, `npm test` (16/16); verificado en navegador con el caso canónico.

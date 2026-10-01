@@ -7660,3 +7660,222 @@ button[disabled],
   align-self: center;
   white-space: nowrap;
 }
+
+/* 2026-09-30: estado de cada hijo/a en su tarjeta del grupo familiar */
+.post-familia__estado {
+  display: inline-block;
+  align-self: flex-start;
+  margin: 4px 0 2px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+
+.post-familia__estado--postula {
+  background: var(--azul);
+  color: #fff; /* 6.9:1 sobre #0057B7 */
+}
+
+.post-familia__estado--se-queda {
+  background: #d8f0e3;
+  color: #145f2c; /* 6.4:1 */
+}
+
+.post-familia__hijo--se-queda {
+  border-color: var(--verde);
+  background: var(--verde-cl);
+}
+
+/* 2026-09-30: pasos numerados de la explicación de postulación en bloque */
+.post-familia__pasos {
+  margin: 0 0 10px;
+  padding-left: 1.4em;
+  list-style: decimal; /* el reset de Tailwind quita los números de <ol> */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 2026-09-30: elección bloque / por separado en "Tu grupo familiar" */
+.post-familia__modo {
+  border: 0;
+  margin: 4px 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-familia__modo-titulo {
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.post-familia__opcion {
+  padding: 14px;
+  border: 2px solid var(--gris-borde);
+  border-radius: var(--radio);
+  background: var(--bg-card);
+  cursor: pointer;
+}
+
+.post-familia__opcion-cabecera {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.post-familia__opcion input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--azul);
+}
+
+.post-familia__opcion--marcada {
+  border-color: var(--azul);
+  background: var(--azul-cl);
+}
+
+.post-familia-resumen__modo {
+  margin: 0 0 8px;
+}
+
+/* 2026-09-30: detalle de la opción elegida, dentro de su misma tarjeta */
+.post-familia__detalle {
+  margin: 12px 0 0 34px; /* alineado con el texto, no con el radio */
+  padding-top: 12px;
+  border-top: 1px solid var(--azul-med);
+}
+
+.post-familia__detalle p {
+  margin: 0 0 8px;
+}
+
+.post-familia__detalle-titulo {
+  font-weight: 800;
+}
+
+@media (max-width: 599px) {
+  .post-familia__detalle {
+    margin-left: 0;
+  }
+}
+
+/* 2026-09-30: ConfirmarDatosModal — reemplaza la pantalla intermedia del paso 1 */
+.prio-modal__content.confirmar-datos {
+  max-width: 560px;
+  text-align: left;
+  padding: 28px 28px 24px;
+}
+
+.confirmar-datos .confirmar-modal__titulo {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.confirmar-datos__modo {
+  background: var(--azul-cl);
+  color: var(--azul-osc);
+  border-radius: var(--radio);
+  padding: 10px 14px;
+  margin: 0 0 14px;
+}
+
+.confirmar-datos__seccion {
+  border-top: 1px solid var(--gris-borde);
+  padding: 10px 0;
+}
+
+.confirmar-datos__seccion h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-suave);
+  margin: 0 0 6px;
+}
+
+.confirmar-datos__seccion p {
+  margin: 0;
+}
+
+.confirmar-datos__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.confirmar-datos__lista li {
+  display: flex;
+  flex-direction: column;
+}
+
+.confirmar-datos__lista--vinetas {
+  list-style: disc;
+  padding-left: 1.2em;
+  gap: 2px;
+}
+
+.confirmar-datos__lista--vinetas li {
+  display: list-item;
+}
+
+.confirmar-datos__corregir {
+  display: inline-block;
+  margin: 2px 0 14px;
+}
+
+.confirmar-datos__declara {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--naranja-cl);
+  border: 2px solid var(--naranja);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  cursor: pointer;
+}
+
+.confirmar-datos__declara input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--azul);
+}
+
+/* 2026-09-30: estado vacío de "Tu lista" (entrada al paso 2) */
+.post-lista-vacia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 32px 24px;
+  border: 2px dashed var(--azul-med);
+  border-radius: var(--radio-lg);
+  background: var(--azul-cl);
+}
+
+.post-lista-vacia__titulo {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--texto);
+}
+
+.post-lista-vacia__texto {
+  margin: 0 0 8px;
+  max-width: 46ch;
+  color: var(--texto);
+}

@@ -1,6 +1,6 @@
 # Caso de estudio para la validación del flujo de postulación
 
-**Fecha:** 2026-08-08 · actualizado 2026-08-13 · **revisión mayor 2026-09-03** (Bloques O y R) · **reorientación a estudio comparativo 2026-09-06** (bitácora `bitacora_flujo_postulacion_y_resultado.md` §7).
+**Fecha:** 2026-08-08 · actualizado 2026-08-13 · **revisión mayor 2026-09-03** (Bloques O y R) · **reorientación a estudio comparativo 2026-09-06** (bitácora `bitacora_flujo_postulacion_y_resultado.md` §7) · **grupo familiar + postulación en bloque con lista única 2026-09-30** (bitácora Bloque AA).
 
 **Estado:** el caso y la familia ficticia están cerrados. La **metodología de validación cambió de rumbo** tras la reunión con la profesora guía: de una prueba de usabilidad **formativa de final abierto** (N≈8, la persona elige el orden de la lista) a un **estudio comparativo entre-sujetos** (N≈30, dos condiciones, lista y orden fijos, mismo desenlace para todos). Este documento ya refleja esa reorientación.
 
@@ -12,7 +12,8 @@
 | Lista y orden canónico de 6 colegios (§3) | ✅ Cerrado y **verificado contra el código** (`SEED_CASO = 20260903`; `calcularResultado`; 16/16 tests de `flujo-postulacion.test.js`) — San Martín 1.º (26 %, no queda) → **Colegio Los Andes, 2.ª preferencia** (99 %, por hermano/a) |
 | Las dos condiciones A / B (§6.1) | ✅ Definidas **e implementadas en código** (2026-09-09, bitácora Bloque V). B (modo control) se activa vía la pantalla `/estudio` del moderador; contexto `ModoEstudioContext` que oculta la capa de explicabilidad. `asignacion.js`/`simulacionSae.js` intactos → resultado idéntico en A y B |
 | **§3.2 — por qué no queda en San Martín** (argumento técnico + traducción de usuario por las guías) | ✅ Añadido 2026-09-09. Fija el texto de referencia para la explicación de `/seguimiento` en la condición A |
-| Tareas dirigidas (§6.2) | ✅ 8 tareas, con ramas `[A]` / `[B]` |
+| Tareas dirigidas (§6.2) | ✅ 8 tareas, con ramas `[A]` / `[B]`. **Actualizadas 2026-09-30:** la tarea 1 ahora parte en la pantalla "Tu grupo familiar" (marcar a Sofía y Mateo y elegir "En bloque"); la antigua tarea 3 (vincular a Mateo) se fusionó ahí |
+| **Postulación en bloque con lista única (§2)** | ✅ 2026-09-30 — **propuesta del prototipo, no fidelidad:** en bloque la familia arma **una sola lista** para todos los hermanos/as que postulan (en el SAE real cada hijo/a tiene su lista). Ver §2 y §10 |
 | Instrumento: línea base + Likert 13 ítems + abiertas (§8) | ✅ Cerrado |
 | **Hipótesis explícitas (§8.4)** | ✅ Añadidas 2026-09-09 |
 | **Plan de análisis (§8.5)** | ✅ Añadido 2026-09-09 |
@@ -51,16 +52,19 @@ Coherente con la persona Daniela González (35 años, RM, alfabetización digita
 - **Apoderada:** Daniela González, 35 años.
 - **Padre:** Rodrigo Muñoz — trabaja como asistente de aula en **Colegio Villa del Sol** (Peñalolén) → activa prioridad **funcionario/a** ahí.
 - **Daniela** es exalumna de **Escuela República de Chile** (La Florida) → activa prioridad **exalumno/a** ahí.
-- **Hija mayor (no postula este proceso):** Martina, 15 años, matriculada desde 2023 en **Colegio Los Andes** (La Florida) → activa prioridad **hermano/a** para sus hermanos menores si postulan ahí.
+- **Hija mayor (no postula este proceso):** Martina, 16 años, **3.º medio**, matriculada desde 2023 en **Colegio Los Andes** (La Florida) → activa prioridad **hermano/a** para sus hermanos menores si postulan ahí.
 - **Hijos que postulan (Admisión 2027), en bloque familiar:**
-  - **Sofía**, 9 años, 3.º básico actual en Escuela Básica Los Quillayes (su colegio de origen — conserva continuidad si no queda en otro); **postula a 4.º básico**. Es la estudiante que la persona vincula y cuya postulación completa en el flujo.
-  - **Mateo**, 12 años, 6.º básico, postula a 7.º básico. Al marcar la **postulación familiar en bloque** se declara que Mateo también postula y se ingresan sus datos básicos, para que el sistema vincule ambas postulaciones. *En el prototipo, `calcularResultado` corre solo para Sofía; la postulación de Mateo "va aparte" y no se completa en la sesión (bitácora Bloque P).*
+  - **Sofía**, 9 años, 3.º básico actual en Escuela Básica Los Quillayes (su colegio de origen — conserva continuidad si no queda en otro); **postula a 4.º básico**.
+  - **Mateo**, 12 años, 6.º básico en Escuela Bernardo O'Higgins (ficticia, fuera del catálogo), postula a 7.º básico.
+  - **Cómo se elige en el prototipo (2026-09-30):** tras ClaveÚnica, la pantalla **"Tu grupo familiar"** muestra a Martina, Mateo y Sofía con casillas (nadie premarcado). La persona marca a **Sofía y Mateo** y, al haber dos, elige **"En bloque"** o "Por separado" (en el SAE real el bloque es opcional: sitio oficial "Postulación familiar en bloque", Ayuda Mineduc, FAQ n.º 14). El detalle de cada opción se despliega dentro de su tarjeta.
+  - **Propuesta del prototipo — lista única en bloque:** en bloque la familia arma **una sola lista de colegios para Sofía y Mateo** ("Esta lista vale para Mateo y Sofía"). En el SAE real cada hijo/a tiene su propia lista y la familia debe repetir los colegios en ambas; la lista única es una mejora propuesta (menos trabajo, sin riesgo de olvidar un colegio en una de las listas). La regla oficial de reordenamiento se mantiene en la explicación: se revisa primero a quien va en el curso más alto y el colegio donde quede pasa a ser la 1.ª opción del/de la menor. "Por separado" (una lista por hijo/a) se explica pero **no se implementa**.
+  - *En el prototipo, `calcularResultado` corre solo para **Sofía** (la menor de los/as marcados/as); los `%` de la lista son los de Sofía (4.º básico) y la pantalla lo dice. El resultado de Mateo no se simula (ver §10).*
 - **Condiciones transversales:** ninguna. La familia **no** está en el tercio de menores ingresos del Registro Social de Hogares (sin cuota SEP) y Sofía **no** tiene PIE vigente. Sus únicas ventajas son los **vínculos por establecimiento** de arriba.
 - **El colegio que tienen en mente:** Daniela y Rodrigo quieren, además, incluir el **Colegio San Martín** (Maipú) — se los recomendó una vecina y les gustó el proyecto educativo cuando lo visitaron, aunque **no tienen ningún vínculo con él** (ni hermano, ni funcionario, ni exalumno) **y es un colegio de demanda alta**. Esa combinación —preferencia personal alta + cero prioridad + demanda alta— hace que su probabilidad estimada sea **baja (≈26 %)**, muy por debajo de Los Andes (≈99 %, por el hermano). Es el punto de observación central del caso (§3.1).
 
 ## 3. Lista de colegios y orden de postulación (fijo)
 
-Se usan los 6 colegios reales de `sae-react/src/data/colegios.js`. **En el estudio comparativo la lista se entrega ya armada y en un orden exacto** (bitácora §7.5, D1): la persona **no** elige ni reordena; se le pide postular exactamente estos 6 en este orden.
+Se usan los 6 colegios reales de `sae-react/src/data/colegios.js`. **En el estudio comparativo la lista se entrega ya armada y en un orden exacto** (bitácora §7.5, D1): la persona **no** elige ni reordena; se le pide postular exactamente estos 6 en este orden. **Es la lista única del bloque Sofía + Mateo** (2026-09-30); los 6 colegios ofrecen 1.º–8.º básico, así que sirve para los dos.
 
 `prob.` = probabilidad estimada para el/la estudiante de este caso (4.º básico). Desde el Bloque R la estima una **simulación DA-por-colegio con Monte Carlo** (`simulacionSae.js`), no una tabla. Solo la ve la **condición A**.
 
@@ -195,11 +199,9 @@ Ocho tareas que recorren el flujo completo. `[A]` = solo condición con explicac
 
 Pre-tarea (antes de la #1): ítem de línea base **B1** sobre la percepción "tómbola" (§8.1) — pasa a **covariable**.
 
-1. **Identificarse** como apoderada de Sofía (vía ClaveÚnica simulada) y marcar la casilla *"declaro ser apoderada legal"*.
-   `[A]` además: leer el panel *"esto es lo que el sistema ya sabe de tu hijo/a"* — probe: *"¿qué te dice la página que ya sabe? ¿te calza con la tarjeta de familia?"*.
-   `[B]` ese panel no aparece.
-2. **Agregar los 6 colegios en el orden exacto de la tarjeta** (§3): San Martín · Los Andes · República de Chile · Villa del Sol · Simón Bolívar · Los Quillayes. Se entrega el orden por escrito; **la persona no lo elige ni lo reordena** — el moderador lo recuerda si intenta cambiarlo.
-3. **Vincular la postulación familiar en bloque con Mateo:** marcar que el hermano también postula e ingresar sus datos básicos (nombre, RUN, nivel). El prototipo aclara que la postulación de Mateo va aparte y que en la sesión se completa **solo la de Sofía**.
+1. **Ingresar y elegir el grupo familiar** (igual en A y B): ingresar con ClaveÚnica simulada; en **"Tu grupo familiar"** marcar a **Sofía y Mateo** (Martina no) y elegir **"En bloque"**. Probes: *"¿qué entiendes que pasa con Martina?"* · *"¿qué significa postular en bloque?"* (observar si lee el detalle que se despliega y si entiende que es **una sola lista** para los dos).
+2. **Confirmar los datos en el modal "¿Confirmas estos datos?"** (igual en A y B; se abre al pulsar "Continuar" en el grupo familiar, 2026-09-30): revisar quién postula y cómo ("En bloque: una sola lista de colegios para Mateo y Sofía"), RUN y curso de cada uno, el domicilio y la sección *"Lo que el sistema ya sabe"* (hermano/a en Los Andes, madre exalumna de República, padre funcionario de Villa del Sol); marcar *"Declaro que soy el apoderado o la apoderada legal de Mateo y Sofía"* y pulsar "Confirmar y seguir" (lleva directo al paso 2). Probe: *"¿qué te dice la página que ya sabe? ¿te calza con la tarjeta de familia?"*. Si la persona usa "¿Algún dato está mal? Corregir", se registra (no es necesario en el caso).
+3. **Agregar los 6 colegios en el orden exacto de la tarjeta** (§3): San Martín · Los Andes · República de Chile · Villa del Sol · Simón Bolívar · Los Quillayes. Es la lista de Sofía **y** Mateo. Se entrega el orden por escrito; **la persona no lo elige ni lo reordena** — el moderador lo recuerda si intenta cambiarlo.
 4. **Revisar la lista antes de confirmar.**
    `[A]` leer lo que la página muestra de cada colegio (demanda, postulantes/vacantes, probabilidad) y el recuadro *"¿qué hace el orden de tu lista?"*; pensar en voz alta sobre San Martín en 1.ª posición con ≈26 %. Probe: *"¿qué entiendes de lo que muestra la página aquí?"*.
    `[B]` revisar la lista tal como la muestra el proxy, sin esa capa. Probe: *"¿qué esperas que pase con esta lista?"*.
@@ -351,6 +353,7 @@ Se declaran explícitamente en la memoria (Cap. 3 §3.5 y Cap. 5).
 - **Moderador no ciego a la condición.** El moderador conoce si el participante está en A o B y sigue la rama correspondiente del guion. Mitigación: guion de lectura textual, probes idénticos en lo que se puede, no ayudar salvo bloqueo total, y —de ser posible— que una segunda persona codifique una submuestra de las grabaciones.
 - **Ítems que presuponen información solo de A.** Varios ítems Likert (C2, C4, C5, F5, J2) preguntan por algo que solo la condición A muestra en pantalla (probabilidades, explicación del resultado). Es **deliberado**: una puntuación más baja en B es la señal que el estudio busca, no un defecto del instrumento. Se interpreta como "B no tuvo los elementos para responder alto", no como "B entendió menos con la misma información".
 - **Efecto de demanda / deseabilidad social.** El encuadre neutro ("evalúo la página, no a ti") y el anonimato de la grabación buscan reducirlo; aun así, se reporta como limitación.
+- **Bloque simplificado: el resultado de Mateo no se simula (2026-09-30).** Con la regla real del bloque, Mateo (7.º básico, curso más alto) se revisaría primero y el colegio donde quede pasaría a ser la 1.ª opción de Sofía. Con la lista única, Mateo también tendría prioridad de hermano/a en Los Andes (por Martina), así que lo más probable es que quede ahí y Los Andes suba al 1.er lugar de Sofía. **El colegio final de Sofía sería el mismo (Los Andes), pero el relato cambiaría** (no habría "no quedaste en San Martín, quedaste en tu 2.ª preferencia"). El prototipo simula solo a Sofía con la lista en el orden dado, así que muestra el relato "2.ª preferencia". Se declara como simplificación; si un/a participante razona con la regla del bloque y lo cuestiona, se registra como evidencia de comprensión, no como error.
 - **Un solo caso, un solo desenlace.** Todo el estudio gira en torno a "no obtuve mi 1.ª opción, quedé en la 2.ª por el hermano". No se puede generalizar a "quedé en mi 1.ª opción" ni a "no quedé en ninguna"; esos escenarios quedan como línea futura.
 
 **De validez externa**

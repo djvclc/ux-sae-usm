@@ -16,11 +16,13 @@ Este documento es para ti, Diego, no para la persona que participa. Dos tipos de
 
 **Estudio comparativo (v3, 2026-09-09).** Hay **dos versiones de la pagina**: la condicion **A** (explica el algoritmo: probabilidades por colegio, recuadro "que hace el orden de tu lista?", "por que te asignaron este colegio", modulo /algoritmo) y la condicion **B** (control: el mismo flujo sin esa capa de explicacion). **Cada participante usa una sola.** El participante NO debe saber que existen dos versiones ni en cual esta.
 
+**v4 (2026-09-30).** El paso 1 ahora parte en la pantalla "Tu grupo familiar": la persona marca a Sofia y Mateo y elige "En bloque" (igual en A y en B). En bloque se arma **una sola lista para los dos** (propuesta del prototipo; en el SAE real cada hijo tiene su lista). La antigua tarea 3 (vincular a Mateo) se fusiono en la tarea 1. Desde el 2026-09-30 la revision de datos y la declaracion de apoderada se hacen en una sola ventana de confirmacion (tarea 2). Los textos citados de la pagina estan actualizados.
+
 *Antes de cada sesion:*
 
 1. *Confirma en tu planilla que condicion (A o B) le toca a este participante, segun el orden de asignacion balanceada que fijaste antes de reclutar. Deja abierta la URL correcta.*
 2. *Ten a mano: la tarjeta de familia y la lista de 6 colegios en orden (impresas o en pantalla aparte), el cuestionario pre-tarea y el post-tarea impresos, algo para grabar pantalla y audio, y el prototipo cargado en /postulacion con el navegador limpio (sin borrador de una sesion anterior).*
-3. *Atajo opcional para no perder tiempo tipeando: en el paso 1, dentro de "Ingresar con ClaveUnica", el desplegable "Cargar caso de ejemplo" precarga nombre, RUN, nivel de Sofia, direccion y datos de Mateo. La persona igual lee el panel, marca la casilla de apoderado/a y pulsa "Vincular estudiante". Si prefieres que lo escriba todo, no uses el atajo. Usa el mismo criterio en A y en B para no introducir diferencias.*
+3. *Atajo para la sesion: en el paso 1, el desplegable "Herramientas de la prueba de usabilidad" tiene el boton "Cargar familia Munoz Gonzalez": simula el ingreso con ClaveUnica y carga el grupo familiar (Martina, Mateo, Sofia), la direccion y el perfil. **No marca a nadie ni elige el modo**: eso lo hace la persona en la tarea 1. El mismo desplegable tiene "Limpiar y empezar de cero" para usar entre participantes. Usa el mismo criterio en A y en B.*
 
 *La sesion dura entre 45 y 55 minutos.*
 
@@ -54,11 +56,11 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 ## 3. Entrega de la tarjeta de familia y de la lista (igual en A y en B)
 
-"Ahora te paso una tarjeta con la historia de una familia. Vas a hacer como si fueras la mama, que se llama Daniela, y vas a postular a una de sus hijas, Sofia. Tomate el tiempo que necesites para leerla, no hay apuro."
+"Ahora te paso una tarjeta con la historia de una familia. Vas a hacer como si fueras la mama, que se llama Daniela, y vas a postular a dos de sus hijos, Sofia y Mateo, para que queden en el mismo colegio. Tomate el tiempo que necesites para leerla, no hay apuro."
 
 *Entrega la tarjeta de familia. Deja que la lea en silencio. No adelantes nada sobre el Colegio San Martin, las prioridades ni el objetivo del estudio.*
 
-"Tambien te paso la lista de los seis colegios a los que la familia ya decidio postular, en el orden que decidieron. Tu tarea es ingresar esa lista tal cual, en ese orden. No hace falta que la cambies."
+"Tambien te paso la lista de los seis colegios a los que la familia ya decidio postular, en el orden que decidieron. Es una sola lista para Sofia y Mateo. Tu tarea es ingresar esa lista tal cual, en ese orden. No hace falta que la cambies."
 
 *Entrega la lista de 6 colegios en orden: 1. Colegio San Martin, 2. Colegio Los Andes, 3. Escuela Republica de Chile, 4. Colegio Villa del Sol, 5. Liceo Tecnico Simon Bolivar, 6. Escuela Basica Los Quillayes.*
 
@@ -74,33 +76,35 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 *Las tareas 1 a 8 siguen `caso_estudio_prueba_usabilidad_postulacion.md` §6.2. Donde diga **[A]** o **[B]**, sigue solo la rama de la condicion de este participante. Lo que no tiene marca es igual en ambas.*
 
-### Tarea 1: Identificarse
+### Tarea 1: Ingresar y elegir a quienes postular (igual en A y en B)
 
-"Primero, identificate en la pagina como si fueras Daniela."
+"Primero, entra a la pagina como si fueras Daniela, y elige a cuales de tus hijos vas a postular este ano."
 
-*Observa si usa ClaveUnica o la opcion de RUT. No corrijas. Que marque la casilla "declaro ser apoderada legal".*
+*Si usaste el atajo, la pagina ya muestra "Tu grupo familiar" con Martina, Mateo y Sofia, sin nadie marcado. Debe marcar a Sofia y Mateo (no a Martina). Al marcar a dos aparece "Como quieres postularlos?": debe elegir "En bloque". Si duda, recuerdale la tarjeta ("la familia quiere que queden en el mismo colegio"), sin explicar que hace cada opcion.*
 
-**[A]** *Cuando aparezca el recuadro "Esto es lo que el sistema ya sabe de tu hijo/a", pregunta:* "Que te dice la pagina que ya sabe de la familia? Te calza con la tarjeta?" *Solo escucha, no expliques.*
+*Observa: si nota que la tarjeta de Martina queda en verde con "No postula · mantiene su matricula"; si lee el detalle que se abre dentro de "En bloque"; si entiende que es una sola lista para los dos.*
 
-**[B]** *Ese panel no aparece. Sigue directo a la tarea 2.*
+*Probes:* "Que entiendes que pasa con Martina?" · "Con tus palabras, que significa postular en bloque?"
 
-### Tarea 2: Agregar los 6 colegios en el orden dado
+### Tarea 2: Confirmar los datos (igual en A y en B)
 
-"Ahora busca y agrega a la lista de postulacion de Sofia estos seis colegios, en este orden."
+"Ahora revisa los datos que muestra la pagina y sigue hasta poder armar la lista."
 
-*Tiene la lista en la mano. Si intenta reordenarla o cambiar un colegio, recuerdaselo con amabilidad ("el orden ya esta decidido, ingresa esos seis asi") y ANOTA que lo intento y que dijo. No lo dejes reordenar.*
+*Al pulsar "Continuar" en el grupo familiar se abre la ventana "Confirmas estos datos?": dice "En bloque: una sola lista de colegios para Mateo y Sofia", muestra RUN y curso de cada uno, el domicilio y "Lo que el sistema ya sabe" (hermana en Los Andes, madre exalumna de Republica, padre que trabaja en Villa del Sol). Debe marcar "Declaro que soy el apoderado o la apoderada legal de Mateo y Sofia" y pulsar "Confirmar y seguir", que lleva directo a armar la lista. No corrijas. Si usa "Algun dato esta mal? Corregir", anotalo y deja que vuelva a confirmar con "Listo, volver a confirmar".*
 
-### Tarea 3: Postulacion familiar en bloque con Mateo
+*Mientras lee la ventana, pregunta:* "Que te dice la pagina que ya sabe de la familia? Te calza con la tarjeta?" *Solo escucha, no expliques.*
 
-"En el paso 1, marca que Sofia tiene un hermano que tambien postula este ano, Mateo, y completa sus datos si no vienen cargados."
+### Tarea 3: Agregar los 6 colegios en el orden dado
 
-*La pagina aclara que en esta demo se completa solo la postulacion de Sofia; la de Mateo iria por separado. Observa si eso le queda claro o si cree que esta postulando a los dos aqui.*
+"Ahora busca y agrega a la lista estos seis colegios, en este orden."
+
+*Tiene la lista en la mano. Sobre la lista, la pagina dice "Esta lista vale para Mateo y Sofia" (en A agrega "Los porcentajes estimados son los de Sofia (4° basico)"). Si intenta reordenarla o cambiar un colegio, recuerdaselo con amabilidad ("el orden ya esta decidido, ingresa esos seis asi") y ANOTA que lo intento y que dijo. No lo dejes reordenar.*
 
 ### Tarea 4: Revisar la lista antes de confirmar
 
 **[A]** "Antes de confirmar, tomate un momento para leer lo que la pagina te muestra de cada colegio y sobre el orden que tienes. Cuentame que vas entendiendo."
 
-*En el Colegio San Martin (posicion 1) la pagina muestra "~26% estimado" y "No detectamos ningun vinculo con Colegio San Martin. Sin una prioridad aqui, tu cupo depende de cuantas familias pidan este colegio y de las vacantes que tenga". Tambien el recuadro "que hace el orden de tu lista?". Observa la reaccion al numero bajo de San Martin y si entiende el recuadro.*
+*En el Colegio San Martin (posicion 1) la pagina muestra "26%" junto al nombre del colegio y, debajo, "Sin vinculo con Colegio San Martin. Tu cupo depende de la demanda y las vacantes de este colegio". Tambien el recuadro "que hace el orden de tu lista?". Observa la reaccion al numero bajo de San Martin y si entiende el recuadro.*
 
 *Probe:* "Que entiendes de lo que muestra la pagina aca?"
 
@@ -125,6 +129,8 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 "Ahora, en esta pagina hay un boton para ver el resultado de la postulacion ya mismo, en vez de esperar. Tocalo y cuentame."
 
 *Desenlace de este caso, igual en A y en B: San Martin (posicion 1) NO queda (~26%) y el sistema asigna a Sofia al **Colegio Los Andes**, su 2.a preferencia, por el hermano. Observa la reaccion a no haber obtenido el colegio en mente.*
+
+*Si pregunta por Mateo: "En esta prueba solo vemos el resultado de Sofia." No expliques mas. Si razona que, por el bloque, el colegio de Mateo deberia haber subido al primer lugar de Sofia, anotalo: es evidencia de comprension (el prototipo simplifica y no simula a Mateo; ver caso de estudio §10).*
 
 *Probes (ambas condiciones):* "Era lo que esperabas? Por que crees que paso esto? Te queda claro por que no quedo en San Martin?"
 

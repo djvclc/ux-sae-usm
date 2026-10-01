@@ -20,7 +20,7 @@ Este documento es para ti, Diego, no para la persona que participa. Dos tipos de
 
 *Antes de cada sesion:*
 
-1. *Confirma en tu planilla que condicion (A o B) le toca a este participante, segun el orden de asignacion balanceada que fijaste antes de reclutar. Deja abierta la URL correcta.*
+1. *Confirma en tu planilla que condicion (A o B) le toca a este participante, segun el orden de asignacion balanceada que fijaste antes de reclutar. Para activarla: en /postulacion, abre el desplegable "Herramientas de la prueba de usabilidad" y pulsa "A · Con explicaciones" o "B · Sin explicaciones" (la pagina se recarga limpia, sin rastro del modo en la direccion, y muestra cual version esta activa). Tambien sirve la pantalla /estudio con el numero de participante. Cierra el desplegable antes de pasarle el equipo a la persona.*
 2. *Ten a mano: la tarjeta de familia y la lista de 6 colegios en orden (impresas o en pantalla aparte), el cuestionario pre-tarea y el post-tarea impresos, algo para grabar pantalla y audio, y el prototipo cargado en /postulacion con el navegador limpio (sin borrador de una sesion anterior).*
 3. *Atajo para la sesion: en el paso 1, el desplegable "Herramientas de la prueba de usabilidad" tiene el boton "Cargar familia Munoz Gonzalez": simula el ingreso con ClaveUnica y carga el grupo familiar (Martina, Mateo, Sofia), la direccion y el perfil. **No marca a nadie ni elige el modo**: eso lo hace la persona en la tarea 1. El mismo desplegable tiene "Limpiar y empezar de cero" para usar entre participantes. Usa el mismo criterio en A y en B.*
 

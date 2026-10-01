@@ -1723,14 +1723,21 @@ select:focus {
   display: none;
 }
 
-@media (max-width: 1024px) {
+/* 2026-10-01: con la fuente raíz en 19px (Z16) y seminegrita, los 9 enlaces del
+   menú desbordaban entre ~860 y ~1100px de ancho. Se amplía el rango y se baja a
+   0.86rem (≈16px con raíz 19px: respeta el mínimo de 16px del requisito 13-g). */
+@media (max-width: 1200px) {
   .menu {
-    gap: 2px;
+    gap: 0;
+    /* si aun así no cabe (texto "Grande", ~900px), pasa a dos líneas en vez de desbordar */
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    min-width: 0;
   }
 
   .menu__link {
-    font-size: 1rem;
-    padding: 6px 9px;
+    font-size: 0.86rem;
+    padding: 6px 7px;
   }
 }
 
@@ -7878,4 +7885,136 @@ button[disabled],
   margin: 0 0 8px;
   max-width: 46ch;
   color: var(--texto);
+}
+
+/* 2026-10-01: barra de progreso de /postulacion (reemplaza los círculos numerados
+   de .stepper, que sigue usándose en RegistroPage) */
+.post-progreso {
+  margin: 16px 0 20px;
+}
+
+.post-progreso__texto {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  color: var(--texto);
+}
+
+.post-progreso__barra {
+  display: flex;
+  gap: 6px;
+}
+
+.post-progreso__tramo {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--gris-borde);
+  transition: background 0.3s;
+}
+
+.post-progreso__tramo--lleno {
+  background: var(--azul);
+}
+
+.post-progreso__despues {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-progreso__tramo { transition: none; }
+}
+
+/* 2026-10-01: paso 3 "Revisa y envía" como resumen escaneable */
+.post-revision__intro {
+  margin: 0 0 16px;
+}
+
+.post-revision__seccion {
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  background: var(--bg-card);
+  padding: 14px 16px;
+  margin: 0 0 14px;
+}
+
+.post-revision__cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.post-revision__cabecera h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.post-revision__modo {
+  margin: 0 0 8px;
+  color: var(--azul-osc);
+}
+
+.post-revision__personas,
+.post-revision__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-revision__personas li {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  border-top: 1px solid var(--gris-borde);
+}
+
+.post-revision__personas li:first-child {
+  border-top: 0;
+}
+
+.post-revision__personas span,
+.post-revision__colegio > span {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.post-revision__fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-top: 1px solid var(--gris-borde);
+}
+
+.post-revision__fila:first-child {
+  border-top: 0;
+}
+
+.post-revision__num {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.post-revision__colegio {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-revision__nota {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
 }

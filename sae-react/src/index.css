@@ -8126,3 +8126,200 @@ button[disabled],
   font-size: 0.85rem;
   color: var(--texto-suave);
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Layout "flujo + panel de explicación" (refactor 2026-10-02, plantilla de la
+   reunión con la profesora guía del 2026-10-01). Usado en /postulacion y
+   /seguimiento — ver components/PanelExplicativo.jsx. En la condición B del
+   estudio (sin panel) queda `.layout-panel--solo`: una columna a todo el ancho.
+   ══════════════════════════════════════════════════════════════════════════ */
+.page--con-panel {
+  max-width: 1320px;
+}
+
+.layout-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: var(--esp-lg);
+  align-items: start;
+  margin-top: var(--esp-md);
+}
+.layout-panel--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+.layout-panel__flujo {
+  min-width: 0;
+}
+.layout-panel__flujo > :first-child {
+  margin-top: 0;
+}
+
+.panel-exp {
+  position: sticky;
+  top: var(--esp-md);
+  max-height: calc(100vh - 2 * var(--esp-md));
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--borde);
+  border-top: 4px solid var(--azul);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-lg);
+  padding: var(--esp-md) 20px 20px;
+}
+.panel-exp__contenido {
+  animation: panel-exp-entrar 0.25s ease-out;
+}
+@keyframes panel-exp-entrar {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-exp__contenido { animation: none; }
+}
+.panel-exp__eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--azul);
+}
+.panel-exp .panel-exp__titulo {
+  margin: 2px 0 var(--esp-md);
+  font-size: 1.3rem;
+  line-height: 1.25;
+}
+.panel-exp__seccion {
+  padding: 12px 0;
+  border-top: 1px solid var(--borde);
+}
+.panel-exp__seccion:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+.panel-exp__seccion--principal {
+  background: var(--azul-cl);
+  border: 0;
+  border-left: 4px solid var(--azul);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  margin-bottom: 4px;
+}
+.panel-exp__seccion--principal + .panel-exp__seccion {
+  border-top: 0;
+}
+.panel-exp__seccion--alerta {
+  background: var(--naranja-cl);
+  border: 0;
+  border-left: 4px solid var(--naranja);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  margin: 4px 0;
+  color: #6b2d07;
+}
+.panel-exp__seccion--alerta + .panel-exp__seccion {
+  border-top: 0;
+}
+.panel-exp .panel-exp__seccion-titulo {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.panel-exp__seccion p,
+.panel-exp__seccion li {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.panel-exp__seccion p {
+  margin: 0 0 8px;
+}
+.panel-exp__seccion p:last-child {
+  margin-bottom: 0;
+}
+.panel-exp__seccion ul,
+.panel-exp__seccion ol {
+  margin: 0 0 8px;
+  padding-left: 1.2em;
+}
+.panel-exp__seccion details > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--azul-osc);
+}
+.panel-exp__seccion details[open] > summary {
+  margin-bottom: 8px;
+}
+/* Opción elegida (bloque / por separado) destacada dentro del panel */
+.panel-exp__opcion {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.panel-exp__opcion--elegida {
+  border: 2px solid var(--azul);
+  background: var(--azul-cl);
+}
+.panel-exp__opcion-titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  font-weight: 800;
+}
+/* Leyenda de colores del % estimado */
+.panel-exp__leyenda {
+  list-style: none;
+  padding: 0 !important;
+  display: grid;
+  gap: 6px;
+}
+.panel-exp__leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-exp__leyenda .tut-prob {
+  min-width: 52px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+/* Fechas */
+.panel-exp__fechas {
+  list-style: none;
+  padding: 0 !important;
+}
+.panel-exp__fechas li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--borde);
+}
+.panel-exp__fechas li:last-child {
+  border-bottom: 0;
+}
+.panel-exp__fechas strong {
+  white-space: nowrap;
+}
+/* La tabla y el recorrido de /seguimiento caben en el ancho del panel */
+.panel-exp .seg-porque-tabla {
+  font-size: 0.88rem;
+}
+
+/* Sin prioridad de móvil (decisión 2026-10-02), pero bajo ~960 px el panel se
+   apila debajo del flujo en vez de comprimirlo. */
+@media (max-width: 960px) {
+  .layout-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .panel-exp {
+    position: static;
+    max-height: none;
+  }
+}
+/* El reset de Tailwind quita viñetas y números; en el panel sí se necesitan. */
+.panel-exp__seccion ol { list-style: decimal; }
+.panel-exp__seccion ul:not(.panel-exp__leyenda):not(.panel-exp__fechas) { list-style: disc; }

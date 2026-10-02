@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
 import { useModoEstudio } from '../context/ModoEstudioContext'
+import { LayoutConPanel, PanelExplicativo, PanelSeccion } from '../components/PanelExplicativo'
 
 const STORAGE_KEY = 'sae_react_postulacion'
 
@@ -365,14 +366,131 @@ export default function SeguimientoPage() {
     .filter((d) => asignado && d.idx < asignado.idx && d.estado !== 'no_evaluado')
     .map((d) => d.nombre)
 
+  /* ── Panel de explicación (refactor 2026-10-02, plantilla de la reunión con la
+     profesora guía del 2026-10-01; ver components/PanelExplicativo.jsx) ──
+     A la izquierda queda el resultado, la decisión (aceptar/rechazar, con sus
+     consecuencias junto a los botones — HAX G16) y el detalle por preferencia. A
+     la derecha, lo que EXPLICA el resultado. Todo lo del panel ya era exclusivo de
+     la condición A; en B el panel no se muestra y el flujo ocupa todo el ancho. */
+  const panel = (
+    <PanelExplicativo clave="resultado" titulo="Tu resultado, explicado">
+      {/* ── Explicación contextualizada ── F3: núcleo de la condición A. */}
+      {explicacion && (
+        <PanelSeccion tono="principal" titulo="¿Por qué te asignaron este colegio?">
+          {/* Opción 2 (2026-09-10) — comparación de un vistazo antes de los
+              párrafos. Si hay contraste (no quedó en su 1.ª opción), la tabla
+              resume el porqué y la explicación completa queda en un desplegable. */}
+          {comparacion ? (
+            <>
+              <table className="seg-porque-tabla">
+                <thead>
+                  <tr>
+                    <th scope="col">Colegio</th>
+                    <th scope="col">Tu situación ahí</th>
+                    <th scope="col">Resultado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparacion.map((f) => (
+                    <tr key={f.idx} className={f.obtuvo ? 'seg-porque-tabla__ok' : ''}>
+                      <td>
+                        <strong>{f.nombre}</strong>
+                        <span className="seg-porque-tabla__pref"> · tu {ORDINALES[f.idx - 1] ?? `N.º ${f.idx}`} opción</span>
+                      </td>
+                      <td>{f.situacion}</td>
+                      <td>{f.obtuvo ? '✅ Cupo' : 'No alcanzó'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <details className="seg-porque-detalle">
+                <summary>Ver la explicación completa</summary>
+                <div className="result-explanation">
+                  {explicacion.map((texto, i) => (
+                    <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
+                  ))}
+                </div>
+              </details>
+            </>
+          ) : (
+            <div className="result-explanation">
+              {explicacion.map((texto, i) => (
+                <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
+              ))}
+            </div>
+          )}
+          {/* 2026-10-01: ayuda visual adicional (no reemplaza lo anterior). */}
+          <details className="seg-porque-detalle">
+            <summary>Ver cómo se revisó tu lista, paso a paso</summary>
+            <RecorridoVisual detalles={resultado?.detalles ?? []} />
+          </details>
+        </PanelSeccion>
+      )}
+
+      {/* Mensaje tranquilizador si no quedó en primera opción (no aplica al
+          fallback sin cupo: ese caso lo cubre la explicación de arriba).
+          Incluye strategy-proofness. */}
+      {asignado && asignado.idx > 1 && !sinAsignacion && (
+        <PanelSeccion titulo="¿Qué significa no quedar en tu primera opción?">
+          <p>
+            No quedar en tu primera opción no significa que el sistema falló. El SAE revisa todos
+            los colegios de tu lista y te deja en el primero donde hay un cupo para tu situación —
+            en tu caso, el <strong>{asignado.nombre}</strong>.
+          </p>
+          <p>
+            {/* Opción 3 (2026-09-10) — contrafactual concreto con ESTA lista. */}
+            <strong>¿Y si hubieras ordenado la lista distinto?</strong> El resultado sería el mismo.
+            Si hubieras puesto el {asignado.nombre} en primer lugar, habrías quedado igual ahí:
+            cada colegio revisa tu postulación por separado, sin mirar en qué puesto de tu lista lo
+            dejaste.
+          </p>
+          <p>
+            Por eso poner primero el colegio que más quieres <strong>nunca te perjudica</strong>. El
+            resultado se basa solo en las prioridades que fija la Ley de Inclusión y en las vacantes
+            disponibles.
+          </p>
+        </PanelSeccion>
+      )}
+
+      {/* ── Opción 1 (2026-09-10) — "Qué sigue ahora" ──
+          GOV.UK ("qué ocurre después" en la confirmación) · Brookings (el proceso
+          no terminó) · HAX G16 (consecuencia de NO actuar). Fechas alineadas con
+          `/proceso`. */}
+      {asignado && !sinAsignacion && (
+        <PanelSeccion titulo="Qué sigue ahora">
+          <ol className="seg-next-list">
+            <li>
+              <strong>Ahora:</strong> acepta o rechaza tu asignación, entre el
+              <strong> 15 y el 21 de octubre de 2026</strong>.
+            </li>
+            <li>
+              <strong>Si aceptas:</strong> matricúlate en persona en {asignado.nombre} entre el
+              <strong> 9 y el 22 de diciembre de 2026</strong>.
+            </li>
+            <li>
+              <strong>Si quieres seguir intentando</strong> por un colegio que estaba más arriba en
+              tu lista: puedes volver a postular en el <strong>Periodo Complementario</strong> (10 al
+              17 de noviembre), con los colegios que aún tengan vacantes.
+            </li>
+          </ol>
+          <p className="seg-next-alerta" role="note">
+            ⏰ Si no entras a esta página antes del <strong>21 de octubre</strong>, el sistema
+            acepta la asignación automáticamente.
+          </p>
+        </PanelSeccion>
+      )}
+    </PanelExplicativo>
+  )
+
   return (
-    <main className={`page page--seguimiento${textoGrande ? ' page--texto-grande' : ''}`}>
+    <main className={`page page--seguimiento page--con-panel${textoGrande ? ' page--texto-grande' : ''}`}>
       <TextSizeBar pageName="Mi postulación" />
       <h1>Mi postulación</h1>
       <p className="page__lead">
         Revisa el resultado de tu postulación y entiende por qué te fue asignado ese colegio.
       </p>
 
+      <LayoutConPanel panel={panel}>
       {/* ── Timeline del proceso ── */}
       <div className="seg-timeline" role="list" aria-label="Etapas del proceso">
         {ETAPAS_PROCESO.map((etapa, i) => (
@@ -513,98 +631,7 @@ export default function SeguimientoPage() {
         </div>
       )}
 
-      {/* ── Opción 1 (2026-09-10) — "Qué sigue ahora" ──
-          GOV.UK ("qué ocurre después" en la confirmación) · Brookings (el proceso
-          no terminó) · HAX G16 (consecuencia de NO actuar). Fechas alineadas con
-          `/proceso`. Solo condición A. */}
-      {!esControl && asignado && !sinAsignacion && (
-        <Card className="card--module" style={{ marginTop: 16 }}>
-          <CardHeader>
-            <CardTitle>Qué sigue ahora</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ol className="seg-next-list">
-              <li>
-                <strong>Ahora:</strong> acepta o rechaza tu asignación, entre el
-                <strong> 15 y el 21 de octubre de 2026</strong>.
-              </li>
-              <li>
-                <strong>Si aceptas:</strong> matricúlate en persona en {asignado.nombre} entre el
-                <strong> 9 y el 22 de diciembre de 2026</strong>.
-              </li>
-              <li>
-                <strong>Si quieres seguir intentando</strong> por un colegio que estaba más arriba en
-                tu lista: puedes volver a postular en el <strong>Periodo Complementario</strong> (10 al
-                17 de noviembre), con los colegios que aún tengan vacantes.
-              </li>
-            </ol>
-            <p className="seg-next-alerta" role="note">
-              ⏰ Si no entras a esta página antes del <strong>21 de octubre</strong>, el sistema
-              acepta la asignación automáticamente.
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* ── Explicación contextualizada ──
-          F3: es el núcleo de la condición A → no va en la de control (B solo
-          muestra el colegio asignado, sin el porqué). */}
-      {!esControl && explicacion && (
-        <Card className="card--module" style={{ marginTop: 16 }}>
-          <CardHeader>
-            <CardTitle>¿Por qué te asignaron este colegio?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Opción 2 (2026-09-10) — comparación de un vistazo antes de los
-                párrafos. Si hay contraste (no quedó en su 1.ª opción), la tabla
-                resume el porqué y la explicación completa queda en un desplegable. */}
-            {comparacion ? (
-              <>
-                <table className="seg-porque-tabla">
-                  <thead>
-                    <tr>
-                      <th scope="col">Colegio</th>
-                      <th scope="col">Tu situación ahí</th>
-                      <th scope="col">Resultado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {comparacion.map((f) => (
-                      <tr key={f.idx} className={f.obtuvo ? 'seg-porque-tabla__ok' : ''}>
-                        <td>
-                          <strong>{f.nombre}</strong>
-                          <span className="seg-porque-tabla__pref"> · tu {ORDINALES[f.idx - 1] ?? `N.º ${f.idx}`} opción</span>
-                        </td>
-                        <td>{f.situacion}</td>
-                        <td>{f.obtuvo ? '✅ Cupo' : 'No alcanzó'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <details className="seg-porque-detalle">
-                  <summary>Ver la explicación completa</summary>
-                  <div className="result-explanation">
-                    {explicacion.map((texto, i) => (
-                      <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
-                    ))}
-                  </div>
-                </details>
-              </>
-            ) : (
-              <div className="result-explanation" aria-live="polite">
-                {explicacion.map((texto, i) => (
-                  <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
-                ))}
-              </div>
-            )}
-            {/* 2026-10-01: ayuda visual adicional (no reemplaza lo anterior). */}
-            <details className="seg-porque-detalle">
-              <summary>Ver cómo se revisó tu lista, paso a paso</summary>
-              <RecorridoVisual detalles={resultado?.detalles ?? []} />
-            </details>
-          </CardContent>
-        </Card>
-      )}
+      {/* 2026-10-02: "Qué sigue ahora" y "¿Por qué te asignaron este colegio?" pasaron al panel. */}
 
       {/* ── Detalle por preferencia — rediseñado ── */}
       <Card className="card--module" style={{ marginTop: 16 }}>
@@ -693,37 +720,7 @@ export default function SeguimientoPage() {
         </CardContent>
       </Card>
 
-      {/* Mensaje tranquilizador si no quedó en primera opción (no aplica al
-          fallback sin cupo: ese caso lo cubre la explicación de arriba).
-          F3: incluye strategy-proofness → no va en la condición de control. */}
-      {!esControl && asignado && asignado.idx > 1 && !sinAsignacion && (
-        <Card className="card--module" style={{ marginTop: 16 }}>
-          <CardHeader>
-            <CardTitle>¿Qué significa no quedar en tu primera opción?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>
-              No quedar en tu primera opción no significa que el sistema falló. El SAE revisa todos
-              los colegios de tu lista y te deja en el primero donde hay un cupo para tu situación —
-              en tu caso, el <strong>{asignado.nombre}</strong>.
-            </p>
-            <p>
-              {/* Opción 3 (2026-09-10) — contrafactual concreto con ESTA lista. Hace
-                  verificable la propiedad de "el orden no perjudica" (caso_estudio §3.2),
-                  que antes se afirmaba en abstracto. */}
-              <strong>¿Y si hubieras ordenado la lista distinto?</strong> El resultado sería el mismo.
-              Si hubieras puesto el {asignado.nombre} en primer lugar, habrías quedado igual ahí:
-              cada colegio revisa tu postulación por separado, sin mirar en qué puesto de tu lista lo
-              dejaste.
-            </p>
-            <p>
-              Por eso poner primero el colegio que más quieres <strong>nunca te perjudica</strong>. El
-              resultado se basa solo en las prioridades que fija la Ley de Inclusión y en las vacantes
-              disponibles.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      {/* 2026-10-02: "¿Qué significa no quedar en tu primera opción?" pasó al panel. */}
 
       {/* ── Acciones y comprobante ── */}
       <div className="seg-actions-bar">
@@ -796,6 +793,7 @@ export default function SeguimientoPage() {
           )}
         </div>
       </details>
+      </LayoutConPanel>
     </main>
   )
 }

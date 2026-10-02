@@ -41,6 +41,8 @@ El prototipo demuestra cómo aplicar transparencia algorítmica al SAE; la memor
 
 ## Estado del proyecto (septiembre 2026)
 
+- **Investigación sobre qué preguntar en la prueba de usabilidad (2026-10-01; solo `docs/`): `docs/investigacion/investigacion_preguntas_prueba_usabilidad.md`.** Propone, sin aplicarlo aún, reforzar el instrumento del estudio comparativo A/B: test de comprensión objetiva K1–K8 (V/F/No sé) antes del Likert, predicción escrita PR1–PR3, probes iguales en A y B (tareas 4 y 7), numeracidad SNS-3 como covariable, SEQ + esfuerzo mental como control de carga, *teach-back* A3, y ajustes a C1/C3/F2/F4/J1–J3. Clave K4–K6 verificada contra `tests/flujo-postulacion.test.js`. **Pendiente de decisión del autor/profesora**; si se aprueba, actualizar caso de estudio §6–§10, guion, material y `03_metodologia.tex`.
+
 - **Desplegable "Ver cómo se revisó tu lista, paso a paso" (`RecorridoVisual`) en "¿Por qué te asignaron este colegio?" de `/seguimiento`: cupos por colegio como cuadritos y el lugar de la familia en la fila, con los datos reales de la simulación; solo condición A (2026-10-01; `CONTEXTO_CLAUDE_CODE.md` §65; bitácora AA17).** lint/build/test (16/16) OK.
 
 - **Condición B: se oculta el tipo de prioridad en los colegios de la lista (paso 2 y paso 3) — prueba hacia una B "como postulación común" (2026-10-01; `CONTEXTO_CLAUDE_CODE.md` §64; bitácora AA16).** Resultado idéntico en A y B; `/seguimiento` aún muestra la prioridad en B. lint/build/test (16/16) OK.

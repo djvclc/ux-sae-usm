@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Propuesta de preguntas — prueba de usabilidad</title>
+<style>
+  @page { size: Letter; margin: 18mm 16mm 18mm 16mm; }
+  :root { --azul:#0057B7; --azul-claro:#E8F1FB; --verde:#1A7F37; --naranja:#B35F00; --gris:#222; --gris-med:#555; --borde:#cfd6df; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--gris); font-size: 10.3pt; line-height: 1.42; margin: 0; background:#fff; }
+  h1 { font-size: 19pt; color: var(--azul); margin: 0 0 4px; line-height: 1.2; }
+  .sub { color: var(--gris-med); font-size: 10pt; margin-bottom: 14px; }
+  h2 { font-size: 13pt; color: var(--azul); border-bottom: 2px solid var(--azul); padding-bottom: 3px; margin: 20px 0 8px; break-after: avoid; }
+  h3 { font-size: 11pt; margin: 14px 0 6px; break-after: avoid; }
+  p { margin: 0 0 7px; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.6pt; }
+  th, td { border: 1px solid var(--borde); padding: 5px 7px; vertical-align: top; text-align: left; }
+  th { background: var(--azul-claro); font-weight: 700; }
+  tr { break-inside: avoid; }
+  .box { background: var(--azul-claro); border-left: 4px solid var(--azul); padding: 8px 11px; margin: 8px 0 12px; break-inside: avoid; }
+  .nota { font-size: 9pt; color: var(--gris-med); }
+  .tag { display:inline-block; font-size: 7.6pt; font-weight: 700; padding: 1px 6px; border-radius: 8px; vertical-align: 1px; white-space: nowrap; }
+  .nuevo { background:#E3F4E8; color: var(--verde); border:1px solid #9fd3ae; }
+  .ajust { background:#FFF1DF; color: var(--naranja); border:1px solid #f0c48d; }
+  .igual { background:#EEF0F3; color:#444; border:1px solid #cfd3d9; }
+  .q { font-style: italic; }
+  .id { font-weight: 700; white-space: nowrap; }
+  .resp { font-weight: 700; text-align:center; white-space: nowrap; }
+  .v { color: var(--verde); } .f { color: #C0392B; }
+  ul { margin: 2px 0 8px 18px; padding: 0; } li { margin-bottom: 2px; }
+  .pb { break-before: page; }
+  .leyenda { font-size: 9pt; margin: 4px 0 10px; }
+  .col2 { width: 34%; }
+</style>
+</head>
+<body>
+
+<h1>Propuesta de preguntas para la prueba de usabilidad</h1>
+<div class="sub">Estudio comparativo del flujo de postulación (condición A con explicaciones / B sin explicaciones) · Prototipo SAE · Memoria de título UTFSM · 1 de octubre de 2026 · <em>Propuesta para revisión</em></div>
+
+<div class="box">
+<strong>En corto.</strong> El diseño del estudio no cambia (entre-sujetos, N≈30, lista y orden fijos, mismo resultado en A y B). Lo que se propone es reforzar <em>qué</em> se pregunta: hoy toda la comprensión se mide con autorreporte ("entendí…"). Se agrega <strong>una predicción escrita</strong> y <strong>un test de comprensión de 8 preguntas con respuesta correcta</strong>, se usan <strong>las mismas preguntas del moderador en A y en B</strong>, y se ajustan algunos ítems de la escala de acuerdo.
+</div>
+
+<h2>1. Tipo de prueba</h2>
+<p><strong>Prueba de usabilidad comparativa y moderada, con un test de comprensión incorporado.</strong> No busca encontrar problemas de interfaz (eso sería una prueba formativa con 5–8 personas), sino comparar dos grupos con las mismas medidas.</p>
+<ul>
+  <li><strong>Cuantitativa:</strong> predicción del resultado, test de comprensión y escalas de acuerdo, comparadas entre A y B (U de Mann-Whitney y tamaño de efecto; prueba exacta de Fisher para la predicción).</li>
+  <li><strong>Cualitativa:</strong> pensar en voz alta durante las tareas y preguntas abiertas, para explicar <em>por qué</em> aparecen las diferencias (en especial, el mito de "esconder" el colegio preferido).</li>
+  <li><strong>Pensar en voz alta con cuidado:</strong> narrar mientras se usa la página puede cambiar cómo se lee, y la condición A tiene más texto. Por eso se usa la misma consigna y los mismos puntos de pregunta en A y B, y la comprensión se mide <em>después</em>, por escrito.</li>
+</ul>
+
+<h2>2. Qué cambia respecto del instrumento actual</h2>
+<p class="leyenda"><span class="tag igual">Se mantiene</span> &nbsp; <span class="tag ajust">Ajustado</span> &nbsp; <span class="tag nuevo">Nuevo</span></p>
+<table>
+  <tr><th style="width:30%">Elemento</th><th style="width:14%">Estado</th><th>Motivo</th></tr>
+  <tr><td>Experiencia previa con el SAE y pregunta "tómbola" (B1)</td><td><span class="tag igual">Se mantiene</span></td><td>Siguen siendo antecedentes que se registran antes de las tareas (covariables).</td></tr>
+  <tr><td>Facilidad con los números (3 ítems, SNS-3)</td><td><span class="tag nuevo">Nuevo</span></td><td>A comunica con porcentajes y "X de cada 100"; permite ver si el efecto depende de esa facilidad.</td></tr>
+  <tr><td>Preguntas del moderador en las tareas 4 y 7</td><td><span class="tag ajust">Ajustado</span></td><td>Hoy son distintas en A y B: no se puede separar el efecto de la página del de la pregunta.</td></tr>
+  <tr><td>Predicción del resultado (tarea 6)</td><td><span class="tag ajust">Ajustado</span></td><td>Pasa a registrarse por escrito, con nivel de seguridad, para poder puntuarla.</td></tr>
+  <tr><td>Test de comprensión (8 afirmaciones V/F/No sé)</td><td><span class="tag nuevo">Nuevo</span></td><td>Mide comprensión <em>demostrada</em>, no solo declarada. Es la medida principal propuesta para H1.</td></tr>
+  <tr><td>Escala de acuerdo: comprensión, confianza, justicia</td><td><span class="tag ajust">Ajustado</span></td><td>Algunos ítems enuncian la respuesta (C3, F2), uno pregunta por algo no visto (F4) y la justicia mezcla tres tipos.</td></tr>
+  <tr><td>Facilidad de uso y esfuerzo mental</td><td><span class="tag nuevo">Nuevo</span></td><td>Control: verificar que A no sea más pesada de usar por tener más texto.</td></tr>
+  <tr><td>"¿Cómo se lo explicarías a una amiga?"</td><td><span class="tag nuevo">Nuevo</span></td><td>Muestra, con palabras propias, cómo la persona cree que funciona el sistema.</td></tr>
+</table>
+
+<h2>3. Estructura de la sesión (≈50–55 min)</h2>
+<table>
+  <tr><th style="width:26%">Bloque</th><th>Qué se pregunta</th><th style="width:12%">Tiempo</th></tr>
+  <tr><td>Bienvenida y consentimiento</td><td>—</td><td>5 min</td></tr>
+  <tr><td>Antes de las tareas</td><td>Perfil (P1–P3), "tómbola" (B1), facilidad con los números (N1–N3)</td><td>5 min</td></tr>
+  <tr><td>Tareas 1–5</td><td>Pensar en voz alta + preguntas fijas iguales en A y B; facilidad de la tarea 3 (SEQ)</td><td>15–18 min</td></tr>
+  <tr><td>Tarea 6</td><td><strong>Predicción escrita</strong> (PR1–PR3)</td><td>2 min</td></tr>
+  <tr><td>Tarea 7</td><td>Reacción al resultado; facilidad de la tarea (SEQ) y esfuerzo mental</td><td>4 min</td></tr>
+  <tr><td><strong>Test de comprensión</strong></td><td>K1–K8 (antes de la escala de acuerdo, porque algunos ítems de esa escala dan pistas)</td><td>5 min</td></tr>
+  <tr><td>Escala de acuerdo</td><td>Comprensión, confianza y justicia (1–5)</td><td>5 min</td></tr>
+  <tr><td>Preguntas abiertas</td><td>A1 → A3 → A2</td><td>5 min</td></tr>
+  <tr><td>Cierre</td><td>Agradecer; no revelar las dos condiciones ni las respuestas</td><td>2 min</td></tr>
+</table>
+<p class="nota">Si falta tiempo, lo último que se recorta es el test de comprensión.</p>
+
+<h2>4. Las preguntas</h2>
+<p class="nota">Todas en tuteo, frases cortas y sin dobles negaciones (persona: Daniela, alfabetización digital básica-intermedia). Todas son <strong>idénticas en A y B</strong>.</p>
+
+<h3>4.1 Antes de las tareas</h3>
+<table>
+  <tr><th style="width:7%">#</th><th>Pregunta</th><th style="width:30%">Respuesta</th><th style="width:12%"></th></tr>
+  <tr><td class="id">P1</td><td class="q">¿Has postulado alguna vez a un hijo o hija en el Sistema de Admisión Escolar?</td><td>Sí, una vez / Sí, más de una vez / Nunca</td><td><span class="tag igual">Se mantiene</span></td></tr>
+  <tr><td class="id">P2</td><td class="q">¿Cuál es el último nivel de estudios que terminaste?</td><td>Básica / Media / Técnico / Universitaria</td><td><span class="tag nuevo">Nuevo</span></td></tr>
+  <tr><td class="id">P3</td><td class="q">¿Desde dónde haces la mayoría de tus trámites por internet?</td><td>Celular / Computador / Los dos / Le pido ayuda a otra persona</td><td><span class="tag nuevo">Nuevo</span></td></tr>
+  <tr><td class="id">B1</td><td class="q">"El sistema de admisión escolar es como una tómbola: no se entienden bien sus reglas."</td><td>1 Totalmente en desacuerdo … 5 Totalmente de acuerdo</td><td><span class="tag igual">Se mantiene</span></td></tr>
+  <tr><td class="id">N1</td><td class="q">¿Qué tan bueno/a eres para trabajar con fracciones?</td><td rowspan="2">1 Nada bueno/a … 6 Muy bueno/a</td><td><span class="tag nuevo">Nuevo</span></td></tr>
+  <tr><td class="id">N2</td><td class="q">¿Qué tan bueno/a eres para calcular cuánto cuesta una polera con 25 % de descuento?</td><td><span class="tag nuevo">Nuevo</span></td></tr>
+  <tr><td class="id">N3</td><td class="q">¿Qué tan seguido te sirve la información con números?</td><td>1 Nunca … 6 Muy seguido</td><td><span class="tag nuevo">Nuevo</span></td></tr>
+</table>
+<p class="nota">N1–N3: traducción propuesta de la escala SNS-3 (McNaughton et al., 2015); se debe cotejar con el artículo original y probar en el piloto.</p>
+
+<h3>4.2 Durante las tareas (moderador)</h3>
+<div class="box">
+<strong>Consigna:</strong> <span class="q">"Mientras usas la página, dime en voz alta lo que vas pensando: lo que lees, lo que esperas que pase y lo que te confunde. Si te quedas en silencio, te voy a recordar que sigas hablando."</span><br>
+<strong>Recordatorio neutro:</strong> <span class="q">"¿Qué estás pensando ahora?"</span> — nunca "¿entiendes eso?" ni "¿viste el recuadro…?". No confirmar ni corregir; si preguntan "¿está bien así?", devolver: <span class="q">"¿Tú qué crees?"</span>
+</div>
+<table>
+  <tr><th style="width:18%">Tarea</th><th>Preguntas (iguales en A y B)</th><th style="width:12%"></th></tr>
+  <tr><td>1. Grupo familiar</td><td class="q">¿Qué entiendes que pasa con Martina? · Con tus palabras, ¿qué significa postular en bloque?</td><td><span class="tag igual">Se mantiene</span></td></tr>
+  <tr><td>2. Confirmar datos</td><td class="q">¿Qué te dice la página que ya sabe? ¿Te calza con la tarjeta de la familia?</td><td><span class="tag igual">Se mantiene</span></td></tr>
+  <tr><td>4. Revisar la lista</td><td><span class="q">¿Qué esperas que pase con esta lista?</span> → <span class="q">¿Hay algo en esta pantalla que te ayude a saberlo?</span><br><span class="nota">Hoy: A recibe "¿qué entiendes de lo que muestra la página?" y B "¿qué esperas que pase?". Se pasa a las dos preguntas para todos.</span></td><td><span class="tag ajust">Ajustado</span></td></tr>
+  <tr><td>4. Si intenta reordenar</td><td class="q">¿Por qué lo querías mover? <span class="nota" style="font-style:normal">(se registra; no se le permite)</span></td><td><span class="tag igual">Se mantiene</span></td></tr>
+  <tr><td>7. Ver el resultado</td><td><span class="q">¿Era lo que esperabas? · ¿Por qué crees que pasó? · Con tus palabras, ¿por qué no quedó en San Martín?</span><br><span class="nota">Reemplaza "¿te queda claro por qué…?", que invita a responder que sí.</span></td><td><span class="tag ajust">Ajustado</span></td></tr>
+</table>
+
+<h3>4.3 Predicción, antes de ver el resultado (tarea 6, por escrito)</h3>
+<table>
+  <tr><th style="width:7%">#</th><th>Pregunta</th><th style="width:34%">Respuesta</th></tr>
+  <tr><td class="id">PR1</td><td class="q">¿En qué colegio crees que va a quedar Sofía?</td><td>Los 6 colegios / En ninguno / No sé — <em>correcta: Colegio Los Andes</em></td></tr>
+  <tr><td class="id">PR2</td><td class="q">¿Qué tan seguro/a estás?</td><td>1 Nada seguro/a … 5 Muy seguro/a</td></tr>
+  <tr><td class="id">PR3</td><td class="q">¿Por qué?</td><td>Abierta (una o dos frases)</td></tr>
+</table>
+
+<h3>4.4 Test de comprensión <span class="tag nuevo">Nuevo</span></h3>
+<p>Por escrito, justo después de la tarea 7 y <strong>antes</strong> de la escala de acuerdo. Respuesta: <strong>Verdadero / Falso / No sé</strong> ("No sé" reduce el adivinar; cuenta como incorrecta). Puntaje 0–8. <span class="nota">La columna "Correcta" es solo para el moderador.</span></p>
+<table>
+  <tr><th style="width:6%">#</th><th>Afirmación</th><th style="width:10%">Correcta</th><th style="width:24%">Qué mide</th></tr>
+  <tr><th colspan="4" style="background:#f4f6f9">a) Cómo se asigna</th></tr>
+  <tr><td class="id">K1</td><td class="q">El sistema usa las notas de Sofía para decidir en qué colegio queda.</td><td class="resp f">Falso</td><td>No hay puntaje ni mérito</td></tr>
+  <tr><td class="id">K2</td><td class="q">Que Martina estudie en el Colegio Los Andes le da a Sofía ventaja solo en ese colegio, no en los demás.</td><td class="resp v">Verdadero</td><td>La prioridad vale por colegio</td></tr>
+  <tr><td class="id">K3</td><td class="q">Cuando un colegio tiene más postulantes que vacantes, entre familias sin ventaja se decide por sorteo.</td><td class="resp v">Verdadero</td><td>Desempate</td></tr>
+  <tr><th colspan="4" style="background:#f4f6f9">b) Poner primero lo que prefieres no te perjudica</th></tr>
+  <tr><td class="id">K4</td><td class="q">Poner el Colegio San Martín en primer lugar le quitó posibilidades a Sofía en el Colegio Los Andes.</td><td class="resp f">Falso</td><td>Mito de "esconder" el preferido</td></tr>
+  <tr><td class="id">K5</td><td class="q">Si la familia hubiera puesto San Martín al final de la lista, Sofía habría tenido más posibilidades de quedar en San Martín.</td><td class="resp f">Falso</td><td>La posición no cambia la probabilidad</td></tr>
+  <tr><th colspan="4" style="background:#f4f6f9">c) ¿Qué pasaría si…? (aplicar lo entendido a un caso nuevo)</th></tr>
+  <tr><td class="id">K6</td><td class="q">Si la familia hubiera puesto Los Andes en primer lugar, Sofía igual habría quedado en Los Andes.</td><td class="resp v">Verdadero</td><td>Predicción con un cambio</td></tr>
+  <tr><td class="id">K7</td><td class="q">Si Sofía no hubiera quedado en ningún colegio de la lista, habría perdido su matrícula actual.</td><td class="resp f">Falso</td><td>Qué pasa si no quedas</td></tr>
+  <tr><td class="id">K8</td><td class="q">Si otra familia, sin hermanos en Los Andes, pusiera Los Andes primero, tendría las mismas posibilidades que Sofía de quedar ahí.</td><td class="resp f">Falso</td><td>Aplicar la regla de prioridad</td></tr>
+</table>
+<p class="nota">Las respuestas K4–K6 se verificaron contra las pruebas automáticas del prototipo (la probabilidad de un colegio no cambia con su posición en la lista; Los Andes 1.º → Los Andes; San Martín 1.º → Los Andes en 2.ª preferencia). Todas son reglas del SAE real: una persona en B podría conocerlas por experiencia previa, por eso se registra P1.</p>
+
+<h3>4.5 Escala de acuerdo (1 Totalmente en desacuerdo … 5 Totalmente de acuerdo)</h3>
+<table>
+  <tr><th style="width:7%">#</th><th>Ítem</th><th style="width:12%"></th><th style="width:30%">Cambio</th></tr>
+  <tr><th colspan="4" style="background:#f4f6f9">Comprensión</th></tr>
+  <tr><td class="id">C2</td><td class="q">Entendí por qué mis posibilidades de quedar eran distintas en cada colegio de la lista.</td><td><span class="tag igual">Se mantiene</span></td><td></td></tr>
+  <tr><td class="id">C3</td><td class="q">Entendí qué ventajas tenía Sofía en cada colegio.</td><td><span class="tag ajust">Ajustado</span></td><td>Antes enunciaba la regla ("solo en ese colegio"), que ahora mide K2.</td></tr>
+  <tr><td class="id">C4</td><td class="q">Puedo explicar con mis propias palabras por qué era poco probable quedar en el Colegio San Martín.</td><td><span class="tag igual">Se mantiene</span></td><td></td></tr>
+  <tr><td class="id">C5</td><td class="q">Entendí por qué el resultado que vi fue ese, y no otro.</td><td><span class="tag igual">Se mantiene</span></td><td></td></tr>
+  <tr><th colspan="4" style="background:#f4f6f9">Confianza</th></tr>
+  <tr><td class="id">F1</td><td class="q">Confío en que el sistema asigna a los estudiantes siguiendo reglas, no al azar.</td><td><span class="tag igual">Se mantiene</span></td><td></td></tr>
+  <tr><td class="id">F2</td><td class="q">Me sentiría tranquilo/a poniendo primero el colegio que más quiero.</td><td><span class="tag ajust">Ajustado</span></td><td>Antes: frase larga con "aunque" que sugería la respuesta.</td></tr>
+  <tr><td class="id">F3</td><td class="q">Si yo armara la lista, pondría primero el colegio que más quiero, aunque tenga pocas posibilidades.</td><td><span class="tag ajust">Ajustado</span></td><td>Se quita la negación ("no me habría dado miedo"). F2 = sentimiento; F3 = intención.</td></tr>
+  <tr><td class="id">F4</td><td class="q">La página me dijo lo que necesitaba saber antes de enviar.</td><td><span class="tag ajust">Ajustado</span></td><td>Antes preguntaba por "no quedar en ninguno", pantalla que no se ve en la prueba.</td></tr>
+  <tr><td class="id">F5</td><td class="q">El resultado que vi fue coherente con lo que la plataforma me había mostrado antes de confirmar.</td><td><span class="tag igual">Se mantiene</span></td><td></td></tr>
+  <tr><th colspan="4" style="background:#f4f6f9">Justicia (un ítem por tipo, según Colquitt, 2001)</th></tr>
+  <tr><td class="id">J1</td><td class="q">Las reglas para asignar colegios son las mismas para todas las familias.</td><td><span class="tag ajust">Ajustado</span></td><td>Justicia de las <strong>reglas</strong> (procedimental).</td></tr>
+  <tr><td class="id">J2</td><td class="q">La página me explicó con claridad cómo se decidió el resultado.</td><td><span class="tag ajust">Ajustado</span></td><td>Justicia de la <strong>información</strong> (informacional).</td></tr>
+  <tr><td class="id">J3</td><td class="q">El resultado de Sofía me parece justo.</td><td><span class="tag ajust">Ajustado</span></td><td>Justicia del <strong>resultado</strong> (distributiva).</td></tr>
+</table>
+<p class="nota"><strong>C1</strong> ("Entendí para qué sirve cada uno de los pasos") sale de comprensión: mide facilidad de uso, que ahora cubre la SEQ. No se invierten ítems a negativo (confunden a lectores con menos práctica); el sesgo a responder "de acuerdo" se compensa con PR1 y K1–K8.</p>
+
+<h3>4.6 Facilidad de uso y esfuerzo (control) <span class="tag nuevo">Nuevo</span></h3>
+<table>
+  <tr><th style="width:9%">#</th><th>Pregunta</th><th style="width:22%">Cuándo</th><th style="width:22%">Respuesta</th></tr>
+  <tr><td class="id">SEQ</td><td class="q">En general, ¿qué tan fácil o difícil fue esta tarea?</td><td>Tras las tareas 3 y 7</td><td>1 Muy difícil … 7 Muy fácil</td></tr>
+  <tr><td class="id">E1</td><td class="q">¿Cuánto esfuerzo mental te costó entender lo que mostraba la página?</td><td>Tras la tarea 7</td><td>1 Muy poco … 5 Mucho</td></tr>
+  <tr><td class="id">SUS</td><td>Escala de usabilidad de 10 ítems, versión validada en español <em>(opcional)</em></td><td>Al final, si hay tiempo</td><td>1–5</td></tr>
+</table>
+<p class="nota">Lectura esperada: que A mejore la comprensión <em>sin</em> empeorar la facilidad de uso. Si A resulta más difícil, es un hallazgo sobre el costo de explicar, coherente con la reducción de texto hecha en septiembre.</p>
+
+<h3>4.7 Preguntas abiertas (en este orden)</h3>
+<table>
+  <tr><th style="width:7%">#</th><th>Pregunta</th><th style="width:12%"></th></tr>
+  <tr><td class="id">A1</td><td class="q">Si tú hubieras armado esta lista, ¿la habrías ordenado distinto? En particular, ¿dónde habrías puesto el Colegio San Martín, y por qué?</td><td><span class="tag igual">Se mantiene</span></td></tr>
+  <tr><td class="id">A3</td><td><span class="q">Imagina que una amiga va a postular a su hijo por primera vez. ¿Cómo le explicarías, con tus palabras, cómo decide el sistema en qué colegio queda?</span><br><span class="nota">Se revisa con una pauta: ¿menciona orden de preferencias, prioridades, vacantes, sorteo, "poner primero lo que quieres no perjudica"? ¿Dice algo incorrecto (notas, cercanía, "el primero que llega")?</span></td><td><span class="tag nuevo">Nuevo</span></td></tr>
+  <tr><td class="id">A2</td><td class="q">¿Hubo algo que te generó desconfianza o que no entendiste, aunque no te lo haya preguntado?</td><td><span class="tag igual">Se mantiene</span></td></tr>
+</table>
+
+<h2>5. Cómo responden las preguntas a las hipótesis</h2>
+<table>
+  <tr><th style="width:30%">Hipótesis</th><th>Medida principal</th><th>Apoyo</th></tr>
+  <tr><td><strong>H1</strong> — A entiende más que B</td><td>Puntaje K1–K8 y acierto en la predicción (PR1)</td><td>C2–C5; explicación en palabras propias (tarea 7, A3)</td></tr>
+  <tr><td><strong>H2</strong> — A confía más que B</td><td>F1–F5</td><td>Si quien acierta en PR1 también está más seguro/a (PR2)</td></tr>
+  <tr><td><strong>H3</strong> — justicia: diferencia menor o nula</td><td>J1–J3, por tipo</td><td>Se espera más diferencia en J2 (información) que en J3 (resultado)</td></tr>
+  <tr><td><strong>H4</strong> — mito de "esconder" el preferido</td><td>K4–K5 y A1</td><td>Intentos de reordenar (tarea 4), PR3</td></tr>
+  <tr><td>Control — costo de explicar</td><td>SEQ y E1</td><td>SUS (opcional)</td></tr>
+  <tr><td>Antecedentes (covariables)</td><td>B1, P1, N1–N3</td><td>P2, P3</td></tr>
+</table>
+
+<h2>6. Antes de usarlo</h2>
+<ul>
+  <li><strong>Probar el cuestionario con 2–3 personas</strong> del perfil de Daniela: leer cada pregunta y pedir "con tus palabras, ¿qué te está preguntando?". Importante para K5, K8 y N1–N3.</li>
+  <li><strong>Una sesión piloto por condición</strong> para medir el tiempo real.</li>
+  <li><strong>Congelar el instrumento</strong> antes de la primera sesión real: en un estudio comparativo no se puede cambiar a mitad de camino.</li>
+</ul>
+
+<h2>7. Decisiones para conversar</h2>
+<ol style="margin-left:18px;padding:0">
+  <li>¿Se agrega el test de comprensión K1–K8 como medida principal de H1?</li>
+  <li>¿Se usan las mismas preguntas del moderador en A y B (tareas 4 y 7)?</li>
+  <li>¿Se incluye la escala de facilidad con los números (SNS-3) como antecedente?</li>
+  <li>¿Basta con SEQ + esfuerzo mental, o se agrega la SUS completa (+2 min)?</li>
+</ol>
+
+<h2>Fuentes principales</h2>
+<ul class="nota" style="font-size:8pt;line-height:1.3">
+  <li>Hoffman, Mueller, Klein y Litman (2023). <em>Measures for explainable AI: Explanation goodness, user satisfaction, mental models, curiosity, trust, and human-AI performance.</em> Frontiers in Computer Science, 5.</li>
+  <li>Hase y Bansal (2020). <em>Evaluating Explainable AI: Which Algorithmic Explanations Help Users Predict Model Behavior?</em> ACL.</li>
+  <li>Gonczarowski, Heffetz, Ishai y Thomas (2024). <em>Describing Deferred Acceptance and Strategyproofness to Participants: Experimental Analysis.</em> arXiv:2409.18166.</li>
+  <li>Kulesza et al. (2013). <em>Too much, too little, or just right? Ways explanations impact end users' mental models.</em> VL/HCC.</li>
+  <li>Rees-Jones (2018). <em>Suboptimal behavior in strategy-proof mechanisms: Evidence from the residency match.</em> Games and Economic Behavior, 108.</li>
+  <li>Körber (2019). <em>Theoretical considerations and development of a questionnaire to measure trust in automation.</em> · Gutzwiller et al. (2019). <em>Positive bias in the 'Trust in Automated Systems Survey'?</em></li>
+  <li>Colquitt (2001). <em>On the dimensionality of organizational justice: A construct validation of a measure.</em> · Starke et al. (2022). <em>Fairness perceptions of algorithmic decision-making: A systematic review.</em></li>
+  <li>McNaughton et al. (2015). <em>Validation of a Short, 3-Item Version of the Subjective Numeracy Scale.</em> Medical Decision Making, 35(8).</li>
+  <li>Sauro y Dumas (2009). <em>Comparison of three one-question, post-task usability questionnaires.</em> CHI. · Sevilla-González et al. (2020). <em>Spanish Version of the System Usability Scale.</em> JMIR Human Factors.</li>
+  <li>van den Haak, de Jong y Schellens (2003). <em>Retrospective vs. concurrent think-aloud protocols.</em> Behaviour &amp; Information Technology.</li>
+</ul>
+
+</body>
+</html>

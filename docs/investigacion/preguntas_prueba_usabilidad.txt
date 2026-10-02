@@ -1,0 +1,105 @@
+PREGUNTAS DE LA PRUEBA DE USABILIDAD
+Estudio comparativo del flujo de postulación (A con explicaciones / B sin explicaciones)
+Propuesta 2026-10-01. Todas las preguntas son iguales en A y B.
+
+
+1. ANTES DE LAS TAREAS
+
+P1. ¿Has postulado alguna vez a un hijo o hija en el Sistema de Admisión Escolar?
+    (Sí, una vez / Sí, más de una vez / Nunca)
+
+P2. ¿Cuál es el último nivel de estudios que terminaste?
+    (Básica / Media / Técnico / Universitaria)
+
+P3. ¿Desde dónde haces la mayoría de tus trámites por internet?
+    (Celular / Computador / Los dos / Le pido ayuda a otra persona)
+
+B1. ¿Qué tan de acuerdo estás con esta frase? "El sistema de admisión escolar es como una tómbola: no se entienden bien sus reglas."
+    (1 Totalmente en desacuerdo ... 5 Totalmente de acuerdo)
+
+N1. ¿Qué tan bueno/a eres para trabajar con fracciones?
+    (1 Nada bueno/a ... 6 Muy bueno/a)
+
+N2. ¿Qué tan bueno/a eres para calcular cuánto cuesta una polera con 25 % de descuento?
+    (1 Nada bueno/a ... 6 Muy bueno/a)
+
+N3. ¿Qué tan seguido te sirve la información con números?
+    (1 Nunca ... 6 Muy seguido)
+
+
+2. DURANTE LAS TAREAS (las hace el moderador)
+
+Consigna: "Mientras usas la página, dime en voz alta lo que vas pensando: lo que lees, lo que esperas que pase y lo que te confunde. Si te quedas en silencio, te voy a recordar que sigas hablando."
+
+Recordatorio: "¿Qué estás pensando ahora?"
+
+Tarea 1 (grupo familiar):
+- ¿Qué entiendes que pasa con Martina?
+- Con tus palabras, ¿qué significa postular en bloque?
+
+Tarea 2 (confirmar datos):
+- ¿Qué te dice la página que ya sabe?
+- ¿Te calza con la tarjeta de la familia?
+
+Tarea 3 (después de agregar los colegios):
+- En general, ¿qué tan fácil o difícil fue esta tarea? (1 Muy difícil ... 7 Muy fácil)
+
+Tarea 4 (revisar la lista):
+- ¿Qué esperas que pase con esta lista?
+- ¿Hay algo en esta pantalla que te ayude a saberlo?
+- (Solo si intenta mover un colegio) ¿Por qué lo querías mover?
+
+Tarea 6 (antes de ver el resultado, por escrito):
+PR1. ¿En qué colegio crees que va a quedar Sofía?
+     (Colegio San Martín / Colegio Los Andes / Escuela República de Chile / Colegio Villa del Sol / Liceo Técnico Simón Bolívar / Escuela Básica Los Quillayes / En ninguno / No sé)
+PR2. ¿Qué tan seguro/a estás?
+     (1 Nada seguro/a ... 5 Muy seguro/a)
+PR3. ¿Por qué?
+
+Tarea 7 (ver el resultado):
+- ¿Era lo que esperabas?
+- ¿Por qué crees que pasó?
+- Con tus palabras, ¿por qué no quedó en San Martín?
+- En general, ¿qué tan fácil o difícil fue esta tarea? (1 Muy difícil ... 7 Muy fácil)
+- ¿Cuánto esfuerzo mental te costó entender lo que mostraba la página? (1 Muy poco ... 5 Mucho)
+
+
+3. TEST DE COMPRENSIÓN
+Marca Verdadero, Falso o No sé.
+
+K1. El sistema usa las notas de Sofía para decidir en qué colegio queda.
+K2. Que Martina estudie en el Colegio Los Andes le da a Sofía ventaja solo en ese colegio, no en los demás.
+K3. Cuando un colegio tiene más postulantes que vacantes, entre familias sin ventaja se decide por sorteo.
+K4. Poner el Colegio San Martín en primer lugar le quitó posibilidades a Sofía en el Colegio Los Andes.
+K5. Si la familia hubiera puesto San Martín al final de la lista, Sofía habría tenido más posibilidades de quedar en San Martín.
+K6. Si la familia hubiera puesto Los Andes en primer lugar, Sofía igual habría quedado en Los Andes.
+K7. Si Sofía no hubiera quedado en ningún colegio de la lista, habría perdido su matrícula actual.
+K8. Si otra familia, sin hermanos en Los Andes, pusiera Los Andes primero, tendría las mismas posibilidades que Sofía de quedar ahí.
+
+
+4. ESCALA DE ACUERDO
+(1 Totalmente en desacuerdo / 2 En desacuerdo / 3 Ni de acuerdo ni en desacuerdo / 4 De acuerdo / 5 Totalmente de acuerdo)
+
+C2. Entendí por qué mis posibilidades de quedar eran distintas en cada colegio de la lista.
+C3. Entendí qué ventajas tenía Sofía en cada colegio.
+C4. Puedo explicar con mis propias palabras por qué era poco probable quedar en el Colegio San Martín.
+C5. Entendí por qué el resultado que vi fue ese, y no otro.
+
+F1. Confío en que el sistema asigna a los estudiantes siguiendo reglas, no al azar.
+F2. Me sentiría tranquilo/a poniendo primero el colegio que más quiero.
+F3. Si yo armara la lista, pondría primero el colegio que más quiero, aunque tenga pocas posibilidades.
+F4. La página me dijo lo que necesitaba saber antes de enviar.
+F5. El resultado que vi fue coherente con lo que la plataforma me había mostrado antes de confirmar.
+
+J1. Las reglas para asignar colegios son las mismas para todas las familias.
+J2. La página me explicó con claridad cómo se decidió el resultado.
+J3. El resultado de Sofía me parece justo.
+
+
+5. PREGUNTAS ABIERTAS (en este orden)
+
+A1. Si tú hubieras armado esta lista, ¿la habrías ordenado distinto? En particular, ¿dónde habrías puesto el Colegio San Martín, y por qué?
+
+A3. Imagina que una amiga va a postular a su hijo por primera vez. ¿Cómo le explicarías, con tus palabras, cómo decide el sistema en qué colegio queda?
+
+A2. ¿Hubo algo que te generó desconfianza o que no entendiste, aunque no te lo haya preguntado?

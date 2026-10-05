@@ -1188,3 +1188,9 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 - Feedback del usuario: "← Atrás" del paso 2 llevaba a una pantalla que ya no está en el flujo normal. Causa: volvía al paso 1 con `familiaConfirmada`/`alumnoOk` en `true`, es decir, a la antigua pantalla intermedia (resumen del grupo + región + tarjeta del estudiante) que desde §59 solo debe verse por "¿Algún dato está mal? Corregir". Lo mismo pasaba con "Editar" de "Quién postula" en el paso 3.
 - Nuevo `volverAFamilia()` (`familiaConfirmada=false`, `alumnoOk=false`, `paso=1`): "← Atrás" desde el paso 2 y "Editar" del paso 3 llevan a **"Tu grupo familiar"** con lo ya marcado (hijos/as y bloque/separado). "Continuar" reabre `ConfirmarDatosModal` (la declaración de apoderado/a se vuelve a marcar) y lleva al paso 2 **sin perder la lista**. "Atrás" del paso 3 sigue yendo al paso 2. La pantalla de corrección queda solo para "Corregir".
 - Verificado en navegador: paso 2 (1 colegio) → Atrás → grupo familiar (2 marcados, "En bloque") → Continuar + confirmar → paso 2 con el colegio; paso 3 → Editar → grupo familiar. Sin errores de consola. build/test (16/16) OK.
+
+## 79. "¿Qué hace el orden de tu lista?" solo en el paso 2 (2026-10-05)
+
+- Pedido del usuario: el recuadro aparecía en dos momentos del panel ("Tu lista y su orden" del paso 2 y "Antes de enviar" del paso 3); queda **solo en el paso 2**, donde se arma y ordena la lista. El panel del paso 3 queda con "Al enviar" y "¿Qué pasa después de enviar?".
+- `caso_estudio_prueba_usabilidad_postulacion.md` tarea 4 `[A]` alineada: la revisión y la lectura del recuadro ocurren en "Tu lista" (paso 2) antes de continuar — como ya lo planteaba el guion del moderador (que describe el 26 % y "Sin vínculo…" de esa vista). El guion no requirió cambios.
+- Verificado en navegador (secciones del panel en paso 2 y paso 3). lint/build/test (16/16) OK.

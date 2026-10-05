@@ -1586,7 +1586,8 @@ export default function PostulacionPage() {
 
     revisar: (
       <PanelExplicativo clave="revisar" titulo="Antes de enviar">
-        <OrdenListaExplicacion resultado={resultado} />
+        {/* 2026-10-05 (pedido del usuario): "¿Qué hace el orden de tu lista?" ya no
+            se repite aquí; vive solo en el paso 2 ("Tu lista"), donde se ordena. */}
         {/* C · fidelidad (brecha C) · S22-2: lo que pide ConfirmarEnvioModal. */}
         <PanelSeccion titulo="Al enviar">
           <p>

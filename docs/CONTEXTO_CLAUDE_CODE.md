@@ -1222,3 +1222,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 
 - Decisión del usuario: en la pantalla de ingreso sobra espacio en el panel, así que en la **condición A** el aviso (§82) pasa al panel "Antes de empezar", primero y como recuadro de **alerta** (naranja), sobre "¿Por qué ingresar con ClaveÚnica?". En la **condición B** (sin panel) sigue dentro del flujo, en la misma pantalla, para no alterar la condición de control. El texto vive en un solo componente, `TextoAvisoCambioColegio`, usado en ambos lugares. Excepción explícita a la regla "avisos en el flujo" de §66, decidida por el usuario.
 - Verificado en navegador: A → aviso en el panel y no en el flujo; al ingresar, el panel pasa a "Elegir a quién postular" (el aviso solo es de la pantalla de ingreso); B → aviso en el flujo, sin panel. build/test (16/16) OK.
+
+## 85. Espaciado entre recuadros del panel (2026-10-05)
+
+- Feedback del usuario ("veo los componentes muy juntos"): dos recuadros seguidos (p. ej. la alerta "Postula solo si…" y "¿Por qué ingresar con ClaveÚnica?") quedaban a 8 px. Ahora los recuadros (`--principal` / `--alerta`) llevan `margin: 0 0 20px` (antes 8 px abajo / 8 px arriba y abajo) → **20 px entre recuadros**; entre un recuadro y una sección sin recuadro, **24 px** en ambos sentidos (el `padding-top` de la sección siguiente se ajusta a 4–8 px y el recuadro que sigue a una sección lleva 4 px arriba). Entre secciones sin recuadro sigue el espacio con línea divisoria (~41 px). Medido en navegador en ingreso, familia, agregar y lista. Build OK.

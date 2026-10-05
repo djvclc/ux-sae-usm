@@ -8334,7 +8334,7 @@ button[disabled],
   border-left: 4px solid var(--azul);
   border-radius: var(--radio);
   padding: 18px 20px;
-  margin-bottom: 8px;
+  margin: 0 0 20px;
 }
 .panel-exp__seccion--principal + .panel-exp__seccion {
   border-top: 0;
@@ -8345,11 +8345,22 @@ button[disabled],
   border-left: 4px solid var(--naranja);
   border-radius: var(--radio);
   padding: 18px 20px;
-  margin: 8px 0;
+  margin: 0 0 20px;
   color: #6b2d07;
 }
 .panel-exp__seccion--alerta + .panel-exp__seccion {
   border-top: 0;
+}
+/* 2026-10-05 (feedback: "veo los componentes muy juntos"): espaciado parejo.
+   Entre recuadros consecutivos, 20 px (margin-bottom); entre un recuadro y una
+   sección sin recuadro, ~24 px en ambos sentidos. */
+.panel-exp__seccion--principal + .panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta),
+.panel-exp__seccion--alerta + .panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) {
+  padding-top: 4px;
+}
+.panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) + .panel-exp__seccion--principal,
+.panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) + .panel-exp__seccion--alerta {
+  margin-top: 4px;
 }
 .panel-exp .panel-exp__seccion-titulo {
   margin: 0 0 10px;

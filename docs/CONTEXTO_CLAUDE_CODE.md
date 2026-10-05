@@ -1157,3 +1157,9 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 - Feedback del usuario: "Estás en: Postulación" + el título "Postulación" justo debajo era redundante. `TextSizeBar` acepta `pageName` opcional: sin él no muestra la ubicación (`.context-bar--sin-ubicacion`). Ajuste el mismo día (feedback: a la derecha "pierde sentido"): sin la franja ni la línea divisoria de la barra, el control de tamaño de texto queda discreto en la **esquina superior izquierda**, alineado con el título y a la altura del borde superior del panel. `/postulacion` y `/seguimiento` (con y sin postulación) ya no pasan `pageName`. Las demás páginas mantienen "Estás en".
 - De paso, tildes que faltaban en la barra de todo el sitio: "Estas en" → "Estás en", "Tamano de texto" → "Tamaño de texto".
 - Verificado en navegador (`/postulacion` solo con el control de tamaño; `/calendario` con "Estás en: Calendario"). lint/build/test (16/16) OK.
+
+## 73. "¿Cómo se decide tu resultado?" pasa al momento de elegir colegios (2026-10-05)
+
+- Pedido del usuario: la sección (P2 · HAX G1: orden de la lista + prioridades legales + vacantes + sorteo por colegio + "no hay puntaje ni mérito" + enlace a `/algoritmo`) se mueve del panel "Antes de empezar" (momento `ingreso`) al panel **"Armar tu lista"** (momento `agregar`: lista vacía y catálogo), después de "¿Cuántos colegios poner?" y antes de "El orden importa". Texto sin cambios. "Antes de empezar" queda solo con "¿Por qué ingresar con ClaveÚnica?". Solo condición A (en B no hay panel).
+- **Pendiente de documentos:** `caso_estudio_prueba_usabilidad_postulacion.md` §A habla del "recuadro inicial *cómo se decide tu resultado*" y `f3_modo_control_inventario.md` lo ubica "antes de pedir datos" — se actualizan junto con el resto de referencias al panel (pendiente ya anotado en `CLAUDE.md`).
+- Verificado en navegador (secciones del panel en `ingreso`, lista vacía y catálogo). build/test (16/16) OK.

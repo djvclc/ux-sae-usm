@@ -1392,31 +1392,6 @@ export default function PostulacionPage() {
             cargados los datos de tu familia y tu domicilio: tú solo los revisas.
           </p>
         </PanelSeccion>
-        {/* P2 · HAX G1 — S22 (refinamiento): encuadre de qué hace y qué NO hace el
-            algoritmo, ANTES de pedir datos (investigacion_ux_guide_ai_systems.md §2
-            "Al inicio"). Antes era un <details> colapsado dentro del paso 1. */}
-        <PanelSeccion icono="⚖️" titulo="¿Cómo se decide tu resultado?">
-          <p>
-            El sistema arma tu asignación con tres cosas: <strong>el orden de tu lista</strong>, las{' '}
-            <strong>prioridades que fija la ley</strong> y las <strong>vacantes</strong> de cada colegio.
-          </p>
-          <p style={{ marginBottom: 4, fontWeight: 700 }}>Las prioridades, en este orden:</p>
-          <ol>
-            <li>Programa de Integración Escolar (PIE)</li>
-            <li>Hermanos/as en el colegio</li>
-            <li>Reserva del 15 % para estudiantes prioritarios/as</li>
-            <li>Hijos/as de funcionarios/as</li>
-            <li>Exalumnos/as</li>
-          </ol>
-          <p>Cuando hay más postulantes que vacantes, se hace un <strong>sorteo al azar</strong>, distinto en cada colegio.</p>
-          <p>
-            <strong>No hay puntaje, ni notas, ni ranking por mérito.</strong> Tu familia no compite
-            por rendimiento (la única excepción es la modalidad de alta exigencia académica, que
-            este prototipo no incluye). Y poner primero el colegio que más quieres
-            {' '}<strong>nunca te perjudica</strong>.{' '}
-            <Link to="/algoritmo" className="link-inline">Ver cómo funciona en detalle</Link>.
-          </p>
-        </PanelSeccion>
       </PanelExplicativo>
     ),
 
@@ -1501,6 +1476,33 @@ export default function PostulacionPage() {
           <p>
             No hay límite. El SAE recomienda incluir <strong>al menos 6</strong> si tu hijo/a no
             tiene matrícula asegurada: más opciones = más posibilidades.
+          </p>
+        </PanelSeccion>
+        {/* P2 · HAX G1 — S22 (refinamiento): encuadre de qué hace y qué NO hace el
+            algoritmo (investigacion_ux_guide_ai_systems.md §2). Antes era un <details>
+            del paso 1 y luego vivió en el panel "Antes de empezar"; 2026-10-05 (pedido
+            del usuario) se mueve aquí, al momento de elegir los colegios, que es
+            cuando la familia necesita saber cómo se decide el resultado. */}
+        <PanelSeccion icono="⚖️" titulo="¿Cómo se decide tu resultado?">
+          <p>
+            El sistema arma tu asignación con tres cosas: <strong>el orden de tu lista</strong>, las{' '}
+            <strong>prioridades que fija la ley</strong> y las <strong>vacantes</strong> de cada colegio.
+          </p>
+          <p style={{ marginBottom: 4, fontWeight: 700 }}>Las prioridades, en este orden:</p>
+          <ol>
+            <li>Programa de Integración Escolar (PIE)</li>
+            <li>Hermanos/as en el colegio</li>
+            <li>Reserva del 15 % para estudiantes prioritarios/as</li>
+            <li>Hijos/as de funcionarios/as</li>
+            <li>Exalumnos/as</li>
+          </ol>
+          <p>Cuando hay más postulantes que vacantes, se hace un <strong>sorteo al azar</strong>, distinto en cada colegio.</p>
+          <p>
+            <strong>No hay puntaje, ni notas, ni ranking por mérito.</strong> Tu familia no compite
+            por rendimiento (la única excepción es la modalidad de alta exigencia académica, que
+            este prototipo no incluye). Y poner primero el colegio que más quieres
+            {' '}<strong>nunca te perjudica</strong>.{' '}
+            <Link to="/algoritmo" className="link-inline">Ver cómo funciona en detalle</Link>.
           </p>
         </PanelSeccion>
         {seccionOrdenImporta}

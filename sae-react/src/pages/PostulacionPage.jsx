@@ -1152,7 +1152,22 @@ export default function PostulacionPage() {
     setPaso((prev) => Math.min(prev + 1, 3))
   }
 
-  const anterior = () => setPaso((prev) => Math.max(prev - 1, 1))
+  /* 2026-10-05 (feedback del usuario: "Atrás" del paso 2 llevaba a una pantalla
+     que ya no está en el flujo normal). Volver al paso 1 lleva a "Tu grupo
+     familiar" —la pantalla anterior real— con lo ya marcado (hijos/as y modo
+     bloque/separado); "Continuar" reabre ConfirmarDatosModal y vuelve al paso 2
+     sin perder la lista. La pantalla de corrección (resumen + región + tarjeta del
+     estudiante) queda solo para "¿Algún dato está mal? Corregir". */
+  const volverAFamilia = () => {
+    setFamiliaConfirmada(false)
+    setAlumnoOk(false)
+    setPaso(1)
+  }
+
+  const anterior = () => {
+    if (paso === 2) volverAFamilia()
+    else setPaso((prev) => Math.max(prev - 1, 1))
+  }
 
   /* S4 (refinamiento) — atajo para la prueba de usabilidad: precarga el perfil de
      la familia del caso de estudio (nombre/RUN/nivel + dirección) y simula el
@@ -2712,7 +2727,7 @@ export default function PostulacionPage() {
                 <button
                   type="button"
                   className="btn--text-link"
-                  onClick={() => setPaso(1)}
+                  onClick={volverAFamilia /* 2026-10-05: a "Tu grupo familiar", no a la pantalla de corrección */}
                   aria-label="Editar quién postula: volver al paso 1"
                 >
                   Editar

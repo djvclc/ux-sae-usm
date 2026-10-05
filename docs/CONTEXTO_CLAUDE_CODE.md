@@ -1172,3 +1172,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 
 - Feedback del usuario: los emojis del panel le quitaban seriedad al proceso. `PanelSeccion` deja de aceptar `icono` (títulos de sección solo texto) y se quitan los emojis del contenido del panel: 🎉 del conteo hacia 6; en `/seguimiento`, ✅ de la tabla "¿Por qué te asignaron…?" y de `RecorridoVisual` ("Cupo") y ⏰ de "Qué sigue ahora". `PrioridadesExplicacion` (se ve en el panel) sin íconos en sus recuadros ni en los chips de prioridad, ni 🏫 en la nota de SEP — como en B ese bloque está en el flujo, allí también se ve sin íconos. Los emojis del flujo izquierdo no se tocaron.
 - Verificado en navegador: ningún emoji (`\p{Extended_Pictographic}`) en el panel en los 6 momentos recorridos (ingreso, familia, agregar, lista, revisar, enviado) ni en `/seguimiento` con los desplegables abiertos. lint/build/test (16/16) OK.
+
+## 76. Sin aviso "Ingresaste con ClaveÚnica" (2026-10-05)
+
+- Pedido del usuario: el aviso verde "✅ Ingresaste con ClaveÚnica." sobre "Tu grupo familiar" no era necesario. Se quita del paso 1 (A y B) junto con su CSS `.post-login-ok` (sin otros usos). La pantalla pasa directo de "Elige a quién postular" a "Tu grupo familiar". Guiones y caso de estudio no lo mencionaban. Verificado en navegador. lint/build OK.

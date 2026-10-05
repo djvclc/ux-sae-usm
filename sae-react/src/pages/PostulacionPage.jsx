@@ -1880,9 +1880,8 @@ export default function PostulacionPage() {
                  postula; la explicación de abajo cambia según lo marcado (uno →
                  los demás se quedan donde están; varios → postulación en bloque). */
               <div className="post-familia">
-                <p className="small-note post-login-ok" role="status" aria-live="polite">
-                  ✅ Ingresaste con ClaveÚnica.
-                </p>
+                {/* 2026-10-05 (pedido del usuario): se quitó el aviso "✅ Ingresaste con
+                    ClaveÚnica." — la pantalla misma ya muestra el grupo familiar. */}
                 <h3 className="post-alumno-block__titulo">Tu grupo familiar</h3>
                 {/* 2026-09-30 (feedback profesora guía — redacción): el estado de
                     cada hijo/a se muestra en su propia tarjeta ("Postula a…" /

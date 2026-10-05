@@ -8134,12 +8134,16 @@ button[disabled],
    estudio (sin panel) queda `.layout-panel--solo`: una columna a todo el ancho.
    ══════════════════════════════════════════════════════════════════════════ */
 .page--con-panel {
-  max-width: 1320px;
+  max-width: 1600px; /* 2026-10-05: más ancho para que el panel aproveche el espacio */
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 .layout-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
+  /* 2026-10-05 (feedback: "panel más ancho aprovechando el espacio"): el panel
+     deja de tener tope fijo (antes 440 px) y toma ~42 % del ancho. */
+  grid-template-columns: minmax(0, 1.35fr) minmax(380px, 1fr);
   gap: 32px;
   margin-top: var(--esp-md);
 }
@@ -8372,6 +8376,10 @@ button[disabled],
 /* Sin prioridad de móvil (decisión 2026-10-02), pero bajo ~960 px el panel se
    apila debajo del flujo en vez de comprimirlo. */
 @media (max-width: 960px) {
+  .page--con-panel {
+    padding-left: var(--esp-md);
+    padding-right: var(--esp-md);
+  }
   .layout-panel {
     grid-template-columns: minmax(0, 1fr);
   }

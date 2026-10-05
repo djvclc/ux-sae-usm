@@ -372,8 +372,9 @@ function ConfirmarEnvioModal({ lista, colegiosById, onConfirmar, onCancelar }) {
           <li>El proyecto educativo y el reglamento interno de cada colegio.</li>
         </ul>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 18 }}>
+          {/* 2026-10-05: "Siguiente" → "Continuar" (un solo término para avanzar en todo el flujo) */}
           <button type="button" className="btn btn--primary btn--grande" onClick={onConfirmar}>
-            Siguiente
+            Continuar
           </button>
           <button type="button" className="btn btn--secondary" onClick={onCancelar}>
             Revisar de nuevo
@@ -2930,7 +2931,10 @@ export default function PostulacionPage() {
             (`ConfirmarVinculacionModal`) avanza directo al paso 2 en el mismo
             clic — este botón global era necesario cuando "vincular" y "avanzar"
             eran dos acciones separadas; ahora sobra y confundía ("¿de nuevo
-            siguiente?"). Se mantiene igual para 2 → 3. */}
+            siguiente?"). Se mantiene igual para 2 → 3.
+            2026-10-05 (pedido del usuario: un solo término para avanzar en todo el
+            flujo): "Siguiente →" → "Continuar →", igual que "Tu grupo familiar" y el
+            modal de envío. */}
         {paso === 2 && (
           <button
             type="button"
@@ -2939,7 +2943,7 @@ export default function PostulacionPage() {
             disabled={!lista.length}
             title={!lista.length ? 'Debes agregar al menos un colegio para continuar' : undefined}
           >
-            Siguiente →
+            Continuar →
           </button>
         )}
       </div>

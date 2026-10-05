@@ -1177,8 +1177,8 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 
 - Pedido del usuario: el aviso verde "✅ Ingresaste con ClaveÚnica." sobre "Tu grupo familiar" no era necesario. Se quita del paso 1 (A y B) junto con su CSS `.post-login-ok` (sin otros usos). La pantalla pasa directo de "Elige a quién postular" a "Tu grupo familiar". Guiones y caso de estudio no lo mencionaban. Verificado en navegador. lint/build OK.
 
-## 77. Modal "¿Confirmas estos datos?" con un solo botón "Continuar" (2026-10-05)
+## 77. Modal "¿Confirmas estos datos?": "Confirmar y seguir" → "Continuar" (2026-10-05)
 
-- Pedido del usuario: los botones "Confirmar y seguir" + "Revisar de nuevo" de `ConfirmarDatosModal` pasan a **un solo botón "Continuar"** (sigue deshabilitado hasta marcar la declaración de apoderado/a; avanza al paso 2). Cerrar sin avanzar sigue disponible con la ✕, ESC o clic fuera; corregir, con "¿Algún dato está mal? Corregir". CSS `.confirmar-modal__btn-secundario` eliminado (sin otros usos).
+- Pedido del usuario: solo cambia el **texto** del botón principal de `ConfirmarDatosModal`, de "Confirmar y seguir" a **"Continuar"** (mismo término para avanzar en todo el flujo, §68). Sigue deshabilitado hasta marcar la declaración de apoderado/a y avanza al paso 2. **"Revisar de nuevo" se mantiene** (en un primer intento se había quitado por error; se restauró junto con su CSS `.confirmar-modal__btn-secundario`).
 - Sincronizados `guion_moderador_prueba_usabilidad.md` y `caso_estudio_prueba_usabilidad_postulacion.md` (tarea 2: pulsar "Continuar"). **Pendiente:** regenerar los PDF del guion/material (sin pandoc/LaTeX en el entorno).
-- Verificado en navegador: un botón, deshabilitado → habilitado al marcar → paso 2. lint/build/test (16/16) OK.
+- Verificado en navegador: "Continuar" (deshabilitado hasta marcar) + "Revisar de nuevo" (cierra sin avanzar). lint/build/test (16/16) OK.

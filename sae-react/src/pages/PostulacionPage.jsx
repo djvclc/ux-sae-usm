@@ -489,9 +489,9 @@ function ConfirmarDatosModal({
           <span>Declaro que soy el apoderado o la apoderada legal de {nombres}.</span>
         </label>
 
-        {/* 2026-10-05 (pedido del usuario): un solo botón, "Continuar" (antes
-            "Confirmar y seguir" + "Revisar de nuevo"). Cerrar sin avanzar sigue
-            disponible con la ✕, ESC o clic fuera; corregir, con el enlace de arriba. */}
+        {/* 2026-10-05 (pedido del usuario): el botón principal pasa de "Confirmar y
+            seguir" a "Continuar" (mismo término para avanzar en todo el flujo).
+            "Revisar de nuevo" se mantiene. */}
         <div className="confirmar-modal__acciones">
           <button
             type="button"
@@ -501,6 +501,13 @@ function ConfirmarDatosModal({
             title={declara ? undefined : 'Primero marca la declaración de apoderado/a'}
           >
             Continuar
+          </button>
+          <button
+            type="button"
+            className="btn btn--secondary btn--grande confirmar-modal__btn-secundario"
+            onClick={onCancelar}
+          >
+            Revisar de nuevo
           </button>
         </div>
       </div>

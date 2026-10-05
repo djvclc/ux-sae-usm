@@ -1423,15 +1423,6 @@ export default function PostulacionPage() {
         : (!confirmado ? 'revisar' : 'enviado')
   const nombresPostulantes = unirNombres(postulantes.map((m) => primerNombre(m.nombre)))
 
-  const seccionOrdenImporta = (
-    <PanelSeccion titulo="El orden importa">
-      <p>
-        El sistema revisa primero tu opción N.° 1. Pon primero el colegio que{' '}
-        <strong>más quieres</strong>, no el que crees que te van a dar.
-      </p>
-    </PanelSeccion>
-  )
-
   const seccionDespuesDeEnviar = (
     <PanelSeccion titulo="¿Qué pasa después de enviar?">
       <p>
@@ -1538,53 +1529,54 @@ export default function PostulacionPage() {
 
     agregar: (
       <PanelExplicativo clave="agregar" titulo="Armar tu lista">
+        {/* 2026-10-05 (feedback del usuario: "mucho texto, más directo"): de 5 a 4
+            secciones y ~180 → ~100 palabras, con los mismos datos. "El orden importa"
+            absorbe "Después la ordenas"; la lista de prioridades queda en un
+            desplegable (también está en el panel de "Tu lista"). */}
         {enBloque && (
           <PanelSeccion tono="principal" titulo="Una sola lista para todos">
             <p>
-              Postulas en bloque: esta lista vale para {nombresPostulantes}. Elige colegios que
-              tengan los cursos de todos tus hijos e hijas.
+              Esta lista vale para {nombresPostulantes}. Elige colegios con cursos para todos.
             </p>
           </PanelSeccion>
         )}
         {/* S22-2 (corrige E2): sin límite de colegios; recomendación oficial de al menos 6 */}
-        <PanelSeccion tono={enBloque ? undefined : 'principal'} titulo="¿Cuántos colegios poner?">
+        <PanelSeccion tono={enBloque ? undefined : 'principal'} titulo="¿Cuántos colegios?">
           <p>
-            No hay límite. El SAE recomienda incluir <strong>al menos 6</strong> si tu hijo/a no
-            tiene matrícula asegurada: más opciones = más posibilidades.
+            No hay límite. Si tu hijo/a no tiene matrícula asegurada, incluye <strong>al menos 6</strong>.
+          </p>
+        </PanelSeccion>
+        <PanelSeccion titulo="El orden importa">
+          <p>
+            Pon en el <strong>número 1</strong> el colegio que más quieres: hacerlo{' '}
+            <strong>nunca te perjudica</strong>. Después podrás reordenar la lista.
           </p>
         </PanelSeccion>
         {/* P2 · HAX G1 — S22 (refinamiento): encuadre de qué hace y qué NO hace el
-            algoritmo (investigacion_ux_guide_ai_systems.md §2). Antes era un <details>
-            del paso 1 y luego vivió en el panel "Antes de empezar"; 2026-10-05 (pedido
-            del usuario) se mueve aquí, al momento de elegir los colegios, que es
-            cuando la familia necesita saber cómo se decide el resultado. */}
+            algoritmo (investigacion_ux_guide_ai_systems.md §2), en el momento de elegir
+            los colegios (2026-10-05). */}
         <PanelSeccion titulo="¿Cómo se decide tu resultado?">
           <p>
-            El sistema arma tu asignación con tres cosas: <strong>el orden de tu lista</strong>, las{' '}
-            <strong>prioridades que fija la ley</strong> y las <strong>vacantes</strong> de cada colegio.
+            Cuentan tres cosas: <strong>el orden de tu lista</strong>, las{' '}
+            <strong>prioridades que fija la ley</strong> y las <strong>vacantes</strong> de cada
+            colegio. Si hay más postulantes que vacantes, cada colegio hace su propio sorteo.
           </p>
-          <p style={{ marginBottom: 4, fontWeight: 700 }}>Las prioridades, en este orden:</p>
-          <ol>
-            <li>Programa de Integración Escolar (PIE)</li>
-            <li>Hermanos/as en el colegio</li>
-            <li>Reserva del 15 % para estudiantes prioritarios/as</li>
-            <li>Hijos/as de funcionarios/as</li>
-            <li>Exalumnos/as</li>
-          </ol>
-          <p>Cuando hay más postulantes que vacantes, se hace un <strong>sorteo al azar</strong>, distinto en cada colegio.</p>
           <p>
-            <strong>No hay puntaje, ni notas, ni ranking por mérito.</strong> Tu familia no compite
-            por rendimiento (la única excepción es la modalidad de alta exigencia académica, que
-            este prototipo no incluye). Y poner primero el colegio que más quieres
-            {' '}<strong>nunca te perjudica</strong>.{' '}
-            <Link to="/algoritmo" className="link-inline">Ver cómo funciona en detalle</Link>.
+            <strong>No cuentan notas ni puntajes</strong> (salvo en colegios de alta exigencia
+            académica, que este prototipo no incluye).
           </p>
-        </PanelSeccion>
-        {seccionOrdenImporta}
-        <PanelSeccion titulo="Después la ordenas">
-          <p>
-            Agrega primero los colegios. En <strong>Tu lista</strong> podrás moverlos hasta dejar
-            en el número 1 el que más quieres.
+          <details>
+            <summary>Ver las prioridades, en orden</summary>
+            <ol>
+              <li>Programa de Integración Escolar (PIE)</li>
+              <li>Hermanos/as en el colegio</li>
+              <li>Reserva del 15 % para estudiantes prioritarios/as</li>
+              <li>Hijos/as de funcionarios/as</li>
+              <li>Exalumnos/as</li>
+            </ol>
+          </details>
+          <p style={{ marginTop: 12 }}>
+            <Link to="/algoritmo" className="link-inline">Ver cómo funciona en detalle</Link>
           </p>
         </PanelSeccion>
       </PanelExplicativo>

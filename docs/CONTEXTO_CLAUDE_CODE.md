@@ -1226,3 +1226,12 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 ## 85. Espaciado entre recuadros del panel (2026-10-05)
 
 - Feedback del usuario ("veo los componentes muy juntos"): dos recuadros seguidos (p. ej. la alerta "Postula solo si…" y "¿Por qué ingresar con ClaveÚnica?") quedaban a 8 px. Ahora los recuadros (`--principal` / `--alerta`) llevan `margin: 0 0 20px` (antes 8 px abajo / 8 px arriba y abajo) → **20 px entre recuadros**; entre un recuadro y una sección sin recuadro, **24 px** en ambos sentidos (el `padding-top` de la sección siguiente se ajusta a 4–8 px y el recuadro que sigue a una sección lleva 4 px arriba). Entre secciones sin recuadro sigue el espacio con línea divisoria (~41 px). Medido en navegador en ingreso, familia, agregar y lista. Build OK.
+
+## 86. Panel "Armar tu lista" más corto y directo (2026-10-05)
+
+- Feedback del usuario: mucho texto en el panel del momento `agregar` (lista vacía y catálogo). De 5 a **4 secciones** y de ~185 a **~120 palabras visibles** (medido en navegador con la sección de bloque), con los mismos datos:
+  - "Una sola lista para todos" (solo en bloque): "Esta lista vale para {nombres}. Elige colegios con cursos para todos."
+  - "¿Cuántos colegios?": "No hay límite. Si tu hijo/a no tiene matrícula asegurada, incluye al menos 6."
+  - "El orden importa" (absorbe "Después la ordenas"): número 1 = el que más quieres, nunca te perjudica, después se puede reordenar. Se quitó la repetición de "nunca te perjudica" que había en "¿Cómo se decide…?".
+  - "¿Cómo se decide tu resultado?": orden + prioridades legales + vacantes, sorteo propio de cada colegio, "No cuentan notas ni puntajes (salvo alta exigencia académica, que el prototipo no incluye)"; la lista de las 5 prioridades pasa a un desplegable "Ver las prioridades, en orden" (también está en el panel de "Tu lista"); enlace a `/algoritmo`.
+- Se eliminó la constante `seccionOrdenImporta` (solo se usaba aquí). Solo condición A. build/test (16/16) OK.

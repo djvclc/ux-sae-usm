@@ -728,7 +728,7 @@ export default function SeguimientoPage() {
         <button type="button" className="btn btn--primary" onClick={descargarComprobante}>
           📄 Descargar comprobante
         </button>
-        <Link className="btn btn--secondary" to="/calendario">
+        <Link className="btn btn--secondary" to="/proceso">
           📅 Ver calendario del proceso
         </Link>
         <Link className="btn btn--secondary" to={asignado ? `/colegio?id=${asignado.id}` : '#'}>

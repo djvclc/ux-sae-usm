@@ -315,6 +315,10 @@ export default function ColegioPage() {
             <span className="form-hint">{lista.length} {lista.length === 1 ? 'colegio' : 'colegios'} en tu lista · se recomiendan al menos 6.</span>
           </div>
         )}
+        {/* 2026-10-05 (limpieza del menú): acceso al comparador, con este colegio ya elegido */}
+        <Link to={`/comparador?con=${colegio.id}`} className="link-inline ficha-cta-zone__comparar">
+          Comparar este colegio con otros →
+        </Link>
         {agregado ? (
           <p className="ficha-cta-zone__aviso" role="status" aria-live="polite">
             ✅ ¡Agregado! <Link to="/postulacion" className="tel-link">Ir a postulación →</Link>

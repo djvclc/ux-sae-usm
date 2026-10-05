@@ -217,6 +217,45 @@ select:focus {
   color: var(--azul-osc);
 }
 
+/* 2026-10-05 (limpieza del menú): dos grupos — principal (con "Postular" como
+   único botón) y personal ("Mi postulación", "Mis datos") separado por una línea.
+   La página activa se marca con un subrayado, no con otro recuadro. */
+.menu__grupo {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.menu__grupo--personal {
+  margin-left: 14px;
+  padding-left: 14px;
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+}
+.menu__link.menu__link--active:not(.menu__link--cta) {
+  background: none;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+/* El contorno de foco solo al navegar con teclado: con el mouse, el enlace
+   recién pulsado quedaba encuadrado y parecía otro botón. */
+.topbar a:focus:not(:focus-visible),
+.topbar button:focus:not(:focus-visible) {
+  outline: none;
+}
+@media (max-width: 599px) {
+  .menu__grupo {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .menu__grupo--personal {
+    margin: 6px 0 0;
+    padding: 6px 0 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
 /* Botón hamburguesa — oculto por defecto, aparece en móvil */
 .topbar__hamburger {
   display: none;
@@ -8431,3 +8470,15 @@ button[disabled],
 /* El reset de Tailwind quita viñetas y números; en el panel sí se necesitan. */
 .panel-exp__seccion ol { list-style: decimal; }
 .panel-exp__seccion ul:not(.panel-exp__leyenda):not(.panel-exp__fechas) { list-style: disc; }
+
+/* 2026-10-05 (limpieza del menú): accesos al comparador desde el buscador y la ficha */
+.buscador-intro__comparar {
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 700;
+}
+.ficha-cta-zone__comparar {
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: 700;
+}

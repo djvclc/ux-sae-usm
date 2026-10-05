@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { colegios } from '../data/colegios'
 import { useTextSize } from '../context/TextSizeContext'
 import TextSizeBar from '../components/TextSizeBar'
@@ -41,7 +41,13 @@ function FilaTabla({ label, celdas }) {
 
 export default function ComparadorPage() {
   const { textoGrande } = useTextSize()
-  const [seleccionados, setSeleccionados] = useState([])
+  // 2026-10-05 (limpieza del menú): "Comparar" sale de la navbar y se entra desde
+  // la ficha de un colegio con ?con=<id>, que deja ese colegio preseleccionado.
+  const [searchParams] = useSearchParams()
+  const [seleccionados, setSeleccionados] = useState(() => {
+    const id = Number(searchParams.get('con'))
+    return colegios.some((c) => c.id === id) ? [id] : []
+  })
   const [postulados, setPostulados] = useState(() => {
     try {
       const raw = localStorage.getItem(DRAFT_LIST_KEY)

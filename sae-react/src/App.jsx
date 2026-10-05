@@ -178,6 +178,17 @@ function PageMeta() {
   return null
 }
 
+/* 2026-10-05 (pedido del usuario: "el botón Postular debe volver al inicio del
+   flujo"): estando ya en /postulacion, el enlace "Postular" del menú apunta a la
+   misma ruta y React Router no remonta la página, así que el flujo se quedaba en
+   el paso actual. Cada navegación genera una `location.key` nueva (también al ir
+   a la misma ruta), y usarla como `key` remonta la página: vuelve al paso 1 con
+   la lista vacía, igual que al entrar por primera vez. */
+function PostulacionReiniciable() {
+  const { key } = useLocation()
+  return <PostulacionPage key={key} />
+}
+
 function LoadingPage() {
   return (
     <div className="page-loading" role="status" aria-live="polite">
@@ -208,7 +219,7 @@ function App() {
                 <Route path="/calendario"   element={<CalendarioPage />} />
                 <Route path="/colegio"      element={<ColegioPage />} />
                 <Route path="/comparador"   element={<ComparadorPage />} />
-                <Route path="/postulacion"  element={<PostulacionPage />} />
+                <Route path="/postulacion"  element={<PostulacionReiniciable />} />
                 <Route path="/seguimiento"  element={<SeguimientoPage />} />
                 <Route path="/notas"        element={<NotasPage />} />
                 <Route path="/registro"    element={<RegistroPage />} />

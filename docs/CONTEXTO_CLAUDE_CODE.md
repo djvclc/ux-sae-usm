@@ -1194,3 +1194,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 - Pedido del usuario: el recuadro aparecía en dos momentos del panel ("Tu lista y su orden" del paso 2 y "Antes de enviar" del paso 3); queda **solo en el paso 2**, donde se arma y ordena la lista. El panel del paso 3 queda con "Al enviar" y "¿Qué pasa después de enviar?".
 - `caso_estudio_prueba_usabilidad_postulacion.md` tarea 4 `[A]` alineada: la revisión y la lectura del recuadro ocurren en "Tu lista" (paso 2) antes de continuar — como ya lo planteaba el guion del moderador (que describe el 26 % y "Sin vínculo…" de esa vista). El guion no requirió cambios.
 - Verificado en navegador (secciones del panel en paso 2 y paso 3). lint/build/test (16/16) OK.
+
+## 80. Botón del paso 3: "Confirmar y enviar postulación" → "Confirmar" (2026-10-05)
+
+- Pedido del usuario: solo el texto del botón principal de "Revisa y envía tu postulación". Sigue abriendo `ConfirmarEnvioModal` ("Confirma tu postulación" → "Continuar" envía). Guiones, caso de estudio y memoria no citaban el texto anterior (grep). Verificado en navegador. lint/build OK.

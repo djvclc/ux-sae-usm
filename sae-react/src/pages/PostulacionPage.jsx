@@ -955,7 +955,7 @@ export default function PostulacionPage() {
   const direccionCompleta = !!region && comuna.trim().length > 1 && dirCalle.trim().length > 2
   // 2026-09-13 (feedback): la confirmación de jornada/proyecto educativo se
   // mudó de "agregar un colegio" a "confirmar y enviar" (ver ConfirmarEnvioModal
-  // más abajo, junto al botón "Confirmar y enviar postulación" del paso 3).
+  // más abajo, junto al botón "Confirmar" del paso 3).
   const [confirmandoEnvio, setConfirmandoEnvio] = useState(false)
   // Bloque Z (2026-09-13, feedback profesora guía sobre el paso 2): dos vistas
   // separadas en vez de un solo grid con todo mezclado — 'catalogo' (lista de
@@ -2823,7 +2823,8 @@ export default function PostulacionPage() {
               style={{ marginTop: 16 }}
               onClick={() => setConfirmandoEnvio(true)}
             >
-              Confirmar y enviar postulación
+              {/* 2026-10-05 (pedido del usuario): antes "Confirmar y enviar postulación" */}
+              Confirmar
             </button>
             {confirmandoEnvio && (
               <ConfirmarEnvioModal

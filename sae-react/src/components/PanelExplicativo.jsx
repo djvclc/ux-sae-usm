@@ -89,7 +89,7 @@ export function PanelExplicativo({ clave, titulo, children }) {
       </p>
       <div className="panel-exp__contenido" key={clave}>
         <div className="panel-exp__cabecera">
-          <p className="panel-exp__eyebrow" aria-hidden="true">Qué significa este paso</p>
+          <p className="panel-exp__eyebrow" aria-hidden="true">Explicación</p>
           <h2 className="panel-exp__titulo" id="panel-exp-titulo">{titulo}</h2>
         </div>
         <div

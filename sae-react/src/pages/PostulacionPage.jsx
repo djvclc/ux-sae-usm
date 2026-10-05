@@ -658,7 +658,6 @@ function OrdenListaExplicacion({ resultado }) {
   const arriba = a.idx === 2 ? 'tu 1.ª opción' : `tus ${a.idx - 1} primeras opciones`
   return (
     <PanelSeccion
-      icono={sinAsignacion ? '⚠️' : '📋'}
       titulo="¿Qué hace el orden de tu lista?"
       tono={sinAsignacion ? 'alerta' : 'principal'}
     >
@@ -751,7 +750,7 @@ function DetalleModoFamiliar({ valor }) {
 function PrioridadesExplicacion({ prioridadDetectada, prioritario, hayPrioridad, esControl, onAyuda }) {
   return (
     <>
-      <InfoBox icono="📋" titulo="¿Cómo funciona este paso?" tipo="info">
+      <InfoBox titulo="¿Cómo funciona este paso?" tipo="info">
         <p>
           Agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong> (el primero es el que más quieres).{' '}
           {prioridadDetectada
@@ -780,7 +779,7 @@ function PrioridadesExplicacion({ prioridadDetectada, prioritario, hayPrioridad,
           return (
             <Fragment key={key}>
               <span className="chip-btn" style={{ cursor: 'default' }}>
-                {info.icono} {info.label}
+                {info.label}
               </span>
               {chipAyuda(key, onAyuda)}
             </Fragment>
@@ -790,14 +789,14 @@ function PrioridadesExplicacion({ prioridadDetectada, prioritario, hayPrioridad,
 
       {/* S4 (refinamiento): la condición SEP no se elige en el flujo */}
       <span className="form-hint" style={{ marginTop: 6, display: 'block' }}>
-        🏫 La condición de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr> (estudiante prioritario/a){' '}
+        La condición de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr> (estudiante prioritario/a){' '}
         {prioritario
           ? <><strong>ya está registrada</strong> para este/a estudiante y vale en todos los colegios (ver paso 1).</>
           : <>no está registrada para este/a estudiante. La determina el MINEDUC; revísala en <Link to="/perfil" className="link-inline">Mis datos</Link>.</>}
       </span>
 
       {/* S22-6 (corrige E6): orden real de procesamiento y naturaleza de la cuota del 15 % */}
-      <InfoBox icono="🧮" titulo="¿En qué orden se revisan las prioridades?" tipo="neutro" className="tut-box--sm">
+      <InfoBox titulo="¿En qué orden se revisan las prioridades?" tipo="neutro" className="tut-box--sm">
         <p>
           En cada colegio, el sistema asigna los asientos en este orden: 1.º cupos del{' '}
           <abbr title="Programa de Integración Escolar">PIE</abbr>, 2.º hermanos/as, 3.º reserva
@@ -820,7 +819,7 @@ function PrioridadesExplicacion({ prioridadDetectada, prioritario, hayPrioridad,
 
       {/* S22-11 (refinamiento) · S4 (refinamiento): hermano/funcionario/exalumno
           valen solo en el colegio donde tienes ese vínculo. */}
-      <InfoBox icono="📍" titulo="¿Dónde tienes esa prioridad?" tipo="alerta" className="tut-box--sm">
+      <InfoBox titulo="¿Dónde tienes esa prioridad?" tipo="alerta" className="tut-box--sm">
         <p style={{ marginBottom: 0 }}>
           Tener un hermano/a matriculado/a, ser hijo/a de funcionario/a o exalumno/a
           vale <strong>solo en el colegio</strong> donde de verdad tienes ese vínculo — no en todos.
@@ -1352,7 +1351,7 @@ export default function PostulacionPage() {
   const nombresPostulantes = unirNombres(postulantes.map((m) => primerNombre(m.nombre)))
 
   const seccionOrdenImporta = (
-    <PanelSeccion icono="📌" titulo="El orden importa">
+    <PanelSeccion titulo="El orden importa">
       <p>
         El sistema revisa primero tu opción N.° 1. Pon primero el colegio que{' '}
         <strong>más quieres</strong>, no el que crees que te van a dar.
@@ -1361,7 +1360,7 @@ export default function PostulacionPage() {
   )
 
   const seccionDespuesDeEnviar = (
-    <PanelSeccion icono="📅" titulo="¿Qué pasa después de enviar?">
+    <PanelSeccion titulo="¿Qué pasa después de enviar?">
       <p>
         <strong>Resultados:</strong> se publican en <strong>Mi postulación</strong> entre
         el <strong>15 y el 21 de octubre de 2026</strong>. En esas fechas puedes aceptar,
@@ -1386,7 +1385,7 @@ export default function PostulacionPage() {
   const panel = {
     ingreso: (
       <PanelExplicativo clave="ingreso" titulo="Antes de empezar">
-        <PanelSeccion tono="principal" icono="🔑" titulo="¿Por qué ingresar con ClaveÚnica?">
+        <PanelSeccion tono="principal" titulo="¿Por qué ingresar con ClaveÚnica?">
           <p>
             Así el sistema confirma que eres el apoderado o la apoderada. Además trae ya
             cargados los datos de tu familia y tu domicilio: tú solo los revisas.
@@ -1408,7 +1407,7 @@ export default function PostulacionPage() {
           </p>
         </PanelSeccion>
         {postulantes.length > 1 ? (
-          <PanelSeccion tono="principal" icono="👨‍👩‍👧‍👦" titulo="¿En bloque o por separado?">
+          <PanelSeccion tono="principal" titulo="¿En bloque o por separado?">
             {!modoFamiliar && <p>Elige una de las dos opciones. Así funciona cada una:</p>}
             {[
               { valor: 'bloque', titulo: 'En bloque' },
@@ -1427,7 +1426,7 @@ export default function PostulacionPage() {
             ))}
           </PanelSeccion>
         ) : (
-          <PanelSeccion icono="👨‍👩‍👧‍👦" titulo="¿Postulas a más de un hijo o hija?">
+          <PanelSeccion titulo="¿Postulas a más de un hijo o hija?">
             <p>
               Si marcas a dos o más, podrás elegir si los postulas <strong>en bloque</strong> (el
               sistema intenta que queden juntos) o <strong>por separado</strong>.
@@ -1439,20 +1438,20 @@ export default function PostulacionPage() {
 
     datos: (
       <PanelExplicativo clave="datos" titulo="Revisar los datos">
-        <PanelSeccion tono="principal" icono="🪪" titulo="¿De dónde salen estos datos?">
+        <PanelSeccion tono="principal" titulo="¿De dónde salen estos datos?">
           <p>
             Vienen del Estado (Registro Civil), a través de ClaveÚnica. No tienes que
             escribirlos: solo revisa que estén bien y corrige lo que no calce.
           </p>
         </PanelSeccion>
-        <PanelSeccion icono="🎒" titulo="Revisa el nivel">
+        <PanelSeccion titulo="Revisa el nivel">
           <p>
             En cada colegio, el sistema busca vacantes del nivel al que postula tu hijo/a.
             Por eso es importante que sea el correcto.
           </p>
         </PanelSeccion>
         {/* B · fidelidad: en Aceptación Diferida la cercanía NO prioriza. */}
-        <PanelSeccion icono="📍" titulo="¿Para qué sirve tu domicilio?">
+        <PanelSeccion titulo="¿Para qué sirve tu domicilio?">
           <p>
             Para ubicar colegios cercanos en la búsqueda. <strong>No cambia tus probabilidades
             ni tu resultado</strong>: la cercanía no es un criterio de prioridad del SAE.
@@ -1464,7 +1463,7 @@ export default function PostulacionPage() {
     agregar: (
       <PanelExplicativo clave="agregar" titulo="Armar tu lista">
         {enBloque && (
-          <PanelSeccion tono="principal" icono="👨‍👩‍👧‍👦" titulo="Una sola lista para todos">
+          <PanelSeccion tono="principal" titulo="Una sola lista para todos">
             <p>
               Postulas en bloque: esta lista vale para {nombresPostulantes}. Elige colegios que
               tengan los cursos de todos tus hijos e hijas.
@@ -1472,7 +1471,7 @@ export default function PostulacionPage() {
           </PanelSeccion>
         )}
         {/* S22-2 (corrige E2): sin límite de colegios; recomendación oficial de al menos 6 */}
-        <PanelSeccion tono={enBloque ? undefined : 'principal'} icono="🔢" titulo="¿Cuántos colegios poner?">
+        <PanelSeccion tono={enBloque ? undefined : 'principal'} titulo="¿Cuántos colegios poner?">
           <p>
             No hay límite. El SAE recomienda incluir <strong>al menos 6</strong> si tu hijo/a no
             tiene matrícula asegurada: más opciones = más posibilidades.
@@ -1483,7 +1482,7 @@ export default function PostulacionPage() {
             del paso 1 y luego vivió en el panel "Antes de empezar"; 2026-10-05 (pedido
             del usuario) se mueve aquí, al momento de elegir los colegios, que es
             cuando la familia necesita saber cómo se decide el resultado. */}
-        <PanelSeccion icono="⚖️" titulo="¿Cómo se decide tu resultado?">
+        <PanelSeccion titulo="¿Cómo se decide tu resultado?">
           <p>
             El sistema arma tu asignación con tres cosas: <strong>el orden de tu lista</strong>, las{' '}
             <strong>prioridades que fija la ley</strong> y las <strong>vacantes</strong> de cada colegio.
@@ -1506,7 +1505,7 @@ export default function PostulacionPage() {
           </p>
         </PanelSeccion>
         {seccionOrdenImporta}
-        <PanelSeccion icono="↕️" titulo="Después la ordenas">
+        <PanelSeccion titulo="Después la ordenas">
           <p>
             Agrega primero los colegios. En <strong>Tu lista</strong> podrás moverlos hasta dejar
             en el número 1 el que más quieres.
@@ -1522,7 +1521,7 @@ export default function PostulacionPage() {
         <OrdenListaExplicacion resultado={resultado} />
         {/* Leyenda del % que muestra ProbabilidadChip en cada fila de "Tu lista".
             Bandas calibradas 2026-09-10 (verde ≥ 80, ámbar 40–79, rojo < 40). */}
-        <PanelSeccion icono="📊" titulo="¿Qué significa el número de cada colegio?">
+        <PanelSeccion titulo="¿Qué significa el número de cada colegio?">
           <p>
             Es una estimación con datos del año pasado: <strong>de cada 100 postulantes</strong> en
             tu misma situación, cuántos consiguieron cupo en ese colegio.
@@ -1540,7 +1539,7 @@ export default function PostulacionPage() {
         {/* S22-14: con lista corta y toda de alta demanda, el aviso va en el flujo
             (es una alerta); aquí no se repite el conteo. */}
         {!listaCortaYAlta && (
-          <PanelSeccion icono="🔢" titulo="¿Cuántos colegios poner?">
+          <PanelSeccion titulo="¿Cuántos colegios poner?">
             {lista.length < 6 ? (
               <p>
                 Tienes {lista.length} {lista.length === 1 ? 'colegio' : 'colegios'}. Más opciones = más
@@ -1548,11 +1547,11 @@ export default function PostulacionPage() {
                 tiene matrícula asegurada.
               </p>
             ) : (
-              <p>🎉 ¡Bien! Tienes {lista.length}: alcanzaste la recomendación de al menos 6.</p>
+              <p>¡Bien! Tienes {lista.length}: alcanzaste la recomendación de al menos 6.</p>
             )}
           </PanelSeccion>
         )}
-        <PanelSeccion icono="📋" titulo="Prioridades">
+        <PanelSeccion titulo="Prioridades">
           <details>
             <summary>¿Cómo funcionan las prioridades acá?</summary>
             <PrioridadesExplicacion
@@ -1571,7 +1570,7 @@ export default function PostulacionPage() {
       <PanelExplicativo clave="revisar" titulo="Antes de enviar">
         <OrdenListaExplicacion resultado={resultado} />
         {/* C · fidelidad (brecha C) · S22-2: lo que pide ConfirmarEnvioModal. */}
-        <PanelSeccion icono="✍️" titulo="Al enviar">
+        <PanelSeccion titulo="Al enviar">
           <p>
             Te pediremos aceptar la jornada, el proyecto educativo y el reglamento interno de
             cada colegio de tu lista.
@@ -1586,7 +1585,7 @@ export default function PostulacionPage() {
     enviado: (
       <PanelExplicativo clave="enviado" titulo="Después de enviar">
         {confirmado && (
-          <PanelSeccion tono="principal" icono="💾" titulo="¿Qué hacer ahora?">
+          <PanelSeccion tono="principal" titulo="¿Qué hacer ahora?">
             {/* S22-3 (corrige E3): fecha y hora reales de cierre. El aviso de
                 reenvío ("Si cambias tu lista después de enviar") queda en el flujo. */}
             <p>
@@ -1598,7 +1597,7 @@ export default function PostulacionPage() {
         )}
         {/* Calendario oficial Admisión 2027 (investigacion_paso_a_paso_sae.md §3),
             mismas fechas que el comprobante. */}
-        <PanelSeccion icono="📅" titulo="Próximas fechas">
+        <PanelSeccion titulo="Próximas fechas">
           <ul className="panel-exp__fechas">
             <li><span>Resultados</span><strong>15 al 21 de octubre</strong></li>
             <li><span>Resultados de listas de espera</span><strong>28 y 29 de octubre</strong></li>

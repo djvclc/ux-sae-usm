@@ -77,15 +77,13 @@ export function PanelExplicativo({ clave, titulo, children }) {
 }
 
 /* Una sección del panel: título corto + contenido. `tono` destaca la sección
-   principal del momento ('principal') o una advertencia ('alerta'). */
-export function PanelSeccion({ titulo, icono, tono, children }) {
+   principal del momento ('principal') o una advertencia ('alerta').
+   2026-10-05 (feedback del usuario: los emojis le quitaban seriedad): sin ícono. */
+export function PanelSeccion({ titulo, tono, children }) {
   return (
     <section className={`panel-exp__seccion${tono ? ` panel-exp__seccion--${tono}` : ''}`}>
       {titulo && (
-        <h3 className="panel-exp__seccion-titulo">
-          {icono && <span aria-hidden="true">{icono} </span>}
-          {titulo}
-        </h3>
+        <h3 className="panel-exp__seccion-titulo">{titulo}</h3>
       )}
       {children}
     </section>

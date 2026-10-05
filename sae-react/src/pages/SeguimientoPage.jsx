@@ -163,7 +163,7 @@ function RecorridoVisual({ detalles = [] }) {
               <strong>{d.idx}. {d.nombre}</strong>
               <span className="recorrido__opcion">tu {ord} opción</span>
               <span className={obtuvo ? 'recorrido__estado recorrido__estado--ok' : 'recorrido__estado'}>
-                {obtuvo ? '✅ Cupo' : 'No alcanzó'}
+                {obtuvo ? 'Cupo' : 'No alcanzó'}
               </span>
             </div>
             <p className="recorrido__datos">{sim.S} cupos · {sim.A} postulantes el año pasado</p>
@@ -398,7 +398,7 @@ export default function SeguimientoPage() {
                         <span className="seg-porque-tabla__pref"> · tu {ORDINALES[f.idx - 1] ?? `N.º ${f.idx}`} opción</span>
                       </td>
                       <td>{f.situacion}</td>
-                      <td>{f.obtuvo ? '✅ Cupo' : 'No alcanzó'}</td>
+                      <td>{f.obtuvo ? 'Cupo' : 'No alcanzó'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -474,7 +474,7 @@ export default function SeguimientoPage() {
             </li>
           </ol>
           <p className="seg-next-alerta" role="note">
-            ⏰ Si no entras a esta página antes del <strong>21 de octubre</strong>, el sistema
+            Si no entras a esta página antes del <strong>21 de octubre</strong>, el sistema
             acepta la asignación automáticamente.
           </p>
         </PanelSeccion>

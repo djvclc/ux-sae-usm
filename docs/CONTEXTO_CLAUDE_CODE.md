@@ -1167,3 +1167,8 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 ## 74. Título pegado al borde de los recuadros del panel (2026-10-05)
 
 - Feedback del usuario: el título de "Quien no postula, no cambia de colegio" se veía pegado al borde superior del recuadro. Causa: `.panel-exp__seccion:first-of-type { padding-top: 0 }` (pensada para secciones sin recuadro) también le quitaba el relleno superior a la primera sección cuando era un recuadro destacado (`--principal` / `--alerta`). Ahora esa regla solo quita el `padding-top` a secciones sin recuadro. Medido en navegador en `ingreso`, `familia`, `agregar` y `lista`: 18 px arriba y 18 px abajo en todos los recuadros. Aplica también a `/seguimiento`. Build OK.
+
+## 75. Panel "Te explicamos" sin emojis (2026-10-05)
+
+- Feedback del usuario: los emojis del panel le quitaban seriedad al proceso. `PanelSeccion` deja de aceptar `icono` (títulos de sección solo texto) y se quitan los emojis del contenido del panel: 🎉 del conteo hacia 6; en `/seguimiento`, ✅ de la tabla "¿Por qué te asignaron…?" y de `RecorridoVisual` ("Cupo") y ⏰ de "Qué sigue ahora". `PrioridadesExplicacion` (se ve en el panel) sin íconos en sus recuadros ni en los chips de prioridad, ni 🏫 en la nota de SEP — como en B ese bloque está en el flujo, allí también se ve sin íconos. Los emojis del flujo izquierdo no se tocaron.
+- Verificado en navegador: ningún emoji (`\p{Extended_Pictographic}`) en el panel en los 6 momentos recorridos (ingreso, familia, agregar, lista, revisar, enviado) ni en `/seguimiento` con los desplegables abiertos. lint/build/test (16/16) OK.

@@ -1133,3 +1133,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 ## 68. Un solo término para avanzar: "Continuar" (2026-10-05)
 
 - Pedido del usuario: unificar "Continuar" / "Siguiente" en todo el flujo de postulación. Queda **"Continuar"** (ya era el más usado: botón de "Tu grupo familiar", "Continuar con RUT" y los avisos "…para continuar"). Cambios en `PostulacionPage.jsx`: botón del paso 2 → 3 "Siguiente →" → **"Continuar →"** (la flecha hace pareja con "← Atrás") y botón principal de `ConfirmarEnvioModal` "Siguiente" → **"Continuar"**. Guiones, caso de estudio y memoria no citan estos botones por nombre (verificado con grep). Verificado en navegador: familia "Continuar", paso 2 "Continuar →", modal de envío "Continuar" → "Postulación enviada"; sin errores de consola. lint/build/test (16/16) OK.
+
+## 69. Estado de cada hijo/a como etiqueta, no como botón (2026-10-05)
+
+- Feedback del usuario: en "Tu grupo familiar", "✓ Postula a 7° básico" era una píldora azul sólida con texto blanco — el mismo aspecto que un botón primario. `.post-familia__estado` pasa a texto de estado: sin fondo, sin borde redondeado ni relleno, negrita y color (`--azul-osc` para "Postula a…", 7,8:1 sobre la tarjeta marcada; `#145f2c` para "No postula · mantiene su matrícula", 6,9:1 sobre la tarjeta verde; contrastes medidos en navegador). El ✓ y el texto siguen indicando el estado (no solo el color). Solo `index.css`. Build OK; verificado en navegador.

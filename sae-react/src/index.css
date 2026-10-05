@@ -7669,24 +7669,25 @@ button[disabled],
 }
 
 /* 2026-09-30: estado de cada hijo/a en su tarjeta del grupo familiar */
+/* 2026-10-05 (feedback: "parecen botones"): el estado de cada hijo/a era una
+   píldora azul sólida con texto blanco — el mismo aspecto que un botón primario.
+   Pasa a texto de estado: sin fondo, sin forma de botón, solo color y negrita
+   (el ✓ / la palabra ya dicen el estado; el color no es la única señal). */
 .post-familia__estado {
-  display: inline-block;
-  align-self: flex-start;
+  display: block;
   margin: 4px 0 2px;
-  padding: 3px 10px;
-  border-radius: 999px;
+  padding: 0;
+  background: none;
   font-weight: 800;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 
 .post-familia__estado--postula {
-  background: var(--azul);
-  color: #fff; /* 6.9:1 sobre #0057B7 */
+  color: var(--azul-osc); /* 7,8:1 sobre --azul-cl (medido) */
 }
 
 .post-familia__estado--se-queda {
-  background: #d8f0e3;
-  color: #145f2c; /* 6.4:1 */
+  color: #145f2c; /* 6,9:1 sobre --verde-cl (medido) */
 }
 
 .post-familia__hijo--se-queda {

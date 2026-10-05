@@ -748,19 +748,17 @@ function DetalleModoFamiliar({ valor }) {
    ahora se renderiza una sola vez a nivel de página — antes vivía dentro de
    este <details> y, si estaba cerrado, el "?" de cada colegio abría un modal
    que no se veía. */
-function PrioridadesExplicacion({ modoTutorial, prioridadDetectada, prioritario, hayPrioridad, esControl, onAyuda }) {
+function PrioridadesExplicacion({ prioridadDetectada, prioritario, hayPrioridad, esControl, onAyuda }) {
   return (
     <>
-      {modoTutorial && (
-        <InfoBox icono="📋" titulo="¿Cómo funciona este paso?" tipo="info">
-          <p>
-            Agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong> (el primero es el que más quieres).{' '}
-            {prioridadDetectada
-              ? <>El sistema ya revisó tus vínculos con cada colegio: en cada tarjeta de tu lista verás la prioridad que detectó ahí.</>
-              : <>En cada colegio de tu lista puedes indicar si tienes un vínculo que te da prioridad ahí.</>}
-          </p>
-        </InfoBox>
-      )}
+      <InfoBox icono="📋" titulo="¿Cómo funciona este paso?" tipo="info">
+        <p>
+          Agrega los colegios que te interesan <strong>en el orden en que los prefieres</strong> (el primero es el que más quieres).{' '}
+          {prioridadDetectada
+            ? <>El sistema ya revisó tus vínculos con cada colegio: en cada tarjeta de tu lista verás la prioridad que detectó ahí.</>
+            : <>En cada colegio de tu lista puedes indicar si tienes un vínculo que te da prioridad ahí.</>}
+        </p>
+      </InfoBox>
 
       {/* Prioridades — S4 (refinamiento): ya no hay chips globales.
           hermano/funcionario/exalumno se declaran por colegio, en cada tarjeta
@@ -799,24 +797,22 @@ function PrioridadesExplicacion({ modoTutorial, prioridadDetectada, prioritario,
       </span>
 
       {/* S22-6 (corrige E6): orden real de procesamiento y naturaleza de la cuota del 15 % */}
-      {modoTutorial && (
-        <InfoBox icono="🧮" titulo="¿En qué orden se revisan las prioridades?" tipo="neutro" className="tut-box--sm">
-          <p>
-            En cada colegio, el sistema asigna los asientos en este orden: 1.º cupos del{' '}
-            <abbr title="Programa de Integración Escolar">PIE</abbr>, 2.º hermanos/as, 3.º reserva
-            del 15 % para estudiantes de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr>, 4.º hijos/as de funcionarios/as, 5.º exalumnos/as.
-          </p>
-          {/* S22-6 (refinamiento) · P4 (HAX G6): sin repetir "vulnerabilidad" como rótulo.
-              F3: la aclaración de cómo funciona la cuota es explicabilidad → no en control
-              (la lista legal de arriba sí es fidelidad y se mantiene). */}
-          {!esControl && (
-            <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio reserva para estudiantes prioritarios/as, definidos por la situación socioeconómica que el Estado ya tiene registrada.</p>
-          )}
-        </InfoBox>
-      )}
+      <InfoBox icono="🧮" titulo="¿En qué orden se revisan las prioridades?" tipo="neutro" className="tut-box--sm">
+        <p>
+          En cada colegio, el sistema asigna los asientos en este orden: 1.º cupos del{' '}
+          <abbr title="Programa de Integración Escolar">PIE</abbr>, 2.º hermanos/as, 3.º reserva
+          del 15 % para estudiantes de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr>, 4.º hijos/as de funcionarios/as, 5.º exalumnos/as.
+        </p>
+        {/* S22-6 (refinamiento) · P4 (HAX G6): sin repetir "vulnerabilidad" como rótulo.
+            F3: la aclaración de cómo funciona la cuota es explicabilidad → no en control
+            (la lista legal de arriba sí es fidelidad y se mantiene). */}
+        {!esControl && (
+          <p>Ojo: el 15 % <strong>no es un lugar en la fila</strong>. Es un grupo de asientos que cada colegio reserva para estudiantes prioritarios/as, definidos por la situación socioeconómica que el Estado ya tiene registrada.</p>
+        )}
+      </InfoBox>
 
       {/* S22-5 (corrige E5): desempate aleatorio por colegio, sin "certificado por MINEDUC" */}
-      {!hayPrioridad && modoTutorial && (
+      {!hayPrioridad && (
         <InfoBox tipo="neutro" className="tut-box--sm">
           <p>Si no tienes ninguna condición de prioridad, participarás en el <strong>desempate aleatorio</strong>: cuando hay más postulantes que vacantes, cada colegio realiza su propio sorteo (una lotería independiente por establecimiento) para ordenar a quienes no tienen prioridad.</p>
         </InfoBox>
@@ -824,17 +820,15 @@ function PrioridadesExplicacion({ modoTutorial, prioridadDetectada, prioritario,
 
       {/* S22-11 (refinamiento) · S4 (refinamiento): hermano/funcionario/exalumno
           valen solo en el colegio donde tienes ese vínculo. */}
-      {modoTutorial && (
-        <InfoBox icono="📍" titulo="¿Dónde tienes esa prioridad?" tipo="alerta" className="tut-box--sm">
-          <p style={{ marginBottom: 0 }}>
-            Tener un hermano/a matriculado/a, ser hijo/a de funcionario/a o exalumno/a
-            vale <strong>solo en el colegio</strong> donde de verdad tienes ese vínculo — no en todos.
-            {prioridadDetectada
-              ? ' Por eso el sistema los revisa colegio por colegio: en cada tarjeta de tu lista verás cuál detectó ahí.'
-              : ' Por eso, debajo de cada colegio de tu lista te preguntamos si aplica ahí.'}
-          </p>
-        </InfoBox>
-      )}
+      <InfoBox icono="📍" titulo="¿Dónde tienes esa prioridad?" tipo="alerta" className="tut-box--sm">
+        <p style={{ marginBottom: 0 }}>
+          Tener un hermano/a matriculado/a, ser hijo/a de funcionario/a o exalumno/a
+          vale <strong>solo en el colegio</strong> donde de verdad tienes ese vínculo — no en todos.
+          {prioridadDetectada
+            ? ' Por eso el sistema los revisa colegio por colegio: en cada tarjeta de tu lista verás cuál detectó ahí.'
+            : ' Por eso, debajo de cada colegio de tu lista te preguntamos si aplica ahí.'}
+        </p>
+      </InfoBox>
     </>
   )
 }
@@ -922,7 +916,6 @@ export default function PostulacionPage() {
   // La lista se arma desde cero en cada visita: no se persiste ni se restaura.
   const [lista, setLista]       = useState([])
   const [confirmado, setConfirmado] = useState(null)
-  const [modoTutorial, setModoTutorial] = useState(true)
   const [modalPrioridadAbierto, setModalPrioridadAbierto] = useState(null) // S22: modal de prioridades
   const [mostrarRut, setMostrarRut] = useState(false)
   // S4 (refinamiento): precarga desde /perfil; el usuario puede corregir.
@@ -1525,25 +1518,23 @@ export default function PostulacionPage() {
         {/* S22-13 (refinamiento): consecuencia del orden actual — se actualiza al
             arrastrar/mover, para que se vea qué hace reordenar (HAX G16). */}
         <OrdenListaExplicacion resultado={resultado} />
-        {/* El % solo se muestra en modo tutorial (ProbabilidadChip) → su leyenda también.
+        {/* Leyenda del % que muestra ProbabilidadChip en cada fila de "Tu lista".
             Bandas calibradas 2026-09-10 (verde ≥ 80, ámbar 40–79, rojo < 40). */}
-        {modoTutorial && (
-          <PanelSeccion icono="📊" titulo="¿Qué significa el número de cada colegio?">
-            <p>
-              Es una estimación con datos del año pasado: <strong>de cada 100 postulantes</strong> en
-              tu misma situación, cuántos consiguieron cupo en ese colegio.
-            </p>
-            <ul className="panel-exp__leyenda">
-              <li><span className="tut-prob tut-prob--alta">80–99</span> Muchas posibilidades</li>
-              <li><span className="tut-prob tut-prob--media">40–79</span> Posibilidades medias</li>
-              <li><span className="tut-prob tut-prob--baja">1–39</span> Pocas posibilidades</li>
-            </ul>
-            <p>Ese número <strong>no cambia</strong> si mueves el colegio dentro de tu lista.</p>
-            {enBloque && (
-              <p>Los porcentajes son los de {primerNombre(alumnoNombre)} ({alumnoNivel}).</p>
-            )}
-          </PanelSeccion>
-        )}
+        <PanelSeccion icono="📊" titulo="¿Qué significa el número de cada colegio?">
+          <p>
+            Es una estimación con datos del año pasado: <strong>de cada 100 postulantes</strong> en
+            tu misma situación, cuántos consiguieron cupo en ese colegio.
+          </p>
+          <ul className="panel-exp__leyenda">
+            <li><span className="tut-prob tut-prob--alta">80–99</span> Muchas posibilidades</li>
+            <li><span className="tut-prob tut-prob--media">40–79</span> Posibilidades medias</li>
+            <li><span className="tut-prob tut-prob--baja">1–39</span> Pocas posibilidades</li>
+          </ul>
+          <p>Ese número <strong>no cambia</strong> si mueves el colegio dentro de tu lista.</p>
+          {enBloque && (
+            <p>Los porcentajes son los de {primerNombre(alumnoNombre)} ({alumnoNivel}).</p>
+          )}
+        </PanelSeccion>
         {/* S22-14: con lista corta y toda de alta demanda, el aviso va en el flujo
             (es una alerta); aquí no se repite el conteo. */}
         {!listaCortaYAlta && (
@@ -1563,7 +1554,6 @@ export default function PostulacionPage() {
           <details>
             <summary>¿Cómo funcionan las prioridades acá?</summary>
             <PrioridadesExplicacion
-              modoTutorial={modoTutorial}
               prioridadDetectada={prioridadDetectada}
               prioritario={perfilEstudiante.prioritario}
               hayPrioridad={hayPrioridad}
@@ -1593,7 +1583,7 @@ export default function PostulacionPage() {
 
     enviado: (
       <PanelExplicativo clave="enviado" titulo="Después de enviar">
-        {modoTutorial && confirmado && (
+        {confirmado && (
           <PanelSeccion tono="principal" icono="💾" titulo="¿Qué hacer ahora?">
             {/* S22-3 (corrige E3): fecha y hora reales de cierre. El aviso de
                 reenvío ("Si cambias tu lista después de enviar") queda en el flujo. */}
@@ -1639,15 +1629,10 @@ export default function PostulacionPage() {
         {/* 2026-09-22 (feedback profesora guía): el título pasa de "Postular en
             3 pasos" a "Postulación"; la barra de progreso de abajo ya dice en qué
             paso vas. Se quitó la bajada técnica ("Flujo con ClaveÚnica simulada…"). */}
+        {/* 2026-10-05 (pedido del usuario): se elimina el botón "Tutorial ON/OFF".
+            Venía activado por defecto, así que todo lo que dependía de él queda
+            siempre visible (mismo contenido que antes con el tutorial activado). */}
         <h1>Postulación</h1>
-        <button
-          type="button"
-          className={`tut-toggle${modoTutorial ? ' tut-toggle--on' : ''}`}
-          onClick={() => setModoTutorial((v) => !v)}
-          aria-pressed={modoTutorial}
-        >
-          {modoTutorial ? '📖 Tutorial ON' : '📖 Tutorial OFF'}
-        </button>
       </div>
 
       {/* PrioridadModal: una sola instancia para toda la página (la abren los "?"
@@ -1658,14 +1643,6 @@ export default function PostulacionPage() {
           abierto={true}
           onCerrar={() => setModalPrioridadAbierto(null)}
         />
-      )}
-
-      {/* 2026-10-02: en la condición A el panel derecho reemplaza a este aviso
-          (las explicaciones ya no van dentro del flujo). Se mantiene en B. */}
-      {esControl && modoTutorial && (
-        <InfoBox icono="💡" titulo="Modo tutorial activado" tipo="info">
-          <p>En cada paso verás explicaciones de lo que significa cada decisión y qué implica para tu postulación. Puedes desactivarlo con el botón de arriba.</p>
-        </InfoBox>
       )}
 
       {/* ── Barra de progreso (S20-2) ──
@@ -1785,11 +1762,9 @@ export default function PostulacionPage() {
                         Continuar con RUT
                       </button>
                     )}
-                    {modoTutorial && (
-                      <InfoBox tipo="alerta" className="tut-box--sm">
-                        <p>Si no tienes ClaveÚnica puedes obtenerla gratis en <strong>claveunica.gob.cl</strong> o en cualquier oficina del Registro Civil. Es lo más recomendable.</p>
-                      </InfoBox>
-                    )}
+                    <InfoBox tipo="alerta" className="tut-box--sm">
+                      <p>Si no tienes ClaveÚnica puedes obtenerla gratis en <strong>claveunica.gob.cl</strong> o en cualquier oficina del Registro Civil. Es lo más recomendable.</p>
+                    </InfoBox>
                   </div>
                 )}
 
@@ -2411,7 +2386,7 @@ export default function PostulacionPage() {
                   </p>
                   {/* 2026-10-02: en A "El orden importa" vive en el panel. En B se
                       mantiene aquí, sin la frase del porcentaje (B no muestra %). */}
-                  {esControl && modoTutorial && (
+                  {esControl && (
                     <p className="post-picker-hint">
                       📌 <strong>El orden importa:</strong> el sistema evalúa primero tu opción N.°1. Ponla siempre el colegio que <em>más quieres</em>, no el que crees que te van a dar.
                     </p>
@@ -2495,7 +2470,6 @@ export default function PostulacionPage() {
                   <details className="post-demo">
                     <summary>📋 ¿Cómo funcionan las prioridades acá?</summary>
                     <PrioridadesExplicacion
-                      modoTutorial={modoTutorial}
                       prioridadDetectada={prioridadDetectada}
                       prioritario={perfilEstudiante.prioritario}
                       hayPrioridad={hayPrioridad}
@@ -2556,10 +2530,8 @@ export default function PostulacionPage() {
                         </div>
                         {/* 2026-09-23 (feedback profesora guía): el % estimado va en la
                             misma fila, entre el nombre y los botones (antes: bloque gris
-                            aparte, ver ProbabilidadChip). Solo en modo tutorial, como antes. */}
-                        {modoTutorial && (
-                          <ProbabilidadChip colegio={col} perfilCompleto={perfilCompleto} nivelAlumno={alumnoNivel} />
-                        )}
+                            aparte, ver ProbabilidadChip). */}
+                        <ProbabilidadChip colegio={col} perfilCompleto={perfilCompleto} nivelAlumno={alumnoNivel} />
                         <div className="post-item__acciones">
                           <button
                             type="button"
@@ -2641,11 +2613,9 @@ export default function PostulacionPage() {
                     </p>
                   </InfoBox>
                 ) : !esControl ? null /* 2026-10-02: en A el conteo vive en el panel */ : lista.length < 6 ? (
-                  modoTutorial && (
-                    <InfoBox tipo="info" className="tut-box--sm">
-                      <p>Tienes {lista.length} {lista.length === 1 ? 'colegio' : 'colegios'}. Más opciones = más probabilidades — el SAE recomienda incluir <strong>al menos 6</strong> si tu hijo/a no tiene matrícula asegurada.</p>
-                    </InfoBox>
-                  )
+                  <InfoBox tipo="info" className="tut-box--sm">
+                    <p>Tienes {lista.length} {lista.length === 1 ? 'colegio' : 'colegios'}. Más opciones = más probabilidades — el SAE recomienda incluir <strong>al menos 6</strong> si tu hijo/a no tiene matrícula asegurada.</p>
+                  </InfoBox>
                 ) : (
                   <InfoBox tipo="exito" className="tut-box--sm">
                     <p>🎉 ¡Bien! Tienes {lista.length}: alcanzaste la recomendación de al menos 6.</p>
@@ -2891,7 +2861,7 @@ export default function PostulacionPage() {
               </InfoBox>
 
               {/* 2026-10-02: en A "¿Qué hacer ahora?" vive en el panel. */}
-              {esControl && modoTutorial && (
+              {esControl && (
                 <InfoBox icono="💾" titulo="¿Qué hacer ahora?" tipo="exito">
                   {/* S22-3 (corrige E3): fecha y hora reales de cierre */}
                   <p>Descarga y guarda tu comprobante (folio <strong>{confirmado.comprobante}</strong>). Si quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00 — puedes modificar tu lista todas las veces que necesites hasta esa hora. Cada cambio te obliga a <strong>reenviar la postulación</strong> y descargar un comprobante nuevo; el anterior ya no vale.</p>

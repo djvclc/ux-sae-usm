@@ -4973,30 +4973,6 @@ button[disabled],
   margin-bottom: var(--esp-sm);
 }
 
-.tut-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 2px solid var(--borde);
-  border-radius: 999px;
-  background: var(--blanco);
-  color: var(--texto-suave);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  white-space: nowrap;
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-
-.tut-toggle--on {
-  border-color: var(--azul);
-  background: var(--azul-cl);
-  color: var(--azul-osc);
-}
-
 /* Caja de información contextual */
 .tut-box {
   border-radius: var(--radio);
@@ -5137,10 +5113,6 @@ button[disabled],
   .post-header {
     flex-direction: column;
     gap: var(--esp-sm);
-  }
-
-  .tut-toggle {
-    align-self: flex-start;
   }
 }
 

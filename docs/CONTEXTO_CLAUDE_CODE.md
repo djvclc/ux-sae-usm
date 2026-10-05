@@ -1145,3 +1145,9 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
   - `.panel-exp` con **alto fijo** `100vh − menú − 32 px` (antes `max-height` variable según el contenido): mismo alto en todos los momentos.
   - Solo el cuerpo tiene scroll propio, normal. Se eliminaron `contain: size` + alto mínimo de la columna lateral, los difuminados (`mask-image`) y el hook que los calculaba, `overscroll-behavior: contain` y `scroll-behavior: smooth`. La transición entre momentos queda en un fundido corto sin desplazamiento.
 - Medido a 1440×900 con 6 colegios: panel en y = 94 px y alto 790 px desde scroll 0 hasta ~1200 (fin del flujo). En pasos cortos la página solo se desplaza para mostrar el pie y el panel sube con todo (comportamiento normal de una barra lateral). lint/build/test (16/16) OK.
+
+## 71. Se elimina el botón "Tutorial ON/OFF" (2026-10-05)
+
+- Pedido del usuario. En `PostulacionPage.jsx` se quitan el botón del encabezado, el estado `modoTutorial` y la prop homónima de `PrioridadesExplicacion`. Como venía **activado por defecto**, todo lo que dependía de él queda **siempre visible** (mismo contenido que antes con el tutorial activado): chip de % por colegio (sigue oculto en B por F3), leyenda del % en el panel, "¿Qué hacer ahora?", consejo de ClaveÚnica bajo el ingreso con RUT, recuadros del bloque de prioridades, consejo "El orden importa" y conteo hacia 6 en B.
+- **Cambio en la condición B:** desaparece el aviso "Modo tutorial activado" (solo existía en B tras el refactor del panel y remitía al botón eliminado). El resto de B igual.
+- CSS `.tut-toggle` / `.tut-toggle--on` eliminado (sin otros usos). Guiones, caso de estudio y memoria no mencionaban el botón (grep). Verificado en navegador: sin botón ni aviso en A y B, chip 99 % y leyenda visibles en A, sin errores al recargar. lint/build/test (16/16) OK.

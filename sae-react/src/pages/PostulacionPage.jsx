@@ -1758,6 +1758,27 @@ export default function PostulacionPage() {
             {/* 2026-10-02: el encuadre "¿Cómo se decide tu resultado?" (P2 · HAX G1)
                 pasó al panel de explicación (momento "ingreso"). */}
 
+            {/* D · fidelidad (analisis_video_paso_a_paso_sae.md brecha D) · S22-15 (refinamiento):
+                el costo de postular en sí. Bloque Z (2026-09-13) lo había llevado al final
+                de "Tu lista"; 2026-10-05 (sugerencia de la profesora guía): va al
+                PRINCIPIO del flujo, en la primera pantalla, antes de ingresar — es un
+                aviso para decidir si postular. Igual en A y B (aviso del SAE real). */}
+            {!loginOk && (
+              <InfoBox icono="⚠️" titulo="Postula solo si necesitas cambiar de colegio" tipo="alerta">
+                <p>
+                  Postula solo si tu hijo/a necesita un colegio nuevo. Si <strong>queda
+                  asignado/a en uno nuevo, pierde de inmediato el cupo en su colegio
+                  actual</strong> — aunque después rechaces el resultado; si no queda en ninguna
+                  de tus preferencias, mantiene su colegio de hoy.
+                </p>
+                <p style={{ marginBottom: 0 }}>
+                  Excepción: si el colegio actual <strong>no sigue el próximo año</strong> con el
+                  nivel que le toca (por ejemplo, termina 8° básico y no tiene enseñanza media),
+                  sí o sí tienes que postular.
+                </p>
+              </InfoBox>
+            )}
+
             {/* Acción principal: ClaveÚnica */}
             {!loginOk && (
               <div className="post-clave-block">
@@ -2674,22 +2695,6 @@ export default function PostulacionPage() {
                   </InfoBox>
                 )}
 
-                {/* D · fidelidad (analisis_video_paso_a_paso_sae.md brecha D) · S22-15 (refinamiento):
-                    el costo de postular en sí. Bloque Z (2026-09-13): se mueve al final de la
-                    vista "Tu lista" — antes era lo primero que se veía en todo el paso 2. */}
-                <InfoBox icono="⚠️" titulo="Postula solo si necesitas cambiar de colegio" tipo="alerta">
-                  <p>
-                    Postula solo si tu hijo/a necesita un colegio nuevo. Si <strong>queda
-                    asignado/a en uno nuevo, pierde de inmediato el cupo en su colegio
-                    actual</strong> — aunque después rechaces el resultado; si no queda en ninguna
-                    de tus preferencias, mantiene su colegio de hoy.
-                  </p>
-                  <p style={{ marginBottom: 0 }}>
-                    Excepción: si el colegio actual <strong>no sigue el próximo año</strong> con el
-                    nivel que le toca (por ejemplo, termina 8° básico y no tiene enseñanza media),
-                    sí o sí tienes que postular.
-                  </p>
-                </InfoBox>
               </div>
             )}
 

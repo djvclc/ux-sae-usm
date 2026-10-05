@@ -1154,6 +1154,6 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 
 ## 72. Sin "Estás en" redundante en /postulacion y /seguimiento (2026-10-05)
 
-- Feedback del usuario: "Estás en: Postulación" + el título "Postulación" justo debajo era redundante. `TextSizeBar` acepta `pageName` opcional: sin él no muestra la ubicación y el control de tamaño de texto queda solo, a la derecha (`.context-bar--sin-ubicacion`). `/postulacion` y `/seguimiento` (con y sin postulación) ya no pasan `pageName`. Las demás páginas mantienen "Estás en".
+- Feedback del usuario: "Estás en: Postulación" + el título "Postulación" justo debajo era redundante. `TextSizeBar` acepta `pageName` opcional: sin él no muestra la ubicación (`.context-bar--sin-ubicacion`). Ajuste el mismo día (feedback: a la derecha "pierde sentido"): sin la franja ni la línea divisoria de la barra, el control de tamaño de texto queda discreto en la **esquina superior izquierda**, alineado con el título y a la altura del borde superior del panel. `/postulacion` y `/seguimiento` (con y sin postulación) ya no pasan `pageName`. Las demás páginas mantienen "Estás en".
 - De paso, tildes que faltaban en la barra de todo el sitio: "Estas en" → "Estás en", "Tamano de texto" → "Tamaño de texto".
 - Verificado en navegador (`/postulacion` solo con el control de tamaño; `/calendario` con "Estás en: Calendario"). lint/build/test (16/16) OK.

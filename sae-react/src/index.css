@@ -384,10 +384,20 @@ select:focus {
   gap: 6px;
 }
 
-/* 2026-10-05: sin "Estás en" (pageName omitido), el control de tamaño de texto
-   queda solo, alineado a la derecha. */
-.context-bar--sin-ubicacion .context-bar__text-size {
-  margin-left: auto;
+/* 2026-10-05: sin "Estás en" (pageName omitido) ya no hay barra de ubicación:
+   el control de tamaño de texto queda como un control discreto en la esquina
+   superior izquierda, alineado con el título (feedback del usuario: sin la
+   barra "pierde sentido" a la derecha, mejor arriba a la izquierda). */
+.context-bar.context-bar--sin-ubicacion {
+  background: none;
+  border-bottom: 0;
+  padding: 0;
+  margin-bottom: 6px;
+}
+.context-bar--sin-ubicacion .context-bar__inner.context-bar__inner {
+  justify-content: flex-start;
+  max-width: none;
+  margin: 0;
 }
 
 .context-bar__text-size span {

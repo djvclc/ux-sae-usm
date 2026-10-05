@@ -733,6 +733,28 @@ function OrdenListaExplicacion({ resultado }) {
   )
 }
 
+/* D · fidelidad (analisis_video_paso_a_paso_sae.md brecha D) · S22-15 (refinamiento):
+   el costo de postular en sí. Texto único del aviso "Postula solo si necesitas
+   cambiar de colegio"; 2026-10-05 se muestra en el panel "Antes de empezar" (A)
+   o dentro del flujo (B, que no tiene panel). */
+function TextoAvisoCambioColegio() {
+  return (
+    <>
+      <p>
+        Postula solo si tu hijo/a necesita un colegio nuevo. Si <strong>queda
+        asignado/a en uno nuevo, pierde de inmediato el cupo en su colegio
+        actual</strong> — aunque después rechaces el resultado; si no queda en ninguna
+        de tus preferencias, mantiene su colegio de hoy.
+      </p>
+      <p style={{ marginBottom: 0 }}>
+        Excepción: si el colegio actual <strong>no sigue el próximo año</strong> con el
+        nivel que le toca (por ejemplo, termina 8° básico y no tiene enseñanza media),
+        sí o sí tienes que postular.
+      </p>
+    </>
+  )
+}
+
 /* Detalle de cada modo de postulación familiar ("Así funciona"). 2026-10-02:
    extraído del flujo para mostrarlo en el panel (condición A); en la condición
    B sigue desplegándose dentro de la tarjeta de la opción, como antes. Fuente
@@ -1436,6 +1458,9 @@ export default function PostulacionPage() {
   const panel = {
     ingreso: (
       <PanelExplicativo clave="ingreso" titulo="Antes de empezar">
+        <PanelSeccion tono="alerta" titulo="Postula solo si necesitas cambiar de colegio">
+          <TextoAvisoCambioColegio />
+        </PanelSeccion>
         <PanelSeccion tono="principal" titulo="¿Por qué ingresar con ClaveÚnica?">
           <p>
             Así el sistema confirma que eres el apoderado o la apoderada. Además trae ya
@@ -1762,20 +1787,12 @@ export default function PostulacionPage() {
                 el costo de postular en sí. Bloque Z (2026-09-13) lo había llevado al final
                 de "Tu lista"; 2026-10-05 (sugerencia de la profesora guía): va al
                 PRINCIPIO del flujo, en la primera pantalla, antes de ingresar — es un
-                aviso para decidir si postular. Igual en A y B (aviso del SAE real). */}
-            {!loginOk && (
+                aviso para decidir si postular. 2026-10-05 (pedido del usuario: con tanto
+                espacio libre en esta etapa): en A va en el panel "Antes de empezar"; aquí
+                queda solo para B, que no tiene panel. */}
+            {esControl && !loginOk && (
               <InfoBox icono="⚠️" titulo="Postula solo si necesitas cambiar de colegio" tipo="alerta">
-                <p>
-                  Postula solo si tu hijo/a necesita un colegio nuevo. Si <strong>queda
-                  asignado/a en uno nuevo, pierde de inmediato el cupo en su colegio
-                  actual</strong> — aunque después rechaces el resultado; si no queda en ninguna
-                  de tus preferencias, mantiene su colegio de hoy.
-                </p>
-                <p style={{ marginBottom: 0 }}>
-                  Excepción: si el colegio actual <strong>no sigue el próximo año</strong> con el
-                  nivel que le toca (por ejemplo, termina 8° básico y no tiene enseñanza media),
-                  sí o sí tienes que postular.
-                </p>
+                <TextoAvisoCambioColegio />
               </InfoBox>
             )}
 

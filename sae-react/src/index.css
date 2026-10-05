@@ -8218,6 +8218,12 @@ button[disabled],
 }
 .panel-exp__seccion:first-of-type {
   border-top: 0;
+}
+/* 2026-10-05 (feedback: "el título se ve muy encima del recuadro"): antes esta
+   regla quitaba el padding-top a TODA primera sección, incluidos los recuadros
+   destacados (principal/alerta), cuyo título quedaba pegado al borde. Ahora solo
+   se quita en secciones sin recuadro. */
+.panel-exp__seccion:first-of-type:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) {
   padding-top: 0;
 }
 .panel-exp__seccion--principal {

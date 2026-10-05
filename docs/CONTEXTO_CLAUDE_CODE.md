@@ -1137,3 +1137,11 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 ## 69. Estado de cada hijo/a como etiqueta, no como botón (2026-10-05)
 
 - Feedback del usuario: en "Tu grupo familiar", "✓ Postula a 7° básico" era una píldora azul sólida con texto blanco — el mismo aspecto que un botón primario. `.post-familia__estado` pasa a texto de estado: sin fondo, sin borde redondeado ni relleno, negrita y color (`--azul-osc` para "Postula a…", 7,8:1 sobre la tarjeta marcada; `#145f2c` para "No postula · mantiene su matrícula", 6,9:1 sobre la tarjeta verde; contrastes medidos en navegador). El ✓ y el texto siguen indicando el estado (no solo el color). Solo `index.css`. Build OK; verificado en navegador.
+
+## 70. Panel como barra lateral fija estándar (2026-10-05)
+
+- Feedback del usuario: la navegación con scroll y el panel seguían "toscos"; pidió "algo más estándar y fijo". Se reemplaza el ajuste de §66 ("se corta cuando bajo") por el **patrón de barra lateral fija** de los sitios de documentación:
+  - `LayoutConPanel` envuelve **toda** la página (también `TextSizeBar`, título y barra de progreso) en `PostulacionPage` y `SeguimientoPage`; con `padding-top` igual al margen del sticky, el panel **arranca exactamente donde queda fijo** (y = alto del menú + 16 px) y no se desplaza al hacer scroll.
+  - `.panel-exp` con **alto fijo** `100vh − menú − 32 px` (antes `max-height` variable según el contenido): mismo alto en todos los momentos.
+  - Solo el cuerpo tiene scroll propio, normal. Se eliminaron `contain: size` + alto mínimo de la columna lateral, los difuminados (`mask-image`) y el hook que los calculaba, `overscroll-behavior: contain` y `scroll-behavior: smooth`. La transición entre momentos queda en un fundido corto sin desplazamiento.
+- Medido a 1440×900 con 6 colegios: panel en y = 94 px y alto 790 px desde scroll 0 hasta ~1200 (fin del flujo). En pasos cortos la página solo se desplaza para mostrar el pie y el panel sube con todo (comportamiento normal de una barra lateral). lint/build/test (16/16) OK.

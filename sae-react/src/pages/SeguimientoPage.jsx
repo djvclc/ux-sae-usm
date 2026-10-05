@@ -484,13 +484,14 @@ export default function SeguimientoPage() {
 
   return (
     <main className={`page page--seguimiento page--con-panel${textoGrande ? ' page--texto-grande' : ''}`}>
+      {/* 2026-10-05: el layout envuelve toda la página (ver PostulacionPage). */}
+      <LayoutConPanel panel={panel}>
       <TextSizeBar pageName="Mi postulación" />
       <h1>Mi postulación</h1>
       <p className="page__lead">
         Revisa el resultado de tu postulación y entiende por qué te fue asignado ese colegio.
       </p>
 
-      <LayoutConPanel panel={panel}>
       {/* ── Timeline del proceso ── */}
       <div className="seg-timeline" role="list" aria-label="Etapas del proceso">
         {ETAPAS_PROCESO.map((etapa, i) => (

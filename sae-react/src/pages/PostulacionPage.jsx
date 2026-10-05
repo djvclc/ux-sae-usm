@@ -1623,6 +1623,10 @@ export default function PostulacionPage() {
 
   return (
     <main className={`page page--module page--con-panel${textoGrande ? ' page--texto-grande' : ''}`}>
+      {/* 2026-10-05 (feedback: "más estándar y fijo"): el layout envuelve TODA la
+          página (también la barra de tamaño de texto y el título), así el panel
+          arranca arriba, ya en su posición fija, y no se desplaza al hacer scroll. */}
+      <LayoutConPanel panel={panel}>
       <TextSizeBar pageName="Postulación" />
 
       {/* S22-8: anuncio del nuevo orden para lectores de pantalla */}
@@ -1656,7 +1660,6 @@ export default function PostulacionPage() {
         />
       )}
 
-      <LayoutConPanel panel={panel}>
       {/* 2026-10-02: en la condición A el panel derecho reemplaza a este aviso
           (las explicaciones ya no van dentro del flujo). Se mantiene en B. */}
       {esControl && modoTutorial && (

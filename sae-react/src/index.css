@@ -8134,10 +8134,20 @@ button[disabled],
    /seguimiento — ver components/PanelExplicativo.jsx. En la condición B del
    estudio (sin panel) queda `.layout-panel--solo`: una columna a todo el ancho.
    ══════════════════════════════════════════════════════════════════════════ */
+/* 2026-10-05 (feedback: "algo más estándar y fijo"): barra lateral FIJA, patrón
+   estándar de sitios de documentación. El layout envuelve toda la página (también
+   el título), así el panel arranca ya en su posición: pegado bajo el menú sticky
+   (`--alto-topbar`, lo publica PanelExplicativo.jsx), siempre con el mismo alto
+   (el visible bajo el menú) y sin desplazarse al hacer scroll. Si el texto no
+   cabe, solo el cuerpo del panel tiene scroll propio, normal. Reemplaza el ajuste
+   anterior del mismo día (contain: size, alto mínimo, difuminados y bloqueo del
+   scroll de la página), que se sentía tosco. */
 .page--con-panel {
   max-width: 1600px; /* 2026-10-05: más ancho para que el panel aproveche el espacio */
   padding-left: 32px;
   padding-right: 32px;
+  /* Igual al margen del sticky: el panel parte exactamente donde queda fijo. */
+  padding-top: var(--esp-md);
 }
 
 .layout-panel {
@@ -8146,14 +8156,6 @@ button[disabled],
      deja de tener tope fijo (antes 440 px) y toma ~42 % del ancho. */
   grid-template-columns: minmax(0, 1.35fr) minmax(380px, 1fr);
   gap: 32px;
-  margin-top: var(--esp-md);
-}
-/* 2026-10-05: la columna lateral no aporta alto a la fila (contain: size); la
-   fila la define el flujo, con un mínimo para que el panel no quede enano en
-   pasos cortos. El panel (sticky) se mueve dentro de esta columna. */
-.layout-panel__lateral {
-  contain: size;
-  min-height: min(calc(100vh - var(--alto-topbar, 78px) - 2 * var(--esp-md)), 620px);
 }
 .layout-panel--solo {
   grid-template-columns: minmax(0, 1fr);
@@ -8165,14 +8167,10 @@ button[disabled],
   margin-top: 0;
 }
 
-/* 2026-10-05 (feedback: "se corta cuando bajo"): el panel se pega DEBAJO del
-   menú superior sticky (`--alto-topbar`, lo publica PanelExplicativo.jsx), su
-   alto nunca pasa del espacio visible, la cabecera (eyebrow + título) queda fija
-   y solo se desplaza el cuerpo, con bordes difuminados en vez de un corte seco. */
 .panel-exp {
   position: sticky;
   top: calc(var(--alto-topbar, 78px) + var(--esp-md));
-  max-height: min(calc(100vh - var(--alto-topbar, 78px) - 2 * var(--esp-md)), 100%);
+  height: calc(100vh - var(--alto-topbar, 78px) - 2 * var(--esp-md));
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -8187,7 +8185,7 @@ button[disabled],
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  animation: panel-exp-entrar 0.25s ease-out;
+  animation: panel-exp-entrar 0.2s ease-out;
 }
 .panel-exp__cabecera {
   flex: none;
@@ -8199,35 +8197,16 @@ button[disabled],
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  overscroll-behavior: contain;
-  scroll-behavior: smooth;
   padding: 20px 26px 26px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--gris-borde) transparent;
 }
 .panel-exp__cuerpo:focus-visible {
   outline: 3px solid var(--azul-med);
   outline-offset: -3px;
 }
-/* Difuminado del borde por donde sigue el texto */
-.panel-exp__cuerpo--mas-abajo {
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 56px), transparent);
-          mask-image: linear-gradient(to bottom, #000 calc(100% - 56px), transparent);
-}
-.panel-exp__cuerpo--mas-arriba {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 32px);
-          mask-image: linear-gradient(to bottom, transparent, #000 32px);
-}
-.panel-exp__cuerpo--mas-arriba.panel-exp__cuerpo--mas-abajo {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 32px, #000 calc(100% - 56px), transparent);
-          mask-image: linear-gradient(to bottom, transparent, #000 32px, #000 calc(100% - 56px), transparent);
-}
-@media (prefers-reduced-motion: reduce) {
-  .panel-exp__cuerpo { scroll-behavior: auto; }
-}
+/* Al cambiar de momento el contenido aparece con un fundido corto, sin moverse. */
 @keyframes panel-exp-entrar {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .panel-exp__contenido { animation: none; }
@@ -8384,18 +8363,12 @@ button[disabled],
   .layout-panel {
     grid-template-columns: minmax(0, 1fr);
   }
-  .layout-panel__lateral {
-    contain: none;
-    min-height: 0;
-  }
   .panel-exp {
     position: static;
-    max-height: none;
+    height: auto;
   }
   .panel-exp__cuerpo {
     overflow: visible;
-    -webkit-mask-image: none;
-            mask-image: none;
   }
 }
 /* El reset de Tailwind quita viñetas y números; en el panel sí se necesitan. */

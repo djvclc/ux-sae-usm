@@ -1617,7 +1617,7 @@ export default function PostulacionPage() {
           página (también la barra de tamaño de texto y el título), así el panel
           arranca arriba, ya en su posición fija, y no se desplaza al hacer scroll. */}
       <LayoutConPanel panel={panel}>
-      <TextSizeBar pageName="Postulación" />
+      <TextSizeBar />
 
       {/* S22-8: anuncio del nuevo orden para lectores de pantalla */}
       <p className="sr-only" role="status" aria-live="polite">{anuncioOrden}</p>

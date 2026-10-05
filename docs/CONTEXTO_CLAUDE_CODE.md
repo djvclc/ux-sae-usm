@@ -1151,3 +1151,9 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 - Pedido del usuario. En `PostulacionPage.jsx` se quitan el botón del encabezado, el estado `modoTutorial` y la prop homónima de `PrioridadesExplicacion`. Como venía **activado por defecto**, todo lo que dependía de él queda **siempre visible** (mismo contenido que antes con el tutorial activado): chip de % por colegio (sigue oculto en B por F3), leyenda del % en el panel, "¿Qué hacer ahora?", consejo de ClaveÚnica bajo el ingreso con RUT, recuadros del bloque de prioridades, consejo "El orden importa" y conteo hacia 6 en B.
 - **Cambio en la condición B:** desaparece el aviso "Modo tutorial activado" (solo existía en B tras el refactor del panel y remitía al botón eliminado). El resto de B igual.
 - CSS `.tut-toggle` / `.tut-toggle--on` eliminado (sin otros usos). Guiones, caso de estudio y memoria no mencionaban el botón (grep). Verificado en navegador: sin botón ni aviso en A y B, chip 99 % y leyenda visibles en A, sin errores al recargar. lint/build/test (16/16) OK.
+
+## 72. Sin "Estás en" redundante en /postulacion y /seguimiento (2026-10-05)
+
+- Feedback del usuario: "Estás en: Postulación" + el título "Postulación" justo debajo era redundante. `TextSizeBar` acepta `pageName` opcional: sin él no muestra la ubicación y el control de tamaño de texto queda solo, a la derecha (`.context-bar--sin-ubicacion`). `/postulacion` y `/seguimiento` (con y sin postulación) ya no pasan `pageName`. Las demás páginas mantienen "Estás en".
+- De paso, tildes que faltaban en la barra de todo el sitio: "Estas en" → "Estás en", "Tamano de texto" → "Tamaño de texto".
+- Verificado en navegador (`/postulacion` solo con el control de tamaño; `/calendario` con "Estás en: Calendario"). lint/build/test (16/16) OK.

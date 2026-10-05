@@ -324,7 +324,7 @@ export default function SeguimientoPage() {
   if (!data) {
     return (
       <main className={`page${textoGrande ? ' page--texto-grande' : ''}`}>
-        <TextSizeBar pageName="Mi postulación" />
+        <TextSizeBar />
         <h1>Mi postulación</h1>
         <p className="page__lead">
           Aquí podrás ver el estado y el resultado de tu postulación.
@@ -486,7 +486,7 @@ export default function SeguimientoPage() {
     <main className={`page page--seguimiento page--con-panel${textoGrande ? ' page--texto-grande' : ''}`}>
       {/* 2026-10-05: el layout envuelve toda la página (ver PostulacionPage). */}
       <LayoutConPanel panel={panel}>
-      <TextSizeBar pageName="Mi postulación" />
+      <TextSizeBar />
       <h1>Mi postulación</h1>
       <p className="page__lead">
         Revisa el resultado de tu postulación y entiende por qué te fue asignado ese colegio.

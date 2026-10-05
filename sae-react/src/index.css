@@ -384,6 +384,12 @@ select:focus {
   gap: 6px;
 }
 
+/* 2026-10-05: sin "Estás en" (pageName omitido), el control de tamaño de texto
+   queda solo, alineado a la derecha. */
+.context-bar--sin-ubicacion .context-bar__text-size {
+  margin-left: auto;
+}
+
 .context-bar__text-size span {
   font-size: 0.84rem;
   color: var(--texto-suave);

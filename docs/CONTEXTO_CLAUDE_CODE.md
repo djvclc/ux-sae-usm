@@ -1235,3 +1235,11 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
   - "El orden importa" (absorbe "Después la ordenas"): número 1 = el que más quieres, nunca te perjudica, después se puede reordenar. Se quitó la repetición de "nunca te perjudica" que había en "¿Cómo se decide…?".
   - "¿Cómo se decide tu resultado?": orden + prioridades legales + vacantes, sorteo propio de cada colegio, "No cuentan notas ni puntajes (salvo alta exigencia académica, que el prototipo no incluye)"; la lista de las 5 prioridades pasa a un desplegable "Ver las prioridades, en orden" (también está en el panel de "Tu lista"); enlace a `/algoritmo`.
 - Se eliminó la constante `seccionOrdenImporta` (solo se usaba aquí). Solo condición A. build/test (16/16) OK.
+
+## 87. Técnicas de llamada de atención en el panel (2026-10-05)
+
+- Feedback del usuario: la cantidad de texto del panel está bien, pero se ve poco llamativo; pidió una técnica que invite a leer. Solo CSS (sin cambiar texto), en todos los momentos del panel y en `/seguimiento`:
+  1. **Puntos numerados:** contador CSS (`punto-panel`) → cada título de sección lleva un número en un círculo azul (1, 2, 3…); la alerta lleva "!" naranja y no cuenta.
+  2. **Títulos más fuertes:** 1,08 rem, azul oscuro, y el contenido de la sección alineado bajo el texto del título (sangría de 36 px).
+  3. **Resaltador:** lo que ya está en `<strong>` dentro de secciones sin recuadro lleva un fondo azul claro (#cfe0f7) en la mitad inferior, para quien lee escaneando.
+- Verificado en navegador: números 1–4 en "Armar tu lista" (con bloque), tabla de `/seguimiento` cabe (453 px) sin desbordar el panel. lint/test (16/16) OK.

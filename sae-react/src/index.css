@@ -8493,3 +8493,61 @@ button[disabled],
   margin-top: 10px;
   font-weight: 700;
 }
+
+/* ══ 2026-10-05 (feedback: "poco llamativo; necesito alguna técnica de llamada de
+   atención para leer", con la misma cantidad de texto) ══
+   Solo CSS sobre el panel "Te explicamos":
+   1. Puntos numerados (contador CSS): cada sección lleva un número en un círculo
+      azul junto al título — orden de lectura y punto de entrada visual. La alerta
+      lleva "!" en naranja y no cuenta.
+   2. Títulos más fuertes (azul oscuro, algo más grandes) y el cuerpo alineado
+      bajo el texto del título.
+   3. Resaltador: lo que ya está en negrita lleva un fondo azul claro en la mitad
+      inferior, para que quien escanea capte lo esencial. Dentro de los recuadros
+      (que ya tienen fondo) no se aplica. */
+.panel-exp__cuerpo {
+  counter-reset: punto-panel;
+}
+.panel-exp .panel-exp__seccion-titulo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 1.08rem;
+  color: var(--azul-osc);
+}
+.panel-exp__seccion > .panel-exp__seccion-titulo::before {
+  counter-increment: punto-panel;
+  content: counter(punto-panel);
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-top: -1px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.panel-exp__seccion--alerta > .panel-exp__seccion-titulo {
+  color: #6b2d07;
+}
+.panel-exp__seccion--alerta > .panel-exp__seccion-titulo::before {
+  counter-increment: none;
+  content: "!";
+  background: var(--naranja);
+}
+/* El contenido queda alineado con el texto del título (26 px del número + 10 px) */
+.panel-exp__seccion > :not(.panel-exp__seccion-titulo) {
+  margin-left: 36px;
+}
+/* Resaltador sobre lo que ya está en negrita (fuera de los recuadros) */
+.panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) p strong {
+  background: linear-gradient(transparent 55%, #cfe0f7 55%);
+  padding: 0 2px;
+  -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
+}

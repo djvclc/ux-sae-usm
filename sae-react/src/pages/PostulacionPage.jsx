@@ -330,12 +330,18 @@ function PrioridadModal({ clave, abierto, onCerrar }) {
    pantalla (el título del modal, este botón y el botón de más abajo que lo
    abre). Mismo patrón de <dialog>/`.prio-modal` de siempre — accesible, foco
    al botón principal al abrir, ESC y clic-fuera cierran sin enviar. */
-function ConfirmarEnvioModal({ lista, colegiosById, onConfirmar, onCancelar }) {
-  const contenidoRef = useRef(null)
-  const cantidad = lista.filter((id) => colegiosById[id]).length
+function ConfirmarEnvioModal({ lista, colegiosById, postulantesTexto, onConfirmar, onCancelar }) {
+  /* 2026-10-05 (feedback del usuario: "se ve poco trabajado"): rediseño con el
+     mismo lenguaje visual que ConfirmarDatosModal — fondo oscurecido, título
+     centrado, secciones con encabezado, la lista que se envía (última revisión),
+     las aceptaciones en un recuadro destacado y botones grandes apilados. Mismo
+     contenido de fidelidad (brecha C) y mismas acciones. */
+  const continuarRef = useRef(null)
+  const colegiosLista = lista.map((id) => colegiosById[id]).filter(Boolean)
+  const cantidad = colegiosLista.length
 
   useEffect(() => {
-    contenidoRef.current?.querySelector('button')?.focus()
+    continuarRef.current?.focus()
   }, [])
 
   const handleKeyDown = (e) => {
@@ -347,36 +353,63 @@ function ConfirmarEnvioModal({ lista, colegiosById, onConfirmar, onCancelar }) {
       open
       onKeyDown={handleKeyDown}
       onClick={(e) => e.target === e.currentTarget && onCancelar()}
-      className="prio-modal"
+      className="prio-modal confirmar-modal"
       aria-labelledby="confirmar-envio-titulo"
     >
-      <div className="prio-modal__content" ref={contenidoRef}>
-        <div className="prio-modal__header">
-          <h2 className="prio-modal__titulo" id="confirmar-envio-titulo">
-            Confirma tu postulación
-          </h2>
-          <button
-            type="button"
-            className="prio-modal__close"
-            onClick={onCancelar}
-            aria-label="Cerrar sin enviar"
-          >
-            ✕
-          </button>
+      <div className="prio-modal__content confirmar-modal__content confirmar-datos confirmar-envio">
+        <button
+          type="button"
+          className="confirmar-modal__close"
+          onClick={onCancelar}
+          aria-label="Cerrar sin enviar"
+        >
+          ✕
+        </button>
+        <h2 className="confirmar-modal__titulo" id="confirmar-envio-titulo">
+          Confirma tu postulación
+        </h2>
+        {postulantesTexto && <p className="confirmar-envio__para">{postulantesTexto}</p>}
+
+        <section className="confirmar-datos__seccion" aria-label="Tu lista">
+          <h3>Tu lista · {cantidad} {cantidad === 1 ? 'colegio' : 'colegios'}</h3>
+          <ol className="confirmar-envio__lista">
+            {colegiosLista.map((c) => (
+              <li key={c.id}>{c.nombre}</li>
+            ))}
+          </ol>
+        </section>
+
+        {/* C · fidelidad (analisis_video_paso_a_paso_sae.md brecha C) · S22-2 */}
+        <div className="confirmar-envio__acepta">
+          <p className="confirmar-envio__acepta-titulo">
+            Al enviar, aceptas para {cantidad === 1 ? 'tu colegio' : 'cada colegio de tu lista'}:
+          </p>
+          <ul>
+            <li>Su jornada.</li>
+            <li>Su proyecto educativo y su reglamento interno.</li>
+          </ul>
         </div>
-        <p style={{ margin: '0 0 12px', fontSize: '0.92rem' }}>
-          Al enviar, aceptas que se aplican a {cantidad === 1 ? 'tu único colegio' : `los ${cantidad} colegios de tu lista`}:
+
+        {/* S22-3 (corrige E3): fecha y hora reales de cierre */}
+        <p className="confirmar-envio__nota">
+          Puedes cambiar tu postulación hasta el <strong>27 de agosto a las 14:00</strong>.
         </p>
-        <ul className="cond-detectadas" style={{ marginBottom: 12 }}>
-          <li>La jornada de cada colegio.</li>
-          <li>El proyecto educativo y el reglamento interno de cada colegio.</li>
-        </ul>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 18 }}>
+
+        <div className="confirmar-modal__acciones">
           {/* 2026-10-05: "Siguiente" → "Continuar" (un solo término para avanzar en todo el flujo) */}
-          <button type="button" className="btn btn--primary btn--grande" onClick={onConfirmar}>
+          <button
+            ref={continuarRef}
+            type="button"
+            className="btn btn--primary btn--grande"
+            onClick={onConfirmar}
+          >
             Continuar
           </button>
-          <button type="button" className="btn btn--secondary" onClick={onCancelar}>
+          <button
+            type="button"
+            className="btn btn--secondary btn--grande confirmar-modal__btn-secundario"
+            onClick={onCancelar}
+          >
             Revisar de nuevo
           </button>
         </div>
@@ -2830,6 +2863,9 @@ export default function PostulacionPage() {
               <ConfirmarEnvioModal
                 lista={lista}
                 colegiosById={colegiosById}
+                postulantesTexto={enBloque
+                  ? `En bloque: una sola lista para ${nombresPostulantes}.`
+                  : alumnoNombre ? `Postulación de ${alumnoNombre}.` : ''}
                 onConfirmar={() => { confirmar(); setConfirmandoEnvio(false) }}
                 onCancelar={() => setConfirmandoEnvio(false)}
               />

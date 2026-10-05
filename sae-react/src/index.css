@@ -7840,6 +7840,78 @@ button[disabled],
   accent-color: var(--azul);
 }
 
+/* 2026-10-05 (feedback: "se ve poco trabajado"): ConfirmarEnvioModal con el
+   mismo lenguaje visual que ConfirmarDatosModal (.confirmar-datos). */
+.confirmar-envio__para {
+  text-align: center;
+  color: var(--texto-suave);
+  margin: -4px 0 16px;
+}
+
+.confirmar-envio__lista {
+  list-style: decimal;
+  margin: 0;
+  padding-left: 1.4em;
+  display: grid;
+  gap: 4px;
+}
+
+.confirmar-envio__lista li {
+  font-weight: 700;
+  padding-left: 2px;
+}
+
+.confirmar-envio__acepta {
+  background: var(--azul-cl);
+  border-left: 4px solid var(--azul);
+  border-radius: var(--radio);
+  padding: 14px 16px;
+  margin: 6px 0 14px;
+}
+
+.confirmar-envio__acepta-titulo {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: var(--azul-osc);
+}
+
+.confirmar-envio__acepta ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.confirmar-envio__acepta li {
+  position: relative;
+  padding-left: 26px;
+}
+
+.confirmar-envio__acepta li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 18px;
+  text-align: center;
+  margin-top: 3px;
+}
+
+.confirmar-envio__nota {
+  margin: 0 0 18px;
+  font-size: 0.92rem;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
 /* 2026-09-30: estado vacío de "Tu lista" (entrada al paso 2) */
 .post-lista-vacia {
   display: flex;

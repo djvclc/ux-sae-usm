@@ -1198,3 +1198,8 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 ## 80. Botón del paso 3: "Confirmar y enviar postulación" → "Confirmar" (2026-10-05)
 
 - Pedido del usuario: solo el texto del botón principal de "Revisa y envía tu postulación". Sigue abriendo `ConfirmarEnvioModal` ("Confirma tu postulación" → "Continuar" envía). Guiones, caso de estudio y memoria no citaban el texto anterior (grep). Verificado en navegador. lint/build OK.
+
+## 81. Rediseño de `ConfirmarEnvioModal` ("Confirma tu postulación") (2026-10-05)
+
+- Feedback del usuario: el modal "se veía poco trabajado". Pasa al mismo lenguaje visual que `ConfirmarDatosModal`: fondo oscurecido (`.confirmar-modal`), ✕ redonda, título centrado, línea de para quién es ("En bloque: una sola lista para Tomás y Sofía." / "Postulación de {nombre}."; prop nueva `postulantesTexto`), sección **"Tu lista · N colegios"** con los colegios numerados en el orden que se envían, recuadro azul **"Al enviar, aceptas para cada colegio de tu lista:"** con ✓ (su jornada; su proyecto educativo y su reglamento interno — mismo contenido de fidelidad, brecha C), nota "Puedes cambiar tu postulación hasta el 27 de agosto a las 14:00" (S22-3) y botones grandes apilados "Continuar" / "Revisar de nuevo". El foco inicial va a "Continuar". CSS nuevo `.confirmar-envio*`.
+- Mismas acciones que antes; guiones y caso de estudio no citaban sus textos. Verificado en navegador (contenido, foco, "Continuar" envía → "Postulación enviada"). lint/build/test (16/16) OK.

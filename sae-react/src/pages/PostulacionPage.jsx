@@ -392,7 +392,7 @@ function ConfirmarEnvioModal({ lista, colegiosById, onConfirmar, onCancelar }) {
    en "Tu grupo familiar" se abre directo con todo lo que hay que revisar —quién
    postula y cómo, sus datos, domicilio, condiciones ya registradas (solo si hay
    alguna)— y la declaración de apoderado/a (A · fidelidad, brecha A), que
-   habilita "Confirmar y seguir". "¿Algún dato está mal?" cierra el modal y abre
+   habilita "Continuar" (antes "Confirmar y seguir"). "¿Algún dato está mal?" cierra el modal y abre
    la pantalla de corrección (la antigua pantalla intermedia, ahora solo para
    corregir). Fuera de alcance por decisión del usuario: ajuste fino a 375 px.
    S22-12 / S22-13 (refinamiento). */
@@ -489,6 +489,9 @@ function ConfirmarDatosModal({
           <span>Declaro que soy el apoderado o la apoderada legal de {nombres}.</span>
         </label>
 
+        {/* 2026-10-05 (pedido del usuario): un solo botón, "Continuar" (antes
+            "Confirmar y seguir" + "Revisar de nuevo"). Cerrar sin avanzar sigue
+            disponible con la ✕, ESC o clic fuera; corregir, con el enlace de arriba. */}
         <div className="confirmar-modal__acciones">
           <button
             type="button"
@@ -497,14 +500,7 @@ function ConfirmarDatosModal({
             disabled={!declara}
             title={declara ? undefined : 'Primero marca la declaración de apoderado/a'}
           >
-            Confirmar y seguir
-          </button>
-          <button
-            type="button"
-            className="btn btn--secondary btn--grande confirmar-modal__btn-secundario"
-            onClick={onCancelar}
-          >
-            Revisar de nuevo
+            Continuar
           </button>
         </div>
       </div>

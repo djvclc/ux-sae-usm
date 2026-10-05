@@ -1572,12 +1572,6 @@ select:focus {
   width: 100%;
 }
 
-.confirmar-modal__btn-secundario {
-  border: 2px solid var(--gris-med);
-  color: var(--texto);
-  font-weight: 600;
-}
-
 .sim-school-grid {
   display: grid;
   gap: var(--esp-sm);

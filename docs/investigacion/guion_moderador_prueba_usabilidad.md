@@ -90,7 +90,7 @@ Tienes alguna pregunta antes de empezar? Estas de acuerdo en participar y en que
 
 "Ahora revisa los datos que muestra la pagina y sigue hasta poder armar la lista."
 
-*Al pulsar "Continuar" en el grupo familiar se abre la ventana "Confirmas estos datos?": dice "En bloque: una sola lista de colegios para Mateo y Sofia", muestra RUN y curso de cada uno, el domicilio y "Lo que el sistema ya sabe" (hermana en Los Andes, madre exalumna de Republica, padre que trabaja en Villa del Sol). Debe marcar "Declaro que soy el apoderado o la apoderada legal de Mateo y Sofia" y pulsar "Confirmar y seguir", que lleva directo a armar la lista. No corrijas. Si usa "Algun dato esta mal? Corregir", anotalo y deja que vuelva a confirmar con "Listo, volver a confirmar".*
+*Al pulsar "Continuar" en el grupo familiar se abre la ventana "Confirmas estos datos?": dice "En bloque: una sola lista de colegios para Mateo y Sofia", muestra RUN y curso de cada uno, el domicilio y "Lo que el sistema ya sabe" (hermana en Los Andes, madre exalumna de Republica, padre que trabaja en Villa del Sol). Debe marcar "Declaro que soy el apoderado o la apoderada legal de Mateo y Sofia" y pulsar "Continuar", que lleva directo a armar la lista. No corrijas. Si usa "Algun dato esta mal? Corregir", anotalo y deja que vuelva a confirmar con "Listo, volver a confirmar".*
 
 *Mientras lee la ventana, pregunta:* "Que te dice la pagina que ya sabe de la familia? Te calza con la tarjeta?" *Solo escucha, no expliques.*
 

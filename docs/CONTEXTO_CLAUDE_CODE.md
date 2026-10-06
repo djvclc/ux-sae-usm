@@ -1251,3 +1251,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 ## 89. Barra de acciones de /seguimiento ordenada (2026-10-06)
 
 - Feedback del usuario ("deja más ordenados estos botones"): `.seg-actions-bar` se repartía 2 + 1 con anchos distintos. Pasa a grilla de dos columnas: **"Descargar comprobante"** (acción principal) a todo el ancho arriba, y **"Ver calendario del proceso"** y **"Ver ficha del colegio asignado"** abajo, del mismo ancho y centrados; bajo 720 px, una columna. Solo CSS. Medido a 1440 px: 713 px arriba, 353 + 353 px abajo, alineados. Build OK.
+
+## 90. Tabla "¿Por qué te asignaron este colegio?" sin desbordar el recuadro (2026-10-06)
+
+- Feedback del usuario ("problemas de tamaño"): la tabla del panel de `/seguimiento` se salía del recuadro por la derecha (columna "Resultado" cortada). Causa: la sangría de 36 px del contenido de cada sección (§87) + `width: 100%` de la tabla. Arreglos: (1) en el panel la tabla va **sin sangría**, a todo el ancho del recuadro, con `table-layout: fixed` y columnas 42 % / 36 % / 22 % (`overflow-wrap: anywhere`); selector `.panel-exp .panel-exp__seccion > .seg-porque-tabla` para ganarle a la regla de sangría. (2) Regla general: todo hijo con sangría lleva `max-width: calc(100% - 36px)`, para que nada con ancho completo se salga. Medido: tabla 453 px a 1440 y 276 px a 1024, con 24 px a la izquierda (borde + relleno) y 20 px a la derecha; ningún elemento del panel se sale de su sección a 1024, 1440 ni 1920. Build OK.

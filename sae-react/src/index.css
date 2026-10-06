@@ -8440,8 +8440,23 @@ button[disabled],
   white-space: nowrap;
 }
 /* La tabla y el recorrido de /seguimiento caben en el ancho del panel */
-.panel-exp .seg-porque-tabla {
+.panel-exp .panel-exp__seccion > .seg-porque-tabla {
   font-size: 0.88rem;
+  /* 2026-10-06 (feedback: "problemas de tamaño"): con la sangría de 36 px del
+     contenido de cada sección (§87), `width: 100%` + el desplazamiento hacía que la
+     tabla se saliera del recuadro. Al ser un bloque de datos, va sin sangría y
+     ocupa todo el ancho del recuadro, con columnas fijas. */
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  table-layout: fixed;
+}
+.panel-exp .seg-porque-tabla th:nth-child(1) { width: 42%; }
+.panel-exp .seg-porque-tabla th:nth-child(2) { width: 36%; }
+.panel-exp .seg-porque-tabla th:nth-child(3) { width: 22%; }
+.panel-exp .seg-porque-tabla td,
+.panel-exp .seg-porque-tabla th {
+  overflow-wrap: anywhere;
 }
 
 /* Sin prioridad de móvil (decisión 2026-10-02), pero bajo ~960 px el panel se
@@ -8527,6 +8542,8 @@ button[disabled],
 /* El contenido queda alineado con el texto del título (26 px del número + 10 px) */
 .panel-exp__seccion > :not(.panel-exp__seccion-titulo) {
   margin-left: 36px;
+  /* nada con ancho completo puede salirse por la sangría */
+  max-width: calc(100% - 36px);
 }
 /* Resaltador sobre lo que ya está en negrita (fuera de los recuadros) */
 .panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) p strong {

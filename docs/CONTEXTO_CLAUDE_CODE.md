@@ -1243,3 +1243,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
   2. **Títulos más fuertes:** 1,08 rem, azul oscuro, y el contenido de la sección alineado bajo el texto del título (sangría de 36 px).
   3. **Resaltador:** lo que ya está en `<strong>` dentro de secciones sin recuadro lleva un fondo azul claro (#cfe0f7) en la mitad inferior, para quien lee escaneando.
 - Verificado en navegador: números 1–4 en "Armar tu lista" (con bloque), tabla de `/seguimiento` cabe (453 px) sin desbordar el panel. lint/test (16/16) OK.
+
+## 88. Se elimina "Cancelar mi postulación" de /seguimiento (2026-10-06)
+
+- Pedido del usuario. Se quitó el desplegable "Cancelar mi postulación" (con su confirmación "¿Seguro que quieres cancelar?" que borraba `sae_react_postulacion` de localStorage), junto con el estado `pedirConfirmacion`, la función `cancelarPostulacion`, el setter `setData` (ya sin uso) y el CSS `.seg-cancel-*`. La página termina en la barra de acciones (comprobante, calendario del proceso, ficha del colegio). Guiones, caso de estudio y memoria no lo mencionaban. Para limpiar entre participantes sigue disponible "Limpiar y empezar de cero" en "Herramientas de la prueba de usabilidad" de `/postulacion`. Verificado en navegador con una postulación enviada. lint/build/test (16/16) OK.

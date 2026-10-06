@@ -259,7 +259,7 @@ const estadoColor = {
 export default function SeguimientoPage() {
   const { textoGrande } = useTextSize()
   const { esControl } = useModoEstudio() // F3 — condición de control del estudio
-  const [data, setData] = useState(() => {
+  const [data] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       return raw ? JSON.parse(raw) : null
@@ -267,17 +267,9 @@ export default function SeguimientoPage() {
       return null
     }
   })
-  const [pedirConfirmacion, setPedirConfirmacion] = useState(false)
   const [ofertaAceptada, setOfertaAceptada] = useState(null) // null | 'aceptada' | 'rechazada'
   const [detalleAbierto, setDetalleAbierto] = useState(null)
   const comprobanteRef = useRef(null)
-
-  const cancelarPostulacion = () => {
-    localStorage.removeItem(STORAGE_KEY)
-    localStorage.removeItem('sae_react_postulacion_draft_list')
-    setData(null)
-    setPedirConfirmacion(false)
-  }
 
   const descargarComprobante = () => {
     if (!data) return
@@ -736,64 +728,8 @@ export default function SeguimientoPage() {
         </Link>
       </div>
 
-      {/* Cancelar postulación */}
-      <details className="seg-cancel-section" style={{ marginTop: 24 }}>
-        <summary className="seg-cancel-summary">
-          Cancelar mi postulación
-        </summary>
-        <div className="seg-cancel-body">
-          {!pedirConfirmacion ? (
-            <>
-              <p>
-                Si cancelas, tu postulación quedará eliminada y deberás volver a realizarla
-                desde cero antes del cierre del período.
-              </p>
-              <button
-                type="button"
-                className="btn btn--secondary btn--dark"
-                style={{ borderColor: 'var(--rojo)', color: 'var(--rojo)' }}
-                onClick={() => setPedirConfirmacion(true)}
-              >
-                Quiero cancelar mi postulación
-              </button>
-            </>
-          ) : (
-            <div
-              className="sim-result"
-              role="alertdialog"
-              aria-labelledby="confirm-cancel-titulo"
-              aria-describedby="confirm-cancel-desc"
-              style={{ background: 'var(--rojo-cl)', borderColor: 'var(--rojo)' }}
-            >
-              <h3 id="confirm-cancel-titulo" style={{ color: 'var(--rojo)' }}>
-                ⚠ ¿Seguro que quieres cancelar?
-              </h3>
-              <p id="confirm-cancel-desc">
-                Esta acción <strong>no se puede deshacer</strong>. Tu postulación y tu lista de colegios
-                quedarán eliminadas.
-              </p>
-              <div className="hero__actions" style={{ marginTop: 12 }}>
-                <button
-                  type="button"
-                  className="btn btn--primary"
-                  style={{ background: 'var(--rojo)', borderColor: 'var(--rojo)' }}
-                  onClick={cancelarPostulacion}
-                >
-                  Sí, cancelar
-                </button>
-                <button
-                  type="button"
-                  className="btn btn--secondary"
-                  onClick={() => setPedirConfirmacion(false)}
-                  autoFocus
-                >
-                  No, mantener
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </details>
+      {/* 2026-10-06 (pedido del usuario): se eliminó la sección "Cancelar mi
+          postulación" (desplegable con confirmación que borraba la postulación). */}
       </LayoutConPanel>
     </main>
   )

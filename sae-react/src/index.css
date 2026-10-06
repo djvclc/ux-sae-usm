@@ -4144,15 +4144,26 @@ button[disabled],
 }
 
 /* ── Actions bar ── */
+/* 2026-10-06 (feedback: "deja más ordenados estos botones"): antes se repartían
+   2 + 1 con anchos distintos. Ahora: la acción principal (descargar comprobante)
+   a todo el ancho y las dos secundarias abajo, del mismo ancho. */
 .seg-actions-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--esp-sm);
-  flex-wrap: wrap;
   margin-top: var(--esp-lg);
   padding: var(--esp-lg);
   background: var(--azul-cl);
   border-radius: var(--radio-lg);
   border: 1px solid #b8d0e8;
+}
+.seg-actions-bar > :first-child {
+  grid-column: 1 / -1;
+}
+.seg-actions-bar > .btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
 }
 
 /* ── Responsive ── */
@@ -4192,7 +4203,7 @@ button[disabled],
   }
 
   .seg-actions-bar {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .seg-result-plano__meta {

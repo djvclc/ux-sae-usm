@@ -1247,3 +1247,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 ## 88. Se elimina "Cancelar mi postulación" de /seguimiento (2026-10-06)
 
 - Pedido del usuario. Se quitó el desplegable "Cancelar mi postulación" (con su confirmación "¿Seguro que quieres cancelar?" que borraba `sae_react_postulacion` de localStorage), junto con el estado `pedirConfirmacion`, la función `cancelarPostulacion`, el setter `setData` (ya sin uso) y el CSS `.seg-cancel-*`. La página termina en la barra de acciones (comprobante, calendario del proceso, ficha del colegio). Guiones, caso de estudio y memoria no lo mencionaban. Para limpiar entre participantes sigue disponible "Limpiar y empezar de cero" en "Herramientas de la prueba de usabilidad" de `/postulacion`. Verificado en navegador con una postulación enviada. lint/build/test (16/16) OK.
+
+## 89. Barra de acciones de /seguimiento ordenada (2026-10-06)
+
+- Feedback del usuario ("deja más ordenados estos botones"): `.seg-actions-bar` se repartía 2 + 1 con anchos distintos. Pasa a grilla de dos columnas: **"Descargar comprobante"** (acción principal) a todo el ancho arriba, y **"Ver calendario del proceso"** y **"Ver ficha del colegio asignado"** abajo, del mismo ancho y centrados; bajo 720 px, una columna. Solo CSS. Medido a 1440 px: 713 px arriba, 353 + 353 px abajo, alineados. Build OK.

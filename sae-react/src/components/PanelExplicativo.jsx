@@ -8,7 +8,7 @@
 //
 // F3: el panel ES la capa explicativa de la condición A. En la condición B
 // (`esControl`) no se renderiza y el flujo ocupa todo el ancho.
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useModoEstudio } from '../context/ModoEstudioContext'
 
 /* Grilla de dos columnas. Sin `panel` (o en la condición B) queda una sola
@@ -42,18 +42,49 @@ function useAltoTopbar() {
   }, [])
 }
 
-/* El panel en sí: una barra lateral FIJA, patrón estándar de sitios de
-   documentación (2026-10-05, feedback: "algo más estándar y fijo"). Siempre
-   tiene el mismo alto (el visible bajo el menú), queda pegado bajo el menú desde
-   el inicio y, si el texto no cabe, el cuerpo tiene su propio scroll normal (sin
-   difuminados ni bloqueo del scroll de la página). La cabecera queda fija.
-   `clave` identifica el momento del flujo: al cambiar, el contenido se vuelve a
-   montar (vuelve al inicio del scroll del panel) y se anuncia el nuevo título a
-   lectores de pantalla. */
+/* 2026-10-07 (pedido de la profesora guía: "un solo scroll, no dos
+   independientes"): el panel ya no tiene scroll propio — toda la página usa el
+   scroll del navegador. Para no perder contenido:
+   - si el panel CABE completo bajo el menú, queda fijo (sticky) mientras se baja
+     por el flujo;
+   - si es más alto que la pantalla, se desplaza con la página y se lee completo.
+   Lo decide midiendo su alto (cambia con el momento del flujo, los desplegables y
+   el tamaño de texto). */
+function usePanelCabe(ref, clave) {
+  const [cabe, setCabe] = useState(true)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    const medir = () => {
+      const topbar = document.querySelector('.topbar')?.offsetHeight ?? 78
+      const disponible = window.innerHeight - topbar - 32
+      setCabe(el.offsetHeight <= disponible)
+    }
+    medir()
+    const ro = new ResizeObserver(medir)
+    ro.observe(el)
+    window.addEventListener('resize', medir)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', medir)
+    }
+  }, [ref, clave])
+  return cabe
+}
+
+/* El panel en sí. `clave` identifica el momento del flujo: al cambiar, el
+   contenido se vuelve a montar y se anuncia el nuevo título a lectores de
+   pantalla. */
 export function PanelExplicativo({ clave, titulo, children }) {
   useAltoTopbar()
+  const panelRef = useRef(null)
+  const cabe = usePanelCabe(panelRef, clave)
   return (
-    <aside className="panel-exp" aria-labelledby="panel-exp-titulo">
+    <aside
+      ref={panelRef}
+      className={`panel-exp${cabe ? ' panel-exp--fijo' : ''}`}
+      aria-labelledby="panel-exp-titulo"
+    >
       <p className="sr-only" role="status" aria-live="polite">
         Explicación actualizada: {titulo}
       </p>
@@ -62,13 +93,7 @@ export function PanelExplicativo({ clave, titulo, children }) {
           <p className="panel-exp__eyebrow" aria-hidden="true">Te explicamos</p>
           <h2 className="panel-exp__titulo" id="panel-exp-titulo">{titulo}</h2>
         </div>
-        {/* Enfocable para desplazarlo con el teclado (región con scroll propio). */}
-        <div
-          className="panel-exp__cuerpo"
-          tabIndex={0}
-          role="region"
-          aria-label={`Contenido de la explicación: ${titulo}`}
-        >
+        <div className="panel-exp__cuerpo">
           {children}
         </div>
       </div>

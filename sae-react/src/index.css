@@ -8241,41 +8241,31 @@ button[disabled],
   margin-top: 0;
 }
 
+/* 2026-10-07 (profesora guía: "un solo scroll"): sin alto fijo ni scroll
+   interno. Solo es sticky (`.panel-exp--fijo`) cuando cabe completo bajo el
+   menú — lo decide PanelExplicativo.jsx midiendo su alto; si no cabe, se
+   desplaza con la página. */
 .panel-exp {
-  position: sticky;
-  top: calc(var(--alto-topbar, 78px) + var(--esp-md));
-  height: calc(100vh - var(--alto-topbar, 78px) - 2 * var(--esp-md));
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
   background: var(--bg-card);
   border: 1px solid var(--borde);
   border-top: 4px solid var(--azul);
   border-radius: var(--radio-lg);
   box-shadow: var(--sombra-lg);
 }
+.panel-exp--fijo {
+  position: sticky;
+  top: calc(var(--alto-topbar, 78px) + var(--esp-md));
+}
 .panel-exp__contenido {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
   animation: panel-exp-entrar 0.2s ease-out;
 }
 .panel-exp__cabecera {
-  flex: none;
   /* 2026-10-05 (feedback: "se ve muy apretado"): más aire interno */
   padding: 22px 26px 0;
   border-bottom: 1px solid var(--borde);
 }
 .panel-exp__cuerpo {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
   padding: 20px 26px 26px;
-}
-.panel-exp__cuerpo:focus-visible {
-  outline: 3px solid var(--azul-med);
-  outline-offset: -3px;
 }
 /* Al cambiar de momento el contenido aparece con un fundido corto, sin moverse. */
 @keyframes panel-exp-entrar {
@@ -8469,12 +8459,9 @@ button[disabled],
   .layout-panel {
     grid-template-columns: minmax(0, 1fr);
   }
-  .panel-exp {
+  .panel-exp,
+  .panel-exp--fijo {
     position: static;
-    height: auto;
-  }
-  .panel-exp__cuerpo {
-    overflow: visible;
   }
 }
 /* El reset de Tailwind quita viñetas y números; en el panel sí se necesitan. */

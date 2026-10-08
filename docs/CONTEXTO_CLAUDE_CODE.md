@@ -1262,3 +1262,7 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
   - `PanelExplicativo` mide su alto (`usePanelCabe`: `ResizeObserver` + `resize`; disponible = alto de ventana − menú − 32 px). **Si cabe**, lleva `.panel-exp--fijo` (sticky bajo el menú, como antes); **si no cabe**, se desplaza con la página y se lee completo. Cambia solo según el momento, los desplegables y el tamaño de texto.
   - Se quitaron el `height` fijo, `overflow: hidden`/`overflow-y: auto`, el layout flex del panel y el cuerpo enfocable con `role="region"` (ya no hay región con scroll propio).
 - Medido a 1440×900: ingreso 750 px (fijo), revisar 696 px (fijo); familia con bloque 1244 px, agregar 901 px, lista 1208 px y `/seguimiento` 1368 px (se desplazan con la página); en todos, sin scroll interno y el final del panel alcanzable con el scroll de la página. Nota de prueba: en el navegador del entorno `ResizeObserver` solo dispara cuando el pane se dibuja; en un navegador normal es inmediato. lint/build/test (16/16) OK.
+
+## 92. Sin el ejemplo "Colegio A, B y C" en la explicación de "En bloque" (2026-10-08)
+
+- Pedido del usuario. `DetalleModoFamiliar` (valor `bloque`) deja de mostrar el párrafo "Ejemplo: tu lista es Colegio A, Colegio B y Colegio C…"; quedan los 4 pasos numerados y "Ten en cuenta". Como el componente se usa en el panel (A) y dentro del flujo (B), el cambio aplica a ambas condiciones. Guiones, caso de estudio, cuadernillo y memoria no citaban el ejemplo (grep). Verificado en navegador en A y B. lint/build/test (16/16) OK.

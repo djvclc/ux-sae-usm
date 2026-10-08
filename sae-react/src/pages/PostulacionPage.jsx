@@ -784,12 +784,8 @@ function DetalleModoFamiliar({ valor }) {
           resto de la lista, en el orden que tú elegiste.
         </li>
       </ol>
-      <p>
-        <strong>Ejemplo:</strong> tu lista es Colegio A, Colegio B y Colegio C. Tu
-        hija de 1° medio queda en el Colegio B. Para tu hijo de 5° básico, el
-        Colegio B pasa al primer lugar; si ahí no hay cupo, sigue con el A y
-        después con el C.
-      </p>
+      {/* 2026-10-08 (pedido del usuario): se quitó el párrafo "Ejemplo: tu lista
+          es Colegio A, Colegio B y Colegio C…". */}
       <p style={{ marginBottom: 0 }}>
         <strong>Ten en cuenta:</strong> quedar juntos no está asegurado, porque
         depende de los cupos de cada colegio. Elige colegios que tengan los

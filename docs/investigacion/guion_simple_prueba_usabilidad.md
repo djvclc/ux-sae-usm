@@ -1,5 +1,7 @@
 # Guion de la prueba de usabilidad (v6)
 
+> **REEMPLAZADO el 2026-10-08 por `instrucciones_prueba_usabilidad.md` (v7):** sin preguntas antes del flujo (se explica el caso con una tarjeta) y lista de solo 2 colegios (San Martín → Los Andes). Se conserva como historia.
+
 **Versión del 2026-10-07. Propuesta a validar con la profesora guía.** Reemplaza al guion simple anterior y al guion del moderador v5, que tenían preguntas a mitad del flujo.
 
 **Qué cambió respecto de la versión anterior:**

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Cuadernillo del participante (propuesta v6)</title>
+<title>Cuadernillo del participante (propuesta v7)</title>
 <style>
   @page { size: Letter; margin: 16mm 16mm 14mm; }
   :root { --azul:#0057B7; --azul-claro:#E8F1FB; --gris:#222; --gris-med:#555; --borde:#9aa6b4; }
@@ -42,6 +42,15 @@
   .portada ul { font-size: 13pt; line-height: 1.6; padding-left: 22px; }
   .campo { margin-top: 40px; font-size: 13pt; }
   .campo span { display: inline-block; width: 160px; border-bottom: 1px solid #333; margin-left: 8px; }
+  .caso { font-size: 13pt; line-height: 1.5; }
+  .caso h2 { font-size: 14pt; color: var(--azul); margin: 22px 0 8px; }
+  .caso__yo { font-size: 14pt; background: var(--azul-claro); border-left: 5px solid var(--azul); padding: 10px 14px; }
+  table.familia { width: 100%; border-collapse: collapse; }
+  table.familia td { border-bottom: 1px solid var(--borde); padding: 7px 8px; vertical-align: top; }
+  table.familia td.quien { font-weight: 700; width: 28%; }
+  ol.orden { font-size: 14pt; margin: 6px 0 12px 26px; padding: 0; }
+  ol.orden li { margin-bottom: 8px; }
+  .caso__fin { margin-top: 18px; font-style: italic; }
   .nota-mod { margin-top: 40px; font-size: 9.5pt; color: var(--gris-med); border-top: 1px solid var(--borde); padding-top: 8px; }
 </style>
 </head>
@@ -53,33 +62,44 @@
   <div class="sub">Prueba de una página web de postulación escolar</div>
   <ul>
     <li>Esto <strong>no es un examen</strong>. No hay respuestas correctas ni incorrectas.</li>
-    <li>Son <strong>tres hojas cortas</strong>. Te voy a avisar cuándo responder cada una.</li>
+    <li>Primero vas a leer <strong>la historia de una familia</strong>. Después vas a usar la página.</li>
+    <li>Al final hay <strong>dos hojas cortas</strong>. Te voy a avisar cuándo responder cada una.</li>
     <li>En cada pregunta, <strong>marca una sola opción</strong> con una ✗.</li>
     <li>Si no entiendes algo, pregúntame. Si quieres, te leo las preguntas.</li>
   </ul>
   <div class="campo">N.º de participante: <span></span></div>
   <div class="campo">Fecha: <span></span></div>
-  <div class="nota-mod">Propuesta v6 del 2026-10-07, a validar con la profesora guía. Quitar esta nota antes de imprimir.</div>
+  <div class="nota-mod">Propuesta v7 del 2026-10-08, a validar con la profesora guía. Quitar esta nota antes de imprimir.</div>
 </section>
 
-<!-- HOJA 1: INICIAL -->
+<!-- TARJETA DEL CASO -->
 <section class="hoja">
-  <div class="cab"><h1>Hoja 1 · Antes de empezar</h1><div class="num">N.º ______</div></div>
-  <div class="instr">Responde antes de usar la página.</div>
-
-  <div class="q"><div class="q__t"><span class="n">1.</span>¿Has postulado alguna vez a un hijo o hija usando el Sistema de Admisión Escolar (SAE)?</div>
-    <table class="esc"><tr><td><span class="box"></span><br>Sí, una vez</td><td><span class="box"></span><br>Sí, más de una vez</td><td><span class="box"></span><br>Nunca</td></tr></table></div>
-
-  <div class="q"><div class="q__t"><span class="n">2.</span>¿Desde dónde haces la mayoría de tus trámites por internet?</div>
-    <table class="esc"><tr><td><span class="box"></span><br>Celular</td><td><span class="box"></span><br>Computador</td><td><span class="box"></span><br>Los dos por igual</td><td><span class="box"></span><br>Le pido ayuda a otra persona</td></tr></table></div>
-
-  <div class="q"><div class="q__t"><span class="n">3.</span>¿Qué tan de acuerdo estás con esta frase? "El sistema de admisión escolar es como una tómbola: no se entienden bien sus reglas."</div>
-    <table class="esc"><tr><td><span class="box"></span><br>Totalmente en desacuerdo</td><td><span class="box"></span><br>En desacuerdo</td><td><span class="box"></span><br>Ni de acuerdo ni en desacuerdo</td><td><span class="box"></span><br>De acuerdo</td><td><span class="box"></span><br>Totalmente de acuerdo</td></tr></table></div>
+  <div class="cab"><h1>La historia</h1><div class="num">N.º ______</div></div>
+  <div class="caso">
+    <p class="caso__yo"><strong>Eres Daniela.</strong> Es agosto y se abrió la postulación a colegios para el próximo año.</p>
+    <h2>Tu familia</h2>
+    <table class="familia">
+      <tr><td class="quien">Martina</td><td>16 años, 3.º medio. Estudia en el <strong>Colegio Los Andes</strong>. <strong>No postula</strong>: se queda en su colegio.</td></tr>
+      <tr><td class="quien">Sofía</td><td>9 años. <strong>Postula a 4.º básico.</strong></td></tr>
+      <tr><td class="quien">Mateo</td><td>12 años. <strong>Postula a 7.º básico.</strong></td></tr>
+      <tr><td class="quien">Rodrigo, tu pareja</td><td>Trabaja en el Colegio Villa del Sol.</td></tr>
+      <tr><td class="quien">Tú</td><td>Estudiaste en la Escuela República de Chile.</td></tr>
+    </table>
+    <h2>Lo que quieren</h2>
+    <p>Que Sofía y Mateo queden <strong>en el mismo colegio</strong>.</p>
+    <h2>Tu tarea</h2>
+    <p>Postula a Sofía y Mateo <strong>juntos</strong>, con estos dos colegios y <strong>en este orden</strong>:</p>
+    <ol class="orden">
+      <li><strong>Colegio San Martín</strong> — el que más les gusta. Se lo recomendó una vecina.</li>
+      <li><strong>Colegio Los Andes</strong> — donde estudia Martina.</li>
+    </ol>
+    <p class="caso__fin">Termina cuando hayas enviado la postulación y descargado el comprobante.</p>
+  </div>
 </section>
 
-<!-- HOJA 2: AL TERMINAR LA POSTULACIÓN -->
+<!-- HOJA 1: AL TERMINAR LA POSTULACIÓN -->
 <section class="hoja">
-  <div class="cab"><h1>Hoja 2 · Al terminar la postulación</h1><div class="num">N.º ______</div></div>
+  <div class="cab"><h1>Hoja 1 · Al terminar la postulación</h1><div class="num">N.º ______</div></div>
   <div class="instr">Responde pensando en la postulación que acabas de hacer. <strong>Todavía no veas el resultado.</strong><br>
   En las preguntas 1 a 3, marca un número del <strong>1</strong> (totalmente de acuerdo) al <strong>7</strong> (totalmente en desacuerdo). Si una pregunta no aplica, marca "No aplica".</div>
 
@@ -111,10 +131,6 @@
     <ul class="lista">
       <li><span class="box"></span>Colegio San Martín</li>
       <li><span class="box"></span>Colegio Los Andes</li>
-      <li><span class="box"></span>Escuela República de Chile</li>
-      <li><span class="box"></span>Colegio Villa del Sol</li>
-      <li><span class="box"></span>Liceo Técnico Simón Bolívar</li>
-      <li><span class="box"></span>Escuela Básica Los Quillayes</li>
       <li><span class="box"></span>En ninguno</li>
       <li><span class="box"></span>No sé</li>
     </ul></div>
@@ -126,9 +142,9 @@
     <div class="linea"></div><div class="linea"></div></div>
 </section>
 
-<!-- HOJA 3: FINAL -->
+<!-- HOJA 2: FINAL -->
 <section class="hoja">
-  <div class="cab"><h1>Hoja 3 · Para terminar</h1><div class="num">N.º ______</div></div>
+  <div class="cab"><h1>Hoja 2 · Para terminar</h1><div class="num">N.º ______</div></div>
   <div class="instr">Para cada frase, marca si crees que es <strong>verdadera</strong>, <strong>falsa</strong>, o si <strong>no sabes</strong>. Si no sabes, marca "No sé": es mejor que adivinar.</div>
   <table class="vf">
     <tr><th>Frase</th><th>Verdadero</th><th>Falso</th><th>No sé</th></tr>

@@ -88,6 +88,8 @@ Todo en tuteo, lenguaje de 6.º básico, frases cortas y sin dobles negaciones (
 
 > **Por qué agregar numeracidad:** la condición A comunica con porcentajes y "X de cada 100". Si el efecto de A se concentra en quienes manejan mejor los números, es un hallazgo importante para la memoria (y para el diseño). Ocupa menos de 1 minuto.
 
+> **Descartado (2026-10-06).** También se quitó P2 (nivel de estudios), por ser una pregunta demasiado personal para lo poco que aportaba; la descripción de la muestra y la revisión de que los grupos sean parecidos se hacen con P1 (experiencia en el SAE) y P3 (trámites por internet). Además, las preguntas N1–N3 se sacaron del instrumento: (1) con ~15 personas por grupo no alcanza para analizar si el efecto cambia según la facilidad con los números; (2) no hay una traducción al español validada de estos tres ítems; (3) preguntar por fracciones y descuentos al inicio puede sentirse como un examen y poner nerviosa a una persona con el perfil de Daniela, justo antes de una prueba que dice "no te estoy evaluando". El nivel de estudios (P2) se mantiene para describir la muestra y revisar que los grupos sean parecidos; queda como limitación no medir la facilidad con los números.
+
 ### 4.2 Durante las tareas: probes iguales en A y B
 
 **Consigna inicial [igual]:** *"Mientras usas la página, dime en voz alta lo que vas pensando: lo que lees, lo que esperas que pase y lo que te confunde. Si te quedas en silencio, te voy a recordar que sigas hablando."*
@@ -192,7 +194,7 @@ La pregunta que hizo la profesora sobre la carga de texto tiene una versión med
 | Bloque | Qué se pregunta | Tiempo |
 |---|---|---|
 | Bienvenida y consentimiento | — | 5 min |
-| Pre-tarea | P1–P3, B1, N1–N3 | 5 min |
+| Pre-tarea | P1–P3, B1 (N1–N3 descartadas el 2026-10-06) | 3 min |
 | Tareas 1–5 | Pensar en voz alta + probes iguales (§4.2); SEQ tras la tarea 3 | 15–18 min |
 | Tarea 6 | **PR1–PR3** por escrito | 2 min |
 | Tarea 7 | Probes de resultado (§4.2); SEQ + esfuerzo mental | 4 min |

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Cuadernillo del participante (propuesta v6)</title>
+<style>
+  @page { size: Letter; margin: 16mm 16mm 14mm; }
+  :root { --azul:#0057B7; --azul-claro:#E8F1FB; --gris:#222; --gris-med:#555; --borde:#9aa6b4; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--gris); font-size: 12pt; line-height: 1.4; margin: 0; background: #fff; }
+  .hoja { break-after: page; }
+  .hoja:last-child { break-after: auto; }
+  .cab { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px solid var(--azul); padding-bottom: 6px; margin-bottom: 16px; }
+  .cab h1 { font-size: 17pt; color: var(--azul); margin: 0; }
+  .cab .num { font-size: 10.5pt; color: var(--gris-med); white-space: nowrap; }
+  .instr { background: var(--azul-claro); border-left: 5px solid var(--azul); padding: 9px 13px; margin-bottom: 16px; font-size: 11.5pt; }
+  h2 { font-size: 13pt; margin: 18px 0 10px; color: var(--azul); }
+  .q { margin: 0 0 20px; break-inside: avoid; }
+  .q__t { font-weight: 700; margin-bottom: 8px; }
+  .q__t .n { color: var(--azul); margin-right: 6px; }
+  table.esc { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.esc td { text-align: center; vertical-align: top; padding: 2px 3px; font-size: 10.5pt; }
+  .box { display: inline-block; width: 18px; height: 18px; border: 2px solid #333; border-radius: 3px; margin-bottom: 3px; }
+  /* Escala ASQ: 7 puntos, solo extremos rotulados, "No aplica" aparte */
+  table.asq { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.asq td { text-align: center; vertical-align: top; padding: 2px 2px; font-size: 10.5pt; }
+  table.asq td.ext { font-size: 9.5pt; color: #333; width: 15%; vertical-align: middle; }
+  table.asq td.sep { width: 4%; }
+  table.asq td.na { width: 11%; border-left: 1px dashed #999; }
+  .num-esc { display: block; font-size: 10pt; color: var(--gris-med); }
+  .lista { list-style: none; padding: 0; margin: 0; columns: 2; }
+  .lista li { margin: 0 0 7px; font-size: 11.5pt; }
+  .lista .box { vertical-align: -3px; margin-right: 8px; }
+  .linea { border-bottom: 1px solid #777; height: 26px; }
+  table.vf { width: 100%; border-collapse: collapse; }
+  table.vf th, table.vf td { border: 1px solid var(--borde); padding: 8px 8px; vertical-align: middle; font-size: 11.5pt; }
+  table.vf th { background: var(--azul-claro); font-size: 10.5pt; }
+  table.vf td.c { text-align: center; width: 13%; }
+  table.vf tr { break-inside: avoid; }
+  .portada h1 { font-size: 24pt; color: var(--azul); margin: 40px 0 6px; }
+  .portada .sub { font-size: 13pt; color: var(--gris-med); margin-bottom: 30px; }
+  .portada ul { font-size: 13pt; line-height: 1.6; padding-left: 22px; }
+  .campo { margin-top: 40px; font-size: 13pt; }
+  .campo span { display: inline-block; width: 160px; border-bottom: 1px solid #333; margin-left: 8px; }
+  .nota-mod { margin-top: 40px; font-size: 9.5pt; color: var(--gris-med); border-top: 1px solid var(--borde); padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<section class="hoja portada">
+  <h1>Cuadernillo</h1>
+  <div class="sub">Prueba de una página web de postulación escolar</div>
+  <ul>
+    <li>Esto <strong>no es un examen</strong>. No hay respuestas correctas ni incorrectas.</li>
+    <li>Son <strong>tres hojas cortas</strong>. Te voy a avisar cuándo responder cada una.</li>
+    <li>En cada pregunta, <strong>marca una sola opción</strong> con una ✗.</li>
+    <li>Si no entiendes algo, pregúntame. Si quieres, te leo las preguntas.</li>
+  </ul>
+  <div class="campo">N.º de participante: <span></span></div>
+  <div class="campo">Fecha: <span></span></div>
+  <div class="nota-mod">Propuesta v6 del 2026-10-07, a validar con la profesora guía. Quitar esta nota antes de imprimir.</div>
+</section>
+
+<!-- HOJA 1: INICIAL -->
+<section class="hoja">
+  <div class="cab"><h1>Hoja 1 · Antes de empezar</h1><div class="num">N.º ______</div></div>
+  <div class="instr">Responde antes de usar la página.</div>
+
+  <div class="q"><div class="q__t"><span class="n">1.</span>¿Has postulado alguna vez a un hijo o hija usando el Sistema de Admisión Escolar (SAE)?</div>
+    <table class="esc"><tr><td><span class="box"></span><br>Sí, una vez</td><td><span class="box"></span><br>Sí, más de una vez</td><td><span class="box"></span><br>Nunca</td></tr></table></div>
+
+  <div class="q"><div class="q__t"><span class="n">2.</span>¿Desde dónde haces la mayoría de tus trámites por internet?</div>
+    <table class="esc"><tr><td><span class="box"></span><br>Celular</td><td><span class="box"></span><br>Computador</td><td><span class="box"></span><br>Los dos por igual</td><td><span class="box"></span><br>Le pido ayuda a otra persona</td></tr></table></div>
+
+  <div class="q"><div class="q__t"><span class="n">3.</span>¿Qué tan de acuerdo estás con esta frase? "El sistema de admisión escolar es como una tómbola: no se entienden bien sus reglas."</div>
+    <table class="esc"><tr><td><span class="box"></span><br>Totalmente en desacuerdo</td><td><span class="box"></span><br>En desacuerdo</td><td><span class="box"></span><br>Ni de acuerdo ni en desacuerdo</td><td><span class="box"></span><br>De acuerdo</td><td><span class="box"></span><br>Totalmente de acuerdo</td></tr></table></div>
+</section>
+
+<!-- HOJA 2: AL TERMINAR LA POSTULACIÓN -->
+<section class="hoja">
+  <div class="cab"><h1>Hoja 2 · Al terminar la postulación</h1><div class="num">N.º ______</div></div>
+  <div class="instr">Responde pensando en la postulación que acabas de hacer. <strong>Todavía no veas el resultado.</strong><br>
+  En las preguntas 1 a 3, marca un número del <strong>1</strong> (totalmente de acuerdo) al <strong>7</strong> (totalmente en desacuerdo). Si una pregunta no aplica, marca "No aplica".</div>
+
+  <div class="q"><div class="q__t"><span class="n">1.</span>En general, estoy satisfecha o satisfecho con lo fácil que fue completar la postulación.</div>
+    <table class="asq"><tr>
+      <td class="ext">Totalmente de acuerdo</td>
+      <td><span class="box"></span><span class="num-esc">1</span></td><td><span class="box"></span><span class="num-esc">2</span></td><td><span class="box"></span><span class="num-esc">3</span></td><td><span class="box"></span><span class="num-esc">4</span></td><td><span class="box"></span><span class="num-esc">5</span></td><td><span class="box"></span><span class="num-esc">6</span></td><td><span class="box"></span><span class="num-esc">7</span></td>
+      <td class="ext">Totalmente en desacuerdo</td><td class="sep"></td>
+      <td class="na"><span class="box"></span><span class="num-esc">No aplica</span></td>
+    </tr></table></div>
+
+  <div class="q"><div class="q__t"><span class="n">2.</span>En general, estoy satisfecha o satisfecho con el tiempo que me tomó completar la postulación.</div>
+    <table class="asq"><tr>
+      <td class="ext">Totalmente de acuerdo</td>
+      <td><span class="box"></span><span class="num-esc">1</span></td><td><span class="box"></span><span class="num-esc">2</span></td><td><span class="box"></span><span class="num-esc">3</span></td><td><span class="box"></span><span class="num-esc">4</span></td><td><span class="box"></span><span class="num-esc">5</span></td><td><span class="box"></span><span class="num-esc">6</span></td><td><span class="box"></span><span class="num-esc">7</span></td>
+      <td class="ext">Totalmente en desacuerdo</td><td class="sep"></td>
+      <td class="na"><span class="box"></span><span class="num-esc">No aplica</span></td>
+    </tr></table></div>
+
+  <div class="q"><div class="q__t"><span class="n">3.</span>En general, estoy satisfecha o satisfecho con la información de apoyo (ayuda, mensajes e información de la página) mientras completaba la postulación.</div>
+    <table class="asq"><tr>
+      <td class="ext">Totalmente de acuerdo</td>
+      <td><span class="box"></span><span class="num-esc">1</span></td><td><span class="box"></span><span class="num-esc">2</span></td><td><span class="box"></span><span class="num-esc">3</span></td><td><span class="box"></span><span class="num-esc">4</span></td><td><span class="box"></span><span class="num-esc">5</span></td><td><span class="box"></span><span class="num-esc">6</span></td><td><span class="box"></span><span class="num-esc">7</span></td>
+      <td class="ext">Totalmente en desacuerdo</td><td class="sep"></td>
+      <td class="na"><span class="box"></span><span class="num-esc">No aplica</span></td>
+    </tr></table></div>
+
+  <div class="q"><div class="q__t"><span class="n">4.</span>¿En qué colegio crees que va a quedar Sofía?</div>
+    <ul class="lista">
+      <li><span class="box"></span>Colegio San Martín</li>
+      <li><span class="box"></span>Colegio Los Andes</li>
+      <li><span class="box"></span>Escuela República de Chile</li>
+      <li><span class="box"></span>Colegio Villa del Sol</li>
+      <li><span class="box"></span>Liceo Técnico Simón Bolívar</li>
+      <li><span class="box"></span>Escuela Básica Los Quillayes</li>
+      <li><span class="box"></span>En ninguno</li>
+      <li><span class="box"></span>No sé</li>
+    </ul></div>
+
+  <div class="q"><div class="q__t"><span class="n">5.</span>¿Qué tan segura o seguro estás?</div>
+    <table class="esc"><tr><td><span class="box"></span><br>Nada segura/o</td><td><span class="box"></span><br>Poco segura/o</td><td><span class="box"></span><br>Algo segura/o</td><td><span class="box"></span><br>Bastante segura/o</td><td><span class="box"></span><br>Totalmente segura/o</td></tr></table></div>
+
+  <div class="q"><div class="q__t"><span class="n">6.</span>¿Por qué? (una o dos frases)</div>
+    <div class="linea"></div><div class="linea"></div></div>
+</section>
+
+<!-- HOJA 3: FINAL -->
+<section class="hoja">
+  <div class="cab"><h1>Hoja 3 · Para terminar</h1><div class="num">N.º ______</div></div>
+  <div class="instr">Para cada frase, marca si crees que es <strong>verdadera</strong>, <strong>falsa</strong>, o si <strong>no sabes</strong>. Si no sabes, marca "No sé": es mejor que adivinar.</div>
+  <table class="vf">
+    <tr><th>Frase</th><th>Verdadero</th><th>Falso</th><th>No sé</th></tr>
+    <tr><td>1. El sistema usa las notas de Sofía para decidir en qué colegio queda.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+    <tr><td>2. Que Martina estudie en el Colegio Los Andes le da a Sofía ventaja solo en ese colegio, no en los demás.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+    <tr><td>3. Cuando un colegio tiene más postulantes que vacantes, entre familias sin ventaja se decide por sorteo.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+    <tr><td>4. Poner el Colegio San Martín en primer lugar le quitó posibilidades a Sofía en el Colegio Los Andes.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+    <tr><td>5. Si la familia hubiera puesto San Martín al final de la lista, Sofía habría tenido más posibilidades de quedar en San Martín.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+    <tr><td>6. Si la familia hubiera puesto Los Andes en primer lugar, Sofía igual habría quedado en Los Andes.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+    <tr><td>7. Si Sofía no hubiera quedado en ningún colegio de la lista, habría perdido su matrícula actual.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+    <tr><td>8. Si otra familia, sin hermanos en Los Andes, pusiera Los Andes primero, tendría las mismas posibilidades que Sofía de quedar ahí.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  </table>
+  <div class="instr" style="margin-top:22px">¡Gracias por tu tiempo!</div>
+</section>
+
+</body>
+</html>

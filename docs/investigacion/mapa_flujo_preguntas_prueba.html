@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mapa del flujo de preguntas (v6)</title>
+<style>
+  @page { size: Letter; margin: 15mm 15mm 14mm; }
+  :root {
+    --azul:#0057B7; --azul-claro:#E8F1FB; --verde:#1A7F37; --verde-claro:#E6F4EA;
+    --naranja:#B35F00; --naranja-claro:#FFF1DF; --rojo:#C0392B; --rojo-claro:#FDECEA;
+    --gris:#222; --gris-med:#555; --borde:#cfd6df; --gris-claro:#F1F3F6;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--gris); font-size: 10.3pt; line-height: 1.42; margin: 0; background: #fff; }
+  h1 { font-size: 19pt; color: var(--azul); margin: 0 0 4px; }
+  .sub { color: var(--gris-med); margin-bottom: 12px; }
+  h2 { font-size: 13pt; color: var(--azul); border-bottom: 2px solid var(--azul); padding-bottom: 3px; margin: 20px 0 10px; break-after: avoid; }
+  p { margin: 0 0 7px; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 6px 0 12px; font-size: 9.6pt; }
+  .leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .sw--pag { background: var(--azul-claro); border: 2px solid var(--azul); }
+  .sw--esc { background: var(--naranja-claro); border: 2px solid var(--naranja); }
+  .sw--voz { background: var(--verde-claro); border: 2px solid var(--verde); }
+  .sw--otro { background: var(--gris-claro); border: 2px solid #8a94a3; }
+  .linea { position: relative; padding-left: 26px; }
+  .linea::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 3px; background: var(--borde); border-radius: 2px; }
+  .paso { position: relative; margin: 0 0 9px; padding: 8px 12px; border-radius: 8px; border: 1.5px solid; break-inside: avoid; }
+  .paso::before { content: ""; position: absolute; left: -22px; top: 12px; width: 13px; height: 13px; border-radius: 50%; border: 3px solid; background: #fff; }
+  .paso--pag { background: var(--azul-claro); border-color: var(--azul); } .paso--pag::before { border-color: var(--azul); }
+  .paso--esc { background: var(--naranja-claro); border-color: var(--naranja); } .paso--esc::before { border-color: var(--naranja); }
+  .paso--voz { background: var(--verde-claro); border-color: var(--verde); } .paso--voz::before { border-color: var(--verde); }
+  .paso--otro { background: var(--gris-claro); border-color: #8a94a3; } .paso--otro::before { border-color: #8a94a3; }
+  .paso__cab { display: flex; justify-content: space-between; gap: 10px; font-weight: 700; margin-bottom: 3px; }
+  .paso__min { font-weight: 600; color: var(--gris-med); white-space: nowrap; font-size: 9.5pt; }
+  .paso ul { margin: 3px 0 0 18px; padding: 0; } .paso li { margin-bottom: 2px; }
+  .ab { font-size: 9.4pt; color: #333; margin-top: 4px; }
+  .tag { font-size: 8.4pt; font-weight: 700; padding: 0 6px; border-radius: 8px; border: 1px solid; margin-left: 4px; white-space: nowrap; }
+  .tag--esc { color: var(--naranja); border-color: var(--naranja); background: #fff; }
+  .tag--voz { color: var(--verde); border-color: var(--verde); background: #fff; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.6pt; }
+  th, td { border: 1px solid var(--borde); padding: 5px 7px; vertical-align: top; text-align: left; }
+  th { background: var(--azul-claro); }
+  tr { break-inside: avoid; }
+  .box { background: var(--azul-claro); border-left: 4px solid var(--azul); padding: 8px 12px; margin: 8px 0 12px; break-inside: avoid; }
+  .alerta { background: var(--rojo-claro); border-left: 4px solid var(--rojo); padding: 8px 12px; margin: 8px 0 12px; break-inside: avoid; }
+  .nota { font-size: 9pt; color: var(--gris-med); }
+  td.falta { color: var(--rojo); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>Mapa del flujo de preguntas</h1>
+<div class="sub">Prueba comparativa del flujo de postulación · versión 6 (2026-10-07) · propuesta a validar con la profesora guía</div>
+
+<div class="box">
+<strong>En una frase:</strong> la persona hace toda la postulación <strong>sin interrupciones</strong>, pensando en voz alta. Al terminar de postular responde una hoja corta (la <strong>ASQ</strong> y su predicción del resultado). Después ve el resultado, responde las <strong>preguntas en voz alta</strong> y termina con un <strong>test de verdadero o falso</strong>. Todo es igual en las dos versiones de la página; lo único que cambia es si la página tiene el panel de explicaciones.
+</div>
+
+<h2>Qué cambió respecto de la versión anterior</h2>
+<table>
+  <tr><th style="width:42%">Antes (v5)</th><th>Ahora (v6)</th></tr>
+  <tr><td>4 pausas con hojas escritas a mitad del flujo.</td><td><strong>Sin pausas.</strong> Una sola hoja al terminar la postulación.</td></tr>
+  <tr><td>Preguntas en voz alta durante las tareas.</td><td>Las mismas preguntas, pero <strong>todas al final</strong>.</td></tr>
+  <tr><td>Preguntas propias de facilidad en cada pausa.</td><td>La <strong>ASQ</strong>: cuestionario estándar de 3 preguntas (facilidad, tiempo, información de apoyo).</td></tr>
+  <tr><td>Confianza medida 5 veces; preguntas de comprensión, confianza y justicia con 5 opciones; 3 preguntas abiertas; comparación de versiones.</td><td><strong>Se quitan.</strong> Al final quedan las preguntas en voz alta y el test de verdadero o falso.</td></tr>
+</table>
+
+<div class="leyenda">
+  <span><i class="sw sw--pag"></i>La persona usa la página</span>
+  <span><i class="sw sw--esc"></i>Hoja escrita del cuadernillo</span>
+  <span><i class="sw sw--voz"></i>Preguntas en voz alta</span>
+  <span><i class="sw sw--otro"></i>Antes y después</span>
+</div>
+
+<h2>El flujo completo, paso a paso</h2>
+
+<div class="linea">
+  <div class="paso paso--otro">
+    <div class="paso__cab"><span>1. Bienvenida y consentimiento</span><span class="paso__min">5 min</span></div>
+    Explicas qué se va a hacer y pides permiso para grabar.
+  </div>
+
+  <div class="paso paso--esc">
+    <div class="paso__cab"><span>2. Hoja 1 · Antes de empezar <span class="tag tag--esc">3 escritas</span></span><span class="paso__min">2 min</span></div>
+    ¿Has postulado alguna vez usando el SAE? · ¿Desde dónde haces tus trámites por internet? · ¿Qué tan de acuerdo estás con "el sistema es como una tómbola"?
+  </div>
+
+  <div class="paso paso--otro">
+    <div class="paso__cab"><span>3. Tarjeta de la familia y lista de colegios</span><span class="paso__min">3 min</span></div>
+    La persona lee la historia de la familia Muñoz González y recibe la lista de 6 colegios en orden fijo (San Martín primero).
+  </div>
+
+  <div class="paso paso--pag">
+    <div class="paso__cab"><span>4. La postulación completa, sin interrupciones</span><span class="paso__min">≈18 min</span></div>
+    Elige a Sofía y Mateo y "En bloque" → confirma los datos → agrega los 6 colegios en orden → revisa y envía → descarga el comprobante.
+    <div class="ab">Piensa en voz alta. Tú <strong>no haces preguntas</strong>: solo observas y anotas. <em>Con explicaciones:</em> además ve el panel "Te explicamos" y el "26 %" de San Martín.</div>
+  </div>
+
+  <div class="paso paso--esc">
+    <div class="paso__cab"><span>5. Hoja 2 · Al terminar la postulación <span class="tag tag--esc">ASQ (3) + predicción (3)</span></span><span class="paso__min">3 min</span></div>
+    En "Postulación enviada", <strong>antes</strong> de ver el resultado:
+    <ul>
+      <li><strong>ASQ:</strong> satisfacción con la facilidad, con el tiempo y con la información de apoyo (escala del 1 al 7).</li>
+      <li><strong>Predicción:</strong> ¿en qué colegio crees que quedará Sofía? · ¿qué tan segura/o? · ¿por qué?</li>
+    </ul>
+  </div>
+
+  <div class="paso paso--pag">
+    <div class="paso__cab"><span>6. El resultado</span><span class="paso__min">3 min</span></div>
+    Pulsa "Ver mi resultado ahora". Igual en las dos versiones: Sofía no queda en San Martín y queda en Los Andes, su 2.ª preferencia. <em>Con explicaciones:</em> además el panel "Tu resultado, explicado".
+  </div>
+
+  <div class="paso paso--voz">
+    <div class="paso__cab"><span>7. Preguntas en voz alta <span class="tag tag--voz">7 + 1 si intentó cambiar el orden</span></span><span class="paso__min">≈8 min</span></div>
+    <ul>
+      <li><strong>Sobre el resultado</strong> (en pantalla): ¿Era lo que esperabas? · ¿Por qué crees que pasó? · Con tus palabras, ¿por qué Sofía no quedó en San Martín?</li>
+      <li><strong>Sobre la postulación</strong> (de memoria): ¿Qué pasaba con Martina? · ¿Qué significa postular en bloque? · ¿Qué sabía la página de la familia? · Con la lista armada, ¿qué esperabas que pasara y qué te ayudó a saberlo?</li>
+    </ul>
+  </div>
+
+  <div class="paso paso--esc">
+    <div class="paso__cab"><span>8. Hoja 3 · Verdadero o falso <span class="tag tag--esc">8 escritas</span></span><span class="paso__min">5 min</span></div>
+    Ocho frases sobre cómo funciona el sistema, con verdadero, falso o "No sé".
+  </div>
+
+  <div class="paso paso--otro">
+    <div class="paso__cab"><span>9. Cierre</span><span class="paso__min">2 min</span></div>
+    Agradeces y pides que no comente la prueba con otras personas hasta que termine el estudio.
+  </div>
+</div>
+
+<p class="nota"><strong>Total:</strong> 17 preguntas escritas (3 al inicio, 6 al terminar la postulación y 8 de verdadero o falso) y 7–8 en voz alta. Duración ≈ 50 min, por confirmar en un piloto.</p>
+
+<h2>Por qué las preguntas van en este orden</h2>
+<table>
+  <tr><th style="width:36%">Decisión</th><th>Razón</th></tr>
+  <tr><td><strong>Sin preguntas</strong> durante la postulación.</td><td>La persona vive el flujo completo como lo haría en la realidad, sin que las preguntas le hagan fijarse en cosas que de otro modo no miraría.</td></tr>
+  <tr><td>La ASQ va <strong>al terminar de postular</strong>.</td><td>Es un cuestionario "después del escenario": mide la tarea recién hecha. Si fuera después del resultado, la respuesta se mezclaría con la reacción a no quedar en San Martín.</td></tr>
+  <tr><td>La predicción va <strong>antes</strong> de ver el resultado.</td><td>Es la única forma de saber si la página le permitió anticipar el resultado.</td></tr>
+  <tr><td>Las preguntas en voz alta van <strong>antes</strong> del verdadero/falso.</td><td>Las frases del test podrían darle pistas para explicar el resultado. Primero se escucha su explicación espontánea.</td></tr>
+  <tr><td>Primero las preguntas del resultado, después las de la postulación.</td><td>Las del resultado se hacen mientras está en pantalla y la reacción es fresca. Las de la postulación son de memoria: se declara como limitación.</td></tr>
+</table>
+
+<h2>La ASQ, en breve</h2>
+<p>Cuestionario estándar de 3 preguntas (Lewis, IBM, 1991) que se responde justo después de terminar una tarea. Escala de 7 puntos con solo los extremos rotulados: <strong>1 = Totalmente de acuerdo</strong>, <strong>7 = Totalmente en desacuerdo</strong>, y una casilla aparte de "No aplica". El puntaje es el promedio de las 3 preguntas: <strong>más bajo = más satisfacción</strong>. Su confiabilidad reportada va de 0,90 a 0,96. Aquí se usa traducida al español, con "este escenario" reemplazado por "la postulación".</p>
+
+<h2>Qué mide cada parte</h2>
+<table>
+  <tr><th style="width:24%">Qué se quiere saber</th><th>Con qué se mide</th><th style="width:32%">Qué se espera</th></tr>
+  <tr><td><strong>H1 · Comprensión</strong> (principal)</td><td>Test de verdadero o falso · predicción del colegio · "con tus palabras, ¿por qué no quedó en San Martín?" y las demás preguntas en voz alta</td><td>Con explicaciones entienden más, sobre todo que poner primero el colegio preferido no perjudica.</td></tr>
+  <tr><td><strong>H4 · El mito de "esconder" el preferido</strong></td><td>Frases 4 y 5 del test · si intentó cambiar el orden y por qué · lo que esperaba con la lista armada</td><td>Sin explicaciones aparece más la idea de bajar San Martín para "asegurar" Los Andes.</td></tr>
+  <tr><td><strong>Usabilidad</strong></td><td>ASQ (facilidad, tiempo, información de apoyo)</td><td>Facilidad y tiempo parecidos en las dos versiones; información de apoyo mejor evaluada con explicaciones.</td></tr>
+  <tr><td><strong>H2 · Confianza</strong></td><td class="falta">Sin medida con números en v6</td><td>Solo se puede comentar a partir de lo que digan en voz alta.</td></tr>
+  <tr><td><strong>H3 · Justicia</strong></td><td class="falta">Sin medida con números en v6</td><td>Ídem.</td></tr>
+  <tr><td><strong>Contexto</strong> (no son hipótesis)</td><td>Experiencia con el SAE · trámites por internet · frase de la "tómbola"</td><td>Sirven para describir a quienes participaron y revisar que los grupos sean parecidos.</td></tr>
+</table>
+
+<div class="alerta"><strong>Decisión pendiente con la profesora:</strong> con esta versión, las hipótesis de confianza (H2) y justicia (H3) del caso de estudio y del Cap. 3 quedan sin medida cuantitativa. Opciones: (a) agregar al final una pregunta de confianza y una de justicia; (b) reformular H2 y H3 como observaciones cualitativas; (c) eliminarlas del estudio.</div>
+
+<h2>Documentos de la prueba (v6)</h2>
+<table>
+  <tr><th style="width:42%">Documento</th><th>Para qué sirve</th></tr>
+  <tr><td><strong>Este mapa</strong> (<code>mapa_flujo_preguntas_prueba.pdf</code>)</td><td>Entender de un vistazo qué se pregunta, cuándo y para qué.</td></tr>
+  <tr><td><strong>Guion de la prueba v6</strong> (<code>guion_simple_prueba_usabilidad.pdf</code>)</td><td>Conducir y estudiar la sesión: lo que dices, la respuesta esperada y la planilla de observación.</td></tr>
+  <tr><td><strong>Cuadernillo del participante</strong> (<code>cuadernillo_participante_propuesta.pdf</code>)</td><td>Imprimir y entregar: portada y 3 hojas.</td></tr>
+  <tr><td><strong>Reemplazados:</strong> guion del moderador v5 y la parte de pausas de la investigación Likert</td><td>Se conservan como historia de la decisión.</td></tr>
+</table>
+
+</body>
+</html>

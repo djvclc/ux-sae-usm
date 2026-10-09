@@ -60,7 +60,7 @@
 >
 > Mientras usas la página, cuéntame en voz alta lo que vas pensando. Yo no te voy a interrumpir. Al final te voy a hacer algunas preguntas y vas a llenar dos hojas cortas.
 >
-> La sesión dura alrededor de 40 minutos y vamos a grabar la pantalla y el audio solo para revisarlo después. Nadie más va a ver la grabación. ¿Estás de acuerdo?"
+> Vamos a grabar la pantalla y el audio solo para revisarlo después. Nadie más va a ver la grabación. ¿Estás de acuerdo?"
 
 *Si acepta: firma del consentimiento.*
 

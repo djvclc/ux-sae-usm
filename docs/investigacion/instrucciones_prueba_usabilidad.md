@@ -1,13 +1,13 @@
-# Instrucciones de la prueba de usabilidad (v8)
+# Instrucciones de la prueba de usabilidad (v9)
 
-**Versión del 2026-10-09. Propuesta a validar con la profesora guía.** Es el documento único para preparar y conducir cada sesión. Reemplaza a la v7 (2026-10-08) y al guion v6 (`guion_simple_prueba_usabilidad.md`).
+**Versión del 2026-10-18. Propuesta a validar con la profesora guía.** Es el documento único para preparar y conducir cada sesión. Reemplaza a la v8 (2026-10-09), a la v7 y al guion v6 (`guion_simple_prueba_usabilidad.md`).
 
-**Qué cambió respecto de la v7:**
-- **La persona no escribe nada.** Todas las preguntas se hacen **en voz alta** y tú anotas las respuestas en la planilla. Ya no hay hojas para responder a mano.
-- **Se quita el test de 8 frases de verdadero o falso**, para que la sesión no quede larga.
-- **Se agrega una pregunta sobre el orden de la lista**, en voz alta y después del resultado: *"Si tú hubieras podido elegir el orden, ¿lo habrías dejado igual?"*.
-- En la bienvenida **ya no se dice cuánto dura la sesión**.
-- Se mantiene: la explicación del caso con la tarjeta, la postulación completa sin interrupciones, la ASQ y la predicción al terminar de postular (ahora en voz alta), el resultado y las preguntas en voz alta.
+**Qué cambió respecto de la v8:**
+- **Las preguntas sobre la postulación (sección 8) pasan de 6 a 3, todas del tipo "¿qué habría pasado si…?"**: si se cambia el orden, si Martina no estudiara en Los Andes, y si otra familia sin vínculo postula a San Martín. Buscan ver si la persona entendió cómo decide el sistema, no si recuerda el formulario.
+- Salen: qué pasaba con Martina, qué significa postular en bloque, qué sabía la página de la familia y qué esperaba con los dos colegios (esta última ya la mide la predicción). La pregunta del orden de la v8 queda dentro de la primera pregunta nueva.
+- Duración estimada: ≈32 min.
+
+**Se mantiene de la v8:** la persona no escribe nada (todo en voz alta y tú anotas); sin test de verdadero o falso; la bienvenida no dice cuánto dura la sesión; la explicación del caso con la tarjeta; la postulación completa sin interrupciones; la ASQ y la predicción al terminar de postular; el resultado.
 
 **Cómo leerlo:**
 - **Lo que dices:** el texto que lees en voz alta.
@@ -25,9 +25,9 @@
 | 3 | La postulación | Postula a Sofía y Mateo con los 2 colegios, pensando en voz alta | Observas y anotas; **no preguntas** | ≈12 min |
 | 4 | Al terminar la postulación | Responde en voz alta la ASQ y predice el resultado | Preguntas, muestras la tarjeta de escalas y anotas | 3 min |
 | 5 | El resultado | Pulsa "Ver mi resultado ahora" y lo mira | Observas | 3 min |
-| 6 | Preguntas en voz alta | Responde con sus palabras | Preguntas y anotas | ≈9 min |
+| 6 | Preguntas en voz alta | Responde con sus palabras | Preguntas y anotas | ≈6 min |
 | 7 | Cierre | — | Agradeces y completas la planilla | 2 min |
-| | **Total** | | | **≈35 min** (por confirmar en un piloto) |
+| | **Total** | | | **≈32 min** (por confirmar en un piloto) |
 
 **Resultado del caso (verificado contra el simulador del prototipo, igual en las dos versiones):** Sofía **no** queda en el Colegio San Martín (≈26 % de posibilidades) y queda en el **Colegio Los Andes, su 2.ª preferencia** (≈99 %, porque su hermana Martina estudia ahí).
 
@@ -172,7 +172,7 @@ Escala de 7 puntos: **1 = Totalmente de acuerdo** … **7 = Totalmente en desacu
 
 ---
 
-## 8. Preguntas en voz alta (≈8 min)
+## 8. Preguntas en voz alta (≈6 min)
 
 Tú preguntas y anotas lo que dice, con sus palabras.
 
@@ -184,22 +184,22 @@ Tú preguntas y anotas lo que dice, con sus palabras.
 | ¿Por qué crees que pasó esto? | **Con explicaciones:** "Había más postulantes que cupos en San Martín y no teníamos ninguna ventaja ahí; en Los Andes sí, por la hermana." **Sin explicaciones:** "Mala suerte" o "por el sorteo". |
 | Con tus palabras, ¿por qué Sofía no quedó en San Martín? | Igual que la anterior. Anota la respuesta textual: es la que mejor compara las dos versiones. |
 
-### Sobre la postulación (ya sin mirar la página)
+### "¿Qué habría pasado si…?" (ya sin mirar la página)
 
 **Lo que dices:**
 
-> "Ahora te voy a preguntar por algunas partes de la postulación que hiciste. Responde con lo que recuerdes; no hay respuestas correctas."
+> "Ahora te voy a plantear algunas situaciones distintas. No hay respuestas correctas; dime lo que crees."
 
-| Pregunta | Respuesta esperada |
-|---|---|
-| ¿Qué entendiste que pasaba con Martina? | "No postula, se queda en su colegio." |
-| Con tus palabras, ¿qué significa postular en bloque? | "Es una sola lista para los dos, para que queden juntos." Ideal si agrega que quedar juntos no está asegurado. |
-| ¿Qué te dijo la página que ya sabía de la familia? ¿Te calzó con la tarjeta? | "Sí: la hermana está en Los Andes, la mamá estudió en República y el papá trabaja en Villa del Sol." |
-| Cuando tenías los dos colegios en la lista, ¿qué esperabas que pasara? ¿Hubo algo en la pantalla que te ayudara a saberlo? | **Con explicaciones:** "Que San Martín era difícil, tenía 26 %; lo más probable era Los Andes, por la hermana", y menciona los porcentajes o el panel. **Sin explicaciones:** "Que quedara en San Martín porque era el primero", "no sabía", o menciona solo el aviso de lista corta. |
-| Si tú hubieras podido elegir el orden, ¿lo habrías dejado igual, habrías puesto Los Andes primero, o no sabes? ¿Por qué? | **Con explicaciones:** "Igual; poner San Martín primero no me quitó nada en Los Andes." **Sin explicaciones:** "Habría puesto Los Andes primero, para asegurarlo." Es la pregunta que mide la creencia de que conviene "esconder" el colegio preferido. |
-| (Solo si intentó cambiar el orden o agregar colegios) ¿Por qué querías cambiarlo? | Al mover San Martín: señal de la creencia de que conviene "esconder" el colegio preferido ("para asegurar Los Andes"), más frecuente sin explicaciones. Al agregar colegios: reacción al aviso de lista corta. |
+| Pregunta | Respuesta correcta (según el simulador) | Respuesta esperada |
+|---|---|---|
+| **1.** Si la familia hubiera puesto el Colegio Los Andes primero y San Martín segundo, ¿dónde crees que habría quedado Sofía? ¿Por qué? *Y enseguida:* ¿Y tú, lo habrías dejado como estaba o lo habrías cambiado? | Igual en Los Andes. El orden no cambia las posibilidades en cada colegio: Los Andes sigue en 99 % y San Martín en 26 %. Con Los Andes primero, queda en Los Andes como 1.ª preferencia. | **Con explicaciones:** "En Los Andes igual, por la hermana; el orden no le quita nada", y lo dejaría como estaba. **Sin explicaciones:** "No sé" o "habría sido más seguro poner Los Andes primero". Mide la creencia de que conviene "esconder" el colegio preferido. |
+| **2.** Si Martina no estudiara en el Colegio Los Andes, ¿crees que Sofía habría tenido las mismas posibilidades de quedar ahí? ¿Por qué? | No. Sin la hermana, Los Andes baja de 99 % a 17 %, y con esa lista Sofía no habría quedado en ninguno de los dos colegios. | **Con explicaciones:** "No, la hermana le daba ventaja en Los Andes." **Sin explicaciones:** "Sí, igual" o "no sé". Mide si entiende que la prioridad por hermana decidió el resultado y que vale solo en ese colegio. |
+| **3.** Si otra familia, sin ningún vínculo con el Colegio San Martín, postulara ahí, ¿podría quedar? ¿De qué dependería? | Sí podría, pero con pocas posibilidades (26 %, más o menos 1 de cada 4): hay más postulantes que vacantes y entre familias sin vínculo se decide por sorteo. | **Con explicaciones:** "Sí, pero difícil; depende del sorteo, hay pocos cupos." **Sin explicaciones:** "No, ese colegio no acepta" o "es pura suerte". Mide si entiende el "no quedar" como posibilidades y sorteo, no como una regla fija ni una "tómbola" sin lógica. |
+| (Solo si durante la postulación intentó cambiar el orden o agregar colegios) ¿Por qué querías cambiarlo? | — | Al mover San Martín: señal de la creencia de que conviene "esconder" el colegio preferido. Al agregar colegios: reacción al aviso de lista corta. |
 
-*Estas preguntas son de memoria: la persona responde lo que recuerda, no lo que está viendo. La pregunta del orden va después del resultado, así que lo que vio puede influir en su respuesta (por ejemplo, "igual quedé en Los Andes"). Las dos cosas se declaran como limitación.*
+*La pregunta 2 se hace sobre las posibilidades y no sobre "dónde habría quedado": sin la hermana, el resultado exacto depende del sorteo. Las tres preguntas van después del resultado, así que lo que la persona vio puede influir en sus respuestas; se declara como limitación.*
+
+*Lo que ya no se pregunta (si entendió el bloque y si notó los datos precargados) queda como observación en la planilla.*
 
 ---
 
@@ -217,8 +217,8 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 |---|---|
 | ASQ: facilidad · tiempo · información de apoyo | 1 a 7 o "No aplica", cada una |
 | Predicción: colegio · seguridad · por qué | |
-| Las 7 preguntas en voz alta (más la del orden, si corresponde) | Lo que dijo, con sus palabras |
-| Pregunta del orden | Igual / Los Andes primero / No sé + por qué |
+| Las 3 preguntas sobre el resultado | Lo que dijo, con sus palabras |
+| Las 3 preguntas "¿qué habría pasado si…?" (más el seguimiento, si corresponde) | Lo que dijo, con sus palabras; en la 1, además: lo dejaría igual / lo cambiaría |
 
 **Observación:**
 
@@ -226,6 +226,8 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 |---|---|
 | N.º de participante · versión · fecha · duración | |
 | ¿Usó "Corregir" en "¿Confirmas estos datos?"? | Sí / No |
+| ¿Dudó al elegir "En bloque"? ¿Qué dijo? | |
+| ¿Comentó los datos de "Lo que el sistema ya sabe"? ¿Qué dijo? | |
 | ¿Intentó cambiar el orden? ¿Qué dijo? | |
 | ¿Quiso agregar más colegios por el aviso de lista corta? | Sí / No + qué dijo |
 | Con explicaciones: ¿miró el panel de la derecha? ¿En qué pantallas? | Familia / Lista / Enviar / Resultado |
@@ -238,13 +240,13 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 
 ## 10. Qué mide cada parte
 
-| Parte | Qué mide | Hipótesis |
+| Parte | Qué mide | Para qué |
 |---|---|---|
 | ASQ | Satisfacción con la tarea de postular: facilidad, tiempo e información de apoyo. | Usabilidad |
-| Predicción | Si la página le permitió anticipar el resultado. Es la única medida tomada antes de verlo. | H1 · Comprensión |
-| Preguntas en voz alta | Cómo explica el resultado y las partes del flujo, con sus palabras. Desde la v8 es la medida principal de comprensión junto con la predicción. | H1 · Comprensión |
-| Pregunta del orden | Si dejaría el colegio preferido primero o lo "escondería". | H4 · mito de "esconder" el preferido |
-| Planilla | Qué hizo: dudas, intentos de cambiar el orden, uso del panel. | Apoyo a todas |
+| Predicción | Si la página le permitió anticipar el resultado. Es la única medida tomada antes de verlo. | Comprensión |
+| Preguntas sobre el resultado | Cómo explica, con sus palabras, por qué no quedó en San Martín. | Comprensión |
+| Preguntas "¿qué habría pasado si…?" | Si entiende cómo decide el sistema: que el orden no perjudica (1), que la prioridad por hermana vale en un solo colegio (2) y que no quedar depende de vacantes y sorteo (3). | Comprensión y creencia de "esconder" el colegio preferido |
+| Planilla | Qué hizo: dudas, intentos de cambiar el orden, uso del panel, dudas con el bloque y los datos precargados. | Apoyo a todas |
 
 ---
 
@@ -253,9 +255,9 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 1. **Aviso de lista corta.** Con solo 2 colegios de demanda alta, las dos versiones muestran *"Tu lista es corta y toda de alta demanda… Agrega más —al menos 6—"*. Es un aviso real del SAE y aparece igual en A y B, así que no rompe la comparación, pero puede hacer que algunas personas quieran agregar colegios o predigan "En ninguno". Opciones:
    - **Mantenerlo** (es fiel al SAE) y anotar las reacciones. *Recomendado: no requiere cambios y es igual para todos.*
    - Ocultarlo solo durante la prueba (requiere un cambio en el prototipo).
-2. **Hipótesis H2 (confianza) y H3 (justicia):** desde la v6 no tienen medida con números. Opciones: agregar al final una pregunta de cada una, dejarlas como observaciones de lo que digan en voz alta, o sacarlas del estudio.
+2. **Confianza y justicia:** desde la v6 no tienen medida con números. Opciones: agregar al final una pregunta de cada una, dejarlas como observaciones de lo que digan en voz alta, o sacarlas del estudio.
 3. **Datos de contexto perdidos:** al quitar todas las preguntas iniciales ya no se sabe si la persona postuló antes al SAE, lo que servía para revisar que los dos grupos sean parecidos. Propuesta: preguntarlo **al final**, en voz alta y después de las demás preguntas ("¿Has postulado alguna vez a un hijo o hija usando el SAE?"). Ahí ya no influye en nada y no es una pregunta antes del flujo. La frase de la "tómbola", que el Cap. 3 describe como covariable, también queda fuera: hay que ajustar ese capítulo cuando se apruebe esta versión.
-4. **Comprensión sin test cerrado.** Al quitar las 8 frases de verdadero o falso, la comprensión se mide con la predicción y con las respuestas en voz alta. Esas respuestas hay que clasificarlas (por ejemplo: correcta, parcial o incorrecta) con una pauta escrita antes de la prueba, y conviene que una segunda persona clasifique una parte de las sesiones, como ya propone el Cap. 3 para las respuestas abiertas. Hay que preparar esa pauta.
+4. **Comprensión sin test cerrado.** Al quitar las 8 frases de verdadero o falso, la comprensión se mide con la predicción y con las respuestas en voz alta. Las preguntas "¿qué habría pasado si…?" tienen respuesta correcta según el simulador, lo que facilita clasificarlas. Esas respuestas hay que clasificarlas (por ejemplo: correcta, parcial o incorrecta) con una pauta escrita antes de la prueba, y conviene que una segunda persona clasifique una parte de las sesiones, como ya propone el Cap. 3 para las respuestas abiertas. Hay que preparar esa pauta.
 5. **Documentos que habrá que actualizar** una vez aprobada esta versión: caso de estudio (§3, §6–§10: la lista pasa de 6 a 2 colegios y ya no hay hojas escritas ni test de verdadero o falso), guion del moderador v4, material del participante y Cap. 3 de la memoria.
 
 ---
@@ -267,4 +269,4 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 | **Estas instrucciones** (`instrucciones_prueba_usabilidad.md` / `.pdf`) | Preparar y conducir la sesión. Documento principal. |
 | **Material impreso** (`cuadernillo_participante_propuesta.pdf`) | Tarjeta del caso y tarjeta de escalas (se le muestran a la persona) y planilla de respuestas (la llenas tú). |
 | **Mapa del flujo** (`mapa_flujo_preguntas_prueba.pdf`) | Ver el flujo de un vistazo. |
-| Reemplazados: v7 de estas instrucciones (en el historial de git), guion v6 (`guion_simple_prueba_usabilidad`), guion v5 e investigación Likert | Se conservan como historia de las decisiones. |
+| Reemplazados: v7 y v8 de estas instrucciones (en el historial de git), guion v6 (`guion_simple_prueba_usabilidad`), guion v5 e investigación Likert | Se conservan como historia de las decisiones. |

@@ -1,4 +1,4 @@
-# Lo que se dice en la prueba
+# GUION Y PREGUNTAS
 
 ## 1. Bienvenida
 
@@ -24,9 +24,34 @@ Tu tarea es postular a Sofía y a Mateo en la página, con esos dos colegios y e
 
 Te dejo esta tarjeta con la historia, para que la mires cuando quieras."
 
+Tarjeta del caso:
+
+> **Eres Daniela.** Es agosto y se abrió la postulación a colegios para el próximo año.
+>
+> **Tu familia:**
+> - **Martina**, 16 años, 3.º medio. Estudia en el **Colegio Los Andes**. **No postula**: se queda en su colegio.
+> - **Sofía**, 9 años. **Postula a 4.º básico.**
+> - **Mateo**, 12 años. **Postula a 7.º básico.**
+> - Tu pareja, **Rodrigo**, trabaja en el Colegio Villa del Sol. Tú estudiaste en la Escuela República de Chile.
+>
+> **Lo que quieren:** que Sofía y Mateo queden **en el mismo colegio**.
+>
+> **Tu tarea:** postular a Sofía y Mateo **juntos**, con estos dos colegios y **en este orden**:
+> 1. **Colegio San Martín** — el que más les gusta. Se lo recomendó una vecina.
+> 2. **Colegio Los Andes** — donde estudia Martina.
+>
+> Termina cuando hayas enviado la postulación y descargado el comprobante.
+
 ## 3. La postulación
 
 "Ahora vamos a la página. Tómate el tiempo que necesites."
+
+Solo si hace falta:
+
+- Si pregunta si lo está haciendo bien: "¿Tú qué crees?"
+- Si pregunta cómo funciona el sistema: "Buena pregunta, lo conversamos al final."
+- Si intenta cambiar el orden: "El orden ya está decidido, ingresa los dos así."
+- Si quiere agregar más colegios: "La familia ya decidió estos dos; sigue con esos."
 
 ## 4. Al terminar de postular
 

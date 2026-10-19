@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Estructura de las preguntas de la prueba (v7)</title>
+<title>Estructura de las preguntas de la prueba (v11)</title>
 <style>
   :root { --azul:#0057B7; --texto:#222; --texto-sec:#555; --borde:#d5dbe3; }
   * { box-sizing: border-box; }
@@ -19,100 +19,138 @@
   .bloque { border: 1px solid var(--borde); border-radius: 10px; padding: 14px 18px; margin: 0 0 14px; }
   .bloque h3 { margin: 0 0 6px; font-size: 17px; }
   .etq { display: inline-block; font-size: 13px; font-weight: 600; padding: 1px 9px; border-radius: 10px; margin-left: 6px; vertical-align: 2px; }
+  .etq--ctx { background: #E8F1FB; color: #003F86; border: 1px solid var(--azul); }
   .etq--esc { background: #E1F5EE; color: #085041; border: 1px solid #0F6E56; }
   .etq--voz { background: #EEEDFE; color: #3C3489; border: 1px solid #534AB7; }
   .mide { color: var(--texto-sec); }
-  svg { display: block; width: 100%; height: auto; margin: 8px 0 4px; }
+  svg { display: block; width: 100%; max-width: 520px; height: auto; margin: 8px auto 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 15px; }
+  th, td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid var(--borde); }
+  th { color: var(--azul); }
   footer { margin-top: 28px; font-size: 14px; color: var(--texto-sec); }
 </style>
 </head>
 <body>
 <main>
   <h1>Estructura de las preguntas de la prueba</h1>
-  <p class="sub">Prueba comparativa del flujo de postulación · versión 7 (2026-10-08) · propuesta a validar con la profesora guía</p>
+  <p class="sub">Prueba comparativa del flujo de postulación · versión 11 (2026-10-19) · propuesta a validar con la profesora guía</p>
 
-  <div class="idea"><strong>La idea en una frase:</strong> la persona primero postula sin que le preguntes nada, y todas las preguntas vienen después, en tres bloques. Cada bloque tiene un propósito distinto.</div>
+  <div class="idea"><strong>La idea en una frase:</strong> la persona postula sin que le preguntes nada ni le pidas pensar en voz alta, y casi todas las preguntas vienen después. <strong>No escribe nada:</strong> todo se pregunta en voz alta y tú anotas; para las escalas le muestras una tarjeta.</div>
 
-  <svg viewBox="0 0 680 570" role="img" aria-labelledby="t1 d1">
-    <title id="t1">Estructura de las preguntas de la prueba v7</title>
-    <desc id="d1">Seis momentos en orden: explicación del caso y postulación sin preguntas; hoja 1 con seis preguntas escritas al enviar; el resultado sin preguntas; siete preguntas en voz alta; y hoja 2 con ocho preguntas escritas de verdadero o falso.</desc>
+  <svg viewBox="0 0 480 650" role="img" aria-labelledby="t1 d1">
+    <title id="t1">Estructura de las preguntas de la prueba v11</title>
+    <desc id="d1">Siete momentos en orden: bienvenida con una pregunta de sí o no sobre experiencia previa; explicación del caso y postulación, sin preguntas; al terminar la postulación, seis preguntas: la ASQ con la tarjeta de escalas y la predicción; al ver el resultado, dos preguntas con la tarjeta: confianza y justicia; seis preguntas en voz alta con sus palabras, más una si quiso cambiar la lista; y el cierre, sin preguntas.</desc>
     <defs><marker id="fl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#888780" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
     <g font-family="Segoe UI, Arial, sans-serif" text-anchor="middle">
-      <rect x="170" y="40" width="340" height="56" rx="4" fill="#F1EFE8" stroke="#5F5E5A"/>
-      <text x="340" y="64" font-size="15" font-weight="600" fill="#444441">1. Explicación del caso</text>
-      <text x="340" y="83" font-size="13" fill="#5F5E5A">Sin preguntas</text>
-      <line x1="340" y1="96" x2="340" y2="120" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
+      <rect x="40" y="20" width="400" height="56" rx="4" fill="#E8F1FB" stroke="#0057B7"/>
+      <text x="240" y="44" font-size="16" font-weight="600" fill="#003F86">1. Bienvenida</text>
+      <text x="240" y="64" font-size="14" fill="#0057B7">1 pregunta: ¿ya postuló alguna vez al SAE?</text>
+      <line x1="240" y1="76" x2="240" y2="100" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
 
-      <rect x="170" y="122" width="340" height="56" rx="4" fill="#F1EFE8" stroke="#5F5E5A"/>
-      <text x="340" y="146" font-size="15" font-weight="600" fill="#444441">2. La postulación completa</text>
-      <text x="340" y="165" font-size="13" fill="#5F5E5A">Sin preguntas, solo observas</text>
-      <line x1="340" y1="178" x2="340" y2="202" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
+      <rect x="40" y="102" width="400" height="56" rx="4" fill="#F1EFE8" stroke="#5F5E5A"/>
+      <text x="240" y="126" font-size="16" font-weight="600" fill="#444441">2. Explicación del caso</text>
+      <text x="240" y="146" font-size="14" fill="#5F5E5A">Sin preguntas, le entregas la tarjeta</text>
+      <line x1="240" y1="158" x2="240" y2="182" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
 
-      <rect x="170" y="204" width="340" height="56" rx="4" fill="#E1F5EE" stroke="#0F6E56"/>
-      <text x="340" y="228" font-size="15" font-weight="600" fill="#085041">3. Hoja 1, al enviar</text>
-      <text x="340" y="247" font-size="13" fill="#0F6E56">6 escritas: ASQ + predicción</text>
-      <line x1="340" y1="260" x2="340" y2="284" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
+      <rect x="40" y="184" width="400" height="56" rx="4" fill="#F1EFE8" stroke="#5F5E5A"/>
+      <text x="240" y="208" font-size="16" font-weight="600" fill="#444441">3. La postulación completa</text>
+      <text x="240" y="228" font-size="14" fill="#5F5E5A">Sin preguntas, solo observas</text>
+      <line x1="240" y1="240" x2="240" y2="264" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
 
-      <rect x="170" y="286" width="340" height="56" rx="4" fill="#F1EFE8" stroke="#5F5E5A"/>
-      <text x="340" y="310" font-size="15" font-weight="600" fill="#444441">4. Ve el resultado</text>
-      <text x="340" y="329" font-size="13" fill="#5F5E5A">Sin preguntas</text>
-      <line x1="340" y1="342" x2="340" y2="366" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
+      <rect x="40" y="266" width="400" height="56" rx="4" fill="#E1F5EE" stroke="#0F6E56"/>
+      <text x="240" y="290" font-size="16" font-weight="600" fill="#085041">4. Al terminar de postular</text>
+      <text x="240" y="310" font-size="14" fill="#0F6E56">6 preguntas: ASQ + predicción</text>
+      <line x1="240" y1="322" x2="240" y2="346" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
 
-      <rect x="170" y="368" width="340" height="56" rx="4" fill="#EEEDFE" stroke="#534AB7"/>
-      <text x="340" y="392" font-size="15" font-weight="600" fill="#3C3489">5. Preguntas en voz alta</text>
-      <text x="340" y="411" font-size="13" fill="#534AB7">7 orales, con sus palabras</text>
-      <line x1="340" y1="424" x2="340" y2="448" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
+      <rect x="40" y="348" width="400" height="56" rx="4" fill="#E1F5EE" stroke="#0F6E56"/>
+      <text x="240" y="372" font-size="16" font-weight="600" fill="#085041">5. Ve el resultado</text>
+      <text x="240" y="392" font-size="14" fill="#0F6E56">2 preguntas: confianza y justicia</text>
+      <line x1="240" y1="404" x2="240" y2="428" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
 
-      <rect x="170" y="450" width="340" height="56" rx="4" fill="#E1F5EE" stroke="#0F6E56"/>
-      <text x="340" y="474" font-size="15" font-weight="600" fill="#085041">6. Hoja 2, para terminar</text>
-      <text x="340" y="493" font-size="13" fill="#0F6E56">8 escritas: verdadero o falso</text>
+      <rect x="40" y="430" width="400" height="56" rx="4" fill="#EEEDFE" stroke="#534AB7"/>
+      <text x="240" y="454" font-size="16" font-weight="600" fill="#3C3489">6. Preguntas en voz alta</text>
+      <text x="240" y="474" font-size="14" fill="#534AB7">6 con sus palabras (+1 si quiso cambiar la lista)</text>
+      <line x1="240" y1="486" x2="240" y2="510" stroke="#888780" stroke-width="1.5" marker-end="url(#fl)"/>
+
+      <rect x="40" y="512" width="400" height="56" rx="4" fill="#F1EFE8" stroke="#5F5E5A"/>
+      <text x="240" y="536" font-size="16" font-weight="600" fill="#444441">7. Cierre</text>
+      <text x="240" y="556" font-size="14" fill="#5F5E5A">Sin preguntas, completas la planilla</text>
     </g>
-    <g font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#444441">
-      <rect x="120" y="532" width="14" height="14" rx="3" fill="#F1EFE8" stroke="#5F5E5A"/><text x="140" y="544">Sin preguntas</text>
-      <rect x="250" y="532" width="14" height="14" rx="3" fill="#E1F5EE" stroke="#0F6E56"/><text x="270" y="544">Escritas en el cuadernillo</text>
-      <rect x="460" y="532" width="14" height="14" rx="3" fill="#EEEDFE" stroke="#534AB7"/><text x="480" y="544">En voz alta</text>
+    <g font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#444441">
+      <rect x="40" y="594" width="14" height="14" rx="3" fill="#F1EFE8" stroke="#5F5E5A"/><text x="60" y="606">Sin preguntas</text>
+      <rect x="240" y="594" width="14" height="14" rx="3" fill="#E8F1FB" stroke="#0057B7"/><text x="260" y="606">Dato de contexto (sí o no)</text>
+      <rect x="40" y="622" width="14" height="14" rx="3" fill="#E1F5EE" stroke="#0F6E56"/><text x="60" y="634">Con la tarjeta de escalas</text>
+      <rect x="240" y="622" width="14" height="14" rx="3" fill="#EEEDFE" stroke="#534AB7"/><text x="260" y="634">Con sus palabras</text>
     </g>
   </svg>
 
-  <h2>Los tres bloques de preguntas</h2>
+  <h2>Los momentos con preguntas</h2>
 
   <div class="bloque">
-    <h3>Bloque 1 · Hoja 1, apenas termina de postular <span class="etq etq--esc">6 escritas</span></h3>
-    <p>Todavía no ha visto el resultado.</p>
+    <h3>Bienvenida · antes de contar el caso <span class="etq etq--ctx">1 pregunta</span></h3>
+    <p>"¿Has postulado alguna vez a un hijo o hija usando el Sistema de Admisión Escolar?" Sí o no.</p>
+    <p class="mide"><strong>Para qué sirve:</strong> no mide la página. Sirve para repartir las dos versiones de forma pareja entre quienes ya postularon y quienes no (dos turnos alternados). Es un hecho de su vida, no una opinión sobre el sistema.</p>
+  </div>
+
+  <div class="bloque">
+    <h3>Al terminar de postular · antes de ver el resultado <span class="etq etq--esc">6 preguntas</span></h3>
     <ul>
-      <li><strong>3 preguntas de la ASQ:</strong> ¿qué tan satisfecha estás con lo fácil que fue, con el tiempo que te tomó y con la información de apoyo? Se marca un número del 1 al 7.</li>
-      <li><strong>3 preguntas de predicción:</strong> ¿en qué colegio crees que quedará Sofía?, ¿qué tan segura estás? y ¿por qué?</li>
+      <li><strong>3 frases de la ASQ</strong>, con la tarjeta de escalas: "En general, estoy satisfecha o satisfecho con…" lo fácil que fue, el tiempo que le tomó y la información de apoyo. Responde un número del <strong>1 (totalmente en desacuerdo) al 7 (totalmente de acuerdo)</strong>, o "no aplica". Más alto = más satisfacción.</li>
+      <li><strong>3 preguntas de predicción:</strong> ¿en qué colegio crees que quedará Sofía (San Martín, Los Andes, en ninguno o no sabes)?, ¿qué tan segura o seguro estás? (segunda escala de la tarjeta, de "nada" a "totalmente") y ¿por qué?</li>
     </ul>
-    <p class="mide"><strong>Qué mide:</strong> la ASQ, qué tan fácil de usar le resultó la página. La predicción, si la página le permitió anticipar el resultado; por eso va antes de verlo.</p>
+    <p class="mide"><strong>Qué mide:</strong> la ASQ, qué tan satisfecha o satisfecho quedó con la tarea de postular. La predicción, si la página le permitió anticipar el resultado; es la única medida tomada antes de verlo.</p>
   </div>
 
   <div class="bloque">
-    <h3>Bloque 2 · En voz alta, después de ver el resultado <span class="etq etq--voz">7 orales</span></h3>
-    <p>Tú preguntas y anotas lo que responde.</p>
+    <h3>Apenas ve el resultado <span class="etq etq--esc">2 preguntas</span></h3>
+    <p>Con la misma tarjeta, del 1 al 7:</p>
     <ul>
-      <li><strong>Sobre el resultado:</strong> ¿era lo que esperabas?, ¿por qué crees que pasó? y, con tus palabras, ¿por qué no quedó en San Martín?</li>
-      <li><strong>Sobre lo que hizo antes:</strong> ¿qué pasaba con Martina?, ¿qué significa postular en bloque?, ¿qué sabía la página de la familia? y ¿qué esperabas con los dos colegios en la lista?</li>
+      <li><strong>Confianza:</strong> "Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas."</li>
+      <li><strong>Justicia:</strong> "La forma en que el sistema decidió el colegio de Sofía me parece justa."</li>
     </ul>
-    <p class="mide"><strong>Qué mide:</strong> cómo lo explica con sus propias palabras; por ejemplo, si habla de cupos y de la hermana, o de "mala suerte".</p>
+    <p class="mide"><strong>Qué mide:</strong> si confía en la decisión y si le parece justa. No se suman a la ASQ: cada una se analiza por separado y es un resultado exploratorio (una sola pregunta por tema).</p>
   </div>
 
   <div class="bloque">
-    <h3>Bloque 3 · Hoja 2, para terminar <span class="etq etq--esc">8 escritas</span></h3>
-    <p>Ocho frases de verdadero, falso o "no sé". Por ejemplo: <em>"Poner San Martín primero le quitó posibilidades en Los Andes"</em> (falso).</p>
-    <p class="mide"><strong>Qué mide:</strong> si entendió de verdad cómo funciona el sistema. Es la medida principal del estudio.</p>
+    <h3>Preguntas en voz alta · después del resultado <span class="etq etq--voz">6 + 1</span></h3>
+    <p>Tú preguntas y anotas lo que dice, con sus palabras.</p>
+    <ul>
+      <li><strong>Sobre el resultado</strong> (todavía en pantalla): ¿era lo que esperabas?, ¿por qué crees que pasó? y, con tus palabras, ¿por qué Sofía no quedó en San Martín?</li>
+      <li><strong>"¿Qué habría pasado si…?"</strong> (ya sin mirar la página), cada una con respuesta correcta según el simulador:
+        <ul>
+          <li>…la familia hubiera puesto Los Andes primero? <em>(igual en Los Andes)</em> Y enseguida: ¿tú lo habrías dejado igual o lo habrías cambiado?</li>
+          <li>…Martina no estudiara en Los Andes? <em>(Sofía tendría muchas menos posibilidades ahí)</em></li>
+          <li>…otra familia sin vínculo postulara a San Martín? <em>(podría quedar, pero con pocas posibilidades; depende del sorteo)</em></li>
+        </ul>
+      </li>
+      <li><strong>Solo si intentó cambiar el orden o agregar colegios:</strong> ¿por qué querías cambiarlo?</li>
+    </ul>
+    <p class="mide"><strong>Qué mide:</strong> cómo explica el resultado con sus palabras (por ejemplo, si habla de cupos y de la hermana, o de "mala suerte"), si entiende cómo decide el sistema y si cree que conviene "esconder" el colegio preferido.</p>
   </div>
+
+  <p><strong>Total:</strong> ninguna pregunta escrita y 15–16 en voz alta. Duración ≈34 min, por confirmar en un piloto.</p>
 
   <h2>Por qué este orden</h2>
   <ul>
-    <li><strong>Nada antes ni durante la postulación</strong>, para que la persona use la página como lo haría en la vida real.</li>
-    <li><strong>La predicción antes del resultado</strong>, porque después ya sabría la respuesta.</li>
-    <li><strong>La voz alta antes del verdadero o falso</strong>, porque las frases del test le darían pistas para explicar.</li>
+    <li><strong>La experiencia previa, antes del caso</strong>, para que no se mezcle con la historia de Daniela y para elegir la versión.</li>
+    <li><strong>Nada durante la postulación</strong> (ni preguntas ni pensar en voz alta), para que use la página como lo haría en la vida real.</li>
+    <li><strong>La ASQ y la predicción antes del resultado</strong>: la ASQ mide la tarea recién hecha sin mezclarla con la reacción al resultado, y después ya sabría qué predecir.</li>
+    <li><strong>Confianza y justicia apenas ve el resultado</strong>: necesitan el resultado, y van antes de conversar para que la conversación no cambie la respuesta.</li>
+    <li><strong>"¿Qué habría pasado si…?" al final</strong>, para ver si entiende cómo decide el sistema y no si recuerda el formulario. Lo que vio en el resultado puede influir; se declara como limitación.</li>
   </ul>
 
   <h2>Qué se espera al comparar las dos versiones</h2>
-  <p>Quien usó la versión <strong>con explicaciones</strong> debería predecir mejor el resultado, explicarlo mejor con sus palabras y acertar más en el verdadero o falso. La facilidad de uso (ASQ) debería ser parecida en las dos versiones.</p>
+  <table>
+    <thead><tr><th>Qué se compara</th><th>Con qué preguntas</th><th>Qué se espera</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Comprensión</strong> (la principal)</td><td>Predicción · "¿por qué no quedó en San Martín?" · las 3 "¿qué habría pasado si…?"</td><td>Con explicaciones predicen y explican mejor el resultado.</td></tr>
+      <tr><td><strong>Creencia de "esconder" el preferido</strong></td><td>"Si hubieran puesto Los Andes primero…" y "¿lo habrías cambiado?" · si intentó cambiar el orden</td><td>Sin explicaciones aparece más la idea de bajar San Martín para "asegurar" Los Andes.</td></tr>
+      <tr><td><strong>Usabilidad</strong></td><td>ASQ</td><td>Facilidad y tiempo parecidos en las dos versiones; la información de apoyo, mejor evaluada con explicaciones.</td></tr>
+      <tr><td><strong>Confianza y justicia</strong> (exploratorio)</td><td>Las 2 preguntas al ver el resultado</td><td>Más confianza con explicaciones; en justicia, poca diferencia, porque el resultado es el mismo.</td></tr>
+    </tbody>
+  </table>
 
-  <footer>Detalle completo: <code>instrucciones_prueba_usabilidad.md</code> (guion, respuestas esperadas y decisiones pendientes) · <code>cuadernillo_participante_propuesta.pdf</code> (hojas para imprimir).</footer>
+  <footer>Detalle completo: <code>instrucciones_prueba_usabilidad.md</code> (guion, respuestas esperadas y decisiones pendientes) · <code>guion_lectura_prueba.md</code> (solo lo que se dice) · <code>cuadernillo_participante_propuesta.pdf</code> (tarjetas y planilla para imprimir) · <code>mapa_flujo_preguntas_prueba.pdf</code> (flujo de un vistazo).</footer>
 </main>
 </body>
 </html>

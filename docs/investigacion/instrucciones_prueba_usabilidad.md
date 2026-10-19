@@ -1,11 +1,14 @@
-# Instrucciones de la prueba de usabilidad (v10)
+# Instrucciones de la prueba de usabilidad (v11)
 
-**Versión del 2026-10-19. Propuesta a validar con la profesora guía.** Es el documento único para preparar y conducir cada sesión. Reemplaza a las versiones anteriores (v7 a v9) y al guion v6 (`guion_simple_prueba_usabilidad.md`).
+**Versión del 2026-10-19. Propuesta a validar con la profesora guía.** Es el documento único para preparar y conducir cada sesión. Reemplaza a las versiones anteriores (v7 a v10) y al guion v6 (`guion_simple_prueba_usabilidad.md`).
 
-**Qué cambió respecto de la v9:**
+**Qué cambió en la v11 (2026-10-19, mismo día):** la escala de 1 a 7 se invierte (7 = totalmente de acuerdo) y no se pide pensar en voz alta durante la postulación (detalle abajo y en las secciones 3, 5 y 6).
+
+**Qué cambió en la v10 respecto de la v9:**
 - **Experiencia previa con el SAE, en la bienvenida:** una pregunta de sí o no, después del consentimiento y antes de contar el caso. Sirve para **repartir las dos versiones de forma pareja** entre quienes ya postularon y quienes no (sección 2).
 - **Confianza y justicia, al ver el resultado:** una pregunta de cada una, con el mismo formato de la ASQ (escala de 1 a 7 con la misma tarjeta), pero **aparte de la ASQ** y con su propio puntaje (sección 7).
 - Duración estimada: ≈34 min.
+- **2026-10-19: no se pide pensar en voz alta durante la postulación.** La persona solo puede comentar si quiere. Pensar en voz alta cambia cómo se usa la página (más lento y con más atención, lo que podría aumentar la lectura del panel en la versión con explicaciones) e incomoda a personas con poca costumbre de usar computadores. Lo que hace queda en la grabación y en tu observación; se pierde el *por qué* de cada acción durante la postulación, que en parte recuperan las preguntas del final (se declara como limitación).
 
 **Se mantiene:** la persona no escribe nada (todo en voz alta y tú anotas); la ASQ y la predicción al terminar de postular; las preguntas sobre el resultado y las 3 de "¿qué habría pasado si…?".
 
@@ -22,7 +25,7 @@
 |---|---|---|---|---|
 | 1 | Bienvenida | Da su consentimiento y responde si ya postuló al SAE | Explicas la sesión, pides permiso para grabar, haces la pregunta y eliges la versión | 4 min |
 | 2 | Explicación del caso | Escucha y lee la tarjeta | Lees el caso y entregas la tarjeta | 3 min |
-| 3 | La postulación | Postula a Sofía y Mateo con los 2 colegios, pensando en voz alta | Observas y anotas; **no preguntas** | ≈12 min |
+| 3 | La postulación | Postula a Sofía y Mateo con los 2 colegios | Observas y anotas; **no preguntas** | ≈12 min |
 | 4 | Al terminar la postulación | Responde en voz alta la ASQ y predice el resultado | Preguntas, muestras la tarjeta de escalas y anotas | 3 min |
 | 5 | El resultado | Lo mira y responde confianza y justicia con la tarjeta | Observas, preguntas y anotas | 4 min |
 | 6 | Preguntas en voz alta | Responde con sus palabras | Preguntas y anotas | ≈6 min |
@@ -57,7 +60,7 @@
 >
 > No te estoy evaluando a ti, estoy evaluando la página. No hay respuestas correctas ni incorrectas.
 >
-> Mientras usas la página, cuéntame en voz alta lo que vas pensando. Yo no te voy a interrumpir. Cuando termines y al final te voy a hacer algunas preguntas; no tienes que escribir nada.
+> Mientras usas la página, yo solo voy a mirar. Si quieres comentar algo, puedes hacerlo. Cuando termines te voy a hacer algunas preguntas; no tienes que escribir nada.
 >
 > Vamos a grabar la pantalla y el audio solo para revisarlo después. Nadie más va a ver la grabación. ¿Estás de acuerdo?"
 
@@ -111,7 +114,7 @@
 
 **Lo que dices:**
 
-> "Ahora vamos a la página. Cuéntame en voz alta lo que vas pensando. Yo solo voy a mirar."
+> "Ahora vamos a la página. Tómate el tiempo que necesites."
 
 **Lo que debería hacer, en orden:**
 1. En "Tu grupo familiar", marcar a **Sofía y Mateo** (no a Martina) y elegir **"En bloque"**.
@@ -125,10 +128,10 @@
 **Además, en la versión con explicaciones** verá "26 %" junto a San Martín y "99 %" junto a Los Andes, y el panel "Te explicamos" a la derecha. En la versión sin explicaciones no hay porcentajes ni panel.
 
 **Durante esta parte:**
-- **No hagas preguntas.** Si se queda en silencio mucho rato, solo di: *"¿Qué estás pensando ahora?"*.
+- **No hagas preguntas.** No se le pide pensar en voz alta: si comenta algo, anótalo; si está en silencio, déjala trabajar.
 - **No expliques ni corrijas.** Si pregunta *"¿está bien así?"*, responde: *"¿Tú qué crees?"*. Si pregunta cómo funciona el sistema: *"Buena pregunta, lo conversamos al final."*
 - **Si intenta cambiar el orden:** *"El orden ya está decidido, ingresa los dos así."* Anótalo, con lo que dijo.
-- **Anota** dónde duda, qué lee en voz alta y, en la versión con explicaciones, si mira el panel de la derecha.
+- **Anota** dónde duda, qué comenta por su cuenta y, en la versión con explicaciones, si mira el panel de la derecha.
 
 ---
 
@@ -138,19 +141,21 @@ Con la pantalla "Postulación enviada" a la vista, **antes** de ver el resultado
 
 **Lo que dices:**
 
-> "Terminaste la postulación. Antes de ver el resultado, te voy a hacer unas preguntas cortas. Para las primeras tres te muestro esta tarjeta: respóndeme con un número del 1 al 7, donde 1 es totalmente de acuerdo y 7 es totalmente en desacuerdo. Si alguna no aplica, dime 'no aplica'."
+> "Terminaste la postulación. Antes de ver el resultado, te voy a hacer unas preguntas cortas. Para las primeras tres te muestro esta tarjeta: respóndeme con un número del 1 al 7, donde 1 es totalmente en desacuerdo y 7 es totalmente de acuerdo. Si alguna no aplica, dime 'no aplica'."
 
 *Muestra la tarjeta de escalas. Con solo los extremos rotulados, es difícil retener una escala de 7 puntos de oído; la tarjeta evita que la persona tenga que recordarla. No escribe en ella: solo dice el número.*
 
 ### La ASQ (3 preguntas)
 
-Escala de 7 puntos: **1 = Totalmente de acuerdo** … **7 = Totalmente en desacuerdo**, más "No aplica". Solo los extremos llevan palabras, como en el instrumento original (Lewis, 1991). El puntaje es el promedio de las 3: **más bajo = más satisfacción**. Lees cada frase tal cual.
+Escala de 7 puntos: **1 = Totalmente en desacuerdo** … **7 = Totalmente de acuerdo**, más "No aplica". Solo los extremos llevan palabras, como en el instrumento original (Lewis, 1991). El puntaje es el promedio de las 3: **más alto = más satisfacción**. Lees cada frase tal cual.
+
+*Ajuste respecto del original (2026-10-19, decisión del autor):* en la ASQ de Lewis el 1 es "totalmente de acuerdo". Aquí se invierte para que **un número más alto signifique más acuerdo**, que es lo intuitivo para la persona. Las frases y los 7 puntos no cambian; al reportar se declara la inversión y que el puntaje se lee al revés que en el original.
 
 | Pregunta (la lees) | Respuesta esperada |
 |---|---|
-| En general, estoy satisfecha o satisfecho con lo fácil que fue completar la postulación. | De acuerdo (1 a 3) en las dos versiones. |
-| En general, estoy satisfecha o satisfecho con el tiempo que me tomó completar la postulación. | De acuerdo (1 a 3) en las dos versiones. Con explicaciones puede tomar algo más, por el texto del panel. |
-| En general, estoy satisfecha o satisfecho con la información de apoyo (ayuda, mensajes e información de la página) mientras completaba la postulación. | **Con explicaciones:** más de acuerdo (1 a 2). **Sin explicaciones:** menos de acuerdo (3 a 5). Es la pregunta de la ASQ que más debería diferenciar a las dos versiones. |
+| En general, estoy satisfecha o satisfecho con lo fácil que fue completar la postulación. | De acuerdo (5 a 7) en las dos versiones. |
+| En general, estoy satisfecha o satisfecho con el tiempo que me tomó completar la postulación. | De acuerdo (5 a 7) en las dos versiones. Con explicaciones puede tomar algo más, por el texto del panel. |
+| En general, estoy satisfecha o satisfecho con la información de apoyo (ayuda, mensajes e información de la página) mientras completaba la postulación. | **Con explicaciones:** más de acuerdo (6 a 7). **Sin explicaciones:** menos de acuerdo (3 a 5). Es la pregunta de la ASQ que más debería diferenciar a las dos versiones. |
 
 *Aplicar la ASQ en voz alta, frente al moderador, puede hacer que algunas personas respondan más positivo de lo que piensan. Le pasa igual a las dos versiones, así que no afecta la comparación; se declara como limitación.*
 
@@ -178,11 +183,11 @@ Escala de 7 puntos: **1 = Totalmente de acuerdo** … **7 = Totalmente en desacu
 
 **Lo que dices:**
 
-> "Dos preguntas más con la misma tarjeta: un número del 1 al 7, donde 1 es totalmente de acuerdo y 7 es totalmente en desacuerdo."
+> "Dos preguntas más con la misma tarjeta: un número del 1 al 7, donde 1 es totalmente en desacuerdo y 7 es totalmente de acuerdo."
 
 | Pregunta (la lees) | Respuesta esperada |
 |---|---|
-| Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas. | **Con explicaciones:** más de acuerdo (1 a 3). **Sin explicaciones:** menos de acuerdo (3 a 5). |
+| Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas. | **Con explicaciones:** más de acuerdo (5 a 7). **Sin explicaciones:** menos de acuerdo (3 a 5). |
 | La forma en que el sistema decidió el colegio de Sofía me parece justa. | Poca diferencia entre las dos versiones: el resultado es el mismo; lo que cambia es entender por qué. |
 
 *No se suman a la ASQ: la ASQ son solo sus 3 preguntas. Cada una se analiza por separado, comparando las dos versiones, y se presenta como resultado exploratorio (una sola pregunta por tema y unas 15 personas por versión). Van antes de las preguntas en voz alta para que la conversación no cambie la respuesta.*
@@ -224,7 +229,7 @@ Tú preguntas y anotas lo que dice, con sus palabras.
 
 **Lo que dices:**
 
-> "Eso sería todo. Muchas gracias por tu tiempo y por contarme lo que ibas pensando. ¿Hay algo más que quieras comentarme? Te pido que no le cuentes los detalles de la prueba a otras personas hasta que termine el estudio."
+> "Eso sería todo. Muchas gracias por tu tiempo. ¿Hay algo más que quieras comentarme? Te pido que no le cuentes los detalles de la prueba a otras personas hasta que termine el estudio."
 
 Detén la grabación y completa la planilla de inmediato. Las respuestas a las preguntas ya las fuiste anotando durante la sesión; la grabación sirve para revisar lo textual.
 

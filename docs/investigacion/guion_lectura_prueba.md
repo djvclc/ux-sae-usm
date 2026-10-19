@@ -6,7 +6,7 @@
 
 No te estoy evaluando a ti, estoy evaluando la página. No hay respuestas correctas ni incorrectas.
 
-Mientras usas la página, cuéntame en voz alta lo que vas pensando. Yo no te voy a interrumpir. Cuando termines y al final te voy a hacer algunas preguntas; no tienes que escribir nada.
+Mientras usas la página, yo solo voy a mirar. Si quieres comentar algo, puedes hacerlo. Cuando termines te voy a hacer algunas preguntas; no tienes que escribir nada.
 
 Vamos a grabar la pantalla y el audio solo para revisarlo después. Nadie más va a ver la grabación. ¿Estás de acuerdo?"
 
@@ -26,18 +26,11 @@ Te dejo esta tarjeta con la historia, para que la mires cuando quieras."
 
 ## 3. La postulación
 
-"Ahora vamos a la página. Cuéntame en voz alta lo que vas pensando. Yo solo voy a mirar."
-
-Solo si hace falta:
-- "¿Qué estás pensando ahora?"
-- "¿Tú qué crees?"
-- "Buena pregunta, lo conversamos al final."
-- "El orden ya está decidido, ingresa los dos así."
-- "La familia ya decidió estos dos; sigue con esos."
+"Ahora vamos a la página. Tómate el tiempo que necesites."
 
 ## 4. Al terminar de postular
 
-"Terminaste la postulación. Antes de ver el resultado, te voy a hacer unas preguntas cortas. Para las primeras tres te muestro esta tarjeta: respóndeme con un número del 1 al 7, donde 1 es totalmente de acuerdo y 7 es totalmente en desacuerdo. Si alguna no aplica, dime 'no aplica'."
+"Terminaste la postulación. Antes de ver el resultado, te voy a hacer unas preguntas cortas. Para las primeras tres te muestro esta tarjeta: respóndeme con un número del 1 al 7, donde 1 es totalmente en desacuerdo y 7 es totalmente de acuerdo. Si alguna no aplica, dime 'no aplica'."
 
 1. "En general, estoy satisfecha o satisfecho con lo fácil que fue completar la postulación."
 2. "En general, estoy satisfecha o satisfecho con el tiempo que me tomó completar la postulación."
@@ -51,7 +44,7 @@ Solo si hace falta:
 
 "Ahora, en esta página hay un botón para ver el resultado ya mismo, en vez de esperar hasta octubre. Tócalo y míralo con calma. Avísame cuando termines."
 
-"Dos preguntas más con la misma tarjeta: un número del 1 al 7, donde 1 es totalmente de acuerdo y 7 es totalmente en desacuerdo."
+"Dos preguntas más con la misma tarjeta: un número del 1 al 7, donde 1 es totalmente en desacuerdo y 7 es totalmente de acuerdo."
 
 7. "Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas."
 8. "La forma en que el sistema decidió el colegio de Sofía me parece justa."
@@ -76,4 +69,4 @@ Solo si intentó cambiar el orden o agregar colegios:
 
 ## 7. Cierre
 
-"Eso sería todo. Muchas gracias por tu tiempo y por contarme lo que ibas pensando. ¿Hay algo más que quieras comentarme? Te pido que no le cuentes los detalles de la prueba a otras personas hasta que termine el estudio."
+"Eso sería todo. Muchas gracias por tu tiempo. ¿Hay algo más que quieras comentarme? Te pido que no le cuentes los detalles de la prueba a otras personas hasta que termine el estudio."

@@ -68,24 +68,10 @@ const CASO_EJEMPLO = {
 /* S22-12 / S4 (refinamiento, 2026-09-06) — modo verificación del paso 1.
    En el SAE real, ClaveÚnica devuelve los datos de identidad y domicilio del/de
    la estudiante ya cargados desde el Estado: la familia los VERIFICA, no los
-   tipea. Para un visitante sin datos en /perfil, este identikit ficticio hace de
-   "lo que devolvió ClaveÚnica"; se muestra con la aclaración de que en el
-   sistema real son los datos propios. Si /perfil tiene datos, esos mandan. */
-const IDENTIDAD_CLAVEUNICA_DEMO = {
-  nombre: 'Sofía Ríos Contreras',
-  rut: '21.457.883-4',
-  nivel: '4° básico',
-  region: 'RM',
-  comuna: 'La Florida',
-  calle: 'Pasaje Los Copihues 145',
-  // 2026-09-22: grupo familiar (mayor → menor), mismo formato que CASO_EJEMPLO.familia.
-  // Colegios actuales ficticios salvo Los Andes (de ahí la prioridad "hermano/a").
-  familia: [
-    { nombre: 'Valentina Ríos Contreras', rut: '24.112.789-0', nivelActual: '2° medio', nivelPostula: '3° medio', colegioActual: 'Colegio Los Andes' },
-    { nombre: 'Tomás Ríos Contreras', rut: '22.984.116-5', nivelActual: '6° básico', nivelPostula: '7° básico', colegioActual: 'Escuela Básica Los Aromos' },
-    { nombre: 'Sofía Ríos Contreras', rut: '21.457.883-4', nivelActual: '3° básico', nivelPostula: '4° básico', colegioActual: 'Escuela Básica Villa Los Pinos' },
-  ],
-}
+   tipea. 2026-10-19 (pedido del autor): una sola familia de ejemplo — lo que
+   "devuelve ClaveÚnica" es la familia Muñoz González (CASO_EJEMPLO). Antes había
+   un identikit aparte (familia Ríos Contreras) que confundía con la tarjeta del
+   caso de la prueba. Si /perfil tiene datos propios, esos mandan. */
 
 /* 2026-09-22: grupo familiar que "devuelve ClaveÚnica". Si /perfil tiene datos
    del/de la estudiante, esos mandan para el/la hijo/a menor (el/la de la demo). */
@@ -1226,17 +1212,24 @@ export default function PostulacionPage() {
      (declarar apoderado/a, confirmar el nivel, agregar los colegios con sus dos
      aceptaciones). No toca asignacion.js ni la cifra 87/87. */
   /* S4 (refinamiento, 2026-09-06): "ingresar con ClaveÚnica" trae los datos de
-     identidad y domicilio ya cargados. Si /perfil no tenía nada, se usan los del
-     identikit demo; el usuario los verifica y puede corregirlos. No pisa datos
-     que ya vengan de /perfil ni del caso de ejemplo. */
+     identidad y domicilio ya cargados; el usuario los verifica y puede
+     corregirlos. 2026-10-19 (pedido del autor, una sola familia de ejemplo): sin
+     datos propios en /perfil, entra la familia Muñoz González igual que con
+     "Cargar familia Muñoz González" (incluye el marcador `caso`, así "Lo que el
+     sistema ya sabe" muestra sus vínculos). Con datos propios en /perfil, esos
+     mandan para el/la hijo/a menor y no se pisan. */
   const ingresarConClaveUnica = () => {
+    if (!perfilEstudiante.nombre || perfilEstudiante.caso === CASO_EJEMPLO.caso) {
+      cargarCasoEjemplo()
+      return
+    }
     setLoginOk(true)
-    setRegion((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.region)
-    setComuna((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.comuna)
-    setDirCalle((v) => v || IDENTIDAD_CLAVEUNICA_DEMO.calle)
+    setRegion((v) => v || CASO_EJEMPLO.region)
+    setComuna((v) => v || CASO_EJEMPLO.comuna)
+    setDirCalle((v) => v || CASO_EJEMPLO.calle)
     // 2026-09-22: ClaveÚnica trae el grupo familiar; la familia elige a quién
     // postula (pantalla "Tu grupo familiar"). Nadie viene marcado por defecto.
-    setFamilia((f) => (f.length ? f : familiaDesdeClaveUnica(IDENTIDAD_CLAVEUNICA_DEMO.familia, perfilEstudiante)))
+    setFamilia((f) => (f.length ? f : familiaDesdeClaveUnica(CASO_EJEMPLO.familia, perfilEstudiante)))
   }
 
   /* Reset para la prueba de usabilidad: entre un/a participante y el/la siguiente,

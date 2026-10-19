@@ -1,13 +1,13 @@
-# Instrucciones de la prueba de usabilidad (v9)
+# Instrucciones de la prueba de usabilidad (v10)
 
-**Versión del 2026-10-18. Propuesta a validar con la profesora guía.** Es el documento único para preparar y conducir cada sesión. Reemplaza a la v8 (2026-10-09), a la v7 y al guion v6 (`guion_simple_prueba_usabilidad.md`).
+**Versión del 2026-10-19. Propuesta a validar con la profesora guía.** Es el documento único para preparar y conducir cada sesión. Reemplaza a las versiones anteriores (v7 a v9) y al guion v6 (`guion_simple_prueba_usabilidad.md`).
 
-**Qué cambió respecto de la v8:**
-- **Las preguntas sobre la postulación (sección 8) pasan de 6 a 3, todas del tipo "¿qué habría pasado si…?"**: si se cambia el orden, si Martina no estudiara en Los Andes, y si otra familia sin vínculo postula a San Martín. Buscan ver si la persona entendió cómo decide el sistema, no si recuerda el formulario.
-- Salen: qué pasaba con Martina, qué significa postular en bloque, qué sabía la página de la familia y qué esperaba con los dos colegios (esta última ya la mide la predicción). La pregunta del orden de la v8 queda dentro de la primera pregunta nueva.
-- Duración estimada: ≈32 min.
+**Qué cambió respecto de la v9:**
+- **Experiencia previa con el SAE, en la bienvenida:** una pregunta de sí o no, después del consentimiento y antes de contar el caso. Sirve para **repartir las dos versiones de forma pareja** entre quienes ya postularon y quienes no (sección 2).
+- **Confianza y justicia, al ver el resultado:** una pregunta de cada una, con el mismo formato de la ASQ (escala de 1 a 7 con la misma tarjeta), pero **aparte de la ASQ** y con su propio puntaje (sección 7).
+- Duración estimada: ≈34 min.
 
-**Se mantiene de la v8:** la persona no escribe nada (todo en voz alta y tú anotas); sin test de verdadero o falso; la bienvenida no dice cuánto dura la sesión; la explicación del caso con la tarjeta; la postulación completa sin interrupciones; la ASQ y la predicción al terminar de postular; el resultado.
+**Se mantiene:** la persona no escribe nada (todo en voz alta y tú anotas); la ASQ y la predicción al terminar de postular; las preguntas sobre el resultado y las 3 de "¿qué habría pasado si…?".
 
 **Cómo leerlo:**
 - **Lo que dices:** el texto que lees en voz alta.
@@ -20,14 +20,14 @@
 
 | # | Momento | Qué hace la persona | Qué haces tú | Tiempo |
 |---|---|---|---|---|
-| 1 | Bienvenida | Escucha y da su consentimiento | Explicas la sesión y pides permiso para grabar | 4 min |
+| 1 | Bienvenida | Da su consentimiento y responde si ya postuló al SAE | Explicas la sesión, pides permiso para grabar, haces la pregunta y eliges la versión | 4 min |
 | 2 | Explicación del caso | Escucha y lee la tarjeta | Lees el caso y entregas la tarjeta | 3 min |
 | 3 | La postulación | Postula a Sofía y Mateo con los 2 colegios, pensando en voz alta | Observas y anotas; **no preguntas** | ≈12 min |
 | 4 | Al terminar la postulación | Responde en voz alta la ASQ y predice el resultado | Preguntas, muestras la tarjeta de escalas y anotas | 3 min |
-| 5 | El resultado | Pulsa "Ver mi resultado ahora" y lo mira | Observas | 3 min |
+| 5 | El resultado | Lo mira y responde confianza y justicia con la tarjeta | Observas, preguntas y anotas | 4 min |
 | 6 | Preguntas en voz alta | Responde con sus palabras | Preguntas y anotas | ≈6 min |
 | 7 | Cierre | — | Agradeces y completas la planilla | 2 min |
-| | **Total** | | | **≈32 min** (por confirmar en un piloto) |
+| | **Total** | | | **≈34 min** (por confirmar en un piloto) |
 
 **Resultado del caso (verificado contra el simulador del prototipo, igual en las dos versiones):** Sofía **no** queda en el Colegio San Martín (≈26 % de posibilidades) y queda en el **Colegio Los Andes, su 2.ª preferencia** (≈99 %, porque su hermana Martina estudia ahí).
 
@@ -41,7 +41,7 @@
 - Grabación de pantalla y audio funcionando.
 
 **El prototipo:**
-1. Mira en tu planilla qué versión le toca a esta persona (impares: con explicaciones; pares: sin explicaciones).
+1. La versión se decide en la bienvenida, con la respuesta a la pregunta de experiencia previa. Lleva **dos turnos separados**: uno para quienes ya postularon al SAE y otro para quienes no. Dentro de cada turno, alterna: la primera persona va a la versión con explicaciones, la siguiente a la sin explicaciones, y así. De esta forma las dos versiones quedan con una cantidad pareja de personas con y sin experiencia. Anota la versión en la planilla.
 2. Usa un computador o pantalla ancha: el panel de la versión con explicaciones solo se ve bien en escritorio.
 3. En `/postulacion`, abre "Herramientas de la prueba de usabilidad", pulsa "Limpiar y empezar de cero" y elige la versión: "A · Con explicaciones" o "B · Sin explicaciones".
 4. Pulsa "Cargar familia Muñoz González". Esto simula el ingreso con ClaveÚnica y deja la página en "Tu grupo familiar", sin nadie marcado.
@@ -61,7 +61,11 @@
 >
 > Vamos a grabar la pantalla y el audio solo para revisarlo después. Nadie más va a ver la grabación. ¿Estás de acuerdo?"
 
-*Si acepta: firma del consentimiento.*
+*Si acepta: firma del consentimiento. Luego:*
+
+> "Antes de empezar, una sola pregunta: ¿has postulado alguna vez a un hijo o hija usando el Sistema de Admisión Escolar?"
+
+*Anota Sí o No y, según la respuesta, elige la versión (sección 2). Es una pregunta sobre un hecho de su vida, no una opinión sobre el sistema, y va antes de contar el caso para que no se mezcle con la historia de Daniela.*
 
 ---
 
@@ -170,6 +174,19 @@ Escala de 7 puntos: **1 = Totalmente de acuerdo** … **7 = Totalmente en desacu
 
 **El resultado es igual en las dos versiones:** Sofía no queda en San Martín y queda en el Colegio Los Andes, su segunda preferencia. En la versión con explicaciones, además aparece el panel "Tu resultado, explicado". No lo sugieras.
 
+### Confianza y justicia (apenas termina de mirar el resultado)
+
+**Lo que dices:**
+
+> "Dos preguntas más con la misma tarjeta: un número del 1 al 7, donde 1 es totalmente de acuerdo y 7 es totalmente en desacuerdo."
+
+| Pregunta (la lees) | Respuesta esperada |
+|---|---|
+| Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas. | **Con explicaciones:** más de acuerdo (1 a 3). **Sin explicaciones:** menos de acuerdo (3 a 5). |
+| La forma en que el sistema decidió el colegio de Sofía me parece justa. | Poca diferencia entre las dos versiones: el resultado es el mismo; lo que cambia es entender por qué. |
+
+*No se suman a la ASQ: la ASQ son solo sus 3 preguntas. Cada una se analiza por separado, comparando las dos versiones, y se presenta como resultado exploratorio (una sola pregunta por tema y unas 15 personas por versión). Van antes de las preguntas en voz alta para que la conversación no cambie la respuesta.*
+
 ---
 
 ## 8. Preguntas en voz alta (≈6 min)
@@ -215,8 +232,10 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 
 | Qué anotar | |
 |---|---|
+| Experiencia previa con el SAE | Sí / No |
 | ASQ: facilidad · tiempo · información de apoyo | 1 a 7 o "No aplica", cada una |
 | Predicción: colegio · seguridad · por qué | |
+| Confianza · justicia | 1 a 7, cada una |
 | Las 3 preguntas sobre el resultado | Lo que dijo, con sus palabras |
 | Las 3 preguntas "¿qué habría pasado si…?" (más el seguimiento, si corresponde) | Lo que dijo, con sus palabras; en la 1, además: lo dejaría igual / lo cambiaría |
 
@@ -244,8 +263,10 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 |---|---|---|
 | ASQ | Satisfacción con la tarea de postular: facilidad, tiempo e información de apoyo. | Usabilidad |
 | Predicción | Si la página le permitió anticipar el resultado. Es la única medida tomada antes de verlo. | Comprensión |
+| Confianza y justicia | Si confía en que el sistema siguió sus reglas y si la forma de decidir le parece justa. | Confianza · justicia (exploratorio) |
 | Preguntas sobre el resultado | Cómo explica, con sus palabras, por qué no quedó en San Martín. | Comprensión |
 | Preguntas "¿qué habría pasado si…?" | Si entiende cómo decide el sistema: que el orden no perjudica (1), que la prioridad por hermana vale en un solo colegio (2) y que no quedar depende de vacantes y sorteo (3). | Comprensión y creencia de "esconder" el colegio preferido |
+| Experiencia previa | Repartir las versiones de forma pareja y describir la muestra. Comparar con y sin experiencia solo como observación (grupos de unas 7 personas). | Equilibrio entre grupos |
 | Planilla | Qué hizo: dudas, intentos de cambiar el orden, uso del panel, dudas con el bloque y los datos precargados. | Apoyo a todas |
 
 ---
@@ -255,8 +276,8 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 1. **Aviso de lista corta.** Con solo 2 colegios de demanda alta, las dos versiones muestran *"Tu lista es corta y toda de alta demanda… Agrega más —al menos 6—"*. Es un aviso real del SAE y aparece igual en A y B, así que no rompe la comparación, pero puede hacer que algunas personas quieran agregar colegios o predigan "En ninguno". Opciones:
    - **Mantenerlo** (es fiel al SAE) y anotar las reacciones. *Recomendado: no requiere cambios y es igual para todos.*
    - Ocultarlo solo durante la prueba (requiere un cambio en el prototipo).
-2. **Confianza y justicia:** desde la v6 no tienen medida con números. Opciones: agregar al final una pregunta de cada una, dejarlas como observaciones de lo que digan en voz alta, o sacarlas del estudio.
-3. **Datos de contexto perdidos:** al quitar todas las preguntas iniciales ya no se sabe si la persona postuló antes al SAE, lo que servía para revisar que los dos grupos sean parecidos. Propuesta: preguntarlo **al final**, en voz alta y después de las demás preguntas ("¿Has postulado alguna vez a un hijo o hija usando el SAE?"). Ahí ya no influye en nada y no es una pregunta antes del flujo. La frase de la "tómbola", que el Cap. 3 describe como covariable, también queda fuera: hay que ajustar ese capítulo cuando se apruebe esta versión.
+2. **Confianza y justicia:** desde la v10 tienen una pregunta cada una (sección 7). Son preguntas propias, no de un cuestionario validado: hay que revisar con la profesora la redacción y buscar en la literatura de percepción de decisiones algorítmicas un respaldo para medirlas con una sola pregunta (verificar la cita antes de usarla en la memoria).
+3. **Experiencia previa:** desde la v10 se pregunta en la bienvenida y se usa para repartir las versiones (sección 2). Es la única pregunta antes de usar la página; es un hecho, no una opinión. La frase de la "tómbola", que el Cap. 3 describe como covariable, queda fuera: hay que ajustar ese capítulo cuando se apruebe esta versión.
 4. **Comprensión sin test cerrado.** Al quitar las 8 frases de verdadero o falso, la comprensión se mide con la predicción y con las respuestas en voz alta. Las preguntas "¿qué habría pasado si…?" tienen respuesta correcta según el simulador, lo que facilita clasificarlas. Esas respuestas hay que clasificarlas (por ejemplo: correcta, parcial o incorrecta) con una pauta escrita antes de la prueba, y conviene que una segunda persona clasifique una parte de las sesiones, como ya propone el Cap. 3 para las respuestas abiertas. Hay que preparar esa pauta.
 5. **Documentos que habrá que actualizar** una vez aprobada esta versión: caso de estudio (§3, §6–§10: la lista pasa de 6 a 2 colegios y ya no hay hojas escritas ni test de verdadero o falso), guion del moderador v4, material del participante y Cap. 3 de la memoria.
 
@@ -269,4 +290,4 @@ Detén la grabación y completa la planilla de inmediato. Las respuestas a las p
 | **Estas instrucciones** (`instrucciones_prueba_usabilidad.md` / `.pdf`) | Preparar y conducir la sesión. Documento principal. |
 | **Material impreso** (`cuadernillo_participante_propuesta.pdf`) | Tarjeta del caso y tarjeta de escalas (se le muestran a la persona) y planilla de respuestas (la llenas tú). |
 | **Mapa del flujo** (`mapa_flujo_preguntas_prueba.pdf`) | Ver el flujo de un vistazo. |
-| Reemplazados: v7 y v8 de estas instrucciones (en el historial de git), guion v6 (`guion_simple_prueba_usabilidad`), guion v5 e investigación Likert | Se conservan como historia de las decisiones. |
+| Reemplazados: v7 a v9 de estas instrucciones (en el historial de git), guion v6 (`guion_simple_prueba_usabilidad`), guion v5 e investigación Likert | Se conservan como historia de las decisiones. |

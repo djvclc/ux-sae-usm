@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
 import { useModoEstudio } from '../context/ModoEstudioContext'
+import { LayoutConPanel, PanelExplicativo, PanelSeccion } from '../components/PanelExplicativo'
 
 const STORAGE_KEY = 'sae_react_postulacion'
 
@@ -118,6 +119,91 @@ function generarExplicacion(asignado, sinAsignacion = false, detalles = []) {
   return partes
 }
 
+/* 2026-10-01 (pedido del usuario: "mini ayuda visual de una iteración de la
+   postulación", como desplegable adicional — no reemplaza la tabla ni la
+   explicación). Muestra, colegio por colegio y en el orden de la lista, cómo se
+   repartieron los cupos en la SIMULACIÓN que produjo este resultado: cupos de la
+   reserva del 15 % (fase 1), cupos generales ocupados por quienes tenían más
+   prioridad, el resto, y el lugar de la familia en la fila. Usa los datos reales
+   del recorrido (`detalles[i].simulacion` de calcularResultado: S, sSep, sGen,
+   conMejorRango, posGeneral, via) — no estima nada aparte. Solo condición A.
+   Guías: PAIR (mostrar el mecanismo), HAX G11 (por qué), información con gráficos
+   (Glazerman, principio del prototipo). */
+function RecorridoVisual({ detalles = [] }) {
+  const revisados = detalles.filter(
+    (d) => d.estado !== 'no_evaluado' && d.simulacion?.ofreceNivel,
+  )
+  if (!revisados.length) return null
+  return (
+    <div className="recorrido">
+      {revisados.map((d) => {
+        const sim = d.simulacion
+        const obtuvo = sim.seated
+        const mejor = Math.min(sim.conMejorRango ?? 0, sim.sGen)
+        const pos = sim.posGeneral
+        const porReserva = sim.via === 'cuota-sep'
+        // Asiento de la familia (índice 0-based dentro de los S cupos), o -1 si quedó fuera.
+        const asiento = !obtuvo ? -1 : porReserva ? 0 : sim.sSep + pos - 1
+        const asientos = Array.from({ length: sim.S }, (_, i) => {
+          if (i < sim.sSep) return 'reserva'
+          if (i < sim.sSep + mejor) return 'mejor'
+          return 'resto'
+        })
+        const ord = ORDINALES[d.idx - 1] ?? `N.º ${d.idx}`
+        const resumen = porReserva
+          ? `Obtuviste uno de los ${sim.sSep} cupos de la reserva del 15 %.`
+          : obtuvo
+            ? (sim.conMejorRango === 0
+              ? `Tu prioridad te puso adelante en la fila: quedaste en el lugar ${pos} y había ${sim.sGen} cupos.`
+              : `Quedaste en el lugar ${pos} de la fila y había ${sim.sGen} cupos.`)
+            : `${sim.conMejorRango} postulantes tenían más prioridad que tú. En el sorteo quedaste en el lugar ${pos} de la fila y había ${sim.sGen} cupos.`
+        return (
+          <div key={d.id} className={`recorrido__paso${obtuvo ? ' recorrido__paso--ok' : ''}`}>
+            <div className="recorrido__cabecera">
+              <strong>{d.idx}. {d.nombre}</strong>
+              <span className="recorrido__opcion">tu {ord} opción</span>
+              <span className={obtuvo ? 'recorrido__estado recorrido__estado--ok' : 'recorrido__estado'}>
+                {obtuvo ? 'Cupo' : 'No alcanzó'}
+              </span>
+            </div>
+            <p className="recorrido__datos">{sim.S} cupos · {sim.A} postulantes el año pasado</p>
+            <div
+              className="recorrido__asientos"
+              role="img"
+              aria-label={`${d.nombre}: ${sim.sSep} cupos de reserva del 15 %, ${mejor} cupos para quienes tenían más prioridad y ${sim.S - sim.sSep - mejor} cupos restantes. ${resumen}`}
+            >
+              {asientos.map((tipo, i) => (
+                <span
+                  key={i}
+                  className={`recorrido__asiento recorrido__asiento--${tipo}${i === asiento ? ' recorrido__asiento--tu' : ''}`}
+                />
+              ))}
+              {!obtuvo && (
+                <>
+                  <span className="recorrido__separador" aria-hidden="true">…</span>
+                  <span className="recorrido__asiento recorrido__asiento--fuera" title={`Tu lugar: ${pos}`} />
+                </>
+              )}
+            </div>
+            <p className="recorrido__texto">{resumen}</p>
+          </div>
+        )
+      })}
+      <div className="recorrido__leyenda" aria-hidden="true">
+        <span><i className="recorrido__asiento recorrido__asiento--reserva" />Reserva del 15 %</span>
+        <span><i className="recorrido__asiento recorrido__asiento--mejor" />Más prioridad que tú</span>
+        <span><i className="recorrido__asiento recorrido__asiento--resto" />Resto de los cupos</span>
+        <span><i className="recorrido__asiento recorrido__asiento--tu" />Tú</span>
+      </div>
+      <p className="recorrido__nota">
+        Simulación con datos del año pasado. Primero se asignan los cupos de la reserva del 15 %
+        entre estudiantes prioritarios/as; el resto se ordena por prioridad y, dentro de cada
+        grupo, por sorteo.
+      </p>
+    </div>
+  )
+}
+
 /* Opción 2 (2026-09-10) — comparación de un vistazo "por qué este colegio y no
    el anterior". Devuelve las filas (preferencias no obtenidas + la asignada) o
    null si no hay contraste (quedó en la 1.ª opción o fue el fallback sin cupo).
@@ -173,7 +259,7 @@ const estadoColor = {
 export default function SeguimientoPage() {
   const { textoGrande } = useTextSize()
   const { esControl } = useModoEstudio() // F3 — condición de control del estudio
-  const [data, setData] = useState(() => {
+  const [data] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       return raw ? JSON.parse(raw) : null
@@ -181,17 +267,9 @@ export default function SeguimientoPage() {
       return null
     }
   })
-  const [pedirConfirmacion, setPedirConfirmacion] = useState(false)
   const [ofertaAceptada, setOfertaAceptada] = useState(null) // null | 'aceptada' | 'rechazada'
   const [detalleAbierto, setDetalleAbierto] = useState(null)
   const comprobanteRef = useRef(null)
-
-  const cancelarPostulacion = () => {
-    localStorage.removeItem(STORAGE_KEY)
-    localStorage.removeItem('sae_react_postulacion_draft_list')
-    setData(null)
-    setPedirConfirmacion(false)
-  }
 
   const descargarComprobante = () => {
     if (!data) return
@@ -238,7 +316,7 @@ export default function SeguimientoPage() {
   if (!data) {
     return (
       <main className={`page${textoGrande ? ' page--texto-grande' : ''}`}>
-        <TextSizeBar pageName="Mi postulación" />
+        <TextSizeBar />
         <h1>Mi postulación</h1>
         <p className="page__lead">
           Aquí podrás ver el estado y el resultado de tu postulación.
@@ -280,9 +358,127 @@ export default function SeguimientoPage() {
     .filter((d) => asignado && d.idx < asignado.idx && d.estado !== 'no_evaluado')
     .map((d) => d.nombre)
 
+  /* ── Panel de explicación (refactor 2026-10-02, plantilla de la reunión con la
+     profesora guía del 2026-10-01; ver components/PanelExplicativo.jsx) ──
+     A la izquierda queda el resultado, la decisión (aceptar/rechazar, con sus
+     consecuencias junto a los botones — HAX G16) y el detalle por preferencia. A
+     la derecha, lo que EXPLICA el resultado. Todo lo del panel ya era exclusivo de
+     la condición A; en B el panel no se muestra y el flujo ocupa todo el ancho. */
+  const panel = (
+    <PanelExplicativo clave="resultado" titulo="Tu resultado, explicado">
+      {/* ── Explicación contextualizada ── F3: núcleo de la condición A. */}
+      {explicacion && (
+        <PanelSeccion tono="principal" titulo="¿Por qué te asignaron este colegio?">
+          {/* Opción 2 (2026-09-10) — comparación de un vistazo antes de los
+              párrafos. Si hay contraste (no quedó en su 1.ª opción), la tabla
+              resume el porqué y la explicación completa queda en un desplegable. */}
+          {comparacion ? (
+            <>
+              <table className="seg-porque-tabla">
+                <thead>
+                  <tr>
+                    <th scope="col">Colegio</th>
+                    <th scope="col">Tu situación ahí</th>
+                    <th scope="col">Resultado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparacion.map((f) => (
+                    <tr key={f.idx} className={f.obtuvo ? 'seg-porque-tabla__ok' : ''}>
+                      <td>
+                        <strong>{f.nombre}</strong>
+                        <span className="seg-porque-tabla__pref"> · tu {ORDINALES[f.idx - 1] ?? `N.º ${f.idx}`} opción</span>
+                      </td>
+                      <td>{f.situacion}</td>
+                      <td>{f.obtuvo ? 'Cupo' : 'No alcanzó'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <details className="seg-porque-detalle">
+                <summary>Ver la explicación completa</summary>
+                <div className="result-explanation">
+                  {explicacion.map((texto, i) => (
+                    <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
+                  ))}
+                </div>
+              </details>
+            </>
+          ) : (
+            <div className="result-explanation">
+              {explicacion.map((texto, i) => (
+                <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
+              ))}
+            </div>
+          )}
+          {/* 2026-10-01: ayuda visual adicional (no reemplaza lo anterior). */}
+          <details className="seg-porque-detalle">
+            <summary>Ver cómo se revisó tu lista, paso a paso</summary>
+            <RecorridoVisual detalles={resultado?.detalles ?? []} />
+          </details>
+        </PanelSeccion>
+      )}
+
+      {/* Mensaje tranquilizador si no quedó en primera opción (no aplica al
+          fallback sin cupo: ese caso lo cubre la explicación de arriba).
+          Incluye strategy-proofness. */}
+      {asignado && asignado.idx > 1 && !sinAsignacion && (
+        <PanelSeccion titulo="¿Qué significa no quedar en tu primera opción?">
+          <p>
+            No quedar en tu primera opción no significa que el sistema falló. El SAE revisa todos
+            los colegios de tu lista y te deja en el primero donde hay un cupo para tu situación —
+            en tu caso, el <strong>{asignado.nombre}</strong>.
+          </p>
+          <p>
+            {/* Opción 3 (2026-09-10) — contrafactual concreto con ESTA lista. */}
+            <strong>¿Y si hubieras ordenado la lista distinto?</strong> El resultado sería el mismo.
+            Si hubieras puesto el {asignado.nombre} en primer lugar, habrías quedado igual ahí:
+            cada colegio revisa tu postulación por separado, sin mirar en qué puesto de tu lista lo
+            dejaste.
+          </p>
+          <p>
+            Por eso poner primero el colegio que más quieres <strong>nunca te perjudica</strong>. El
+            resultado se basa solo en las prioridades que fija la Ley de Inclusión y en las vacantes
+            disponibles.
+          </p>
+        </PanelSeccion>
+      )}
+
+      {/* ── Opción 1 (2026-09-10) — "Qué sigue ahora" ──
+          GOV.UK ("qué ocurre después" en la confirmación) · Brookings (el proceso
+          no terminó) · HAX G16 (consecuencia de NO actuar). Fechas alineadas con
+          `/proceso`. */}
+      {asignado && !sinAsignacion && (
+        <PanelSeccion titulo="Qué sigue ahora">
+          <ol className="seg-next-list">
+            <li>
+              <strong>Ahora:</strong> acepta o rechaza tu asignación, entre el
+              <strong> 15 y el 21 de octubre de 2026</strong>.
+            </li>
+            <li>
+              <strong>Si aceptas:</strong> matricúlate en persona en {asignado.nombre} entre el
+              <strong> 9 y el 22 de diciembre de 2026</strong>.
+            </li>
+            <li>
+              <strong>Si quieres seguir intentando</strong> por un colegio que estaba más arriba en
+              tu lista: puedes volver a postular en el <strong>Periodo Complementario</strong> (10 al
+              17 de noviembre), con los colegios que aún tengan vacantes.
+            </li>
+          </ol>
+          <p className="seg-next-alerta" role="note">
+            Si no entras a esta página antes del <strong>21 de octubre</strong>, el sistema
+            acepta la asignación automáticamente.
+          </p>
+        </PanelSeccion>
+      )}
+    </PanelExplicativo>
+  )
+
   return (
-    <main className={`page page--seguimiento${textoGrande ? ' page--texto-grande' : ''}`}>
-      <TextSizeBar pageName="Mi postulación" />
+    <main className={`page page--seguimiento page--con-panel${textoGrande ? ' page--texto-grande' : ''}`}>
+      {/* 2026-10-05: el layout envuelve toda la página (ver PostulacionPage). */}
+      <LayoutConPanel panel={panel}>
+      <TextSizeBar />
       <h1>Mi postulación</h1>
       <p className="page__lead">
         Revisa el resultado de tu postulación y entiende por qué te fue asignado ese colegio.
@@ -428,93 +624,7 @@ export default function SeguimientoPage() {
         </div>
       )}
 
-      {/* ── Opción 1 (2026-09-10) — "Qué sigue ahora" ──
-          GOV.UK ("qué ocurre después" en la confirmación) · Brookings (el proceso
-          no terminó) · HAX G16 (consecuencia de NO actuar). Fechas alineadas con
-          `/proceso`. Solo condición A. */}
-      {!esControl && asignado && !sinAsignacion && (
-        <Card className="card--module" style={{ marginTop: 16 }}>
-          <CardHeader>
-            <CardTitle>Qué sigue ahora</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ol className="seg-next-list">
-              <li>
-                <strong>Ahora:</strong> acepta o rechaza tu asignación, entre el
-                <strong> 15 y el 21 de octubre de 2026</strong>.
-              </li>
-              <li>
-                <strong>Si aceptas:</strong> matricúlate en persona en {asignado.nombre} entre el
-                <strong> 9 y el 22 de diciembre de 2026</strong>.
-              </li>
-              <li>
-                <strong>Si quieres seguir intentando</strong> por un colegio que estaba más arriba en
-                tu lista: puedes volver a postular en el <strong>Periodo Complementario</strong> (10 al
-                17 de noviembre), con los colegios que aún tengan vacantes.
-              </li>
-            </ol>
-            <p className="seg-next-alerta" role="note">
-              ⏰ Si no entras a esta página antes del <strong>21 de octubre</strong>, el sistema
-              acepta la asignación automáticamente.
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* ── Explicación contextualizada ──
-          F3: es el núcleo de la condición A → no va en la de control (B solo
-          muestra el colegio asignado, sin el porqué). */}
-      {!esControl && explicacion && (
-        <Card className="card--module" style={{ marginTop: 16 }}>
-          <CardHeader>
-            <CardTitle>¿Por qué te asignaron este colegio?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Opción 2 (2026-09-10) — comparación de un vistazo antes de los
-                párrafos. Si hay contraste (no quedó en su 1.ª opción), la tabla
-                resume el porqué y la explicación completa queda en un desplegable. */}
-            {comparacion ? (
-              <>
-                <table className="seg-porque-tabla">
-                  <thead>
-                    <tr>
-                      <th scope="col">Colegio</th>
-                      <th scope="col">Tu situación ahí</th>
-                      <th scope="col">Resultado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {comparacion.map((f) => (
-                      <tr key={f.idx} className={f.obtuvo ? 'seg-porque-tabla__ok' : ''}>
-                        <td>
-                          <strong>{f.nombre}</strong>
-                          <span className="seg-porque-tabla__pref"> · tu {ORDINALES[f.idx - 1] ?? `N.º ${f.idx}`} opción</span>
-                        </td>
-                        <td>{f.situacion}</td>
-                        <td>{f.obtuvo ? '✅ Cupo' : 'No alcanzó'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <details className="seg-porque-detalle">
-                  <summary>Ver la explicación completa</summary>
-                  <div className="result-explanation">
-                    {explicacion.map((texto, i) => (
-                      <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
-                    ))}
-                  </div>
-                </details>
-              </>
-            ) : (
-              <div className="result-explanation" aria-live="polite">
-                {explicacion.map((texto, i) => (
-                  <p key={i} dangerouslySetInnerHTML={{ __html: texto }} />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+      {/* 2026-10-02: "Qué sigue ahora" y "¿Por qué te asignaron este colegio?" pasaron al panel. */}
 
       {/* ── Detalle por preferencia — rediseñado ── */}
       <Card className="card--module" style={{ marginTop: 16 }}>
@@ -603,44 +713,14 @@ export default function SeguimientoPage() {
         </CardContent>
       </Card>
 
-      {/* Mensaje tranquilizador si no quedó en primera opción (no aplica al
-          fallback sin cupo: ese caso lo cubre la explicación de arriba).
-          F3: incluye strategy-proofness → no va en la condición de control. */}
-      {!esControl && asignado && asignado.idx > 1 && !sinAsignacion && (
-        <Card className="card--module" style={{ marginTop: 16 }}>
-          <CardHeader>
-            <CardTitle>¿Qué significa no quedar en tu primera opción?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>
-              No quedar en tu primera opción no significa que el sistema falló. El SAE revisa todos
-              los colegios de tu lista y te deja en el primero donde hay un cupo para tu situación —
-              en tu caso, el <strong>{asignado.nombre}</strong>.
-            </p>
-            <p>
-              {/* Opción 3 (2026-09-10) — contrafactual concreto con ESTA lista. Hace
-                  verificable la propiedad de "el orden no perjudica" (caso_estudio §3.2),
-                  que antes se afirmaba en abstracto. */}
-              <strong>¿Y si hubieras ordenado la lista distinto?</strong> El resultado sería el mismo.
-              Si hubieras puesto el {asignado.nombre} en primer lugar, habrías quedado igual ahí:
-              cada colegio revisa tu postulación por separado, sin mirar en qué puesto de tu lista lo
-              dejaste.
-            </p>
-            <p>
-              Por eso poner primero el colegio que más quieres <strong>nunca te perjudica</strong>. El
-              resultado se basa solo en las prioridades que fija la Ley de Inclusión y en las vacantes
-              disponibles.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      {/* 2026-10-02: "¿Qué significa no quedar en tu primera opción?" pasó al panel. */}
 
       {/* ── Acciones y comprobante ── */}
       <div className="seg-actions-bar">
         <button type="button" className="btn btn--primary" onClick={descargarComprobante}>
           📄 Descargar comprobante
         </button>
-        <Link className="btn btn--secondary" to="/calendario">
+        <Link className="btn btn--secondary" to="/proceso">
           📅 Ver calendario del proceso
         </Link>
         <Link className="btn btn--secondary" to={asignado ? `/colegio?id=${asignado.id}` : '#'}>
@@ -648,64 +728,9 @@ export default function SeguimientoPage() {
         </Link>
       </div>
 
-      {/* Cancelar postulación */}
-      <details className="seg-cancel-section" style={{ marginTop: 24 }}>
-        <summary className="seg-cancel-summary">
-          Cancelar mi postulación
-        </summary>
-        <div className="seg-cancel-body">
-          {!pedirConfirmacion ? (
-            <>
-              <p>
-                Si cancelas, tu postulación quedará eliminada y deberás volver a realizarla
-                desde cero antes del cierre del período.
-              </p>
-              <button
-                type="button"
-                className="btn btn--secondary btn--dark"
-                style={{ borderColor: 'var(--rojo)', color: 'var(--rojo)' }}
-                onClick={() => setPedirConfirmacion(true)}
-              >
-                Quiero cancelar mi postulación
-              </button>
-            </>
-          ) : (
-            <div
-              className="sim-result"
-              role="alertdialog"
-              aria-labelledby="confirm-cancel-titulo"
-              aria-describedby="confirm-cancel-desc"
-              style={{ background: 'var(--rojo-cl)', borderColor: 'var(--rojo)' }}
-            >
-              <h3 id="confirm-cancel-titulo" style={{ color: 'var(--rojo)' }}>
-                ⚠ ¿Seguro que quieres cancelar?
-              </h3>
-              <p id="confirm-cancel-desc">
-                Esta acción <strong>no se puede deshacer</strong>. Tu postulación y tu lista de colegios
-                quedarán eliminadas.
-              </p>
-              <div className="hero__actions" style={{ marginTop: 12 }}>
-                <button
-                  type="button"
-                  className="btn btn--primary"
-                  style={{ background: 'var(--rojo)', borderColor: 'var(--rojo)' }}
-                  onClick={cancelarPostulacion}
-                >
-                  Sí, cancelar
-                </button>
-                <button
-                  type="button"
-                  className="btn btn--secondary"
-                  onClick={() => setPedirConfirmacion(false)}
-                  autoFocus
-                >
-                  No, mantener
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </details>
+      {/* 2026-10-06 (pedido del usuario): se eliminó la sección "Cancelar mi
+          postulación" (desplegable con confirmación que borraba la postulación). */}
+      </LayoutConPanel>
     </main>
   )
 }

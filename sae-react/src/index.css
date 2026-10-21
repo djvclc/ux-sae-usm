@@ -217,6 +217,45 @@ select:focus {
   color: var(--azul-osc);
 }
 
+/* 2026-10-05 (limpieza del menú): dos grupos — principal (con "Postular" como
+   único botón) y personal ("Mi postulación", "Mis datos") separado por una línea.
+   La página activa se marca con un subrayado, no con otro recuadro. */
+.menu__grupo {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.menu__grupo--personal {
+  margin-left: 14px;
+  padding-left: 14px;
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+}
+.menu__link.menu__link--active:not(.menu__link--cta) {
+  background: none;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+/* El contorno de foco solo al navegar con teclado: con el mouse, el enlace
+   recién pulsado quedaba encuadrado y parecía otro botón. */
+.topbar a:focus:not(:focus-visible),
+.topbar button:focus:not(:focus-visible) {
+  outline: none;
+}
+@media (max-width: 599px) {
+  .menu__grupo {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .menu__grupo--personal {
+    margin: 6px 0 0;
+    padding: 6px 0 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
 /* Botón hamburguesa — oculto por defecto, aparece en móvil */
 .topbar__hamburger {
   display: none;
@@ -382,6 +421,22 @@ select:focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+/* 2026-10-05: sin "Estás en" (pageName omitido) ya no hay barra de ubicación:
+   el control de tamaño de texto queda como un control discreto en la esquina
+   superior izquierda, alineado con el título (feedback del usuario: sin la
+   barra "pierde sentido" a la derecha, mejor arriba a la izquierda). */
+.context-bar.context-bar--sin-ubicacion {
+  background: none;
+  border-bottom: 0;
+  padding: 0;
+  margin-bottom: 6px;
+}
+.context-bar--sin-ubicacion .context-bar__inner.context-bar__inner {
+  justify-content: flex-start;
+  max-width: none;
+  margin: 0;
 }
 
 .context-bar__text-size span {
@@ -1723,14 +1778,21 @@ select:focus {
   display: none;
 }
 
-@media (max-width: 1024px) {
+/* 2026-10-01: con la fuente raíz en 19px (Z16) y seminegrita, los 9 enlaces del
+   menú desbordaban entre ~860 y ~1100px de ancho. Se amplía el rango y se baja a
+   0.86rem (≈16px con raíz 19px: respeta el mínimo de 16px del requisito 13-g). */
+@media (max-width: 1200px) {
   .menu {
-    gap: 2px;
+    gap: 0;
+    /* si aun así no cabe (texto "Grande", ~900px), pasa a dos líneas en vez de desbordar */
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    min-width: 0;
   }
 
   .menu__link {
-    font-size: 1rem;
-    padding: 6px 9px;
+    font-size: 0.86rem;
+    padding: 6px 7px;
   }
 }
 
@@ -4082,42 +4144,26 @@ button[disabled],
 }
 
 /* ── Actions bar ── */
+/* 2026-10-06 (feedback: "deja más ordenados estos botones"): antes se repartían
+   2 + 1 con anchos distintos. Ahora: la acción principal (descargar comprobante)
+   a todo el ancho y las dos secundarias abajo, del mismo ancho. */
 .seg-actions-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--esp-sm);
-  flex-wrap: wrap;
   margin-top: var(--esp-lg);
   padding: var(--esp-lg);
   background: var(--azul-cl);
   border-radius: var(--radio-lg);
   border: 1px solid #b8d0e8;
 }
-
-/* ── Cancel section ── */
-.seg-cancel-section {
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  overflow: hidden;
+.seg-actions-bar > :first-child {
+  grid-column: 1 / -1;
 }
-
-.seg-cancel-summary {
-  padding: var(--esp-md) var(--esp-lg);
-  cursor: pointer;
-  font-weight: 600;
-  color: var(--rojo);
-  font-size: 0.92rem;
-  background: var(--blanco);
-  user-select: none;
-}
-
-.seg-cancel-summary:hover {
-  background: var(--rojo-cl);
-}
-
-.seg-cancel-body {
-  padding: var(--esp-md) var(--esp-lg) var(--esp-lg);
-  background: var(--blanco);
-  border-top: 1px solid var(--borde);
+.seg-actions-bar > .btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
 }
 
 /* ── Responsive ── */
@@ -4157,7 +4203,7 @@ button[disabled],
   }
 
   .seg-actions-bar {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .seg-result-plano__meta {
@@ -4966,30 +5012,6 @@ button[disabled],
   margin-bottom: var(--esp-sm);
 }
 
-.tut-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 2px solid var(--borde);
-  border-radius: 999px;
-  background: var(--blanco);
-  color: var(--texto-suave);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  white-space: nowrap;
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-
-.tut-toggle--on {
-  border-color: var(--azul);
-  background: var(--azul-cl);
-  color: var(--azul-osc);
-}
-
 /* Caja de información contextual */
 .tut-box {
   border-radius: var(--radio);
@@ -5130,10 +5152,6 @@ button[disabled],
   .post-header {
     flex-direction: column;
     gap: var(--esp-sm);
-  }
-
-  .tut-toggle {
-    align-self: flex-start;
   }
 }
 
@@ -5654,15 +5672,6 @@ button[disabled],
   outline: none;
   border-color: var(--azul);
   box-shadow: 0 0 0 3px var(--azul-cl);
-}
-
-.post-login-ok {
-  background: var(--verde-cl);
-  color: #145f2c;
-  border-radius: var(--radio);
-  padding: 10px 14px;
-  font-weight: 600;
-  font-size: 0.92rem;
 }
 
 .post-region-block {
@@ -7659,4 +7668,874 @@ button[disabled],
   flex-shrink: 0;
   align-self: center;
   white-space: nowrap;
+}
+
+/* 2026-09-30: estado de cada hijo/a en su tarjeta del grupo familiar */
+/* 2026-10-05 (feedback: "parecen botones"): el estado de cada hijo/a era una
+   píldora azul sólida con texto blanco — el mismo aspecto que un botón primario.
+   Pasa a texto de estado: sin fondo, sin forma de botón, solo color y negrita
+   (el ✓ / la palabra ya dicen el estado; el color no es la única señal). */
+.post-familia__estado {
+  display: block;
+  margin: 4px 0 2px;
+  padding: 0;
+  background: none;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.post-familia__estado--postula {
+  color: var(--azul-osc); /* 7,8:1 sobre --azul-cl (medido) */
+}
+
+.post-familia__estado--se-queda {
+  color: #145f2c; /* 6,9:1 sobre --verde-cl (medido) */
+}
+
+.post-familia__hijo--se-queda {
+  border-color: var(--verde);
+  background: var(--verde-cl);
+}
+
+/* 2026-09-30: pasos numerados de la explicación de postulación en bloque */
+.post-familia__pasos {
+  margin: 0 0 10px;
+  padding-left: 1.4em;
+  list-style: decimal; /* el reset de Tailwind quita los números de <ol> */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 2026-09-30: elección bloque / por separado en "Tu grupo familiar" */
+.post-familia__modo {
+  border: 0;
+  margin: 4px 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-familia__modo-titulo {
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.post-familia__opcion {
+  padding: 14px;
+  border: 2px solid var(--gris-borde);
+  border-radius: var(--radio);
+  background: var(--bg-card);
+  cursor: pointer;
+}
+
+.post-familia__opcion-cabecera {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.post-familia__opcion input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--azul);
+}
+
+.post-familia__opcion--marcada {
+  border-color: var(--azul);
+  background: var(--azul-cl);
+}
+
+.post-familia-resumen__modo {
+  margin: 0 0 8px;
+}
+
+/* 2026-09-30: detalle de la opción elegida, dentro de su misma tarjeta */
+.post-familia__detalle {
+  margin: 12px 0 0 34px; /* alineado con el texto, no con el radio */
+  padding-top: 12px;
+  border-top: 1px solid var(--azul-med);
+}
+
+.post-familia__detalle p {
+  margin: 0 0 8px;
+}
+
+.post-familia__detalle-titulo {
+  font-weight: 800;
+}
+
+@media (max-width: 599px) {
+  .post-familia__detalle {
+    margin-left: 0;
+  }
+}
+
+/* 2026-09-30: ConfirmarDatosModal — reemplaza la pantalla intermedia del paso 1 */
+.prio-modal__content.confirmar-datos {
+  max-width: 560px;
+  text-align: left;
+  padding: 28px 28px 24px;
+}
+
+.confirmar-datos .confirmar-modal__titulo {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.confirmar-datos__modo {
+  background: var(--azul-cl);
+  color: var(--azul-osc);
+  border-radius: var(--radio);
+  padding: 10px 14px;
+  margin: 0 0 14px;
+}
+
+.confirmar-datos__seccion {
+  border-top: 1px solid var(--gris-borde);
+  padding: 10px 0;
+}
+
+.confirmar-datos__seccion h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-suave);
+  margin: 0 0 6px;
+}
+
+.confirmar-datos__seccion p {
+  margin: 0;
+}
+
+.confirmar-datos__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.confirmar-datos__lista li {
+  display: flex;
+  flex-direction: column;
+}
+
+.confirmar-datos__lista--vinetas {
+  list-style: disc;
+  padding-left: 1.2em;
+  gap: 2px;
+}
+
+.confirmar-datos__lista--vinetas li {
+  display: list-item;
+}
+
+.confirmar-datos__corregir {
+  display: inline-block;
+  margin: 2px 0 14px;
+}
+
+.confirmar-datos__declara {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--naranja-cl);
+  border: 2px solid var(--naranja);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  cursor: pointer;
+}
+
+.confirmar-datos__declara input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--azul);
+}
+
+/* 2026-10-05 (feedback: "se ve poco trabajado"): ConfirmarEnvioModal con el
+   mismo lenguaje visual que ConfirmarDatosModal (.confirmar-datos). */
+.confirmar-envio__para {
+  text-align: center;
+  color: var(--texto-suave);
+  margin: -4px 0 16px;
+}
+
+.confirmar-envio__lista {
+  list-style: decimal;
+  margin: 0;
+  padding-left: 1.4em;
+  display: grid;
+  gap: 4px;
+}
+
+.confirmar-envio__lista li {
+  font-weight: 700;
+  padding-left: 2px;
+}
+
+.confirmar-envio__acepta {
+  background: var(--azul-cl);
+  border-left: 4px solid var(--azul);
+  border-radius: var(--radio);
+  padding: 14px 16px;
+  margin: 6px 0 14px;
+}
+
+.confirmar-envio__acepta-titulo {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: var(--azul-osc);
+}
+
+.confirmar-envio__acepta ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.confirmar-envio__acepta li {
+  position: relative;
+  padding-left: 26px;
+}
+
+.confirmar-envio__acepta li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 18px;
+  text-align: center;
+  margin-top: 3px;
+}
+
+.confirmar-envio__nota {
+  margin: 0 0 18px;
+  font-size: 0.92rem;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+/* 2026-09-30: estado vacío de "Tu lista" (entrada al paso 2) */
+.post-lista-vacia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 32px 24px;
+  border: 2px dashed var(--azul-med);
+  border-radius: var(--radio-lg);
+  background: var(--azul-cl);
+}
+
+.post-lista-vacia__titulo {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--texto);
+}
+
+.post-lista-vacia__texto {
+  margin: 0 0 8px;
+  max-width: 46ch;
+  color: var(--texto);
+}
+
+/* 2026-10-01: barra de progreso de /postulacion (reemplaza los círculos numerados
+   de .stepper, que sigue usándose en RegistroPage) */
+.post-progreso {
+  margin: 16px 0 20px;
+}
+
+.post-progreso__texto {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  color: var(--texto);
+}
+
+.post-progreso__barra {
+  display: flex;
+  gap: 6px;
+}
+
+.post-progreso__tramo {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--gris-borde);
+  transition: background 0.3s;
+}
+
+.post-progreso__tramo--lleno {
+  background: var(--azul);
+}
+
+.post-progreso__despues {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-progreso__tramo { transition: none; }
+}
+
+/* 2026-10-01: paso 3 "Revisa y envía" como resumen escaneable */
+.post-revision__intro {
+  margin: 0 0 16px;
+}
+
+.post-revision__seccion {
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  background: var(--bg-card);
+  padding: 14px 16px;
+  margin: 0 0 14px;
+}
+
+.post-revision__cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.post-revision__cabecera h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.post-revision__modo {
+  margin: 0 0 8px;
+  color: var(--azul-osc);
+}
+
+.post-revision__personas,
+.post-revision__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-revision__personas li {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  border-top: 1px solid var(--gris-borde);
+}
+
+.post-revision__personas li:first-child {
+  border-top: 0;
+}
+
+.post-revision__personas span,
+.post-revision__colegio > span {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.post-revision__fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-top: 1px solid var(--gris-borde);
+}
+
+.post-revision__fila:first-child {
+  border-top: 0;
+}
+
+.post-revision__num {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.post-revision__colegio {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-revision__nota {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+/* 2026-10-01: RecorridoVisual (/seguimiento, "¿Por qué te asignaron este colegio?") */
+.recorrido {
+  margin-top: 10px;
+}
+
+.recorrido__paso {
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  margin: 0 0 10px;
+  background: var(--bg-card);
+}
+
+.recorrido__paso--ok {
+  border: 2px solid var(--verde);
+}
+
+.recorrido__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+
+.recorrido__opcion {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.recorrido__estado {
+  margin-left: auto;
+  font-weight: 800;
+  color: #7b1c1c;
+}
+
+.recorrido__estado--ok {
+  color: #145f2c;
+}
+
+.recorrido__datos {
+  margin: 2px 0 8px;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.recorrido__asientos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+}
+
+.recorrido__asiento {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.recorrido__asiento--reserva { background: #1D9E75; }
+.recorrido__asiento--mejor   { background: var(--azul); }
+.recorrido__asiento--resto   { background: #c9ced6; }
+
+.recorrido__asiento--tu {
+  box-shadow: 0 0 0 3px var(--naranja);
+}
+
+.recorrido__asiento--fuera {
+  background: transparent;
+  border: 2px dashed var(--naranja);
+}
+
+.recorrido__separador {
+  margin: 0 4px;
+  color: var(--texto-suave);
+}
+
+.recorrido__texto {
+  margin: 8px 0 0;
+}
+
+.recorrido__leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 4px 0 6px;
+}
+
+.recorrido__leyenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recorrido__leyenda .recorrido__asiento {
+  width: 12px;
+  height: 12px;
+}
+
+.recorrido__nota {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Layout "flujo + panel de explicación" (refactor 2026-10-02, plantilla de la
+   reunión con la profesora guía del 2026-10-01). Usado en /postulacion y
+   /seguimiento — ver components/PanelExplicativo.jsx. En la condición B del
+   estudio (sin panel) queda `.layout-panel--solo`: una columna a todo el ancho.
+   ══════════════════════════════════════════════════════════════════════════ */
+/* 2026-10-05 (feedback: "algo más estándar y fijo"): barra lateral FIJA, patrón
+   estándar de sitios de documentación. El layout envuelve toda la página (también
+   el título), así el panel arranca ya en su posición: pegado bajo el menú sticky
+   (`--alto-topbar`, lo publica PanelExplicativo.jsx), siempre con el mismo alto
+   (el visible bajo el menú) y sin desplazarse al hacer scroll. Si el texto no
+   cabe, solo el cuerpo del panel tiene scroll propio, normal. Reemplaza el ajuste
+   anterior del mismo día (contain: size, alto mínimo, difuminados y bloqueo del
+   scroll de la página), que se sentía tosco. */
+.page--con-panel {
+  max-width: 1600px; /* 2026-10-05: más ancho para que el panel aproveche el espacio */
+  padding-left: 32px;
+  padding-right: 32px;
+  /* Igual al margen del sticky: el panel parte exactamente donde queda fijo. */
+  padding-top: var(--esp-md);
+}
+
+.layout-panel {
+  display: grid;
+  /* 2026-10-05 (feedback: "panel más ancho aprovechando el espacio"): el panel
+     deja de tener tope fijo (antes 440 px) y toma ~42 % del ancho. */
+  grid-template-columns: minmax(0, 1.35fr) minmax(380px, 1fr);
+  gap: 32px;
+}
+.layout-panel--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+.layout-panel__flujo {
+  min-width: 0;
+}
+.layout-panel__flujo > :first-child {
+  margin-top: 0;
+}
+
+/* 2026-10-07 (profesora guía: "un solo scroll"): sin alto fijo ni scroll
+   interno. Solo es sticky (`.panel-exp--fijo`) cuando cabe completo bajo el
+   menú — lo decide PanelExplicativo.jsx midiendo su alto; si no cabe, se
+   desplaza con la página. */
+.panel-exp {
+  background: var(--bg-card);
+  border: 1px solid var(--borde);
+  border-top: 4px solid var(--azul);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-lg);
+}
+.panel-exp--fijo {
+  position: sticky;
+  top: calc(var(--alto-topbar, 78px) + var(--esp-md));
+}
+.panel-exp__contenido {
+  animation: panel-exp-entrar 0.2s ease-out;
+}
+.panel-exp__cabecera {
+  /* 2026-10-05 (feedback: "se ve muy apretado"): más aire interno */
+  padding: 22px 26px 0;
+  border-bottom: 1px solid var(--borde);
+}
+.panel-exp__cuerpo {
+  padding: 20px 26px 26px;
+}
+/* Al cambiar de momento el contenido aparece con un fundido corto, sin moverse. */
+@keyframes panel-exp-entrar {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-exp__contenido { animation: none; }
+}
+.panel-exp__eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--azul);
+}
+.panel-exp .panel-exp__titulo {
+  margin: 4px 0 18px;
+  font-size: 1.3rem;
+  line-height: 1.25;
+}
+.panel-exp__seccion {
+  padding: 20px 0;
+  border-top: 1px solid var(--borde);
+}
+.panel-exp__seccion:first-of-type {
+  border-top: 0;
+}
+/* 2026-10-05 (feedback: "el título se ve muy encima del recuadro"): antes esta
+   regla quitaba el padding-top a TODA primera sección, incluidos los recuadros
+   destacados (principal/alerta), cuyo título quedaba pegado al borde. Ahora solo
+   se quita en secciones sin recuadro. */
+.panel-exp__seccion:first-of-type:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) {
+  padding-top: 0;
+}
+.panel-exp__seccion--principal {
+  background: var(--azul-cl);
+  border: 0;
+  border-left: 4px solid var(--azul);
+  border-radius: var(--radio);
+  padding: 18px 20px;
+  margin: 0 0 20px;
+}
+.panel-exp__seccion--principal + .panel-exp__seccion {
+  border-top: 0;
+}
+.panel-exp__seccion--alerta {
+  background: var(--naranja-cl);
+  border: 0;
+  border-left: 4px solid var(--naranja);
+  border-radius: var(--radio);
+  padding: 18px 20px;
+  margin: 0 0 20px;
+  color: #6b2d07;
+}
+.panel-exp__seccion--alerta + .panel-exp__seccion {
+  border-top: 0;
+}
+/* 2026-10-05 (feedback: "veo los componentes muy juntos"): espaciado parejo.
+   Entre recuadros consecutivos, 20 px (margin-bottom); entre un recuadro y una
+   sección sin recuadro, ~24 px en ambos sentidos. */
+.panel-exp__seccion--principal + .panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta),
+.panel-exp__seccion--alerta + .panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) {
+  padding-top: 4px;
+}
+.panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) + .panel-exp__seccion--principal,
+.panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) + .panel-exp__seccion--alerta {
+  margin-top: 4px;
+}
+.panel-exp .panel-exp__seccion-titulo {
+  margin: 0 0 10px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.panel-exp__seccion p,
+.panel-exp__seccion li {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.panel-exp__seccion p {
+  margin: 0 0 12px;
+}
+.panel-exp__seccion p:last-child {
+  margin-bottom: 0;
+}
+.panel-exp__seccion ul,
+.panel-exp__seccion ol {
+  margin: 0 0 12px;
+  padding-left: 1.3em;
+}
+.panel-exp__seccion li + li {
+  margin-top: 6px;
+}
+.panel-exp__seccion details > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--azul-osc);
+}
+.panel-exp__seccion details[open] > summary {
+  margin-bottom: 14px;
+}
+/* Opción elegida (bloque / por separado) destacada dentro del panel */
+.panel-exp__opcion {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+.panel-exp__opcion--elegida {
+  border: 2px solid var(--azul);
+  background: var(--azul-cl);
+}
+.panel-exp__opcion-titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font-weight: 800;
+}
+/* Leyenda de colores del % estimado */
+.panel-exp__leyenda {
+  list-style: none;
+  padding: 0 !important;
+  display: grid;
+  gap: 10px;
+}
+.panel-exp__leyenda li + li {
+  margin-top: 0;
+}
+.panel-exp__leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-exp__leyenda .tut-prob {
+  min-width: 52px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+/* Fechas */
+.panel-exp__fechas {
+  list-style: none;
+  padding: 0 !important;
+}
+.panel-exp__fechas li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--borde);
+}
+.panel-exp__fechas li + li {
+  margin-top: 0;
+}
+.panel-exp__fechas li:last-child {
+  border-bottom: 0;
+}
+.panel-exp__fechas strong {
+  white-space: nowrap;
+}
+/* La tabla y el recorrido de /seguimiento caben en el ancho del panel */
+.panel-exp .panel-exp__seccion > .seg-porque-tabla {
+  font-size: 0.88rem;
+  /* 2026-10-06 (feedback: "problemas de tamaño"): con la sangría de 36 px del
+     contenido de cada sección (§87), `width: 100%` + el desplazamiento hacía que la
+     tabla se saliera del recuadro. Al ser un bloque de datos, va sin sangría y
+     ocupa todo el ancho del recuadro, con columnas fijas. */
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  table-layout: fixed;
+}
+.panel-exp .seg-porque-tabla th:nth-child(1) { width: 42%; }
+.panel-exp .seg-porque-tabla th:nth-child(2) { width: 36%; }
+.panel-exp .seg-porque-tabla th:nth-child(3) { width: 22%; }
+.panel-exp .seg-porque-tabla td,
+.panel-exp .seg-porque-tabla th {
+  overflow-wrap: anywhere;
+}
+
+/* Sin prioridad de móvil (decisión 2026-10-02), pero bajo ~960 px el panel se
+   apila debajo del flujo en vez de comprimirlo. */
+@media (max-width: 960px) {
+  .page--con-panel {
+    padding-left: var(--esp-md);
+    padding-right: var(--esp-md);
+  }
+  .layout-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .panel-exp,
+  .panel-exp--fijo {
+    position: static;
+  }
+}
+/* El reset de Tailwind quita viñetas y números; en el panel sí se necesitan. */
+.panel-exp__seccion ol { list-style: decimal; }
+.panel-exp__seccion ul:not(.panel-exp__leyenda):not(.panel-exp__fechas) { list-style: disc; }
+
+/* 2026-10-05 (limpieza del menú): accesos al comparador desde el buscador y la ficha */
+.buscador-intro__comparar {
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 700;
+}
+.ficha-cta-zone__comparar {
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+/* ══ 2026-10-05 (feedback: "poco llamativo; necesito alguna técnica de llamada de
+   atención para leer", con la misma cantidad de texto) ══
+   Solo CSS sobre el panel "Te explicamos":
+   1. Puntos numerados (contador CSS): cada sección lleva un número en un círculo
+      azul junto al título — orden de lectura y punto de entrada visual. La alerta
+      lleva "!" en naranja y no cuenta.
+   2. Títulos más fuertes (azul oscuro, algo más grandes) y el cuerpo alineado
+      bajo el texto del título.
+   3. Resaltador: lo que ya está en negrita lleva un fondo azul claro en la mitad
+      inferior, para que quien escanea capte lo esencial. Dentro de los recuadros
+      (que ya tienen fondo) no se aplica. */
+.panel-exp__cuerpo {
+  counter-reset: punto-panel;
+}
+.panel-exp .panel-exp__seccion-titulo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 1.08rem;
+  color: var(--azul-osc);
+}
+.panel-exp__seccion > .panel-exp__seccion-titulo::before {
+  counter-increment: punto-panel;
+  content: counter(punto-panel);
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-top: -1px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.panel-exp__seccion--alerta > .panel-exp__seccion-titulo {
+  color: #6b2d07;
+}
+.panel-exp__seccion--alerta > .panel-exp__seccion-titulo::before {
+  counter-increment: none;
+  content: "!";
+  background: var(--naranja);
+}
+/* El contenido queda alineado con el texto del título (26 px del número + 10 px) */
+.panel-exp__seccion > :not(.panel-exp__seccion-titulo) {
+  margin-left: 36px;
+  /* nada con ancho completo puede salirse por la sangría */
+  max-width: calc(100% - 36px);
+}
+/* Resaltador sobre lo que ya está en negrita (fuera de los recuadros) */
+.panel-exp__seccion:not(.panel-exp__seccion--principal):not(.panel-exp__seccion--alerta) p strong {
+  background: linear-gradient(transparent 55%, #cfe0f7 55%);
+  padding: 0 2px;
+  -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
 }

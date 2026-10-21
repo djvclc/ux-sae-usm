@@ -1,5 +1,5 @@
 import { Component, lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { TextSizeProvider, useTextSize } from './context/TextSizeContext'
@@ -70,7 +70,7 @@ class ErrorBoundary extends Component {
 const InicioPage       = lazy(() => import('./pages/InicioPage'))
 const PerfilPage       = lazy(() => import('./pages/PerfilPage'))
 const AlgoritmoPage    = lazy(() => import('./pages/AlgoritmoPage'))
-const CalendarioPage   = lazy(() => import('./pages/CalendarioPage'))
+// 2026-10-05: CalendarioPage ya no tiene ruta propia (duplicaba /proceso; /calendario redirige ahí).
 const PostulacionPage  = lazy(() => import('./pages/PostulacionPage'))
 const SeguimientoPage  = lazy(() => import('./pages/SeguimientoPage'))
 const CumplimientoPage = lazy(() => import('./pages/CumplimientoPage'))
@@ -100,11 +100,6 @@ const seoData = {
     title: 'El sistema SAE — Cómo funciona la admisión escolar',
     desc: 'Entiende el algoritmo de asignación del SAE: los 4 pasos del proceso, tus prioridades, el simulador y el contexto internacional.',
     og: 'El Sistema de Admisión Escolar — cómo funciona y cuáles son tus prioridades',
-  },
-  '/calendario': {
-    title: 'El proceso y el calendario — SAE',
-    desc: 'Fechas clave del proceso de admisión escolar: postulación, resultados, matrículas y listas de espera.',
-    og: 'Calendario SAE — Fechas del proceso de admisión',
   },
   '/colegio': {
     title: 'Ver colegio — SAE',
@@ -178,6 +173,17 @@ function PageMeta() {
   return null
 }
 
+/* 2026-10-05 (pedido del usuario: "el botón Postular debe volver al inicio del
+   flujo"): estando ya en /postulacion, el enlace "Postular" del menú apunta a la
+   misma ruta y React Router no remonta la página, así que el flujo se quedaba en
+   el paso actual. Cada navegación genera una `location.key` nueva (también al ir
+   a la misma ruta), y usarla como `key` remonta la página: vuelve al paso 1 con
+   la lista vacía, igual que al entrar por primera vez. */
+function PostulacionReiniciable() {
+  const { key } = useLocation()
+  return <PostulacionPage key={key} />
+}
+
 function LoadingPage() {
   return (
     <div className="page-loading" role="status" aria-live="polite">
@@ -205,10 +211,12 @@ function App() {
                 <Route path="/"             element={<InicioPage />} />
                 <Route path="/perfil"       element={<PerfilPage />} />
                 <Route path="/algoritmo"    element={<AlgoritmoPage />} />
-                <Route path="/calendario"   element={<CalendarioPage />} />
+                {/* 2026-10-05 (limpieza del menú): /calendario duplicaba /proceso, que ya
+                    incluye el calendario Admisión 2027 → redirige para no romper enlaces. */}
+                <Route path="/calendario"   element={<Navigate to="/proceso" replace />} />
                 <Route path="/colegio"      element={<ColegioPage />} />
                 <Route path="/comparador"   element={<ComparadorPage />} />
-                <Route path="/postulacion"  element={<PostulacionPage />} />
+                <Route path="/postulacion"  element={<PostulacionReiniciable />} />
                 <Route path="/seguimiento"  element={<SeguimientoPage />} />
                 <Route path="/notas"        element={<NotasPage />} />
                 <Route path="/registro"    element={<RegistroPage />} />

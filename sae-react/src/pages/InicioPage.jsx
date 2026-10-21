@@ -127,7 +127,7 @@ export default function InicioPage() {
         <div className="welcome-banner" role="region" aria-label="Bienvenida primera vez">
           <div className="welcome-banner__inner">
             <span className="welcome-banner__msg">
-              ¿Es tu primera vez aquí? Te mostramos cómo funciona el SAE en 3 pasos cortos.
+              Es tu primera vez aquí? Te mostramos cómo funciona el SAE en 3 pasos cortos.
             </span>
             <div className="welcome-banner__actions">
               <button
@@ -204,6 +204,10 @@ export default function InicioPage() {
         <div className="buscador-intro">
           <h2 className="buscador-intro__titulo">Busca colegios</h2>
           <p className="buscador-intro__desc">Busca por nombre o comuna y agrega los que te interesen a tu lista.</p>
+          {/* 2026-10-05 (limpieza del menú): acceso al comparador, que salió de la navbar */}
+          <Link to="/comparador" className="link-inline buscador-intro__comparar">
+            Comparar colegios lado a lado →
+          </Link>
         </div>
 
         {/* S16-1: selector de orden del buscador */}

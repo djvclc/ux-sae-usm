@@ -106,7 +106,7 @@ export const tourPasos = [
   {
     id: 'postulacion-pasos',
     page: '/postulacion',
-    selector: '.stepper',
+    selector: '.post-progreso',
     titulo: '🗺 Esta barra te dice dónde estás',
     contenido:
       'La barra de progreso muestra en qué paso vas en todo momento. Si en algún momento te pierdes, siempre puedes ver cuánto falta y volver al paso anterior sin perder lo que ya ingresaste.',

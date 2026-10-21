@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mapa del flujo de preguntas (v11)</title>
+<style>
+  @page { size: Letter; margin: 15mm 15mm 14mm; }
+  :root {
+    --azul:#0057B7; --azul-claro:#E8F1FB; --verde:#1A7F37; --verde-claro:#E6F4EA;
+    --naranja:#B35F00; --naranja-claro:#FFF1DF; --rojo:#C0392B; --rojo-claro:#FDECEA;
+    --gris:#222; --gris-med:#555; --borde:#cfd6df; --gris-claro:#F1F3F6;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--gris); font-size: 10.3pt; line-height: 1.42; margin: 0; background: #fff; }
+  h1 { font-size: 19pt; color: var(--azul); margin: 0 0 4px; }
+  .sub { color: var(--gris-med); margin-bottom: 12px; }
+  h2 { font-size: 13pt; color: var(--azul); border-bottom: 2px solid var(--azul); padding-bottom: 3px; margin: 20px 0 10px; break-after: avoid; }
+  p { margin: 0 0 7px; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 6px 0 12px; font-size: 9.6pt; }
+  .leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .sw--pag { background: var(--azul-claro); border: 2px solid var(--azul); }
+  .sw--esc { background: var(--naranja-claro); border: 2px solid var(--naranja); }
+  .sw--voz { background: var(--verde-claro); border: 2px solid var(--verde); }
+  .sw--otro { background: var(--gris-claro); border: 2px solid #8a94a3; }
+  .linea { position: relative; padding-left: 26px; }
+  .linea::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 3px; background: var(--borde); border-radius: 2px; }
+  .paso { position: relative; margin: 0 0 9px; padding: 8px 12px; border-radius: 8px; border: 1.5px solid; break-inside: avoid; }
+  .paso::before { content: ""; position: absolute; left: -22px; top: 12px; width: 13px; height: 13px; border-radius: 50%; border: 3px solid; background: #fff; }
+  .paso--pag { background: var(--azul-claro); border-color: var(--azul); } .paso--pag::before { border-color: var(--azul); }
+  .paso--esc { background: var(--naranja-claro); border-color: var(--naranja); } .paso--esc::before { border-color: var(--naranja); }
+  .paso--voz { background: var(--verde-claro); border-color: var(--verde); } .paso--voz::before { border-color: var(--verde); }
+  .paso--otro { background: var(--gris-claro); border-color: #8a94a3; } .paso--otro::before { border-color: #8a94a3; }
+  .paso__cab { display: flex; justify-content: space-between; gap: 10px; font-weight: 700; margin-bottom: 3px; }
+  .paso__min { font-weight: 600; color: var(--gris-med); white-space: nowrap; font-size: 9.5pt; }
+  .paso ul { margin: 3px 0 0 18px; padding: 0; } .paso li { margin-bottom: 2px; }
+  .ab { font-size: 9.4pt; color: #333; margin-top: 4px; }
+  .tag { font-size: 8.4pt; font-weight: 700; padding: 0 6px; border-radius: 8px; border: 1px solid; margin-left: 4px; white-space: nowrap; }
+  .tag--esc { color: var(--naranja); border-color: var(--naranja); background: #fff; }
+  .tag--voz { color: var(--verde); border-color: var(--verde); background: #fff; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.6pt; }
+  th, td { border: 1px solid var(--borde); padding: 5px 7px; vertical-align: top; text-align: left; }
+  th { background: var(--azul-claro); }
+  tr { break-inside: avoid; }
+  .box { background: var(--azul-claro); border-left: 4px solid var(--azul); padding: 8px 12px; margin: 8px 0 12px; break-inside: avoid; }
+  .alerta { background: var(--rojo-claro); border-left: 4px solid var(--rojo); padding: 8px 12px; margin: 8px 0 12px; break-inside: avoid; }
+  .nota { font-size: 9pt; color: var(--gris-med); }
+  td.falta { color: var(--rojo); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>Mapa del flujo de preguntas</h1>
+<div class="sub">Prueba comparativa del flujo de postulación · versión 11 (2026-10-19) · propuesta a validar con la profesora guía</div>
+
+<div class="box">
+<strong>En una frase:</strong> se le explica a la persona el caso de una familia y se le pide postular a dos hijos con <strong>dos colegios en un orden fijo</strong> (San Martín primero, Los Andes segundo). Hace toda la postulación <strong>sin preguntas</strong> y sin que se le pida pensar en voz alta. Al terminar responde <strong>en voz alta</strong> la <strong>ASQ</strong> y su predicción, ve el resultado y responde <strong>preguntas en voz alta</strong>. <strong>No escribe nada.</strong> Todo es igual en las dos versiones de la página; solo cambia si tiene el panel de explicaciones.
+</div>
+
+<h2>Qué cambió en la versión 11</h2>
+<table>
+  <tr><th style="width:42%">Antes (v10)</th><th>Ahora (v11)</th></tr>
+  <tr><td>Escala de 1 a 7 con 1 = totalmente de acuerdo (como la ASQ original).</td><td><strong>7 = totalmente de acuerdo</strong>: número más alto, más acuerdo. Se declara como ajuste al reportar.</td></tr>
+  <tr><td>Se pedía pensar en voz alta durante la postulación.</td><td><strong>No se pide.</strong> La persona puede comentar si quiere; tú observas.</td></tr>
+</table>
+
+<h2>Qué cambió en la versión 10 respecto de la 9</h2>
+<table>
+  <tr><th style="width:42%">Antes (v9)</th><th>Ahora (v10)</th></tr>
+  <tr><td>Ninguna pregunta antes de usar la página. Versiones asignadas por número (impares A, pares B).</td><td><strong>Una pregunta en la bienvenida:</strong> "¿Has postulado alguna vez usando el SAE?". Las versiones se alternan por separado entre quienes ya postularon y quienes no, para que queden parejas.</td></tr>
+  <tr><td>Confianza y justicia sin medida con números.</td><td><strong>Una pregunta de cada una al ver el resultado</strong>, con la escala de 1 a 7 de la tarjeta. Aparte de la ASQ.</td></tr>
+  <tr><td>≈32 min.</td><td><strong>≈34 min</strong>, por confirmar en un piloto.</td></tr>
+</table>
+
+<div class="leyenda">
+  <span><i class="sw sw--pag"></i>La persona usa la página</span>
+  <span><i class="sw sw--esc"></i>Preguntas en voz alta con tarjeta de escalas</span>
+  <span><i class="sw sw--voz"></i>Preguntas en voz alta</span>
+  <span><i class="sw sw--otro"></i>Antes y después</span>
+</div>
+
+<h2>El flujo completo, paso a paso</h2>
+
+<div class="linea">
+  <div class="paso paso--otro">
+    <div class="paso__cab"><span>1. Bienvenida y consentimiento</span><span class="paso__min">4 min</span></div>
+    Explicas qué se va a hacer y pides permiso para grabar. <strong>Una pregunta:</strong> ¿has postulado alguna vez usando el SAE? (sí / no). Con eso eliges la versión.
+  </div>
+
+  <div class="paso paso--otro">
+    <div class="paso__cab"><span>2. Explicación del caso</span><span class="paso__min">3 min</span></div>
+    Lees el caso en voz alta y entregas la tarjeta: Daniela, sus tres hijos (Martina ya estudia en Los Andes; Sofía y Mateo postulan y quieren quedar juntos) y la tarea: postular con <strong>1. Colegio San Martín · 2. Colegio Los Andes</strong>, en ese orden.
+  </div>
+
+  <div class="paso paso--pag">
+    <div class="paso__cab"><span>3. La postulación completa, sin interrupciones</span><span class="paso__min">≈12 min</span></div>
+    Elige a Sofía y Mateo y "En bloque" → confirma los datos → agrega los 2 colegios en orden → revisa y envía → descarga el comprobante.
+    <div class="ab">No se le pide pensar en voz alta (puede comentar si quiere); tú <strong>no preguntas</strong>. Con 2 colegios de demanda alta, las dos versiones muestran el aviso <em>"Tu lista es corta y toda de alta demanda"</em>. <em>Con explicaciones:</em> además ve el panel "Te explicamos" y los porcentajes (San Martín 26 %, Los Andes 99 %).</div>
+  </div>
+
+  <div class="paso paso--esc">
+    <div class="paso__cab"><span>4. Al terminar la postulación <span class="tag tag--esc">ASQ (3) + predicción (3), en voz alta</span></span><span class="paso__min">3 min</span></div>
+    En "Postulación enviada", <strong>antes</strong> de ver el resultado. Le muestras la tarjeta de escalas; dice su respuesta y tú anotas:
+    <ul>
+      <li><strong>ASQ:</strong> satisfacción con la facilidad, con el tiempo y con la información de apoyo (un número del 1 al 7; 7 = totalmente de acuerdo).</li>
+      <li><strong>Predicción:</strong> ¿en qué colegio quedará Sofía? (San Martín / Los Andes / En ninguno / No sé) · ¿qué tan segura/o? · ¿por qué?</li>
+    </ul>
+  </div>
+
+  <div class="paso paso--pag">
+    <div class="paso__cab"><span>5. El resultado</span><span class="paso__min">4 min</span></div>
+    Pulsa "Ver mi resultado ahora". Igual en las dos versiones: Sofía no queda en San Martín y queda en Los Andes, su 2.ª preferencia. <em>Con explicaciones:</em> además el panel "Tu resultado, explicado".
+    <div class="ab">Apenas termina de mirarlo, con la tarjeta: <strong>confianza</strong> ("Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas") y <strong>justicia</strong> ("La forma en que el sistema decidió… me parece justa"), del 1 al 7.</div>
+  </div>
+
+  <div class="paso paso--voz">
+    <div class="paso__cab"><span>6. Preguntas en voz alta <span class="tag tag--voz">6 + 1 si quiso cambiar la lista</span></span><span class="paso__min">≈6 min</span></div>
+    <ul>
+      <li><strong>Sobre el resultado</strong> (en pantalla): ¿Era lo que esperabas? · ¿Por qué crees que pasó? · Con tus palabras, ¿por qué Sofía no quedó en San Martín?</li>
+      <li><strong>¿Qué habría pasado si…?</strong> (sin mirar la página): si hubieran puesto Los Andes primero (y si ella lo habría cambiado) · si Martina no estudiara en Los Andes · si otra familia sin vínculo postulara a San Martín.</li>
+    </ul>
+  </div>
+
+  <div class="paso paso--otro">
+    <div class="paso__cab"><span>7. Cierre</span><span class="paso__min">2 min</span></div>
+    Agradeces, pides reserva hasta que termine el estudio y completas la planilla.
+  </div>
+</div>
+
+<p class="nota"><strong>Total:</strong> ninguna pregunta escrita. 15–16 preguntas en voz alta: 1 en la bienvenida, 6 al terminar la postulación y 2 al ver el resultado (con la tarjeta de escalas), y 6–7 en voz alta después. Duración ≈ 34 min, por confirmar en un piloto.</p>
+
+<h2>Por qué las preguntas van en este orden</h2>
+<table>
+  <tr><th style="width:36%">Decisión</th><th>Razón</th></tr>
+  <tr><td>Solo <strong>una pregunta antes</strong> de usar la página: la experiencia previa.</td><td>Es un hecho, no una opinión, así que casi no influye. Saberlo antes permite repartir las versiones de forma pareja.</td></tr>
+  <tr><td>Confianza y justicia van <strong>apenas se ve el resultado</strong>.</td><td>Juzgan la decisión del sistema, así que necesitan el resultado; y van antes de conversar para que la conversación no cambie la respuesta.</td></tr>
+  <tr><td><strong>Sin preguntas</strong> durante la postulación.</td><td>Vive el flujo completo como en la realidad, sin que las preguntas le hagan fijarse en cosas que de otro modo no miraría.</td></tr>
+  <tr><td>La ASQ va <strong>al terminar de postular</strong>.</td><td>Es un cuestionario "después del escenario": mide la tarea recién hecha, sin mezclarla con la reacción al resultado.</td></tr>
+  <tr><td>La predicción va <strong>antes</strong> de ver el resultado.</td><td>Es la única forma de saber si la página le permitió anticipar el resultado.</td></tr>
+  <tr><td><strong>Nada escrito</strong>; las escalas se muestran en una tarjeta.</td><td>Evita que la sesión se sienta como encuesta o examen. La tarjeta permite responder una escala de 7 puntos sin tener que recordarla de oído.</td></tr>
+  <tr><td>Las preguntas "¿qué habría pasado si…?" van <strong>después</strong> del resultado.</td><td>Decisión del autor: mantiene limpio el momento antes del resultado y deja ver si la persona entiende cómo decide el sistema, no si recuerda el formulario. Lo que vio puede influir en las respuestas; se declara como limitación.</td></tr>
+  <tr><td>Solo <strong>2 colegios</strong>.</td><td>Bastan para el contraste central (el preferido sin ventaja vs. el seguro por la hermana), acortan la tarea, y el resultado es el mismo que con 6 colegios (verificado en el simulador).</td></tr>
+</table>
+
+<h2>Qué mide cada parte</h2>
+<table>
+  <tr><th style="width:24%">Qué se quiere saber</th><th>Con qué se mide</th><th style="width:32%">Qué se espera</th></tr>
+  <tr><td><strong>H1 · Comprensión</strong> (principal)</td><td>Predicción del colegio (antes del resultado) · "con tus palabras, ¿por qué no quedó en San Martín?" · las 3 preguntas "¿qué habría pasado si…?", que tienen respuesta correcta según el simulador</td><td>Con explicaciones entienden más, sobre todo que poner primero el colegio preferido no perjudica.</td></tr>
+  <tr><td><strong>H4 · El mito de "esconder" el preferido</strong></td><td>"Si hubieran puesto Los Andes primero…" y "¿lo habrías cambiado?" · si intentó cambiar el orden y por qué</td><td>Sin explicaciones aparece más la idea de bajar San Martín para "asegurar" Los Andes.</td></tr>
+  <tr><td><strong>Usabilidad</strong></td><td>ASQ (facilidad, tiempo, información de apoyo)</td><td>Facilidad y tiempo parecidos; información de apoyo mejor evaluada con explicaciones.</td></tr>
+  <tr><td><strong>Confianza</strong></td><td>"Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas" (1 a 7)</td><td>Más de acuerdo con explicaciones. Resultado exploratorio.</td></tr>
+  <tr><td><strong>Justicia</strong></td><td>"La forma en que el sistema decidió… me parece justa" (1 a 7)</td><td>Poca diferencia entre versiones. Resultado exploratorio.</td></tr>
+  <tr><td><strong>Experiencia previa</strong> (que los grupos sean parecidos)</td><td>"¿Has postulado alguna vez usando el SAE?", en la bienvenida</td><td>Se usa para repartir las versiones de forma pareja.</td></tr>
+</table>
+
+<div class="alerta"><strong>Decisiones pendientes con la profesora:</strong> (1) el aviso de lista corta que aparece con 2 colegios de demanda alta: mantenerlo (fiel al SAE, igual para todos) u ocultarlo durante la prueba; (2) la redacción de las preguntas de confianza y justicia, que son propias y no de un cuestionario validado; (3) preparar la pauta para clasificar las respuestas en voz alta; (4) ajustar el caso de estudio y el Cap. 3, que describen 6 colegios, hojas escritas y la covariable "tómbola".</div>
+
+<h2>Documentos de la prueba (v9)</h2>
+<table>
+  <tr><th style="width:42%">Documento</th><th>Para qué sirve</th></tr>
+  <tr><td><strong>Instrucciones de la prueba</strong> (<code>instrucciones_prueba_usabilidad.pdf</code>)</td><td>Documento principal: preparar y conducir la sesión, con lo que dices y las respuestas esperadas.</td></tr>
+  <tr><td><strong>Material impreso</strong> (<code>cuadernillo_participante_propuesta.pdf</code>)</td><td>Imprimir: tarjeta del caso y tarjeta de escalas (se le muestran a la persona) y planilla de respuestas (la llenas tú).</td></tr>
+  <tr><td><strong>Este mapa</strong> (<code>mapa_flujo_preguntas_prueba.pdf</code>)</td><td>Ver el flujo de un vistazo.</td></tr>
+  <tr><td>Reemplazados: versiones 7 y 8 (historial de git), guion v6, guion v5 e investigación Likert</td><td>Se conservan como historia de las decisiones.</td></tr>
+</table>
+
+</body>
+</html>

@@ -292,7 +292,7 @@
 | 22-10 | Paso 3 con enlaces "Editar" por sección (identificación, prioridades, lista) sin perder estado | ✅ | `PostulacionPage.jsx` |
 | 22-11 | ColegioAnalisis con postulantes del año anterior y vacantes por nivel (esquema v2) como fundamento del % estimado | ✅ | `PostulacionPage.jsx` |
 | 22-12 | Confirmación explícita del nivel al vincular estudiante ("Verifica el curso: es el error más frecuente…") | ✅ | `PostulacionPage.jsx` |
-| 22-13 | Opción "¿Postulas a hermanos?" con explicación de la postulación familiar en bloque y simulación del reordenamiento automático | ✅ | `PostulacionPage.jsx`, `index.css` |
+| 22-13 | Opción "¿Postulas a hermanos?" con explicación de la postulación familiar en bloque y simulación del reordenamiento automático *(refinado 2026-09-22/30: pantalla "Tu grupo familiar" con casillas por hijo/a, elección "En bloque / Por separado" y lista única en bloque como propuesta del prototipo; ver `CONTEXTO_CLAUDE_CODE.md` §52–§57. El reordenamiento se explica, no se simula: solo se calcula la lista del/de la menor)* | ✅ | `PostulacionPage.jsx`, `index.css` |
 | 22-14 | Consejo estratégico en paso 2 (ordenar por preferencia real) + aviso de lista corta con todas las opciones de alta demanda | ✅ | `PostulacionPage.jsx` |
 | 22-15 | Bloque "¿Y si no quedo en ninguna?" en paso 3 con los dos casos (con/sin colegio de origen) y enlaces a /proceso | ✅ | `PostulacionPage.jsx` |
 

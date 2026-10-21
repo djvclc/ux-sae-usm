@@ -7,6 +7,24 @@
 
 **Invariante:** el resultado de asignación es **idéntico** en A y B — mismo `SEED_CASO = 20260903`, mismo `calcularResultado`. B **no recalcula nada distinto**; solo **no muestra** las probabilidades, las visualizaciones y las explicaciones. Todo lo que sea fidelidad al SAE real (recuperación de prioridades, gates de aceptación, dirección, comprobante, pantalla de resultado con aceptar/rechazar) se conserva en ambas.
 
+> **Actualización 2026-09-30 (cambios del flujo posteriores al spec; `CONTEXTO_CLAUDE_CODE.md` §52–§57).** Las anclas de línea de abajo quedaron desfasadas; el estado vigente de las piezas afectadas es:
+>
+> | Pieza | A | B | Nota |
+> |---|---|---|---|
+> | Pantalla **"Tu grupo familiar"** (paso 1): casillas por hijo/a, estado en cada tarjeta ("✓ Postula a…" / "No postula · mantiene su matrícula"), elección **"En bloque / Por separado"** con su detalle desplegado dentro de la tarjeta | ✅ | ✅ **MANTENER** | Reglas oficiales del SAE (bloque opcional, reordenamiento del menor, "no garantizado") → fidelidad. La **lista única en bloque** es una propuesta de diseño del flujo, no capa de explicabilidad del algoritmo → igual en A y B. |
+> | Subtítulo de "Tu lista" en bloque: "Esta lista vale para Mateo y Sofía." | ✅ | ✅ MANTENER | La segunda frase ("Los porcentajes estimados son los de Sofía…") se **oculta en B** (implementado 2026-09-30). |
+> | `ColegioAnalisis` (bloque gris por colegio) | — | — | **Eliminado 2026-09-23.** El `%` pasó a **`ProbabilidadChip`** en la fila del colegio → **OCULTAR en B** (implementado). Demanda/vacantes siguen en la meta de la fila (A y B); la prioridad, en `PrioridadColegioControl`. |
+> | `/seguimiento`, tarjeta de resultado: filas **Probabilidad** y **Demanda** | — | — | **Quitadas en A y B (2026-09-23).** Quedan Prioridad (etiqueta completa) y Comprobante. |
+> | **`ConfirmarDatosModal`** (2026-09-30; reemplaza la pantalla intermedia del paso 1 y `ConfirmarVinculacionModal`): quién postula y cómo, RUN/curso, domicilio, "Lo que el sistema ya sabe" (solo si hay algo), declaración de apoderado/a | ✅ | ✅ MANTENER | Todo es fidelidad (datos del Estado + declaración obligatoria); no consulta `esControl`. El componente `CondicionesDetectadas` se eliminó: su contenido vive en este modal. |
+> | `CondicionesDetectadas` *(eliminado 2026-09-30, ver fila anterior)* | ✅ | ✅ MANTENER |
+> | **Paso 3 "Revisa y envía"** (2026-10-01, simplificado): "Quién postula" + "Tu lista" en filas (demanda · prioridad), solo confirmación | ✅ | ✅ MANTENER | Fidelidad. Sin `%` ni "quedarías aquí" en ninguna condición (ajuste 2026-10-01); `ResultadoProvisional` → **OCULTAR en B** (implementado). Se eliminaron los párrafos por colegio (bandas S22-14/W) y los InfoBox de SEP/prioridades por colegio; "¿Cuándo sabrás…?" + "¿Y si no quedo…?" pasan a un desplegable igual en A y B. | Título ahora "Lo que el sistema ya sabe de {nombre}". Visible en A y B, como dice el spec (fidelidad) y como está implementado (no consulta `esControl`). *Corrección 2026-09-30: el caso de estudio y el guion del moderador decían que no aparecía en B; se alinearon con el código.* |
+
+> **Activación (2026-10-01):** además de `/estudio` y `?modo=control`, el panel "Herramientas de la prueba de usabilidad" (paso 1 de `/postulacion`, colapsado) tiene un interruptor **"A · Con explicaciones" / "B · Sin explicaciones"** que usa `fijarCondicion` y recarga `/postulacion` sin query; muestra la versión activa.
+
+> **2026-10-01 (prueba del usuario):** `PrioridadColegioControl` (paso 2) y el tipo de prioridad en la lista del paso 3 → **OCULTAR en B** (implementado). La prioridad sigue calculándose igual. Inicio de la revisión de B como "formulario de postulación común".
+
+> **2026-10-01:** desplegable **"Ver cómo se revisó tu lista, paso a paso"** (`RecorridoVisual`, `/seguimiento`) dentro de la tarjeta "¿Por qué te asignaron este colegio?" → solo A (la tarjeta completa ya está oculta en B).
+
 ---
 
 ## 1. Inventario por ubicación

@@ -46,6 +46,7 @@ Una ficha por cada clave de `referencias.bib`. Sirve para controlar que la memor
 | `dawoud2023comparative` | B | misc | 1 | ⏳ |
 | `inel2020video` | B | misc | 0 | ⏳ |
 | `shin_fate` | B | misc | 0 | ⏳ |
+| `lewis1991asq` | C | article | 1 | ⏳ |
 
 ## Fichas
 
@@ -344,3 +345,11 @@ Una ficha por cada clave de `referencias.bib`. Sirve para controlar que la memor
 - **Aporte a la memoria:** _(completar al verificar: qué problema, método y hallazgo de la fuente sostienen las afirmaciones de arriba)_
 - **Verificación:** ⏳ pendiente
 
+### `lewis1991asq`
+
+- **Referencia:** Lewis, J. R. (1991). *Psychometric Evaluation of an After-Scenario Questionnaire for Computer Usability Studies: The ASQ*. SIGCHI Bulletin, 23(1), 78–81. doi:10.1145/122672.122692
+- **Bloque:** C — agregada el 2026-10-21 desde `docs/investigacion/investigacion_likert_y_momento_condicion_b.md` (referencia completa allí); volumen y páginas por confirmar contra la fuente
+- **Lo que la memoria le atribuye:**
+  - `03_metodologia.tex:123` — el *After-Scenario Questionnaire* (ASQ) de tres ítems (facilidad, tiempo e información de apoyo), escala de siete puntos con solo los extremos rotulados y opción "no aplica"; en el original el 1 corresponde a "totalmente de acuerdo" (el estudio invierte la escala y lo declara).
+- **Aporte a la memoria:** _(completar al verificar: qué problema, método y hallazgo de la fuente sostienen las afirmaciones de arriba)_
+- **Verificación:** ⏳ pendiente

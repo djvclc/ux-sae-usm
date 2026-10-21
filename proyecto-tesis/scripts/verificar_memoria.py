@@ -44,7 +44,8 @@ OBSOLETOS = [
     (r"62\s*/\s*62|72\s*/\s*72", "cifra intermedia del plan (junio/agosto)"),
     (r"probAsignacion|umbral (de asignación )?del? 65", "tabla/umbral eliminados en el Bloque R (sept. 2026)"),
     (r"\bN\s*=\s*8\b|ocho participantes", "prueba formativa N=8 superada por el estudio comparativo N≈30"),
-    (r"once ítems", "instrumento Likert vigente: 13 ítems (C1–C5, F1–F5, J1–J3)"),
+    (r"once ítems|trece ítems|13 ítems|Likert (de )?1 (a|--) ?5", "instrumento superado; vigente (v11): ASQ de 3 ítems 1–7 + predicción + confianza/justicia de 1 ítem + preguntas en voz alta"),
+    (r"impares a la condición|seis establecimientos en el (mismo )?orden|pensar en voz alta", "estudio v11: turnos por experiencia previa, 2 colegios, sin pensar en voz alta (revisar si se cita como historia)"),
     (r"guardado visible de borrador", "borrador reanudable retirado (Bloque S5, 2026-09-06)"),
     (r"máximo de (tres|ocho) colegios", "el SAE no tiene tope (error E2)"),
 ]

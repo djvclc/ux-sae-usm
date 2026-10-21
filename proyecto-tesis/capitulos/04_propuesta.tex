@@ -1,8 +1,8 @@
 \chapter{Propuesta}\label{cap:propuesta}
 
-Este capítulo presenta el prototipo desarrollado en la Fase~3 (Sección~\ref{sec:fase3}) recorriéndolo pantalla por pantalla. Para cada pantalla se describe qué hace, qué brecha del diagnóstico del SAE real aborda y qué principio de diseño aplica, sea de la revisión de literatura (Sección~\ref{sec:que-funciona}) o de los marcos de diseño de interacción humano-IA (Sección~\ref{sec:fase3-marcos}). El capítulo describe lo que se construyó; si esas decisiones mejoran la comprensión, la confianza y la percepción de justicia de las familias es lo que responderá el estudio comparativo (Sección~\ref{sec:estudio-comparativo}), cuyos resultados aún no existen. Las brechas son las que el diagnóstico heurístico identificó como prioritarias y que se detallan en la Sección~\ref{sec:res-diagnostico}: transparencia y apertura (0\,\% de cumplimiento en el sitio informativo), inclusión (0\,\%), búsqueda y encontrabilidad, audiovisualidad, interoperabilidad con ClaveÚnica y legibilidad.
+Este capítulo presenta el prototipo desarrollado en la Fase~3 (Sección~\ref{sec:fase3}) recorriéndolo pantalla por pantalla. Para cada pantalla se describe qué hace, qué brecha del diagnóstico del SAE real aborda y qué principio de diseño aplica, sea de la revisión de literatura (Sección~\ref{sec:que-funciona}) o de los marcos de diseño de interacción humano-IA (Sección~\ref{sec:fase3-marcos}). El capítulo describe lo que se construyó; si esas decisiones mejoran la comprensión de las familias sin hacer más difícil la postulación, y cómo se relacionan con su confianza y su percepción de justicia, es lo que responderá el estudio comparativo (Sección~\ref{sec:estudio-comparativo}), cuyos resultados aún no existen. Las brechas son las que el diagnóstico heurístico identificó como prioritarias y que se detallan en la Sección~\ref{sec:res-diagnostico}: transparencia y apertura (0\,\% de cumplimiento en el sitio informativo), inclusión (0\,\%), búsqueda y encontrabilidad, audiovisualidad, interoperabilidad con ClaveÚnica y legibilidad.
 
-Las capturas se tomaron del prototipo en funcionamiento, a 390~píxeles de ancho ---el tamaño de un teléfono, que es el acceso principal del arquetipo Daniela González---, recorriendo el caso de la familia Muñoz González con la lista y el orden fijos del estudio comparativo. Los establecimientos, las personas y las cifras de los establecimientos que aparecen en ellas son ficticios; las fechas corresponden al calendario oficial del proceso de admisión 2027, y las capturas se tomaron simulando un día dentro del período de postulación.
+Las capturas se tomaron del prototipo en funcionamiento recorriendo el caso de la familia Muñoz González con la lista y el orden del estudio comparativo (Sección~\ref{sec:estudio-comparativo}). Las páginas informativas se muestran a 390~píxeles de ancho ---el tamaño de un teléfono, que es el acceso principal del arquetipo Daniela González---, y el flujo de postulación y el resultado, a 1280~píxeles, el ancho de escritorio en que se hará el estudio, porque el panel de explicación de la condición~A se diseñó para ese ancho. Los establecimientos, las personas y las cifras de los establecimientos que aparecen en ellas son ficticios; las fechas corresponden al calendario oficial del proceso de admisión 2027, y las capturas se tomaron simulando un día dentro del período de postulación.
 
 \section{Visión general}\label{sec:prop-general}
 
@@ -10,11 +10,11 @@ El prototipo es una aplicación web que reproduce los dos componentes del SAE ev
 
 \begin{enumerate}
     \item \textbf{Informarse antes de postular}: buscar establecimientos, revisar su ficha, entender cómo funciona el algoritmo de asignación y conocer las etapas y fechas del proceso (Sección~\ref{sec:prop-informarse}).
-    \item \textbf{Postular}: un flujo de tres pasos ---identificarse, armar y ordenar la lista de establecimientos, y revisar y enviar--- con los mismos datos y declaraciones que exige el SAE real (Sección~\ref{sec:prop-postular}).
+    \item \textbf{Postular}: un flujo de tres pasos ---elegir a quién postular, armar y ordenar la lista de establecimientos, y revisar y enviar--- con los mismos datos y declaraciones que exige el SAE real (Sección~\ref{sec:prop-postular}).
     \item \textbf{Conocer el resultado}: ver el establecimiento asignado y por qué (Sección~\ref{sec:prop-resultado}).
 \end{enumerate}
 
-Sobre esas pantallas se aplican de manera transversal los principios de la interfaz: español de Chile con tuteo, lenguaje claro de nivel sexto básico, diseño pensado primero para el teléfono, un tamaño de letra base aumentado con una opción ``Grande'' visible en cada página, y texto de alto contraste (Sección~\ref{sec:accesibilidad}). Las pantallas que siguen corresponden a la \textbf{condición~A} del estudio comparativo, el prototipo completo; el mismo prototipo puede funcionar también en la \textbf{condición~B}, de control, que oculta toda la capa de explicación del algoritmo (Sección~\ref{sec:prop-control}).
+En la postulación y en el resultado, la pantalla se divide en dos: a la izquierda, el \textbf{flujo}, con lo que la familia tiene que hacer; a la derecha, un panel titulado ``Te explicamos'', que cambia según el momento en que está la familia y explica lo que está haciendo. La regla de reparto entre ambos es que las explicaciones del algoritmo van al panel, mientras que los avisos que también da el SAE real ---perder el cupo actual al quedar en otro establecimiento, lista corta, comprobante, reenvío--- quedan en el flujo. Así, quien solo quiere completar la postulación puede hacerlo sin leer el panel, y quien quiere entender encuentra la explicación junto a la acción a la que se refiere, una forma de divulgación progresiva y de explicabilidad contextualizada. Sobre todas las pantallas se aplican además los principios transversales de la interfaz: español de Chile con tuteo, lenguaje claro de nivel sexto básico, un tamaño de letra base aumentado con una opción ``Grande'' visible en cada página, y texto de alto contraste (Sección~\ref{sec:accesibilidad}). Las pantallas que siguen corresponden a la \textbf{condición~A} del estudio comparativo, el prototipo completo; el mismo prototipo puede funcionar también en la \textbf{condición~B}, de control, sin el panel ni el resto de la capa de explicación del algoritmo (Sección~\ref{sec:prop-control}).
 
 \section{Informarse antes de postular}\label{sec:prop-informarse}
 
@@ -48,95 +48,102 @@ Sobre esas pantallas se aplican de manera transversal los principios de la inter
 
 \section{El flujo de postulación}\label{sec:prop-postular}
 
-El flujo de postulación es el caso de estudio central de la validación. Reproduce los datos y las reglas del SAE real, y la mayoría de sus declaraciones ---documentados a partir del sitio oficial y del video instructivo del Ministerio de Educación---, con una simplificación deliberada que se indica en el paso~3, y agrega sobre ellos la capa de explicación que el sistema real no tiene.
+El flujo de postulación es el caso de estudio central de la validación. Reproduce los datos y las reglas del SAE real, y la mayoría de sus declaraciones ---documentados a partir del sitio oficial y del video instructivo del Ministerio de Educación---, con dos diferencias deliberadas que se indican en los pasos~1 y~3, y agrega sobre ellos la capa de explicación que el sistema real no tiene. Una barra de progreso de tres tramos indica en todo momento el paso actual y el siguiente.
 
-\subsection{Paso 1: identificarse}
+\subsection{Paso 1: elegir a quién postular}
 
-Tras ingresar con ClaveÚnica, la familia ve a sus hijos e hijas registrados en el Estado, con el curso que cursa hoy cada uno, su establecimiento actual y el curso al que entraría si postula (Figura~\ref{fig:prop-paso1}, izquierda). Nadie viene marcado: la familia elige a quién postular. Si marca a más de uno, la pantalla explica la postulación familiar en bloque, y a quien no se marca le explica que sigue en su establecimiento y no pierde su matrícula. Después, los datos de la estudiante y el domicilio aparecen ya cargados, para que la familia los \textbf{verifique} en lugar de escribirlos, con una opción para corregirlos, y se declara ser su apoderado o apoderada legal (Figura~\ref{fig:prop-paso1}, derecha). El ingreso con ClaveÚnica, en lugar de una cuenta y contraseña propias de la plataforma, responde a la brecha de \emph{interoperabilidad} del diagnóstico. En este paso hay además un recuadro desplegable, ``Antes de empezar: cómo se decide tu resultado'', que resume qué considera el algoritmo y qué no ---no hay puntaje, notas ni mérito--- antes de pedir cualquier dato.
+Tras ingresar con ClaveÚnica, la familia ve a sus hijos e hijas registrados en el Estado, con el curso y el establecimiento de hoy y el curso al que entraría si postula (Figura~\ref{fig:prop-paso1}). Nadie viene marcado: la familia elige a quién postular, y quien no se marca aparece como ``No postula · mantiene su matrícula''. Si marca a más de uno, elige además entre postularlos \emph{en bloque} o \emph{por separado}, como en el SAE real, donde la postulación familiar en bloque es opcional. Aquí está la primera diferencia deliberada: en el bloque, el prototipo propone \textbf{una sola lista} de establecimientos para todos los hermanos y hermanas que postulan, en lugar de una lista por cada uno, para evitar repetir los mismos colegios y el riesgo de omitir uno (Sección~\ref{sec:fase3-caso}). El panel de este momento explica que quien no postula no cambia de colegio y, en cuatro pasos numerados, cómo procesa el sistema una postulación en bloque ---primero a quien va en el curso más alto, y el establecimiento donde quede pasa a ser la primera opción de los menores---, con la advertencia de que quedar juntos no está asegurado.
 
 \begin{figure}[htbp]
 \centering
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-paso1-grupo-familiar.png}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-paso1-verificacion.png}
-\end{minipage}
-\caption{Paso~1: elección de quiénes postulan dentro del grupo familiar (izquierda) y verificación de los datos precargados, con la declaración de apoderada (derecha).}
+\includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{imagenes/propuesta/A-familia.png}
+\caption{Paso~1: elección de quiénes postulan dentro del grupo familiar y de la modalidad en bloque, con el panel ``Te explicamos'' a la derecha.}
 \label{fig:prop-paso1}
+\end{figure}
+
+Al continuar, una ventana resume lo que el sistema ya sabe para que la familia lo \textbf{verifique} en lugar de escribirlo: quién postula y cómo, el domicilio y los vínculos de la familia con establecimientos ---la hermana matriculada en uno, la madre exalumna de otro y la pareja que trabaja en un tercero---, con un enlace para corregir cualquier dato y la declaración de ser el apoderado o la apoderada legal (Figura~\ref{fig:prop-confirmar}). El ingreso con ClaveÚnica, en lugar de una cuenta y contraseña propias de la plataforma, responde a la brecha de \emph{interoperabilidad} del diagnóstico.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{imagenes/propuesta/A-confirmar-datos.png}
+\caption{Ventana de confirmación de los datos precargados, con los vínculos que el sistema ya conoce y la declaración de apoderada.}
+\label{fig:prop-confirmar}
 \end{figure}
 
 \subsection{Paso 2: armar y ordenar la lista}
 
-El paso~2 separa el catálogo de establecimientos disponibles (Figura~\ref{fig:prop-paso2}, izquierda) de la lista propia, ordenada por preferencia (Figura~\ref{fig:prop-paso2}, derecha). Como en el SAE real, no hay tope de establecimientos ni restricción regional. En la lista, cada establecimiento muestra su número de preferencia, su demanda, sus vacantes y la probabilidad estimada de obtener un cupo, como un porcentaje breve junto al nombre ---26\,\% en el Colegio San Martín, donde la familia no tiene ningún vínculo, y 99\,\% en el Colegio Los Andes, donde estudia una hermana---; para lectores de pantalla, la misma cifra se anuncia como ``X de cada 100''. Debajo, un recuadro indica la prioridad que la familia tiene \textbf{en ese establecimiento}: hermano o hermana, hijo o hija de funcionario y exalumno o exalumna son prioridades que valen solo en el colegio correspondiente. Esta es una explicación contextualizada a la situación de la familia y no una descripción general del sistema. La lista se reordena con botones o arrastrando, y un lector de pantalla anuncia cada cambio.
+El paso~2 separa el catálogo de establecimientos disponibles de la lista propia, ordenada por preferencia. Como en el SAE real, no hay tope de establecimientos ni restricción regional. Mientras la familia elige (Figura~\ref{fig:prop-paso2}), el panel explica que la lista vale para todos los que postulan en bloque, que se recomiendan al menos seis colegios, que conviene poner primero el que más se quiere porque hacerlo nunca perjudica, y cómo se decide el resultado: cuentan el orden de la lista, las prioridades que fija la ley y las vacantes, y si hay más postulantes que vacantes cada establecimiento hace su propio sorteo; no cuentan notas ni puntajes. Este último recuadro resume qué considera el algoritmo y qué no antes de que la familia arme su lista, y remite a la explicación completa del algoritmo.
 
 \begin{figure}[htbp]
 \centering
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-paso2-catalogo.png}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-paso2-tu-lista.png}
-\end{minipage}
-\caption{Paso~2: catálogo de establecimientos (izquierda) y lista propia con la probabilidad estimada y la prioridad de la familia en cada establecimiento (derecha).}
+\includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{imagenes/propuesta/A-catalogo.png}
+\caption{Paso~2: catálogo de establecimientos, con el panel que explica cómo armar la lista y cómo se decide el resultado.}
 \label{fig:prop-paso2}
 \end{figure}
 
-La decisión de diseño más directamente ligada a la pregunta de investigación está en el recuadro ``¿Qué hace el orden de tu lista?'' (Figura~\ref{fig:prop-paso3}, izquierda). Aborda el \emph{falso riesgo estratégico}: la creencia de que poner primero el establecimiento más deseado perjudica a la familia. El recuadro explica que cambiar el orden no cambia la probabilidad en cada establecimiento, sino solo en cuál de sus preferencias podría quedar, y por eso conviene poner primero el que más se quiere, en coherencia con la propiedad de \emph{strategy-proofness} de la Aceptación Diferida (Sección~\ref{sec:fase3-caso}). También aclara que se trata de una simulación con datos del año anterior y no del resultado, que el sistema calcula meses después.
+En la lista (Figura~\ref{fig:prop-lista}), cada establecimiento muestra su número de preferencia, su comuna, sus vacantes, su demanda y la probabilidad estimada de obtener un cupo, como un porcentaje breve junto al nombre ---26\,\% en el Colegio San Martín, donde la familia no tiene ningún vínculo, y 99\,\% en el Colegio Los Andes, donde estudia una hermana---; para lectores de pantalla, la misma cifra se anuncia como ``X de cada 100''. Debajo, un recuadro indica la prioridad que la familia tiene \textbf{en ese establecimiento}: hermano o hermana, hijo o hija de funcionario y exalumno o exalumna son prioridades que valen solo en el colegio correspondiente. La lista se reordena con botones o arrastrando, y un lector de pantalla anuncia cada cambio. Con dos establecimientos de alta demanda, el flujo muestra el aviso de lista corta, que recomienda agregar más ---al menos seis--- e incluir alguno de demanda media o baja.
 
-\subsection{Paso 3: revisar y enviar}
-
-El paso~3 resume la postulación completa antes de enviarla, con un enlace para editar cada sección, la postulación en bloque con el hermano y la fecha límite del proceso (Figura~\ref{fig:prop-paso3}, derecha). Aquí está la simplificación deliberada respecto del SAE real: allí la jornada y el proyecto educativo se aceptan por cada establecimiento, mientras que en el prototipo se informan una sola vez al enviar, para toda la lista, porque su repetición idéntica en cada establecimiento agregaba texto sin información nueva para la familia. Al confirmar, la familia puede descargar un comprobante.
+La decisión de diseño más directamente ligada a la pregunta de investigación está en el panel de este momento, en el recuadro ``¿Qué hace el orden de tu lista?''. Aborda el \emph{falso riesgo estratégico}: la creencia de que poner primero el establecimiento más deseado perjudica a la familia. El recuadro se actualiza con la lista de la familia: explica que el sistema la revisa en orden y deja a la familia en el primer colegio con cupo, que cambiar el orden no cambia la probabilidad en cada establecimiento, y que por eso conviene poner primero el que más se quiere, en coherencia con la propiedad de \emph{strategy-proofness} de la Aceptación Diferida (Sección~\ref{sec:fase3-caso}). En el caso, anticipa que con los datos del año anterior la familia quedaría en el Colegio Los Andes, su segunda preferencia, porque en la primera hay más familias que vacantes y no tiene prioridad ahí, y aclara que se trata de una simulación y no del resultado. Un segundo recuadro explica qué significa el número de cada colegio ---de cada 100 postulantes en la misma situación, cuántos consiguieron cupo el año anterior---, con tres tramos rotulados (muchas, medias o pocas posibilidades) y la advertencia de que el número no cambia al mover el colegio dentro de la lista.
 
 \begin{figure}[htbp]
 \centering
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-paso2-orden-lista.png}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-paso3-revision.png}
-\end{minipage}
-\caption{Explicación de qué hace el orden de la lista, al final del paso~2 (izquierda), y revisión de la postulación en el paso~3 (derecha).}
+\includegraphics[width=\textwidth,height=0.55\textheight,keepaspectratio]{imagenes/propuesta/A-lista.png}
+\caption{Paso~2: lista propia con la probabilidad estimada y la prioridad de la familia en cada establecimiento, el aviso de lista corta y el panel que explica qué hace el orden de la lista.}
+\label{fig:prop-lista}
+\end{figure}
+
+\subsection{Paso 3: revisar y enviar}
+
+El paso~3 resume la postulación antes de enviarla: quién postula y en qué modalidad, y la lista con la demanda y el vínculo de cada establecimiento, con un enlace para editar cada sección y la fecha límite del proceso (Figura~\ref{fig:prop-paso3}). El panel explica qué pasa después de enviar: cuándo se publican los resultados, qué ocurre si no se queda en ninguna opción y el período complementario. Aquí está la segunda diferencia deliberada respecto del SAE real: allí la jornada y el proyecto educativo se aceptan por cada establecimiento, mientras que en el prototipo se aceptan una sola vez al enviar, para toda la lista, porque su repetición idéntica en cada establecimiento agregaba texto sin información nueva para la familia. Al confirmar, la familia puede descargar un comprobante.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{imagenes/propuesta/A-revisar.png}
+\caption{Paso~3: revisión de la postulación, con el panel que explica qué pasa después de enviar.}
 \label{fig:prop-paso3}
 \end{figure}
 
 \section{El resultado y su explicación}\label{sec:prop-resultado}
 
-Para que el estudio comparativo pueda observar la reacción al resultado dentro de la misma sesión, el prototipo lo adelanta; en el proceso real se conoce meses después. La tarjeta de resultado indica el establecimiento asignado y en qué preferencia quedó (Figura~\ref{fig:prop-resultado}, izquierda). En el caso de estudio, la familia no queda en su primera preferencia, el Colegio San Martín, y queda en la segunda, el Colegio Los Andes.
+Para que el estudio comparativo pueda observar la reacción al resultado dentro de la misma sesión, el prototipo lo adelanta; en el proceso real se conoce meses después. En el flujo, la tarjeta de resultado indica el establecimiento asignado y en qué preferencia quedó, junto con la opción de aceptar o rechazar la asignación y sus consecuencias, y el detalle de cada preferencia (Figura~\ref{fig:prop-resultado}). En el caso de estudio, la familia no queda en su primera preferencia, el Colegio San Martín, y queda en la segunda, el Colegio Los Andes.
 
-Debajo, la sección ``¿Por qué te asignaron este colegio?'' (Figura~\ref{fig:prop-resultado}, derecha) explica ese resultado específico: una tabla compara la situación de la familia en el establecimiento que no obtuvo ---sin vínculo, demanda alta--- con la del que obtuvo ---prioridad por hermana---, y una explicación desplegable detalla que en el Colegio San Martín hubo más familias que cupos, que la familia no tenía ahí ninguna prioridad y que el sorteo de ese establecimiento vale solo para él y no afectó sus otras opciones. Es la aplicación más directa del principio de explicabilidad contextualizada, y su redacción sigue los marcos de diseño: atribuir el resultado a reglas y no a un juicio sobre la familia, usar lenguaje de proceso en lugar de describir al sistema como si decidiera, y cerrar recordando que el sistema no puede crear cupos ni asegurar la primera preferencia.
+El panel ``Tu resultado, explicado'' responde por qué. Una tabla compara la situación de la familia en el establecimiento que no obtuvo ---sin vínculo, demanda alta--- con la del que obtuvo ---prioridad por hermana---, y una explicación desplegable detalla que en el Colegio San Martín hubo más familias que cupos, que la familia no tenía ahí ninguna prioridad y que el sorteo de ese establecimiento vale solo para él y no afectó sus otras opciones. Debajo, el panel explica qué significa no quedar en la primera opción, con la pregunta concreta de qué habría pasado con otro orden ---el resultado habría sido el mismo---, y los pasos siguientes con sus fechas, incluido el aviso de que la asignación se acepta automáticamente si la familia no entra antes del plazo. Es la aplicación más directa del principio de explicabilidad contextualizada, y su redacción sigue los marcos de diseño: atribuir el resultado a reglas y no a un juicio sobre la familia, usar lenguaje de proceso en lugar de describir al sistema como si decidiera, y recordar que el sistema no puede crear cupos ni asegurar la primera preferencia.
 
 \begin{figure}[htbp]
 \centering
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-resultado.png}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-resultado-explicacion.png}
-\end{minipage}
-\caption{Resultado de la postulación (izquierda) y explicación de por qué se asignó ese establecimiento (derecha).}
+\includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-resultado.png}
+\caption{Resultado de la postulación, con el panel que explica por qué se asignó ese establecimiento, qué significa no quedar en la primera opción y qué sigue.}
 \label{fig:prop-resultado}
+\end{figure}
+
+Un segundo desplegable, ``Ver cómo se revisó tu lista, paso a paso'' (Figura~\ref{fig:prop-recorrido}), muestra la misma explicación de forma visual con los datos de la simulación: para cada establecimiento de la lista, sus cupos como una fila de cuadros, los que van a la reserva del 15\,\% y a postulantes con más prioridad, y el lugar de la familia en la fila. En el Colegio San Martín, el lugar de la familia queda fuera de los cupos; en el Colegio Los Andes, la prioridad por hermana la pone adelante. Combina cifra y gráfico según el principio de presentación multidimensional, y traduce la regla de asignación a una imagen concreta del caso de la familia.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\textwidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/A-recorrido.png}
+\caption{Recorrido visual de cómo se revisó la lista: cupos de cada establecimiento y lugar de la familia en la fila.}
+\label{fig:prop-recorrido}
 \end{figure}
 
 \section{La condición de control}\label{sec:prop-control}
 
-El estudio comparativo necesita una versión del prototipo sin la capa de explicación, que funcione como aproximación al SAE real: la condición~B. En lugar de construir una segunda aplicación, el mismo prototipo tiene un modo de control que el moderador activa al inicio de cada sesión. En ese modo se ocultan la sección que explica el algoritmo, el recuadro inicial sobre cómo se decide el resultado, las probabilidades estimadas, el recuadro sobre el orden de la lista y la explicación del resultado; se conservan el flujo de ingreso y verificación de datos, la prioridad de la familia en cada establecimiento y las declaraciones. La Figura~\ref{fig:prop-control} muestra las mismas dos pantallas que en la condición~A: la lista sin probabilidades (compárese con la Figura~\ref{fig:prop-paso2}) y el resultado sin su explicación (compárese con la Figura~\ref{fig:prop-resultado}). Como la lógica de asignación es la misma, el establecimiento asignado es idéntico en ambas condiciones.
+El estudio comparativo necesita una versión del prototipo sin la capa de explicación, que funcione como aproximación al SAE real: la condición~B. En lugar de construir una segunda aplicación, el mismo prototipo tiene un modo de control que el moderador activa al inicio de cada sesión. En ese modo no hay panel ``Te explicamos'' y el flujo ocupa todo el ancho; se ocultan además la sección que explica el algoritmo, las probabilidades estimadas, el recuadro de prioridad de cada establecimiento de la lista y la explicación del resultado. Se conservan el ingreso y la verificación de datos, la elección del grupo familiar y de la modalidad, las declaraciones y los avisos del SAE real, entre ellos el de lista corta. La Figura~\ref{fig:prop-control} muestra las mismas dos pantallas que en la condición~A: la lista sin probabilidades ni panel (compárese con la Figura~\ref{fig:prop-lista}) y el resultado sin su explicación (compárese con la Figura~\ref{fig:prop-resultado}). Como la lógica de asignación es la misma, el establecimiento asignado es idéntico en ambas condiciones.
 
 \begin{figure}[htbp]
 \centering
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/B-paso2-tu-lista.png}
+\begin{minipage}[t]{0.49\textwidth}\centering
+\includegraphics[width=\linewidth,height=0.55\textheight,keepaspectratio]{imagenes/propuesta/B-lista.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.44\textwidth}\centering
-\includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{imagenes/propuesta/B-resultado.png}
+\begin{minipage}[t]{0.49\textwidth}\centering
+\includegraphics[width=\linewidth,height=0.55\textheight,keepaspectratio]{imagenes/propuesta/B-resultado.png}
 \end{minipage}
-\caption{Condición~B (control): la lista sin probabilidades (izquierda) y el resultado sin explicación (derecha).}
+\caption{Condición~B (control): la lista sin probabilidades ni panel (izquierda) y el resultado sin explicación (derecha).}
 \label{fig:prop-control}
 \end{figure}
 
 \section{Síntesis: brechas y principios}\label{sec:prop-sintesis}
 
-La Tabla~\ref{tab:prop-sintesis} resume qué elemento de la propuesta aborda cada brecha del diagnóstico y con qué principio. La brecha de \emph{audiovisualidad} se aborda solo en parte: la reproducción animada del algoritmo y la matriz de íconos de la ficha son apoyos visuales, pero el prototipo no incorpora videotutoriales, que quedan como trabajo futuro.
+La Tabla~\ref{tab:prop-sintesis} resume qué elemento de la propuesta aborda cada brecha del diagnóstico y con qué principio. La brecha de \emph{audiovisualidad} se aborda solo en parte: la reproducción animada del algoritmo, la matriz de íconos de la ficha y el recorrido visual del resultado son apoyos visuales, pero el prototipo no incorpora videotutoriales, que quedan como trabajo futuro.
 
 \begin{table}[htbp]
 \centering
@@ -150,7 +157,8 @@ La Tabla~\ref{tab:prop-sintesis} resume qué elemento de la propuesta aborda cad
 Explicación del algoritmo, simulador y reproducción paso a paso & Transparencia y apertura & Divulgación progresiva; controles interactivos con retroalimentación \\
 Probabilidad estimada: ``X de cada 100'' con matriz de íconos en la ficha, porcentaje en la lista & Transparencia y apertura & Presentación multidimensional; comunicación de riesgo \\
 Explicación de qué hace el orden de la lista & Transparencia y apertura & Explicabilidad contextualizada; \emph{strategy-proofness} de la Aceptación Diferida \\
-Explicación del resultado & Transparencia y apertura & Explicabilidad contextualizada \\
+Panel ``Te explicamos'' en cada momento del flujo & Transparencia y apertura & Divulgación progresiva; explicabilidad contextualizada \\
+Explicación del resultado y recorrido visual de la lista & Transparencia y apertura & Explicabilidad contextualizada; presentación multidimensional \\
 Buscador y orden de la vitrina & Búsqueda y encontrabilidad & --- (el sitio oficial la cerró en parte) \\
 Ingreso con ClaveÚnica & Interoperabilidad & --- \\
 Lenguaje claro, letra aumentada y alto contraste & Legibilidad e inclusión & Accesibilidad web \\

@@ -741,10 +741,12 @@ ux-sae-usm/
 │   │   ├── 00_resumen.tex            ✅
 │   │   ├── 01_introduccion.tex       ✅
 │   │   ├── 02_marco_teorico.tex      ✅
-│   │   ├── 03_metodologia.tex        ✅ (reescrituras pendientes: simulador, §3.5, caso)
-│   │   ├── 04_resultados.tex         ⚠️ parcial por diseño
-│   │   ├── 05_discusion.tex          ⏳ pendiente
-│   │   └── 06_conclusiones.tex       ⏳ pendiente
+│   │   ├── 03_metodologia.tex        ✅
+│   │   ├── 04_propuesta.tex          ✅ (capturas del prototipo)
+│   │   ├── 05_resultados.tex         ⚠️ parcial por diseño
+│   │   ├── 06_discusion.tex          ⏳ pendiente
+│   │   └── 07_conclusiones.tex       ⏳ pendiente
+│   │   (estado sección por sección: PLAN_REDACCION.md; numeración actualizada 2026-10-22)
 │   └── bibliografia/referencias.bib  Bloque A verificado / Bloque B por verificar
 ├── sae-react/
 │   ├── src/

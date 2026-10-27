@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Guion del moderador · Prueba de usabilidad SAE</title>
+<style>
+  @page { size: Letter; margin: 14mm 15mm 13mm; }
+  :root { --azul:#0057B7; --azul-claro:#E8F1FB; --naranja:#E07B00; --naranja-claro:#FDF2E4; --gris:#1f1f1f; --gris-med:#4a4a4a; --borde:#9aa6b4; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--gris); font-size: 11.5pt; line-height: 1.4; margin: 0; background: #fff; }
+  .salto { break-before: page; }
+  header.portada { border-bottom: 3px solid var(--azul); padding-bottom: 8px; margin-bottom: 14px; }
+  header.portada h1 { font-size: 21pt; color: var(--azul); margin: 0; }
+  header.portada p { margin: 4px 0 0; color: var(--gris-med); }
+  h2 { font-size: 14.5pt; color: var(--azul); margin: 18px 0 8px; border-bottom: 1px solid var(--borde); padding-bottom: 3px; break-after: avoid; }
+  h2 .t { float: right; font-size: 10.5pt; color: var(--gris-med); font-weight: 400; margin-top: 4px; }
+  h3 { font-size: 12pt; margin: 14px 0 6px; break-after: avoid; }
+  ul.check { list-style: none; padding: 0; margin: 0 0 6px; }
+  ul.check li { padding-left: 26px; position: relative; margin-bottom: 5px; }
+  ul.check li::before { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border: 2px solid #333; border-radius: 3px; }
+  ol.pasos { margin: 0 0 6px 20px; padding: 0; }
+  ol.pasos li { margin-bottom: 5px; }
+  .clave { background: var(--naranja-claro); border-left: 5px solid var(--naranja); padding: 8px 12px; margin: 10px 0; break-inside: avoid; }
+  .info { background: var(--azul-claro); border-left: 5px solid var(--azul); padding: 8px 12px; margin: 10px 0; break-inside: avoid; }
+  /* Lo que se lee en voz alta */
+  .di { font-size: 13pt; line-height: 1.45; border-left: 5px solid var(--azul); padding: 4px 0 4px 14px; margin: 8px 0 10px; break-inside: avoid; }
+  .di p { margin: 0 0 7px; }
+  .di p:last-child { margin-bottom: 0; }
+  /* Lo que haces (no se lee) */
+  .ac { color: var(--gris-med); font-style: italic; margin: 6px 0 8px; padding-left: 18px; position: relative; break-inside: avoid; }
+  .ac::before { content: "▸"; position: absolute; left: 2px; font-style: normal; color: var(--naranja); }
+  .preg { font-size: 13pt; line-height: 1.45; margin: 0 0 6px; padding-left: 14px; border-left: 5px solid var(--azul); break-inside: avoid; }
+  .preg .n { display: inline-block; min-width: 26px; font-weight: 700; color: var(--azul); }
+  .preg .sub { display: block; margin: 4px 0 0 26px; }
+  .tarjeta { border: 2px dashed var(--borde); border-radius: 8px; padding: 8px 14px; font-size: 10.5pt; margin: 8px 0 10px; break-inside: avoid; }
+  .tarjeta p, .tarjeta ul, .tarjeta ol { margin: 4px 0; }
+  .leyenda { display: flex; gap: 22px; font-size: 10pt; margin: 6px 0 4px; flex-wrap: wrap; }
+  .leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .leyenda .m1 { width: 5px; height: 16px; background: var(--azul); display: inline-block; }
+  .leyenda .m2 { color: var(--naranja); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 10.5pt; margin: 6px 0; }
+  table.t th, table.t td { border: 1px solid var(--borde); padding: 5px 8px; text-align: left; vertical-align: top; }
+  table.t th { background: var(--azul-claro); }
+  table.turnos td { height: 25px; }
+  table.turnos td.v { text-align: center; font-weight: 700; width: 11%; }
+  table.turnos td.n { width: 7%; text-align: center; color: var(--gris-med); }
+  .pie { font-size: 9pt; color: var(--gris-med); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header class="portada">
+  <h1>Guion del moderador</h1>
+  <p>Prueba de usabilidad del prototipo del Sistema de Admisión Escolar · ≈35 minutos por persona</p>
+</header>
+
+<div class="leyenda">
+  <span><i class="m1"></i> Texto con borde azul: <strong>lo lees en voz alta, tal cual</strong></span>
+  <span><b class="m2">▸</b> <em>En gris: lo que haces (no se lee)</em></span>
+</div>
+
+<h2>Antes de que llegue la persona</h2>
+
+<h3>Material</h3>
+<ul class="check">
+  <li><strong>Planilla de respuestas</strong> nueva (una por persona) y lápiz.</li>
+  <li><strong>Hoja de información y consentimiento</strong> (una por persona, para firmar).</li>
+  <li><strong>Tarjetas del participante</strong>: la historia del caso y la tarjeta de escalas.</li>
+  <li><strong>Registro de turnos</strong> (la última página de este guion).</li>
+</ul>
+
+<h3>Equipo</h3>
+<ul class="check">
+  <li>Computador con pantalla ancha, mouse y cargador. El panel "Te explicamos" solo se ve bien en escritorio.</li>
+  <li>Grabación de pantalla y audio <strong>probada</strong> (graba 5 segundos y escúchalos).</li>
+  <li>La página abierta en <strong>/postulacion</strong>, en <strong>una sola pestaña</strong>. La versión elegida vive en esa pestaña: si la cierras o abres otra, vuelve a elegirla.</li>
+  <li>Carpeta de Descargas sin comprobantes de la sesión anterior.</li>
+  <li>Notificaciones del computador silenciadas.</li>
+</ul>
+
+<div class="clave">
+  <strong>Lo que va a pasar (no lo digas nunca):</strong> en las dos versiones Sofía <strong>no</strong> queda en el Colegio San Martín (≈26 % de posibilidades) y queda en el <strong>Colegio Los Andes</strong>, su 2.ª preferencia (≈99 %, porque Martina estudia ahí). Con solo 2 colegios de demanda alta, las dos versiones muestran el aviso <em>"Tu lista es corta…"</em>: es esperado.
+</div>
+
+<div class="info">
+  <strong>Tus reglas durante toda la sesión:</strong> no expliques, no corrijas y no adelantes nada. Si te preguntan algo, usa solo las frases de apoyo de la sección 3. Anota lo que dice con sus palabras.
+</div>
+
+<!-- ============ 1 ============ -->
+<h2 class="salto">1. Bienvenida <span class="t">4 min</span></h2>
+
+<p class="ac">Enciende la grabación antes de empezar a hablar.</p>
+
+<div class="di">
+  <p>"Hola, muchas gracias por venir. Estoy probando una página web que simula el Sistema de Admisión Escolar, el sistema que usa el Ministerio de Educación para asignar cupos en los colegios.</p>
+  <p>No te estoy evaluando a ti, estoy evaluando la página. No hay respuestas correctas ni incorrectas.</p>
+  <p>Mientras usas la página, yo solo voy a mirar. Si quieres comentar algo, puedes hacerlo. Cuando termines te voy a hacer algunas preguntas; no tienes que escribir nada.</p>
+  <p>Vamos a grabar la pantalla y el audio solo para revisarlo después. Nadie más va a ver la grabación. ¿Estás de acuerdo?"</p>
+</div>
+
+<p class="ac">Si acepta: entrégale la hoja de consentimiento y que la firme. Si no acepta, agradece y termina la sesión.</p>
+
+<div class="di">
+  <p>"Antes de empezar, una sola pregunta: ¿has postulado alguna vez a un hijo o hija usando el Sistema de Admisión Escolar?"</p>
+</div>
+
+<p class="ac">Anota Sí o No en la planilla. Mira el registro de turnos (última página): la columna de su respuesta te dice la versión, A o B. Anótala en la planilla y en el registro.</p>
+
+<h3>Prepara la página (sin que la persona vea la pantalla, ≈30 s)</h3>
+<ol class="pasos">
+  <li>En /postulacion abre <strong>"⚙️ Herramientas de la prueba de usabilidad"</strong>.</li>
+  <li>Pulsa <strong>"🧹 Limpiar y empezar de cero"</strong>.</li>
+  <li>Pulsa la versión que toca: <strong>"A · Con explicaciones"</strong> o <strong>"B · Sin explicaciones"</strong>. La página se recarga.</li>
+  <li>Vuelve a abrir el desplegable y revisa que diga la versión correcta. Pulsa <strong>"Cargar familia Muñoz González"</strong>.</li>
+  <li>La página queda en "Tu grupo familiar", sin nadie marcado. <strong>Cierra el desplegable</strong> antes de pasar el computador.</li>
+</ol>
+
+<!-- ============ 2 ============ -->
+<h2>2. El caso <span class="t">3 min</span></h2>
+
+<div class="di">
+  <p>"Vas a hacer como si fueras otra persona. Te cuento su historia.</p>
+  <p>Te llamas Daniela y tienes tres hijos. La mayor, Martina, tiene 16 años y estudia en el Colegio Los Andes; ella no cambia de colegio. Los otros dos, Sofía, de 9 años, y Mateo, de 12, tienen que postular este año a un colegio nuevo, y a ti te gustaría que quedaran juntos.</p>
+  <p>Con tu pareja, Rodrigo, ya decidieron a qué colegios postular y en qué orden: primero el Colegio San Martín, que es el que más les gusta, y segundo el Colegio Los Andes, donde ya está Martina.</p>
+  <p>Tu tarea es postular a Sofía y a Mateo en la página, con esos dos colegios y en ese orden, hasta enviar la postulación y descargar el comprobante. El orden ya está decidido: no hace falta cambiarlo.</p>
+  <p>Te dejo esta tarjeta con la historia, para que la mires cuando quieras."</p>
+</div>
+
+<p class="ac">Entrégale la tarjeta "La historia" y deja que la lea. No adelantes nada sobre las posibilidades de cada colegio ni sobre las prioridades. Esto es lo que dice la tarjeta:</p>
+
+<div class="tarjeta">
+  <p><strong>Eres Daniela.</strong> Es agosto y se abrió la postulación a colegios para el próximo año.</p>
+  <p><strong>Tu familia:</strong></p>
+  <ul>
+    <li><strong>Martina</strong>, 16 años, 3.º medio. Estudia en el <strong>Colegio Los Andes</strong>. <strong>No postula</strong>: se queda en su colegio.</li>
+    <li><strong>Sofía</strong>, 9 años. <strong>Postula a 4.º básico.</strong></li>
+    <li><strong>Mateo</strong>, 12 años. <strong>Postula a 7.º básico.</strong></li>
+    <li>Tu pareja, <strong>Rodrigo</strong>, trabaja en el Colegio Villa del Sol. Tú estudiaste en la Escuela República de Chile.</li>
+  </ul>
+  <p><strong>Lo que quieren:</strong> que Sofía y Mateo queden <strong>en el mismo colegio</strong>.</p>
+  <p><strong>Tu tarea:</strong> postular a Sofía y Mateo <strong>juntos</strong>, con estos dos colegios y <strong>en este orden</strong>:</p>
+  <ol>
+    <li><strong>Colegio San Martín</strong> — el que más les gusta. Se lo recomendó una vecina.</li>
+    <li><strong>Colegio Los Andes</strong> — donde estudia Martina.</li>
+  </ol>
+  <p>Termina cuando hayas enviado la postulación y descargado el comprobante.</p>
+</div>
+
+<!-- ============ 3 ============ -->
+<h2 class="salto">3. La postulación <span class="t">≈12 min</span></h2>
+
+<div class="di">
+  <p>"Ahora vamos a la página. Tómate el tiempo que necesites."</p>
+</div>
+
+<p class="ac">Pásale el computador. Desde aquí <strong>no haces preguntas</strong>: si comenta algo, anótalo; si está en silencio, déjala trabajar.</p>
+
+<h3>Solo si hace falta (frases de apoyo)</h3>
+<table class="t">
+  <tr><th style="width:42%">Si la persona…</th><th>Le dices</th></tr>
+  <tr><td>pregunta si lo está haciendo bien</td><td>"¿Tú qué crees?"</td></tr>
+  <tr><td>pregunta cómo funciona el sistema</td><td>"Buena pregunta, lo conversamos al final."</td></tr>
+  <tr><td>intenta cambiar el orden</td><td>"El orden ya está decidido, ingresa los dos así."</td></tr>
+  <tr><td>quiere agregar más colegios</td><td>"La familia ya decidió estos dos; sigue con esos."</td></tr>
+</table>
+<p class="ac">Cada vez que uses una frase de apoyo, anota en la planilla dónde fue y qué dijo la persona.</p>
+
+<h3>Lo que debería hacer (para que sepas dónde va; no se lo digas)</h3>
+<ol class="pasos">
+  <li>"Tu grupo familiar": marcar a <strong>Sofía y Mateo</strong> (no a Martina), elegir <strong>"En bloque"</strong> y pulsar "Continuar".</li>
+  <li>"¿Confirmas estos datos?": marcar la declaración de apoderada o apoderado y pulsar "Continuar".</li>
+  <li>Agregar <strong>Colegio San Martín</strong> y luego <strong>Colegio Los Andes</strong>, en ese orden, y pulsar "Continuar →".</li>
+  <li>"Revisa y envía tu postulación": pulsar "Confirmar" y luego "Continuar" en "Confirma tu postulación".</li>
+  <li>"Postulación enviada": pulsar <strong>"⬇ Descargar comprobante (.txt)"</strong>.</li>
+</ol>
+
+<div class="clave">
+  <strong>Apenas descargue el comprobante, pasa a la sección 4.</strong> La persona todavía <strong>no</strong> debe pulsar "Ver mi resultado ahora →". Si va a hacerlo, pídele con un gesto que espere.
+</div>
+
+<h3>Qué observar y anotar</h3>
+<ul class="check">
+  <li>Si dudó al elegir "En bloque" y qué dijo.</li>
+  <li>Si usó "Corregir" en "¿Confirmas estos datos?" o comentó los datos de "Lo que el sistema ya sabe".</li>
+  <li>Si intentó cambiar el orden o quiso agregar colegios por el aviso de lista corta.</li>
+  <li><strong>Solo versión A:</strong> si miró el panel "Te explicamos" de la derecha y en qué pantallas.</li>
+  <li>Momentos de duda o confusión, y cuántas veces pidió ayuda.</li>
+</ul>
+
+<!-- ============ 4 ============ -->
+<h2 class="salto">4. Al terminar de postular <span class="t">3 min</span></h2>
+
+<p class="ac">Con la pantalla "Postulación enviada" a la vista, antes de ver el resultado. Saca la tarjeta de escalas y déjala frente a la persona.</p>
+
+<div class="di">
+  <p>"Terminaste la postulación. Antes de ver el resultado, te voy a hacer unas preguntas cortas. Para las primeras tres te muestro esta tarjeta: respóndeme con un número del 1 al 7, donde 1 es totalmente en desacuerdo y 7 es totalmente de acuerdo. Si alguna no aplica, dime 'no aplica'."</p>
+</div>
+
+<p class="ac">Lee cada frase tal cual y anota el número.</p>
+
+<p class="preg"><span class="n">1.</span>"En general, estoy satisfecha o satisfecho con lo fácil que fue completar la postulación."</p>
+<p class="preg"><span class="n">2.</span>"En general, estoy satisfecha o satisfecho con el tiempo que me tomó completar la postulación."</p>
+<p class="preg"><span class="n">3.</span>"En general, estoy satisfecha o satisfecho con la información de apoyo (ayuda, mensajes e información de la página) mientras completaba la postulación."</p>
+
+<p class="preg" style="margin-top:14px"><span class="n">4.</span>"¿En qué colegio crees que va a quedar Sofía: en el Colegio San Martín, en el Colegio Los Andes, en ninguno, o no sabes?"</p>
+<p class="preg"><span class="n">5.</span>"¿Qué tan segura o seguro estás?"</p>
+<p class="ac">Para la 5, señala la segunda escala de la tarjeta (de "Nada segura/o" a "Totalmente segura/o").</p>
+<p class="preg"><span class="n">6.</span>"¿Por qué?"</p>
+<p class="ac">Anota el porqué con sus palabras.</p>
+
+<!-- ============ 5 ============ -->
+<h2>5. El resultado <span class="t">4 min</span></h2>
+
+<div class="di">
+  <p>"Ahora, en esta página hay un botón para ver el resultado ya mismo, en vez de esperar hasta octubre. Tócalo y míralo con calma. Avísame cuando termines."</p>
+</div>
+
+<p class="ac">El botón es "Ver mi resultado ahora →". En la versión A aparece además el panel "Tu resultado, explicado": no lo sugieras. Anota si abre "Ver cómo se revisó tu lista, paso a paso" (solo A).</p>
+
+<div class="di">
+  <p>"Dos preguntas más con la misma tarjeta: un número del 1 al 7, donde 1 es totalmente en desacuerdo y 7 es totalmente de acuerdo."</p>
+</div>
+
+<p class="preg"><span class="n">7.</span>"Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas."</p>
+<p class="preg"><span class="n">8.</span>"La forma en que el sistema decidió el colegio de Sofía me parece justa."</p>
+
+<p class="ac">Guarda la tarjeta de escalas: ya no se usa.</p>
+
+<!-- ============ 6 ============ -->
+<h2 class="salto">6. Preguntas <span class="t">≈6 min</span></h2>
+
+<p class="ac">Con el resultado todavía en pantalla. Anota lo que dice con sus palabras; la 11, textual.</p>
+
+<p class="preg"><span class="n">9.</span>"¿Era lo que esperabas?"</p>
+<p class="preg"><span class="n">10.</span>"¿Por qué crees que pasó esto?"</p>
+<p class="preg"><span class="n">11.</span>"Con tus palabras, ¿por qué Sofía no quedó en San Martín?"</p>
+
+<p class="ac">Antes de seguir, retira el computador o gira la pantalla: las próximas se responden sin mirar la página.</p>
+
+<div class="di">
+  <p>"Ahora te voy a plantear algunas situaciones distintas. No hay respuestas correctas; dime lo que crees."</p>
+</div>
+
+<p class="preg"><span class="n">12.</span>"Si la familia hubiera puesto el Colegio Los Andes primero y San Martín segundo, ¿dónde crees que habría quedado Sofía? ¿Por qué?"
+  <span class="sub">"¿Y tú, lo habrías dejado como estaba o lo habrías cambiado?"</span></p>
+<p class="preg"><span class="n">13.</span>"Si Martina no estudiara en el Colegio Los Andes, ¿crees que Sofía habría tenido las mismas posibilidades de quedar ahí? ¿Por qué?"</p>
+<p class="preg"><span class="n">14.</span>"Si otra familia, sin ningún vínculo con el Colegio San Martín, postulara ahí, ¿podría quedar? ¿De qué dependería?"</p>
+
+<p class="ac">Solo si durante la postulación intentó cambiar el orden o agregar colegios:</p>
+<p class="preg"><span class="n">15.</span>"¿Por qué querías cambiarlo?"</p>
+
+<!-- ============ 7 ============ -->
+<h2>7. Cierre <span class="t">2 min</span></h2>
+
+<div class="di">
+  <p>"Eso sería todo. Muchas gracias por tu tiempo. ¿Hay algo más que quieras comentarme? Te pido que no le cuentes los detalles de la prueba a otras personas hasta que termine el estudio."</p>
+</div>
+
+<h3>Apenas se va la persona</h3>
+<ul class="check">
+  <li>Detén la grabación y guárdala con el número de participante (por ejemplo, <em>P03_A.mp4</em>).</li>
+  <li>Completa la planilla de inmediato: duración y lo que no alcanzaste a anotar.</li>
+  <li>Borra el comprobante descargado de la carpeta Descargas.</li>
+  <li>En /postulacion: "⚙️ Herramientas de la prueba de usabilidad" → "🧹 Limpiar y empezar de cero".</li>
+</ul>
+
+<!-- ============ Registro de turnos ============ -->
+<h2 class="salto">Registro de turnos (uno para todo el estudio)</h2>
+
+<p>La versión depende de la respuesta a "¿has postulado alguna vez…?". Hay <strong>dos turnos separados</strong> y en cada uno se alterna A, B, A, B… Así las dos versiones quedan con una cantidad pareja de personas con y sin experiencia. Usa la siguiente fila libre de la columna que corresponda y escribe ahí el número de participante.</p>
+
+<table class="t turnos">
+  <tr><th colspan="3" style="text-align:center">Ya postuló al SAE (Sí)</th><th style="border:0;background:none;width:4%"></th><th colspan="3" style="text-align:center">Nunca ha postulado (No)</th></tr>
+  <tr><th class="n">#</th><th class="v">Versión</th><th>N.º participante · fecha</th><th style="border:0;background:none"></th><th class="n">#</th><th class="v">Versión</th><th>N.º participante · fecha</th></tr>
+  <tr><td class="n">1</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">1</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">2</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">2</td><td class="v">B</td><td></td></tr>
+  <tr><td class="n">3</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">3</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">4</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">4</td><td class="v">B</td><td></td></tr>
+  <tr><td class="n">5</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">5</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">6</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">6</td><td class="v">B</td><td></td></tr>
+  <tr><td class="n">7</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">7</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">8</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">8</td><td class="v">B</td><td></td></tr>
+  <tr><td class="n">9</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">9</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">10</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">10</td><td class="v">B</td><td></td></tr>
+  <tr><td class="n">11</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">11</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">12</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">12</td><td class="v">B</td><td></td></tr>
+  <tr><td class="n">13</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">13</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">14</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">14</td><td class="v">B</td><td></td></tr>
+  <tr><td class="n">15</td><td class="v">A</td><td></td><td style="border:0"></td><td class="n">15</td><td class="v">A</td><td></td></tr>
+  <tr><td class="n">16</td><td class="v">B</td><td></td><td style="border:0"></td><td class="n">16</td><td class="v">B</td><td></td></tr>
+</table>
+<p class="pie">El número de participante es correlativo para todo el estudio (P01, P02, P03…), sin importar el turno. Si una sesión se interrumpe y no se usa, márcala como anulada y no reutilices esa fila.</p>
+
+</body>
+</html>

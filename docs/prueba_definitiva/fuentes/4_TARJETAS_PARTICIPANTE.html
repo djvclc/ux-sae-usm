@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Tarjetas del participante · Prueba de una página web</title>
+<style>
+  @page { size: Letter; margin: 15mm 16mm 14mm; }
+  :root { --azul:#0057B7; --azul-claro:#E8F1FB; --gris:#1f1f1f; --gris-med:#4a4a4a; --borde:#9aa6b4; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--gris); font-size: 14pt; line-height: 1.5; margin: 0; background: #fff; }
+  .hoja { break-after: page; }
+  .hoja:last-child { break-after: auto; }
+  .cab { border-bottom: 3px solid var(--azul); padding-bottom: 6px; margin-bottom: 18px; }
+  .cab h1 { font-size: 22pt; color: var(--azul); margin: 0; }
+  .yo { font-size: 15pt; background: var(--azul-claro); border-left: 6px solid var(--azul); padding: 12px 16px; margin: 0 0 6px; }
+  h2 { font-size: 15pt; color: var(--azul); margin: 22px 0 8px; }
+  table.familia { width: 100%; border-collapse: collapse; }
+  table.familia td { border-bottom: 1px solid var(--borde); padding: 8px 8px; vertical-align: top; }
+  table.familia td.quien { font-weight: 700; width: 30%; }
+  ol.orden { font-size: 15pt; margin: 6px 0 12px 28px; padding: 0; }
+  ol.orden li { margin-bottom: 10px; }
+  .fin { margin-top: 22px; border: 2px solid var(--azul); border-radius: 8px; padding: 10px 16px; font-weight: 600; }
+  .instr { font-size: 14pt; background: var(--azul-claro); border-left: 6px solid var(--azul); padding: 10px 16px; margin-bottom: 26px; }
+  h2.esc { font-size: 17pt; margin-top: 10px; }
+  .ext { display: grid; grid-template-columns: repeat(7, 1fr) 16px 1.7fr; gap: 7px; font-size: 13.5pt; font-weight: 700; margin-bottom: 4px; }
+  .ext .izq { grid-column: 1 / 3; } .ext .der { grid-column: 6 / 8; text-align: right; }
+  .siete { display: grid; grid-template-columns: repeat(7, 1fr) 16px 1.7fr; gap: 7px; }
+  .siete .c { border: 2px solid var(--azul); border-radius: 10px; text-align: center; padding: 14px 0; font-size: 26pt; font-weight: 700; color: var(--azul); }
+  .siete .na { grid-column: 9; border: 2px dashed var(--gris-med); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13pt; font-weight: 700; }
+  .cinco { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; margin-top: 8px; }
+  .cinco .c { border: 2px solid var(--azul); border-radius: 10px; text-align: center; padding: 16px 4px; font-size: 13.5pt; font-weight: 700; line-height: 1.3; }
+</style>
+</head>
+<body>
+
+<!-- Tarjeta 1: la historia -->
+<section class="hoja">
+  <div class="cab"><h1>La historia</h1></div>
+
+  <p class="yo"><strong>Eres Daniela.</strong> Es agosto y se abrió la postulación a colegios para el próximo año.</p>
+
+  <h2>Tu familia</h2>
+  <table class="familia">
+    <tr><td class="quien">Martina</td><td>16 años, 3.º medio. Estudia en el <strong>Colegio Los Andes</strong>. <strong>No postula</strong>: se queda en su colegio.</td></tr>
+    <tr><td class="quien">Sofía</td><td>9 años. <strong>Postula a 4.º básico.</strong></td></tr>
+    <tr><td class="quien">Mateo</td><td>12 años. <strong>Postula a 7.º básico.</strong></td></tr>
+    <tr><td class="quien">Rodrigo, tu pareja</td><td>Trabaja en el Colegio Villa del Sol.</td></tr>
+    <tr><td class="quien">Tú</td><td>Estudiaste en la Escuela República de Chile.</td></tr>
+  </table>
+
+  <h2>Lo que quieren</h2>
+  <p>Que Sofía y Mateo queden <strong>en el mismo colegio</strong>.</p>
+
+  <h2>Tu tarea</h2>
+  <p>Postular a Sofía y Mateo <strong>juntos</strong>, con estos dos colegios y <strong>en este orden</strong>:</p>
+  <ol class="orden">
+    <li><strong>Colegio San Martín</strong> — el que más les gusta. Se lo recomendó una vecina.</li>
+    <li><strong>Colegio Los Andes</strong> — donde estudia Martina.</li>
+  </ol>
+
+  <p class="fin">Termina cuando hayas enviado la postulación y descargado el comprobante.</p>
+</section>
+
+<!-- Tarjeta 2: escalas -->
+<section class="hoja">
+  <div class="cab"><h1>Para responder</h1></div>
+  <p class="instr">No tienes que escribir nada. Mira la tarjeta y <strong>dime tu respuesta en voz alta</strong>.</p>
+
+  <h2 class="esc">Dime un número</h2>
+  <div class="ext"><span class="izq">Totalmente<br>en desacuerdo</span><span class="der">Totalmente<br>de acuerdo</span></div>
+  <div class="siete">
+    <div class="c">1</div><div class="c">2</div><div class="c">3</div><div class="c">4</div><div class="c">5</div><div class="c">6</div><div class="c">7</div>
+    <div class="na">No aplica</div>
+  </div>
+
+  <h2 class="esc" style="margin-top:56px">¿Qué tan segura o seguro estás?</h2>
+  <div class="cinco">
+    <div class="c">Nada<br>segura/o</div><div class="c">Poco<br>segura/o</div><div class="c">Algo<br>segura/o</div><div class="c">Bastante<br>segura/o</div><div class="c">Totalmente<br>segura/o</div>
+  </div>
+</section>
+
+</body>
+</html>

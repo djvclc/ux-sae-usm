@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Planilla de respuestas · Prueba de usabilidad SAE</title>
+<style>
+  @page { size: Letter; margin: 11mm 13mm 10mm; }
+  :root { --azul:#0057B7; --azul-claro:#E8F1FB; --gris:#1f1f1f; --gris-med:#4a4a4a; --borde:#8c98a6; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--gris); font-size: 10pt; line-height: 1.3; margin: 0; background: #fff; }
+  .hoja { break-after: page; }
+  .hoja:last-child { break-after: auto; }
+  .cab { border-bottom: 3px solid var(--azul); padding-bottom: 5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; }
+  .cab h1 { font-size: 15pt; color: var(--azul); margin: 0; }
+  .cab span { font-size: 9pt; color: var(--gris-med); }
+  table.id { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+  table.id td { border: 1px solid var(--borde); padding: 6px 8px; font-size: 10pt; }
+  table.id td b { display: block; font-size: 8.5pt; color: var(--gris-med); font-weight: 600; margin-bottom: 2px; }
+  h2 { font-size: 11pt; color: var(--azul); margin: 9px 0 4px; }
+  table.p { width: 100%; border-collapse: collapse; }
+  table.p td, table.p th { border: 1px solid var(--borde); padding: 4px 7px; vertical-align: top; text-align: left; }
+  table.p th { background: var(--azul-claro); font-size: 9pt; }
+  table.p td.q { width: 47%; }
+  table.p td.q .n { font-weight: 700; color: var(--azul); margin-right: 4px; }
+  table.p tr { break-inside: avoid; }
+  .esc { white-space: nowrap; letter-spacing: .5px; }
+  .esc i { font-style: normal; display: inline-block; width: 22px; height: 22px; border: 1.5px solid #333; border-radius: 50%; text-align: center; line-height: 19px; font-size: 9.5pt; margin-right: 6px; }
+  .esc i.na { width: auto; border-radius: 10px; padding: 0 5px; }
+  .op { white-space: nowrap; margin-right: 10px; }
+  .op .box { display: inline-block; width: 12px; height: 12px; border: 1.5px solid #333; border-radius: 2px; vertical-align: -2px; margin-right: 3px; }
+  td.r1 { height: 34px; } td.r2 { height: 56px; } td.r3 { height: 80px; }
+  .nota { font-size: 8.5pt; color: var(--gris-med); margin: 4px 0 0; }
+</style>
+</head>
+<body>
+
+<section class="hoja">
+  <div class="cab"><h1>Planilla de respuestas</h1><span>La llena el moderador · una por persona · hoja 1 de 2</span></div>
+
+  <table class="id">
+    <tr>
+      <td><b>N.º de participante</b>P____</td>
+      <td><b>Fecha</b>____ / ____ / 2026</td>
+      <td><b>Hora de inicio · término</b>____ : ____ · ____ : ____</td>
+      <td><b>Versión</b><span class="op"><span class="box"></span>A · con explicaciones</span><br><span class="op"><span class="box"></span>B · sin explicaciones</span></td>
+    </tr>
+    <tr>
+      <td colspan="2"><b>Consentimiento firmado</b><span class="op"><span class="box"></span>Sí</span></td>
+      <td colspan="2"><b>Archivo de la grabación</b></td>
+    </tr>
+  </table>
+
+  <h2>1 · Bienvenida</h2>
+  <table class="p">
+    <tr><td class="q">¿Has postulado alguna vez a un hijo o hija usando el SAE?</td><td><span class="op"><span class="box"></span>Sí</span><span class="op"><span class="box"></span>No</span> → turno de su respuesta en el registro</td></tr>
+  </table>
+
+  <h2>4 · Al terminar de postular (antes del resultado, con la tarjeta)</h2>
+  <table class="p">
+    <tr><th>Pregunta</th><th>Respuesta (encierra)</th></tr>
+    <tr><td class="q"><span class="n">1.</span>Lo fácil que fue completar la postulación</td><td class="esc"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i> <i class="na">No aplica</i></td></tr>
+    <tr><td class="q"><span class="n">2.</span>El tiempo que le tomó completar la postulación</td><td class="esc"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i> <i class="na">No aplica</i></td></tr>
+    <tr><td class="q"><span class="n">3.</span>La información de apoyo (ayuda, mensajes e información de la página)</td><td class="esc"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i> <i class="na">No aplica</i></td></tr>
+    <tr><td class="q"><span class="n">4.</span>¿En qué colegio crees que va a quedar Sofía?</td><td><span class="op"><span class="box"></span>San Martín</span><span class="op"><span class="box"></span>Los Andes</span><span class="op"><span class="box"></span>En ninguno</span><span class="op"><span class="box"></span>No sé</span></td></tr>
+    <tr><td class="q"><span class="n">5.</span>¿Qué tan segura o seguro estás?</td><td><span class="op"><span class="box"></span>Nada</span><span class="op"><span class="box"></span>Poco</span><span class="op"><span class="box"></span>Algo</span><span class="op"><span class="box"></span>Bastante</span><span class="op"><span class="box"></span>Totalmente</span></td></tr>
+    <tr><td class="q"><span class="n">6.</span>¿Por qué?</td><td class="r2"></td></tr>
+  </table>
+  <p class="nota">1 = totalmente en desacuerdo · 7 = totalmente de acuerdo.</p>
+
+  <h2>5 · Al ver el resultado (con la tarjeta)</h2>
+  <table class="p">
+    <tr><td class="q"><span class="n">7.</span>Confío en que el sistema decidió el colegio de Sofía siguiendo sus reglas.</td><td class="esc"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i></td></tr>
+    <tr><td class="q"><span class="n">8.</span>La forma en que el sistema decidió el colegio de Sofía me parece justa.</td><td class="esc"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i></td></tr>
+  </table>
+
+  <h2>6 · Preguntas sobre el resultado (con el resultado en pantalla)</h2>
+  <table class="p">
+    <tr><td class="q"><span class="n">9.</span>¿Era lo que esperabas?</td><td class="r1"></td></tr>
+    <tr><td class="q"><span class="n">10.</span>¿Por qué crees que pasó esto?</td><td class="r2"></td></tr>
+    <tr><td class="q"><span class="n">11.</span>Con tus palabras, ¿por qué Sofía no quedó en San Martín? <em>(textual)</em></td><td class="r3"></td></tr>
+  </table>
+</section>
+
+<section class="hoja">
+  <div class="cab"><h1>Planilla de respuestas</h1><span>N.º P____ · Versión A / B · hoja 2 de 2</span></div>
+
+  <h2>6 · ¿Qué habría pasado si…? (sin mirar la página)</h2>
+  <table class="p">
+    <tr><td class="q"><span class="n">12.</span>Si hubieran puesto Los Andes primero y San Martín segundo, ¿dónde habría quedado Sofía? ¿Por qué?</td><td class="r3"></td></tr>
+    <tr><td class="q"><span class="n">12b.</span>¿Y tú, lo habrías dejado como estaba o lo habrías cambiado?</td><td><span class="op"><span class="box"></span>Como estaba</span><span class="op"><span class="box"></span>Lo habría cambiado</span><span class="op"><span class="box"></span>No sé</span><div style="height:22px"></div></td></tr>
+    <tr><td class="q"><span class="n">13.</span>Si Martina no estudiara en Los Andes, ¿Sofía habría tenido las mismas posibilidades de quedar ahí? ¿Por qué?</td><td class="r3"></td></tr>
+    <tr><td class="q"><span class="n">14.</span>Si otra familia sin vínculo con San Martín postulara ahí, ¿podría quedar? ¿De qué dependería?</td><td class="r3"></td></tr>
+    <tr><td class="q"><span class="n">15.</span><em>(Solo si intentó cambiar el orden o agregar colegios)</em> ¿Por qué querías cambiarlo?</td><td class="r2"></td></tr>
+  </table>
+
+  <h2>Observación durante la postulación (sección 3)</h2>
+  <table class="p">
+    <tr><td class="q">¿Dudó al elegir "En bloque"? ¿Qué dijo?</td><td class="r1"></td></tr>
+    <tr><td class="q">¿Usó "Corregir" en "¿Confirmas estos datos?"?</td><td><span class="op"><span class="box"></span>Sí</span><span class="op"><span class="box"></span>No</span></td></tr>
+    <tr><td class="q">¿Comentó los datos de "Lo que el sistema ya sabe"? ¿Qué dijo?</td><td class="r1"></td></tr>
+    <tr><td class="q">¿Intentó cambiar el orden? ¿Qué dijo?</td><td><span class="op"><span class="box"></span>Sí</span><span class="op"><span class="box"></span>No</span><div style="height:18px"></div></td></tr>
+    <tr><td class="q">¿Quiso agregar más colegios por el aviso de lista corta? ¿Qué dijo?</td><td><span class="op"><span class="box"></span>Sí</span><span class="op"><span class="box"></span>No</span><div style="height:18px"></div></td></tr>
+    <tr><td class="q"><strong>Solo A:</strong> ¿miró el panel "Te explicamos"? ¿En qué pantallas?</td><td><span class="op"><span class="box"></span>Familia</span><span class="op"><span class="box"></span>Lista</span><span class="op"><span class="box"></span>Enviar</span><span class="op"><span class="box"></span>Resultado</span><span class="op"><span class="box"></span>No lo miró</span></td></tr>
+    <tr><td class="q"><strong>Solo A:</strong> ¿abrió "Ver cómo se revisó tu lista, paso a paso"?</td><td><span class="op"><span class="box"></span>Sí</span><span class="op"><span class="box"></span>No</span></td></tr>
+    <tr><td class="q">Frases de apoyo usadas (cuáles y dónde)</td><td class="r1"></td></tr>
+    <tr><td class="q">Pedidos de ayuda (cuántos y dónde)</td><td class="r1"></td></tr>
+    <tr><td class="q">Momentos de duda o confusión (pantalla y qué dijo)</td><td class="r3"></td></tr>
+    <tr><td class="q">Comentarios al cierre ("¿Hay algo más que quieras comentarme?")</td><td class="r2"></td></tr>
+  </table>
+</section>
+
+</body>
+</html>

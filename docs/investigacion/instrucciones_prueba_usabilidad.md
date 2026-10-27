@@ -82,7 +82,7 @@
 >
 > Con tu pareja, Rodrigo, ya decidieron a qué colegios postular y en qué orden: **primero el Colegio San Martín**, que es el que más les gusta, y **segundo el Colegio Los Andes**, donde ya está Martina.
 >
-> Tu tarea es postular a Sofía y a Mateo en la página, con esos dos colegios y en ese orden, hasta enviar la postulación y descargar el comprobante. El orden ya está decidido: no hace falta cambiarlo.
+> Tu tarea es postular a Sofía y a Mateo en la página, con esos dos colegios y en ese orden, hasta enviar la postulación. El orden ya está decidido: no hace falta cambiarlo.
 >
 > Te dejo esta tarjeta con la historia, para que la mires cuando quieras."
 
@@ -104,7 +104,7 @@
 > 1. **Colegio San Martín** — el que más les gusta. Se lo recomendó una vecina.
 > 2. **Colegio Los Andes** — donde estudia Martina.
 >
-> Termina cuando hayas enviado la postulación y descargado el comprobante.
+> Termina cuando hayas enviado la postulación.
 
 *Por qué la tarjeta menciona a Rodrigo y la Escuela República de Chile, aunque no estén en la lista: la página muestra esos datos en la ventana "¿Confirmas estos datos?" ("Lo que el sistema ya sabe"). Si no estuvieran en la tarjeta, la persona vería datos que no reconoce.*
 
@@ -121,7 +121,7 @@
 2. Pulsar "Continuar". En la ventana "¿Confirmas estos datos?", marcar la declaración de apoderada o apoderado y pulsar "Continuar".
 3. Agregar **Colegio San Martín** y luego **Colegio Los Andes**, en ese orden, y pulsar "Continuar →".
 4. En "Revisa y envía tu postulación", pulsar "Confirmar" y luego "Continuar" en la ventana "Confirma tu postulación".
-5. En "Postulación enviada", descargar el comprobante. **No pulsar todavía "Ver mi resultado ahora".**
+5. Llegar a "Postulación enviada": ahí termina la tarea. **No pulsar todavía "Ver mi resultado ahora".** (Desde el 2026-10-27 la página ya no tiene botón para descargar el comprobante: no es parte de lo que mide la prueba.)
 
 **Qué verá con 2 colegios — importante:** como San Martín y Los Andes son los dos de demanda alta, la página muestra **en las dos versiones** el aviso *"Tu lista es corta y toda de alta demanda… Agrega más —al menos 6— e incluye alguno de demanda media o baja."* Si la persona quiere agregar más colegios, di: *"La familia ya decidió estos dos; sigue con esos."* Anótalo en la planilla. (Ver la decisión pendiente en la sección 11.)
 

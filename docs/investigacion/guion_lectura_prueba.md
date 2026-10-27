@@ -20,7 +20,7 @@ Te llamas Daniela y tienes tres hijos. La mayor, Martina, tiene 16 años y estud
 
 Con tu pareja, Rodrigo, ya decidieron a qué colegios postular y en qué orden: primero el Colegio San Martín, que es el que más les gusta, y segundo el Colegio Los Andes, donde ya está Martina.
 
-Tu tarea es postular a Sofía y a Mateo en la página, con esos dos colegios y en ese orden, hasta enviar la postulación y descargar el comprobante. El orden ya está decidido: no hace falta cambiarlo.
+Tu tarea es postular a Sofía y a Mateo en la página, con esos dos colegios y en ese orden, hasta enviar la postulación. El orden ya está decidido: no hace falta cambiarlo.
 
 Te dejo esta tarjeta con la historia, para que la mires cuando quieras."
 
@@ -40,7 +40,7 @@ Tarjeta del caso:
 > 1. **Colegio San Martín** — el que más les gusta. Se lo recomendó una vecina.
 > 2. **Colegio Los Andes** — donde estudia Martina.
 >
-> Termina cuando hayas enviado la postulación y descargado el comprobante.
+> Termina cuando hayas enviado la postulación.
 
 ## 3. La postulación
 

@@ -184,6 +184,15 @@ function PostulacionReiniciable() {
   return <PostulacionPage key={key} />
 }
 
+/* 2026-10-27 (pedido del autor, prueba de usabilidad): sin pie en /postulacion. El
+   estado de la postulación vive en React: un link a otra página ("Notas de diseño
+   del prototipo") borraba lo hecho y rompía la sesión de la prueba. La barra se
+   mantiene, reducida al botón "Postular" (Navbar.jsx). */
+function FueraDelFlujo({ children }) {
+  const { pathname } = useLocation()
+  return pathname === '/postulacion' ? null : children
+}
+
 function LoadingPage() {
   return (
     <div className="page-loading" role="status" aria-live="polite">
@@ -229,7 +238,7 @@ function App() {
             </Suspense>
           </ErrorBoundary>
           </div>
-          <Footer />
+          <FueraDelFlujo><Footer /></FueraDelFlujo>
           <ChatAyuda />
         </div>
         </TourProvider>

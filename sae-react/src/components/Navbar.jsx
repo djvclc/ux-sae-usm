@@ -30,7 +30,15 @@ export default function Navbar() {
   const [abierto, setAbierto] = useState(false)
   const { pathname } = useLocation()
   const { esControl } = useModoEstudio()
-  const principales = linksPrincipales.filter((l) => !(l.soloA && esControl))
+  /* 2026-10-27 (pedido del autor, prueba de usabilidad): en /postulacion la barra
+     queda solo con "Postular". Cualquier otro link borraba la postulación a medio
+     hacer, que vive en el estado de React. "Postular" sigue reiniciando el flujo
+     (vuelve al principio), a propósito. */
+  const enFlujo = pathname === '/postulacion'
+  const principales = linksPrincipales
+    .filter((l) => !(l.soloA && esControl))
+    .filter((l) => !enFlujo || l.cta)
+  const personales = enFlujo ? [] : linksPersonales
 
   /* Scroll suave si ya estamos en "/" — navega normalmente si venimos de otra ruta */
   const handleHashClick = (e) => {
@@ -72,15 +80,22 @@ export default function Navbar() {
         Saltar al contenido principal
       </a>
       <div className="topbar__inner">
-        <NavLink
-          to="/"
-          className="brand"
-          aria-label="Sistema de Admisión Escolar — Inicio"
-          onClick={() => setAbierto(false)}
-        >
-          <span className="brand__icon" aria-hidden="true">🎓</span>
-          <span>SAE</span>
-        </NavLink>
+        {enFlujo ? (
+          <span className="brand" aria-label="Sistema de Admisión Escolar">
+            <span className="brand__icon" aria-hidden="true">🎓</span>
+            <span>SAE</span>
+          </span>
+        ) : (
+          <NavLink
+            to="/"
+            className="brand"
+            aria-label="Sistema de Admisión Escolar — Inicio"
+            onClick={() => setAbierto(false)}
+          >
+            <span className="brand__icon" aria-hidden="true">🎓</span>
+            <span>SAE</span>
+          </NavLink>
+        )}
 
         {/* Botón hamburguesa — visible solo en móvil */}
         <button
@@ -103,9 +118,11 @@ export default function Navbar() {
             {principales.map(renderLink)}
           </div>
           {/* Lo personal, separado de lo informativo */}
-          <div className="menu__grupo menu__grupo--personal">
-            {linksPersonales.map(renderLink)}
-          </div>
+          {personales.length > 0 && (
+            <div className="menu__grupo menu__grupo--personal">
+              {personales.map(renderLink)}
+            </div>
+          )}
         </nav>
       </div>
     </header>

@@ -4,7 +4,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { colegios, colegiosById, totalVacantes } from '../data/colegios'
-import { calcularResultado, etiquetaPrioridad, probabilidadCupo, probPorcentaje, tramoFamiliaEnColegio, nivelPrioridadEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
+import { calcularResultado, probabilidadCupo, probPorcentaje, tramoFamiliaEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
 import { formatearRut, rutValido } from '../utils/rut'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
@@ -712,8 +712,8 @@ function OrdenListaExplicacion({ resultado }) {
 
       <p style={{ marginBottom: 0 }}>
         <strong>Es una simulación, no tu resultado.</strong> Muchas familias tienen menos
-        posibilidades de las que creen; por eso conviene incluir varios colegios.{' '}
-        <Link to="/algoritmo" className="link-inline">Ver cómo se decide</Link>
+        posibilidades de las que creen; por eso conviene incluir varios colegios.
+        {/* 2026-10-27: sin links a otras páginas dentro del flujo — salir de /postulacion borra la postulación a medio hacer (el estado vive en React) y rompe la sesión de la prueba. */}
       </p>
     </PanelSeccion>
   )
@@ -832,7 +832,7 @@ function PrioridadesExplicacion({ prioridadDetectada, prioritario, hayPrioridad,
         La condición de <abbr title="Ley de Subvención Escolar Preferencial">SEP</abbr> (estudiante prioritario/a){' '}
         {prioritario
           ? <><strong>ya está registrada</strong> para este/a estudiante y vale en todos los colegios (ver paso 1).</>
-          : <>no está registrada para este/a estudiante. La determina el MINEDUC; revísala en <Link to="/perfil" className="link-inline">Mis datos</Link>.</>}
+          : <>no está registrada para este/a estudiante. La determina el MINEDUC.</>}
       </span>
 
       {/* S22-6 (corrige E6): orden real de procesamiento y naturaleza de la cuota del 15 % */}
@@ -1070,7 +1070,6 @@ export default function PostulacionPage() {
   const [anuncioOrden, setAnuncioOrden]         = useState('')      // S22-8
   const [dragIdx, setDragIdx]           = useState(null)            // S22-8
   const [dragOverIdx, setDragOverIdx]   = useState(null)            // S22-8
-  const [comprobanteDescargado, setComprobanteDescargado] = useState(false) // S22-7
 
   /* Mantenimiento correctivo (2026-09-03): el flujo cambia de vista sin cambiar de
      ruta (los 3 pasos comparten /postulacion), así que ScrollToTop.jsx —que se
@@ -1314,71 +1313,6 @@ export default function PostulacionPage() {
     setConfirmado(payload)
   }
 
-  /* S22-7: comprobante descargable simulado — folio, lista ordenada y fechas siguientes.
-     Fechas: calendario oficial Admisión 2027 (investigacion_paso_a_paso_sae.md §3). */
-  const descargarComprobante = () => {
-    if (!confirmado) return
-    const lineas = [
-      '══════════════════════════════════════════',
-      '     COMPROBANTE DE POSTULACIÓN SAE',
-      '     Sistema de Admisión Escolar (prototipo)',
-      '══════════════════════════════════════════',
-      '',
-      `Folio: ${confirmado.comprobante}`,
-      `Fecha de envío: ${new Date(confirmado.fecha).toLocaleString('es-CL')}`,
-      `Estudiante: ${alumnoNombre} (RUN ${alumnoRut})`,
-      `Nivel al que postula: ${alumnoNivel}`,
-      ...(hayHermanoPostulante
-        ? [`Postulación familiar: ${enBloque ? 'en bloque (una sola lista para todos; el sistema intenta que queden juntos)' : 'por separado'}`]
-        : []),
-      ...otrosPostulantes.flatMap((h) => [
-        `${enBloque ? 'En bloque con' : 'También postula'}: ${h.nombre} (RUN ${h.rut}) — ${h.nivelPostula}`,
-        `  Colegio actual de ${h.nombre}: ${h.colegioActual || '—'}`,
-        enBloque
-          ? `  (misma lista de colegios que ${alumnoNombre})`
-          : `  (este comprobante es de ${alumnoNombre}; ${h.nombre} tiene su propia postulación)`,
-      ]),
-      '',
-      // B · fidelidad (brecha B): la dirección va en el comprobante como dato del
-      // formulario, no como criterio de asignación.
-      '── DIRECCIÓN DE RESIDENCIA ──',
-      `Región: ${REGIONES.find((r) => r.value === region)?.label ?? '—'}`,
-      `Comuna: ${comuna.trim() || '—'}`,
-      `Dirección: ${dirCalle.trim() || '—'}${dirNumero.trim() ? ` (${dirNumero.trim()})` : ''}`,
-      'La dirección no cambia tus probabilidades ni tu resultado: la cercanía no',
-      'es un criterio de prioridad del SAE.',
-      '',
-      // S22-11 (refinamiento): la "prioridad aplicada" es la del colegio asignado;
-      // el detalle por colegio va en la lista de abajo (la prioridad puede cambiar).
-      `Prioridad en el colegio asignado: ${etiquetaPrioridad(resultado.nivel)}`,
-      '',
-      '── LISTA EN ORDEN DE PREFERENCIA ──',
-      ...lista.map((id, i) => {
-        const c = colegiosById[id]
-        const n = nivelPrioridadEnColegio(perfilCompleto, id)
-        return `${i + 1}. ${c ? `${c.nombre} — ${c.comuna}` : 'Colegio'} · prioridad: ${etiquetaPrioridad(n)}`
-      }),
-      '',
-      '── PRÓXIMAS FECHAS (ADMISIÓN 2027) ──',
-      'Cierre del Periodo Principal: 27 de agosto de 2026, 14:00',
-      'Resultados del Periodo Principal: 15 al 21 de octubre de 2026',
-      'Resultados de listas de espera: 28 y 29 de octubre de 2026',
-      'Postulación Periodo Complementario: 10 al 17 de noviembre de 2026',
-      'Matrícula presencial: 9 al 22 de diciembre de 2026',
-      '',
-      'Tu postulación es válida cuando descargas este comprobante.',
-      'Documento simulado con fines de prototipo.',
-    ]
-    const blob = new Blob([lineas.join('\n')], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `comprobante_${confirmado.comprobante}.txt`
-    a.click()
-    URL.revokeObjectURL(url)
-    setComprobanteDescargado(true)
-  }
-
   const rutError =
     rutTocado && rut.length > 0 && !rutValido(rut)
       ? 'Formato incorrecto. Escribe tu RUT así: 12.345.678-9 (con puntos y guión).'
@@ -1429,9 +1363,7 @@ export default function PostulacionPage() {
         Si aun así no quedas, el Mineduc te ofrece una vacante en un colegio gratuito a
         menos de 17 km de tu casa.
       </p>
-      <p>
-        <Link to="/proceso" className="link-inline">Ver las 5 etapas del proceso</Link>
-      </p>
+      {/* 2026-10-27: sin links a otras páginas dentro del flujo — salir de /postulacion borra la postulación a medio hacer (el estado vive en React) y rompe la sesión de la prueba. */}
     </PanelSeccion>
   )
 
@@ -1564,9 +1496,7 @@ export default function PostulacionPage() {
               <li>Exalumnos/as</li>
             </ol>
           </details>
-          <p style={{ marginTop: 12 }}>
-            <Link to="/algoritmo" className="link-inline">Ver cómo funciona en detalle</Link>
-          </p>
+          {/* 2026-10-27: sin links a otras páginas dentro del flujo — salir de /postulacion borra la postulación a medio hacer (el estado vive en React) y rompe la sesión de la prueba. */}
         </PanelSeccion>
       </PanelExplicativo>
     ),
@@ -1647,7 +1577,7 @@ export default function PostulacionPage() {
             {/* S22-3 (corrige E3): fecha y hora reales de cierre. El aviso de
                 reenvío ("Si cambias tu lista después de enviar") queda en el flujo. */}
             <p>
-              Descarga y guarda tu comprobante (folio <strong>{confirmado.comprobante}</strong>). Si
+              Guarda tu número de comprobante (folio <strong>{confirmado.comprobante}</strong>). Si
               quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00: puedes modificar tu
               lista todas las veces que necesites hasta esa hora.
             </p>
@@ -1662,9 +1592,7 @@ export default function PostulacionPage() {
             <li><span>Periodo Complementario</span><strong>10 al 17 de noviembre</strong></li>
             <li><span>Matrícula presencial</span><strong>9 al 22 de diciembre</strong></li>
           </ul>
-          <p>
-            <Link to="/proceso" className="link-inline">Ver las 5 etapas del proceso</Link>
-          </p>
+          {/* 2026-10-27: sin links a otras páginas dentro del flujo — salir de /postulacion borra la postulación a medio hacer (el estado vive en React) y rompe la sesión de la prueba. */}
         </PanelSeccion>
       </PanelExplicativo>
     ),
@@ -2847,9 +2775,7 @@ export default function PostulacionPage() {
                 Si aun así no quedas, el Mineduc te ofrece una vacante en un colegio gratuito a
                 menos de 17 km de tu casa.
               </p>
-              <p style={{ marginBottom: 0 }}>
-                <Link to="/proceso" className="link-inline">Ver las 5 etapas del proceso</Link>
-              </p>
+              {/* 2026-10-27: sin links a otras páginas dentro del flujo — salir de /postulacion borra la postulación a medio hacer (el estado vive en React) y rompe la sesión de la prueba. */}
             </details>
             )}
 
@@ -2884,24 +2810,10 @@ export default function PostulacionPage() {
             <div className="sim-result" role="status" aria-live="polite">
               <p>Número de comprobante: <strong>{confirmado.comprobante}</strong></p>
 
-              {/* S22-7: la postulación es válida al descargar el comprobante */}
-              {!comprobanteDescargado ? (
-                <InfoBox icono="📄" titulo="Falta un paso: descarga tu comprobante" tipo="alerta">
-                  <p>Tu postulación es válida cuando descargas el comprobante. Es tu respaldo con el folio, tu lista y las próximas fechas.</p>
-                </InfoBox>
-              ) : (
-                <InfoBox icono="✅" titulo="Comprobante descargado" tipo="exito">
-                  <p>Listo. Tu postulación quedó registrada y tienes tu respaldo guardado.</p>
-                </InfoBox>
-              )}
-              <button
-                type="button"
-                className="btn btn--primary"
-                style={{ marginTop: 10 }}
-                onClick={descargarComprobante}
-              >
-                ⬇ Descargar comprobante (.txt)
-              </button>
+              {/* S22-7 (retirado 2026-10-27, aprobado por la profesora guía): se quitan el
+                  botón "Descargar comprobante (.txt)" y el aviso "Falta un paso: descarga tu
+                  comprobante". La descarga no es parte de lo que mide la prueba de usabilidad;
+                  queda solo el número de comprobante. */}
 
               <p style={{ marginTop: 10 }}>En el proceso real, los resultados estarán disponibles en <strong>Mi postulación</strong> entre el 15 y el 21 de octubre de 2026.</p>
 
@@ -2913,9 +2825,9 @@ export default function PostulacionPage() {
               <InfoBox icono="🔁" titulo="Si cambias tu lista después de enviar" tipo="alerta">
                 <p style={{ marginBottom: 0 }}>
                   Puedes modificar tu lista todas las veces que quieras hasta el cierre. Pero
-                  cada vez que la cambies tienes que <strong>volver a enviar la postulación y
-                  descargar un comprobante nuevo</strong>: el comprobante anterior deja de tener
-                  validez. Vale siempre el último que descargaste.
+                  cada vez que la cambies tienes que <strong>volver a enviar la
+                  postulación</strong>: la anterior deja de tener validez. Vale siempre la
+                  última que enviaste.
                 </p>
               </InfoBox>
 
@@ -2923,7 +2835,7 @@ export default function PostulacionPage() {
               {esControl && (
                 <InfoBox icono="💾" titulo="¿Qué hacer ahora?" tipo="exito">
                   {/* S22-3 (corrige E3): fecha y hora reales de cierre */}
-                  <p>Descarga y guarda tu comprobante (folio <strong>{confirmado.comprobante}</strong>). Si quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00 — puedes modificar tu lista todas las veces que necesites hasta esa hora. Cada cambio te obliga a <strong>reenviar la postulación</strong> y descargar un comprobante nuevo; el anterior ya no vale.</p>
+                  <p>Guarda tu número de comprobante (folio <strong>{confirmado.comprobante}</strong>). Si quieres cambiar algo, vuelve antes del 27 de agosto a las 14:00 — puedes modificar tu lista todas las veces que necesites hasta esa hora. Cada cambio te obliga a <strong>reenviar la postulación</strong>; la anterior ya no vale.</p>
                 </InfoBox>
               )}
 

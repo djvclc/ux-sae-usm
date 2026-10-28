@@ -8,6 +8,7 @@ import { ModoEstudioProvider } from './context/ModoEstudioContext'
 import GuidedTour from './components/GuidedTour'
 import ChatAyuda from './components/ChatAyuda'
 import ScrollToTop from './components/ScrollToTop'
+import { BASE, rutaApp } from './utils/rutas'
 
 /* Escala global de fuente — cambia font-size en html para que todos los rem escalen (S13-g).
    2026-09-14 (feedback: subir más la fuente de toda la página): el salto anterior
@@ -54,7 +55,7 @@ class ErrorBoundary extends Component {
             <button
               type="button"
               className="btn btn--secondary"
-              onClick={() => { this.setState({ error: null }); window.location.href = '/' }}
+              onClick={() => { this.setState({ error: null }); window.location.href = rutaApp('/') }}
             >
               Volver al inicio
             </button>
@@ -203,7 +204,7 @@ function LoadingPage() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={BASE || undefined}>
       <ModoEstudioProvider>
       <TextSizeProvider>
         <TourProvider>

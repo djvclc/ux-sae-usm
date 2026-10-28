@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom'
 import { colegios, colegiosById, totalVacantes } from '../data/colegios'
 import { calcularResultado, probabilidadCupo, probPorcentaje, tramoFamiliaEnColegio, PRIORIDADES_POR_COLEGIO } from '../utils/asignacion'
 import { formatearRut, rutValido } from '../utils/rut'
+import { rutaApp } from '../utils/rutas'
+import { CARGAR_CASO_KEY, esPruebaRemota } from '../utils/sesionRemota'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import TextSizeBar from '../components/TextSizeBar'
 import { useTextSize } from '../context/TextSizeContext'
@@ -36,6 +38,12 @@ const PERFIL_KEY = 'sae_react_perfil'
    "colegio en mente" (San Martín: sin vínculo + demanda alta) da 28 % y refleja
    un resultado incierto — que es lo que la prueba necesita observar. El marcador
    `caso` habilita la vista de vínculos por establecimiento en el panel del paso 1. */
+/* 2026-10-27 (ensayo previo al primer test): con la familia del caso cargada, el
+   catálogo del paso 2 muestra primero los colegios de la tarjeta, en su orden
+   (1. San Martín · 2. Los Andes). Antes Los Andes salía primero y era fácil
+   agregarlos al revés, lo que cambia el resultado de la sesión. */
+const ORDEN_TARJETA_CASO = ['Colegio San Martín', 'Colegio Los Andes']
+
 const CASO_EJEMPLO = {
   caso: 'munoz-gonzalez',
   nombre: 'Sofía Muñoz González',
@@ -429,7 +437,9 @@ function ConfirmarDatosModal({
   const nombres = unirNombres(postulantes.map((m) => primerNombre(m.nombre)))
 
   useEffect(() => {
-    contenidoRef.current?.querySelector('input[type="checkbox"]')?.focus()
+    // 2026-10-27: preventScroll — el foco va a la declaración, pero la ventana se
+    // abre desde arriba (antes saltaba hasta la casilla y escondía "Quién postula").
+    contenidoRef.current?.querySelector('input[type="checkbox"]')?.focus({ preventScroll: true })
   }, [])
 
   const handleKeyDown = (e) => {
@@ -465,6 +475,9 @@ function ConfirmarDatosModal({
           </p>
         )}
 
+        {/* 2026-10-27: las secciones van en un contenedor para mostrarlas en dos
+            columnas en pantallas anchas (index.css, .confirmar-datos__datos). */}
+        <div className="confirmar-datos__datos">
         <section className="confirmar-datos__seccion" aria-label="Quién postula">
           <h3>Quién postula</h3>
           <ul className="confirmar-datos__lista">
@@ -490,6 +503,7 @@ function ConfirmarDatosModal({
             </ul>
           </section>
         )}
+        </div>
 
         <button type="button" className="btn--text-link confirmar-datos__corregir" onClick={onCorregir}>
           ¿Algún dato está mal? Corregir
@@ -497,6 +511,9 @@ function ConfirmarDatosModal({
 
         {/* A · fidelidad (analisis_video_paso_a_paso_sae.md brecha A) · S22-12:
             declaración obligatoria; habilita el botón principal. */}
+        {/* 2026-10-27: declaración + botones en un pie fijo al fondo de la ventana,
+            para que "Continuar" se vea siempre aunque la ventana tenga scroll. */}
+        <div className="confirmar-datos__pie">
         <label className="confirmar-datos__declara" htmlFor="check-apoderado">
           <input
             id="check-apoderado"
@@ -528,6 +545,7 @@ function ConfirmarDatosModal({
           >
             Revisar de nuevo
           </button>
+        </div>
         </div>
       </div>
     </dialog>
@@ -608,7 +626,11 @@ function chipEditable(clave, colegioId, valores, onToggle, onAyuda) {
    revela las opciones — por si el sistema se equivocó o falta declarar un
    vínculo. hermano/a sigue siendo de solo lectura (lo verifica el sistema); el
    "Editar" solo declara/corrige funcionario/a y exalumno/a. */
-function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda, tieneSEP }) {
+/* 2026-10-27 (ensayo previo al primer test): con la familia del caso cargada
+   (`soloLectura`), los vínculos ya vienen verificados por el sistema ("Lo que el
+   sistema ya sabe") y no se muestra "Editar": marcar por error funcionario/a o
+   exalumno/a en San Martín cambiaba el resultado de la sesión. */
+function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda, tieneSEP, soloLectura = false }) {
   if (!claves.length) return null
 
   const activas = claves.filter((k) => valores[k])
@@ -633,12 +655,14 @@ function PrioridadColegioControl({ colegio, claves, valores, onToggle, onAyuda, 
         </span>
       )}
 
-      <details className="post-prio-colegio__correccion">
-        <summary>Editar</summary>
-        <div className="chip-row" style={{ margin: '6px 0 0' }}>
-          {declarables.map((k) => chipEditable(k, colegio.id, valores, onToggle, onAyuda))}
-        </div>
-      </details>
+      {!soloLectura && (
+        <details className="post-prio-colegio__correccion">
+          <summary>Editar</summary>
+          <div className="chip-row" style={{ margin: '6px 0 0' }}>
+            {declarables.map((k) => chipEditable(k, colegio.id, valores, onToggle, onAyuda))}
+          </div>
+        </details>
+      )}
     </div>
   )
 }
@@ -942,6 +966,8 @@ export default function PostulacionPage() {
   const { esControl } = useModoEstudio() // F3 — condición de control del estudio
   const [paso, setPaso]         = useState(1)
   const [loginOk, setLoginOk]   = useState(false)
+  // 2026-10-27 (prueba remota): abierta con un link de sesión → sin herramientas.
+  const [pruebaRemota] = useState(esPruebaRemota)
   const [region, setRegion]     = useState('')
   const [rut, setRut]           = useState('')
   const [rutTocado, setRutTocado] = useState(false)
@@ -1105,6 +1131,17 @@ export default function PostulacionPage() {
      no lo pregunta"), y los textos de introducción cambian en consecuencia. */
   const prioridadDetectada = perfilEstudiante.caso === 'munoz-gonzalez'
 
+  // 2026-10-27: catálogo en el orden de la tarjeta del caso (ver ORDEN_TARJETA_CASO).
+  const colegiosCatalogo = prioridadDetectada
+    ? [...colegios].sort((x, y) => {
+        const rango = (c) => {
+          const i = ORDEN_TARJETA_CASO.indexOf(c.nombre)
+          return i < 0 ? ORDEN_TARJETA_CASO.length : i
+        }
+        return rango(x) - rango(y)
+      })
+    : colegios
+
   /* S22-11 (refinamiento): alterna una prioridad específica en un colegio concreto */
   const togglePrioridadColegio = (colegioId, clave) => {
     setPrioridadesPorColegio((mapa) => {
@@ -1239,6 +1276,9 @@ export default function PostulacionPage() {
     try {
       localStorage.removeItem(STORAGE_KEY)
       localStorage.removeItem(PERFIL_KEY)
+      // 2026-10-27: también vuelve el tamaño de texto a "Normal", para que la
+      // siguiente persona no parta con el que eligió la anterior.
+      localStorage.removeItem('sae_texto_grande')
     } catch { /* almacenamiento no disponible */ }
     window.location.reload()
   }
@@ -1283,6 +1323,18 @@ export default function PostulacionPage() {
     // La lista arranca vacía en cada visita: las prioridades por colegio se
     // siembran al agregar cada colegio en el paso 2 (ver `agregar`).
   }
+
+  /* 2026-10-27 (prueba remota): el link de sesión (utils/sesionRemota.js) deja
+     pedido cargar a la familia del caso; se hace una sola vez al llegar, como lo
+     haría el moderador con "Cargar familia Muñoz González". */
+  useEffect(() => {
+    let cargar = false
+    try {
+      cargar = sessionStorage.getItem(CARGAR_CASO_KEY) === '1'
+      if (cargar) sessionStorage.removeItem(CARGAR_CASO_KEY)
+    } catch { /* almacenamiento no disponible */ }
+    if (cargar) cargarCasoEjemplo()
+  }, []) // solo al montar
 
   const confirmar = () => {
     const payload = {
@@ -1778,7 +1830,9 @@ export default function PostulacionPage() {
                 {/* S4 (refinamiento) — atajo para la prueba de usabilidad: evita
                     que la persona tenga que tipear los datos del/de la estudiante y
                     la dirección antes de llegar a lo que se testea. Colapsado y
-                    rotulado como herramienta de la demo. */}
+                    rotulado como herramienta de la demo.
+                    2026-10-27: oculto en la prueba remota (link de sesión). */}
+                {!pruebaRemota && (
                 <details className="post-demo">
                   <summary>⚙️ Herramientas de la prueba de usabilidad</summary>
                   <p>
@@ -1829,7 +1883,7 @@ export default function PostulacionPage() {
                         type="button"
                         className={`btn ${esControl ? 'btn--secondary' : 'btn--primary'}`}
                         aria-pressed={!esControl}
-                        onClick={() => { fijarCondicion('A'); window.location.href = '/postulacion' }}
+                        onClick={() => { fijarCondicion('A'); window.location.href = rutaApp('/postulacion') }}
                       >
                         A · Con explicaciones
                       </button>
@@ -1837,7 +1891,7 @@ export default function PostulacionPage() {
                         type="button"
                         className={`btn ${esControl ? 'btn--primary' : 'btn--secondary'}`}
                         aria-pressed={esControl}
-                        onClick={() => { fijarCondicion('B'); window.location.href = '/postulacion' }}
+                        onClick={() => { fijarCondicion('B'); window.location.href = rutaApp('/postulacion') }}
                       >
                         B · Sin explicaciones
                       </button>
@@ -1848,6 +1902,7 @@ export default function PostulacionPage() {
                     </p>
                   </div>
                 </details>
+                )}
               </div>
             )}
 
@@ -2408,7 +2463,7 @@ export default function PostulacionPage() {
                   role="list"
                   aria-label="Colegios disponibles para agregar a tu postulación"
                 >
-                  {colegios.map((c) => {
+                  {colegiosCatalogo.map((c) => {
                     const enLista = lista.includes(c.id)
                     const orden   = lista.indexOf(c.id) + 1
                     return (
@@ -2575,6 +2630,7 @@ export default function PostulacionPage() {
                             onToggle={togglePrioridadColegio}
                             onAyuda={abrirModalPrioridad}
                             tieneSEP={perfilEstudiante.prioritario}
+                            soloLectura={perfilEstudiante.caso === CASO_EJEMPLO.caso}
                           />
                         )}
                       </li>

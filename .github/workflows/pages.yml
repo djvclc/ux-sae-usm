@@ -1,0 +1,57 @@
+# 2026-10-27 (prueba remota): publica el prototipo (sae-react/) en GitHub Pages,
+# en https://djvclc.github.io/ux-sae-usm/ — se vuelve a publicar solo en cada
+# push a main. Requiere una vez: Settings → Pages → Source: "GitHub Actions".
+name: Publicar prototipo en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sae-react/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sae-react
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sae-react/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env:
+          BASE_PATH: /ux-sae-usm/
+      # GitHub Pages no conoce las rutas de la app (/postulacion, /seguimiento…):
+      # sirve 404.html para cualquier ruta desconocida, y como es la misma app,
+      # React Router muestra la página correcta.
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: sae-react/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

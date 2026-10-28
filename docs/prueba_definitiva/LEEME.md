@@ -8,6 +8,14 @@ Material para conducir las sesiones con participantes. El texto que se lee en vo
 | `2_PLANILLA_RESPUESTAS.pdf` | Moderador | Durante la sesión, para anotar respuestas y observación | 1 por participante (2 hojas) |
 | `3_INFORMACION_Y_CONSENTIMIENTO.pdf` | Participante | Se puede **mandar antes** de la sesión; se firma en la bienvenida | 1 por participante |
 | `4_TARJETAS_PARTICIPANTE.pdf` | Participante | Durante la sesión: "La historia" (sección 2) y "Para responder" (secciones 4 y 5). **No mandarlas antes**: revelan el caso | 1 juego, reutilizable |
+| `5_PAUTA_CLASIFICACION.pdf` (+ `.md`) | Moderador y segunda persona que clasifica | Después de las sesiones, para clasificar las respuestas en voz alta (correcta / parcial / incorrecta). **Borrador del 2026-10-27, a revisar con la profesora** | — |
+
+## Prueba remota
+
+El prototipo está publicado en **https://djvclc.github.io/ux-sae-usm/** y se vuelve a publicar solo en cada push a `main` (`.github/workflows/pages.yml`). Para cada sesión se manda el link de la versión que toca (página "Si la prueba es remota" del guion):
+
+- **A** · con explicaciones: https://djvclc.github.io/ux-sae-usm/postulacion?sesion=1
+- **B** · sin explicaciones: https://djvclc.github.io/ux-sae-usm/postulacion?sesion=2
 
 Las fuentes HTML están en `fuentes/`. Para regenerar un PDF (Chrome en Windows, desde esta carpeta, en git-bash):
 

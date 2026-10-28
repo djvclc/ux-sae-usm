@@ -1296,3 +1296,22 @@ CSS nuevo reutiliza tokens existentes, sin dependencias nuevas: `.post-colegio-l
 - `App.jsx`: `FueraDelFlujo` no renderiza `<Footer />` en `/postulacion`. `ChatAyuda` se mantiene (no tiene links).
 - El panel "Te explicamos" sigue pegado bajo la barra (`--alto-topbar` = 78 px), sin cambios en `PanelExplicativo.jsx`.
 - `npm run lint` (0/0), `npm run build`, `npm test` (16/16). Verificado en navegador a 1280 px: en `/postulacion`, la barra solo tiene logo + "Postular" y no hay pie; pulsar "Postular" en el paso 2 vuelve a la pantalla de ingreso (Paso 1 de 3) y la versión A/B se conserva; en `/` la barra está completa.
+
+## 97. Ajustes tras el ensayo previo a la primera prueba (2026-10-27)
+
+- Ensayo completo del flujo en A y B, como moderador y participante, contra `docs/prueba_definitiva/1_GUION_MODERADOR`. Todo coincidía con el guion salvo lo que sigue.
+- **`ConfirmarDatosModal`:** el `focus()` de la declaración desplazaba la ventana (en 1366×768 se abría en "Domicilio", sin título ni "Quién postula"; a 800 px de alto cortaba "Continuar"). Ahora `focus({ preventScroll: true })`; las secciones van en `.confirmar-datos__datos` (dos columnas desde 900 px, "Quién postula" ocupa dos filas) y la declaración + botones en `.confirmar-datos__pie` (sticky al fondo; botones lado a lado desde 900 px). `max-height: calc(100vh - 32px)` desde 900 px.
+- **Catálogo del paso 2:** con la familia del caso (`perfilEstudiante.caso === 'munoz-gonzalez'`), `colegiosCatalogo` ordena primero `ORDEN_TARJETA_CASO` (San Martín, Los Andes); antes Los Andes salía primero y era fácil agregarlos al revés.
+- **`PrioridadColegioControl`:** nuevo prop `soloLectura` (caso cargado) que oculta "Editar"; marcar por error funcionario/a o exalumno/a en San Martín cambiaba el resultado.
+- **Tamaño de texto entre participantes:** `limpiarTodo()` y `fijarCondicion()` (`ModoEstudioContext.jsx`) borran `sae_texto_grande`.
+- `InicioPage.jsx`: "¿Es tu primera vez aquí?".
+- `npm run lint` (0/0), `npm run build`, `npm test` (16/16). Verificado en navegador, A y B: la ventana cabe sin scroll a 1366×657, 1280×800, 1920×969 y 768×1024 (con texto "Grande" a 1366×657 sobran 94 px, pero el pie fijo mantiene declaración y "Continuar" a la vista); catálogo San Martín → Los Andes; sin "Editar"; resultado Los Andes, 2.ª preferencia; "Limpiar" vuelve el texto a "Normal".
+
+## 98. Publicación en GitHub Pages + links de sesión para la prueba remota (2026-10-27)
+
+- La prueba pasa a ser remota: la participante abre el prototipo en su propio computador.
+- **Publicación:** `.github/workflows/pages.yml` compila `sae-react/` (con `npm ci`, `npm test`, `npm run build` y `BASE_PATH=/ux-sae-usm/`), copia `index.html` a `404.html` (para que GitHub Pages sirva la app en rutas como `/postulacion`) y la publica en **https://djvclc.github.io/ux-sae-usm/**. Se ejecuta en cada push a `main` que toque `sae-react/` o el workflow, o a mano (`workflow_dispatch`). Requiere una vez: Settings → Pages → Source: "GitHub Actions".
+- **Ruta base:** `vite.config.js` usa `base: process.env.BASE_PATH || '/'` (en local sigue en la raíz). `BrowserRouter basename={BASE}`. Nuevo `src/utils/rutas.js` (`BASE`, `rutaApp`) para lo que no pasa por React Router: las recargas de `App.jsx` (error), `EstudioPage.jsx`, los botones A/B de `PostulacionPage.jsx` y el `<a>` "Colegios" de `Navbar.jsx`. Para compilar con base en git-bash: `MSYS_NO_PATHCONV=1 BASE_PATH=/ux-sae-usm/ npm run build` (sin la variable, git-bash convierte la ruta).
+- **Links de sesión:** nuevo `src/utils/sesionRemota.js`, aplicado en `main.jsx` antes de montar la app. `/postulacion?sesion=1` → A y `?sesion=2` → B: `fijarCondicion`, marca `sae_prueba_remota` (las "Herramientas de la prueba" se ocultan en `PostulacionPage`), deja pedido `sae_cargar_caso` (la familia se carga una vez al montar) y quita el parámetro de la dirección con `history.replaceState`. "Postular" sigue volviendo a la pantalla de ingreso; "Ingresar con ClaveÚnica" carga la misma familia.
+- `.claude/launch.json`: + `sae-pages-local` (`vite preview --base /ux-sae-usm/`, puerto 4173) para probar la compilación de Pages en local.
+- `npm run lint` (0/0), `npm run build`, `npm test` (16/16). Verificado en navegador: links de sesión A y B en el servidor de desarrollo (versión correcta, dirección limpia, familia cargada, sin herramientas; "Postular" → ingreso → ClaveÚnica vuelve a cargar la familia) y flujo completo A bajo `/ux-sae-usm/` con `vite preview` (resultado Los Andes, 2.ª preferencia; links de la barra con la base; sin errores de consola).

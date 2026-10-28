@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useModoEstudio } from '../context/ModoEstudioContext'
+import { rutaApp } from '../utils/rutas'
 
 /* 2026-10-05 (pedido del usuario: "limpiar la navbar"): de 9 a 7 enlaces (6 en la condición B, sin "El sistema").
    - "El proceso" y "Calendario" eran casi la misma página (las dos con título
@@ -54,7 +55,7 @@ export default function Navbar() {
       /* Enlace de hash — usa <a> nativo para respetar el anchor */
       <a
         key={link.to}
-        href={link.to}
+        href={rutaApp(link.to)}
         className="menu__link"
         onClick={handleHashClick}
       >

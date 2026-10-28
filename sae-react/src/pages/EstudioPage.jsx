@@ -8,6 +8,7 @@
  */
 import { useState } from 'react'
 import { fijarCondicion, useModoEstudio } from '../context/ModoEstudioContext'
+import { rutaApp } from '../utils/rutas'
 
 /* Esquema de asignación a condición. Alternancia por paridad del número de
  * participante: impares → A (prototipo completo), pares → B (control).
@@ -28,7 +29,7 @@ export default function EstudioPage() {
     if (!valido) return
     fijarCondicion(cond, num)
     // Recarga completa a "/" para limpiar el estado React de las páginas.
-    window.location.href = '/'
+    window.location.href = rutaApp('/')
   }
 
   return (

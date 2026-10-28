@@ -7843,6 +7843,45 @@ button[disabled],
   margin: 2px 0 14px;
 }
 
+/* 2026-10-27 (ensayo previo al primer test): la declaración y los botones quedan
+   fijos al fondo de la ventana. En pantallas bajas la ventana tiene scroll y
+   "Continuar" quedaba cortado. bottom = -padding inferior del contenedor (24px)
+   para que el pie toque el borde. */
+.confirmar-datos__pie {
+  position: sticky;
+  bottom: -24px;
+  background: var(--blanco);
+  margin: 0 -28px -24px;
+  padding: 12px 28px 24px;
+  border-top: 1px solid var(--borde);
+  box-shadow: 0 -6px 12px -8px rgba(0, 0, 0, 0.18);
+}
+
+/* 2026-10-27: en pantallas anchas la ventana se ensancha, las secciones van en
+   dos columnas ("Quién postula" | domicilio + lo que el sistema ya sabe) y los
+   botones lado a lado, para que todo quepa sin scroll en un notebook. */
+@media (min-width: 900px) {
+  .prio-modal__content.confirmar-datos {
+    max-width: 860px;
+    max-height: calc(100vh - 32px);
+  }
+  .confirmar-datos__datos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    align-items: start;
+  }
+  .confirmar-datos__datos > :first-child {
+    grid-row: span 2;
+  }
+  .confirmar-datos__pie .confirmar-modal__acciones {
+    flex-direction: row;
+  }
+  .confirmar-datos__pie .confirmar-modal__acciones .btn {
+    flex: 1;
+  }
+}
+
 .confirmar-datos__declara {
   display: flex;
   align-items: flex-start;

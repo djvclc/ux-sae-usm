@@ -86,6 +86,8 @@ export function fijarCondicion(cond, nParticipante) {
     // Estado de una sesión anterior (identidad + última postulación).
     localStorage.removeItem('sae_react_postulacion')
     localStorage.removeItem('sae_react_perfil')
+    // 2026-10-27: tamaño de texto de vuelta a "Normal" entre participantes.
+    localStorage.removeItem('sae_texto_grande')
   } catch {
     /* almacenamiento no disponible */
   }

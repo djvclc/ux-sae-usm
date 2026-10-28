@@ -1,6 +1,7 @@
 # 2026-10-27 (prueba remota): publica el prototipo (sae-react/) en GitHub Pages,
 # en https://djvclc.github.io/ux-sae-usm/ — se vuelve a publicar solo en cada
-# push a main. Requiere una vez: Settings → Pages → Source: "GitHub Actions".
+# push a main. Requiere una vez: Settings → Pages → Source: "GitHub Actions"
+# (no "Deploy from a branch": ese modo publica la raíz del repo y da 404).
 name: Publicar prototipo en GitHub Pages
 
 on:

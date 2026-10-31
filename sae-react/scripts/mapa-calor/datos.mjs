@@ -1,6 +1,6 @@
 // Lee la carpeta con las partes bajadas de Drive (o de servidor-prueba.mjs) y
 // arma una lista de sesiones con sus muestras decodificadas.
-import { readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 function decodificar(parte) {
@@ -18,6 +18,11 @@ function decodificar(parte) {
 }
 
 export function cargarSesiones(carpeta) {
+  if (!existsSync(carpeta)) {
+    // datos/ no viene con el repositorio (está en .gitignore): se crea una vez.
+    console.log(`No existe la carpeta ${carpeta}.\nCréala (mkdir datos) y copia ahí los .json bajados de Drive.`)
+    process.exit(1)
+  }
   const porSesion = new Map()
   for (const f of readdirSync(carpeta).filter((f) => f.endsWith('.json'))) {
     const d = JSON.parse(readFileSync(join(carpeta, f), 'utf8'))

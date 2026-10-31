@@ -18,7 +18,7 @@ cd sae-react && npm install && npm run dev
 1. Abre http://localhost:5173/postulacion?sesion=1, haz la tarea completa y espera unos 20 s en el resultado moviendo el mouse.
 2. Cierra la pestaña.
 3. En la carpeta de Drive deben aparecer `AAAAMMDD-HHMM-A-xxxx_parte-000.json`, `..._parte-001.json`, etc.
-4. Descárgalos a `scripts/mapa-calor/datos/` y corre `node resumen.mjs`: debe decir **✓ completa**.
+4. Descárgalos a `scripts/mapa-calor/datos/` (la primera vez, créala con `mkdir datos`: no viene con el repositorio) y corre `node resumen.mjs`: debe decir **✓ completa**.
 
 Repite con `?sesion=2`.
 
@@ -82,7 +82,7 @@ Repite con B.
 
 - **Antes:** confirma que la persona usa computador con mouse o touchpad. En celular no hay cursor.
 - **En la planilla de respuestas:** anota la **hora de inicio** y la **versión**. El nombre de cada archivo empieza con la fecha, la hora y la versión (`20261105-1532-A-k3f9`), y así se cruza con la planilla sin usar nombres.
-- **Después:** descarga la carpeta de Drive a `scripts/mapa-calor/datos/` y corre
+- **Después:** descarga la carpeta de Drive a `scripts/mapa-calor/datos/` (la primera vez, créala con `mkdir datos`: no viene con el repositorio) y corre
 
   ```bash
   cd sae-react/scripts/mapa-calor

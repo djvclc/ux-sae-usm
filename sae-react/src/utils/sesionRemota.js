@@ -10,8 +10,11 @@
    se marca la pestaña como "prueba remota" (las herramientas se ocultan), se deja
    pedido cargar a la familia del caso al llegar a /postulacion y se quita el
    parámetro de la dirección, para que la persona no vea qué versión le tocó.
-   Se aplica en main.jsx, antes de montar la app. */
+   Se aplica en main.jsx, antes de montar la app.
+   2026-10-31: además abre una sesión nueva del registro del cursor
+   (registroCursor.js). */
 import { fijarCondicion } from '../context/ModoEstudioContext'
+import { nuevaSesionRegistro } from './registroCursor'
 
 export const PRUEBA_REMOTA_KEY = 'sae_prueba_remota'
 export const CARGAR_CASO_KEY = 'sae_cargar_caso'
@@ -23,6 +26,7 @@ export function aplicarLinkDeSesion() {
   const cond = CONDICION_POR_SESION[url.searchParams.get('sesion')]
   if (!cond) return
   fijarCondicion(cond)
+  nuevaSesionRegistro(cond)
   try {
     sessionStorage.setItem(PRUEBA_REMOTA_KEY, '1')
     sessionStorage.setItem(CARGAR_CASO_KEY, '1')

@@ -53,6 +53,22 @@ Código: `src/utils/registroCursor.js`, que se activa en `src/main.jsx` y `src/u
 
 La URL queda a la vista en el repositorio público. Alguien podría mandar datos falsos, pero el script rechaza todo lo que no tenga la forma de una parte, y nadie puede leer tu carpeta.
 
+### Si no llegan archivos a Drive (problemas del 2026-10-31)
+
+- **El ID va sin nada más.** Solo lo que está entre `/folders/` y el final, **sin** `?hl=es` ni `?usp=...`. Si no está bien, `probar` responde `error: ID de archivo o carpeta no válido`.
+- **Para probar, ejecuta `probar`, no `doPost`.** Si ejecutas `doPost` a mano da `Cannot read properties of undefined (reading 'postData')`, y eso es normal.
+- **Cada cambio al código requiere publicar una versión nueva:** Implementar → Administrar implementaciones → lápiz → Versión: "Nueva versión". Si no, la URL `/exec` sigue usando el código anterior. La URL no cambia.
+- **Prueba la URL publicada desde la consola del navegador** (F12):
+  ```js
+  fetch('<URL /exec>', { method: 'POST', body: JSON.stringify({ sesion: '20260101-0000-A-test', parte: 0, muestras: [] }) })
+    .then(r => r.text()).then(t => console.log('RESPUESTA:', t))
+  ```
+  Qué significa cada respuesta:
+  - `ok`: funciona. Borra el archivo `test` que se creó.
+  - `error: <motivo>`: corre el código nuevo, pero algo falla; el motivo dice qué.
+  - `error` a secas: la URL sigue usando una versión vieja del código.
+  - Error de CORS o `Failed to fetch`: el acceso no está en "Cualquier usuario".
+
 ## Antes de usarlo con participantes: piloto
 
 Desde otro computador, abre el link de sesión de A, haz la tarea completa y cierra la pestaña. Después:

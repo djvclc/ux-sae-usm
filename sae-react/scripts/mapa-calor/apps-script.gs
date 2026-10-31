@@ -23,7 +23,9 @@ function doPost(e) {
     carpeta.createFile(nombre, texto, 'application/json');
     return salida('ok');
   } catch (err) {
-    return salida('error');
+    // El motivo queda en "Ejecuciones" y en la respuesta, para diagnosticar.
+    console.error(err);
+    return salida('error: ' + (err && err.message ? err.message : err));
   } finally {
     if (lock.hasLock()) lock.releaseLock();
   }

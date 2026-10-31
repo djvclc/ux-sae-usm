@@ -26,7 +26,7 @@
 
 // Pegar aquí la URL del Apps Script (termina en /exec). Vacía = no se envía nada
 // (se sigue registrando y se puede descargar con el atajo).
-const URL_POR_DEFECTO = ''
+const URL_POR_DEFECTO = 'https://script.google.com/macros/s/AKfycbyyiQKPEw0vm_dzfKgaWFPusIBMGoDNPbd841wh43KkASPBtglE-0tjHSdU0Ehw8PPQFw/exec'
 export const URL_REGISTRO = import.meta.env.VITE_URL_REGISTRO || URL_POR_DEFECTO
 
 const CLAVE_SESION = 'sae_registro_sesion'

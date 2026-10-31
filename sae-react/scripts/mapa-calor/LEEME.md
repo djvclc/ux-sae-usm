@@ -4,9 +4,23 @@
 
 1. la aprobación de la profesora guía, porque es un dato nuevo y el instrumento ya está aprobado;
 2. agregar al consentimiento una línea como *"La página registra por dónde mueves el mouse y dónde haces clic, sin tu nombre ni lo que escribes."*;
-3. hacer la configuración de Google (abajo) y una sesión piloto.
+3. ~~hacer la configuración de Google~~ (hecha el 2026-10-31: URL en `URL_POR_DEFECTO`) y una sesión piloto.
 
-Mientras no se pegue la URL del Apps Script, el registro no manda nada a ningún lado.
+**Ojo:** con la URL puesta, cualquier visita con link de sesión manda datos a tu Drive. Eso incluye tus ensayos y `simular-sesion.mjs` si compilas sin `VITE_URL_REGISTRO=http://localhost:8787`. Después de probar, borra esos archivos de la carpeta.
+
+### Piloto en tu computador (sin tocar `main`)
+
+```bash
+git fetch origin && git checkout feature/registro-cursor
+cd sae-react && npm install && npm run dev
+```
+
+1. Abre http://localhost:5173/postulacion?sesion=1, haz la tarea completa y espera unos 20 s en el resultado moviendo el mouse.
+2. Cierra la pestaña.
+3. En la carpeta de Drive deben aparecer `AAAAMMDD-HHMM-A-xxxx_parte-000.json`, `..._parte-001.json`, etc.
+4. Descárgalos a `scripts/mapa-calor/datos/` y corre `node resumen.mjs`: debe decir **✓ completa**.
+
+Repite con `?sesion=2`.
 
 ## Qué hace
 

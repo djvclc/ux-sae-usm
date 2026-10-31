@@ -36,9 +36,11 @@ Tarjeta del caso:
 >
 > **Lo que quieren:** que Sofía y Mateo queden **en el mismo colegio**.
 >
-> **Tu tarea:** postular a Sofía y Mateo **juntos**, con estos dos colegios y **en este orden**:
+> **Tu tarea:** postular a Sofía y Mateo **juntos**, con estos dos colegios primero y **en este orden**:
 > 1. **Colegio San Martín** — el que más les gusta. Se lo recomendó una vecina.
 > 2. **Colegio Los Andes** — donde estudia Martina.
+>
+> **Puedes agregar más colegios** si quieres, pero **después** de estos dos: San Martín tiene que quedar 1.º y Los Andes 2.º.
 >
 > Termina cuando hayas enviado la postulación.
 
@@ -51,7 +53,7 @@ Solo si hace falta:
 - Si pregunta si lo está haciendo bien: "¿Tú qué crees?"
 - Si pregunta cómo funciona el sistema: "Buena pregunta, lo conversamos al final."
 - Si intenta cambiar el orden: "El orden ya está decidido, ingresa los dos así."
-- Si quiere agregar más colegios: "La familia ya decidió estos dos; sigue con esos."
+- Si quiere agregar más colegios: "Puedes agregar los que quieras, pero después de San Martín y Los Andes."
 
 ## 4. Al terminar de postular
 

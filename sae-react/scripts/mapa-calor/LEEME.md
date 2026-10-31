@@ -1,6 +1,6 @@
 # Registro del cursor y mapas de calor (prueba remota)
 
-**Estado (2026-10-31): propuesta, en la rama `feature/registro-cursor`.** No se ha usado con participantes. Antes de usarlo hace falta:
+**Estado (2026-10-31): integrado a `refactor/panel-explicativo` y `main` y publicado en GitHub Pages (decisión del autor).** Los links de sesión del sitio publicado ya registran y mandan datos a tu Drive. No se ha usado con participantes. Antes de usarlo con participantes hace falta:
 
 1. la aprobación de la profesora guía, porque es un dato nuevo y el instrumento ya está aprobado;
 2. agregar al consentimiento una línea como *"La página registra por dónde mueves el mouse y dónde haces clic, sin tu nombre ni lo que escribes."*;
@@ -8,10 +8,10 @@
 
 **Ojo:** con la URL puesta, cualquier visita con link de sesión manda datos a tu Drive. Eso incluye tus ensayos y `simular-sesion.mjs` si compilas sin `VITE_URL_REGISTRO=http://localhost:8787`. Después de probar, borra esos archivos de la carpeta.
 
-### Piloto en tu computador (sin tocar `main`)
+### Piloto en tu computador
 
 ```bash
-git fetch origin && git checkout feature/registro-cursor
+git fetch origin && git checkout refactor/panel-explicativo
 cd sae-react && npm install && npm run dev
 ```
 

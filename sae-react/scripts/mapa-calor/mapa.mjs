@@ -12,7 +12,8 @@
 // (p. ej., un desplegable que la persona abrió), se usa la posición en la página
 // solo si su ventana tenía el mismo ancho; si no, la muestra se descarta y se
 // informa cuántas.
-// El calor es el promedio por sesión (A y B pueden tener distinto número).
+// El calor es el promedio por sesión, contando en cada pantalla solo las sesiones
+// con datos en ella (una sesión incompleta no diluye las pantallas que le faltan).
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -96,7 +97,9 @@ for (const version of ['A', 'B']) {
         else descartadas++
       }
       const png = await page.screenshot({ fullPage: true })
-      capturas[version].push({ pantalla, png, puntos, fallback, descartadas, n: muestras.length })
+      // Sesiones con datos en esta pantalla: a una sesión incompleta le pueden faltar pantallas.
+      const conDatos = new Set(muestras.map((m) => m.sesion)).size
+      capturas[version].push({ pantalla, png, puntos, fallback, descartadas, n: muestras.length, conDatos })
       await page.evaluate(() => {
         for (const el of document.querySelectorAll('[data-era-sticky]')) { el.style.position = ''; delete el.dataset.eraSticky }
       })
@@ -113,15 +116,19 @@ for (const [n, pantalla] of pantallas.entries()) {
   const lados = ['A', 'B'].map((v) => {
     const c = capturas[v].find((c) => c.pantalla === pantalla)
     if (!c) return null
-    const ns = porVersion[v].length
+    // Promedio solo entre las sesiones que tienen datos en esta pantalla.
+    const total = porVersion[v].length
+    const ns = Math.max(1, c.conDatos)
     const segundos = Math.round(c.puntos.filter((p) => !p.clic).length / 10 / ns)
     const clics = (c.puntos.filter((p) => p.clic).length / ns).toFixed(1).replace('.', ',')
     const ubicadas = c.n ? Math.round(((c.n - c.descartadas) / c.n) * 100) : 100
-    console.log(`  ${v} · ${pantalla}: ${c.n} muestras, ${c.fallback} por posición en la página, ${c.descartadas} descartadas`)
+    console.log(`  ${v} · ${pantalla}: ${c.conDatos}/${total} sesiones con datos, ${c.n} muestras, ${c.fallback} por posición en la página, ${c.descartadas} descartadas`)
     return {
       v, ns, peso: 1 / ns, puntos: c.puntos,
       img: 'data:image/png;base64,' + Buffer.from(c.png).toString('base64'),
-      subtitulo: `${ns} sesiones · ${segundos} s y ${clics} clics por sesión · ${ubicadas} % ubicado${NOTA ? ' · ' + NOTA : ''}`,
+      subtitulo: c.conDatos
+        ? `${c.conDatos} de ${total} sesiones con datos · ${segundos} s y ${clics} clics por sesión · ${ubicadas} % ubicado${NOTA ? ' · ' + NOTA : ''}`
+        : `sin datos en esta pantalla (${total} sesiones)${NOTA ? ' · ' + NOTA : ''}`,
     }
   }).filter(Boolean)
   const b64 = await page.evaluate(async ({ lados, pantalla, altoVentana }) => {

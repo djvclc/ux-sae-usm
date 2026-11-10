@@ -6,7 +6,7 @@ Material para conducir las sesiones con participantes. El texto que se lee en vo
 |---|---|---|---|
 | `1_GUION_MODERADOR.pdf` | Moderador | Toda la sesión. Incluye la preparación, el guion aprobado con lo que hay que hacer en cada momento y el **registro de turnos** (última página) | 1 (el registro de turnos sirve para todo el estudio) |
 | `2_PLANILLA_RESPUESTAS.pdf` | Moderador | Durante la sesión, para anotar respuestas y observación | 1 por participante (2 hojas) |
-| `3_INFORMACION_Y_CONSENTIMIENTO.pdf` | Participante | Se puede **mandar antes** de la sesión; se firma en la bienvenida | 1 por participante |
+| `3_INFORMACION_Y_CONSENTIMIENTO.pdf` | Participante | Se puede **mandar antes** de la sesión; se firma en la bienvenida. Desde el 2026-10-31 menciona el registro del mouse: pedirla **firmada** (el acuerdo verbal del guion no lo nombra) | 1 por participante |
 | `4_TARJETAS_PARTICIPANTE.pdf` | Participante | Durante la sesión: "La historia" (sección 2) y "Para responder" (secciones 4 y 5). **No mandarlas antes**: revelan el caso | 1 juego, reutilizable |
 | `5_PAUTA_CLASIFICACION.pdf` (+ `.md`) | Moderador y segunda persona que clasifica | Después de las sesiones, para clasificar las respuestas en voz alta (correcta / parcial / incorrecta). **Borrador del 2026-10-27, a revisar con la profesora** | — |
 
@@ -16,6 +16,8 @@ El prototipo está publicado en **https://djvclc.github.io/ux-sae-usm/** y se vu
 
 - **A** · con explicaciones: https://djvclc.github.io/ux-sae-usm/postulacion?sesion=1
 - **B** · sin explicaciones: https://djvclc.github.io/ux-sae-usm/postulacion?sesion=2
+
+**Registro del mouse (desde el 2026-10-31):** los links de sesión registran por dónde pasa el cursor y los clics (nada de lo que se escribe) y lo mandan cada 15 s a la carpeta de Drive del autor. Sin `?sesion=` no se registra nada, así que **las sesiones en persona también se preparan con el link** (guion, sección 1). Pasos por sesión en el guion (preparación, página remota y "Apenas se va la persona") y campos en la planilla (hora en que abrió el link, mouse/touchpad, código del archivo, resumen). Guía técnica y análisis: `sae-react/scripts/mapa-calor/LEEME.md`. Los datos de participantes nunca se suben al repositorio.
 
 Las fuentes HTML están en `fuentes/`. Para regenerar un PDF (Chrome en Windows, desde esta carpeta, en git-bash):
 

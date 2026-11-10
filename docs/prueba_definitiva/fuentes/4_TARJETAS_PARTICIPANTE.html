@@ -19,6 +19,7 @@
   table.familia td.quien { font-weight: 700; width: 30%; }
   ol.orden { font-size: 15pt; margin: 6px 0 12px 28px; padding: 0; }
   ol.orden li { margin-bottom: 10px; }
+  .solo { font-size: 15pt; background: #FFF4E0; border-left: 6px solid #E07B00; padding: 10px 16px; margin: 6px 0 0; }
   .fin { margin-top: 22px; border: 2px solid var(--azul); border-radius: 8px; padding: 10px 16px; font-weight: 600; }
   .instr { font-size: 14pt; background: var(--azul-claro); border-left: 6px solid var(--azul); padding: 10px 16px; margin-bottom: 26px; }
   h2.esc { font-size: 17pt; margin-top: 10px; }
@@ -52,11 +53,15 @@
   <p>Que Sofía y Mateo queden <strong>en el mismo colegio</strong>.</p>
 
   <h2>Tu tarea</h2>
-  <p>Postular a Sofía y Mateo <strong>juntos</strong>, con estos dos colegios y <strong>en este orden</strong>:</p>
+  <p>Postular a Sofía y Mateo <strong>juntos</strong>, con estos dos colegios primero y <strong>en este orden</strong>:</p>
   <ol class="orden">
     <li><strong>Colegio San Martín</strong> — el que más les gusta. Se lo recomendó una vecina.</li>
     <li><strong>Colegio Los Andes</strong> — donde estudia Martina.</li>
   </ol>
+
+  <!-- 2026-10-27 (primer feedback): se pueden agregar colegios, siempre después de estos dos
+       (verificado en el simulador: el resultado sigue siendo Los Andes, 2.ª preferencia) -->
+  <p class="solo"><strong>Puedes agregar más colegios</strong> si quieres, pero <strong>después</strong> de estos dos: San Martín tiene que quedar 1.º y Los Andes 2.º.</p>
 
   <p class="fin">Termina cuando hayas enviado la postulación.</p>
 </section>

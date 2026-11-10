@@ -100,9 +100,11 @@
 >
 > **Lo que quieren:** que Sofía y Mateo queden **en el mismo colegio**.
 >
-> **Tu tarea:** postular a Sofía y Mateo **juntos**, con estos dos colegios y **en este orden**:
+> **Tu tarea:** postular a Sofía y Mateo **juntos**, con estos dos colegios primero y **en este orden**:
 > 1. **Colegio San Martín** — el que más les gusta. Se lo recomendó una vecina.
 > 2. **Colegio Los Andes** — donde estudia Martina.
+>
+> **Puedes agregar más colegios** si quieres, pero **después** de estos dos: San Martín tiene que quedar 1.º y Los Andes 2.º.
 >
 > Termina cuando hayas enviado la postulación.
 
@@ -123,7 +125,7 @@
 4. En "Revisa y envía tu postulación", pulsar "Confirmar" y luego "Continuar" en la ventana "Confirma tu postulación".
 5. Llegar a "Postulación enviada": ahí termina la tarea. **No pulsar todavía "Ver mi resultado ahora".** (Desde el 2026-10-27 la página ya no tiene botón para descargar el comprobante: no es parte de lo que mide la prueba.)
 
-**Qué verá con 2 colegios — importante:** como San Martín y Los Andes son los dos de demanda alta, la página muestra **en las dos versiones** el aviso *"Tu lista es corta y toda de alta demanda… Agrega más —al menos 6— e incluye alguno de demanda media o baja."* Si la persona quiere agregar más colegios, di: *"La familia ya decidió estos dos; sigue con esos."* Anótalo en la planilla. (Ver la decisión pendiente en la sección 11.)
+**Qué verá con 2 colegios — importante:** como San Martín y Los Andes son los dos de demanda alta, la página muestra **en las dos versiones** el aviso *"Tu lista es corta y toda de alta demanda… Agrega más —al menos 6— e incluye alguno de demanda media o baja."* Desde el 2026-10-27 (primer feedback) la persona **puede agregar colegios**, siempre después de San Martín y Los Andes; si pregunta, di: *"Puedes agregar los que quieras, pero después de San Martín y Los Andes."* El resultado no cambia (verificado en el simulador: sigue siendo Los Andes, 2.ª preferencia). Anota en la planilla cuáles agregó, en qué lugar y por qué. (Ver la decisión pendiente en la sección 11.)
 
 **Además, en la versión con explicaciones** verá "26 %" junto a San Martín y "99 %" junto a Los Andes, y el panel "Te explicamos" a la derecha. En la versión sin explicaciones no hay porcentajes ni panel.
 

@@ -92,6 +92,24 @@ Repite con B.
   Para cada sesión muestra los segundos y clics por pantalla. Avisa si faltan partes o pantallas, si hubo 0 clics o si no se usó mouse.
 - **Si llegó incompleta**, pídele a la persona, antes de cortar la videollamada, que presione <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> y te mande el archivo que se descarga. Ponlo en la misma carpeta `datos/`.
 
+## Métricas de todas las sesiones (para la hoja "Mouse" del Excel)
+
+Si guardaste un `.zip` por sesión, descomprímelos todos de una vez en `datos/`, cada uno en su propia subcarpeta (PowerShell, desde `sae-react\scripts\mapa-calor`):
+
+```powershell
+Get-ChildItem "C:\ruta\de\los\zips\*.zip" | ForEach-Object {
+  Expand-Archive $_.FullName -DestinationPath ".\datos\$($_.BaseName)" -Force
+}
+```
+
+Los scripts leen las subcarpetas, y una parte repetida en dos zips se cuenta una sola vez. Luego:
+
+```powershell
+node metricas.mjs
+```
+
+Muestra una tabla con una fila por sesión y escribe `metricas.csv` (separado por `;`, se abre con Excel). Las columnas desde "Tu familia (s)" hasta "Avisos" están en el mismo orden que la hoja "Mouse" de `RESPUESTAS_PRUEBA_SAE.xlsx`: busca la fila por el código de sesión, copia ese tramo y pégalo en la fila del ID que corresponde (columna D en adelante). "¿Salió del flujo?" es Sí si, después de ver el resultado, visitó otra página del sitio (por ejemplo, `/colegio`). `metricas.csv` está en `.gitignore`.
+
 ## Mapas de calor (al final, o cuando quieras)
 
 Con el prototipo servido en local:

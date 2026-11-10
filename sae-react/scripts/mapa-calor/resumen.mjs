@@ -2,21 +2,9 @@
 // Uso: node resumen.mjs [carpeta=./datos]
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { cargarSesiones } from './datos.mjs'
+import { cargarSesiones, PANTALLAS_FLUJO as ESPERADAS } from './datos.mjs'
 
 const carpeta = process.argv[2] || join(dirname(fileURLToPath(import.meta.url)), 'datos')
-// Pantallas que recorre cualquiera que complete la tarea.
-const ESPERADAS = [
-  'Paso 1 de 3: Tu familia',
-  'Ventana: ¿Confirmas estos datos?',
-  'Paso 2 de 3: Tus colegios (lista vacía)',
-  'Paso 2 de 3: Tus colegios (catálogo)',
-  'Paso 2 de 3: Tus colegios',
-  'Paso 3 de 3: Revisa y envía',
-  'Ventana: Confirma tu postulación',
-  'Postulación enviada',
-  '/seguimiento',
-]
 
 const sesiones = cargarSesiones(carpeta)
 if (!sesiones.length) console.log(`No hay datos en ${carpeta}`)

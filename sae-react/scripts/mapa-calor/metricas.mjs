@@ -36,6 +36,7 @@ const filas = cargarSesiones(carpeta).map((s) => {
   if (ausentes.length) avisos.push(`sin datos en: ${ausentes.join(', ')}`)
   if (!clics) avisos.push('0 clics')
   return {
+    carpeta: s.carpeta === '.' ? '' : s.carpeta,
     codigo: s.sesion,
     version: s.version,
     inicio: new Date(s.inicio).toLocaleString('es-CL', { timeZone: 'America/Santiago' }),
@@ -55,17 +56,17 @@ if (!filas.length) {
   process.exit(0)
 }
 
-const ENC = ['Código de sesión', 'Versión', 'Inicio', 'Registro', ...CORTO.map((p) => `${p} (s)`),
+const ENC = ['Carpeta', 'Código de sesión', 'Versión', 'Inicio', 'Registro', ...CORTO.map((p) => `${p} (s)`),
   'Clics en total', '¿Salió del flujo?', 'Otras páginas', 'Avisos']
 const celda = (v) => (/[;"\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v))
-const csv = [ENC, ...filas.map((f) => [f.codigo, f.version, f.inicio, f.estado, ...f.valores])]
+const csv = [ENC, ...filas.map((f) => [f.carpeta, f.codigo, f.version, f.inicio, f.estado, ...f.valores])]
   .map((r) => r.map(celda).join(';')).join('\r\n')
 // BOM: para que Excel muestre bien las tildes.
-writeFileSync(salida, '﻿' + csv + '\r\n')
+writeFileSync(salida, '\uFEFF' + csv + '\r\n')
 
 console.log(`${filas.length} sesiones → ${salida}\n`)
 console.table(filas.map((f) => Object.fromEntries([
-  ['Código', f.codigo], ['V', f.version], ['Registro', f.estado],
+  ['Carpeta', f.carpeta], ['Código', f.codigo], ['V', f.version], ['Registro', f.estado],
   ...CORTO.map((p, i) => [p, f.valores[i]]),
   ['Clics', f.valores[9]], ['Salió', f.valores[10]],
 ])))

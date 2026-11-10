@@ -1,7 +1,7 @@
 // Lee la carpeta con las partes bajadas de Drive (o de servidor-prueba.mjs) y
 // arma una lista de sesiones con sus muestras decodificadas.
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 
 // Pantallas que recorre cualquiera que complete la tarea (nombres de
 // pantalla() en src/utils/registroCursor.js), en orden.
@@ -50,8 +50,9 @@ export function cargarSesiones(carpeta) {
       continue
     }
     if (!d?.sesion || !Array.isArray(d.muestras)) continue // no es una parte del registro
-    if (!porSesion.has(d.sesion)) porSesion.set(d.sesion, { partes: new Map(), completo: null })
+    if (!porSesion.has(d.sesion)) porSesion.set(d.sesion, { partes: new Map(), completo: null, carpetas: new Set() })
     const s = porSesion.get(d.sesion)
+    s.carpetas.add(dirname(String(f)))
     if (d.parte === 'completo') s.completo = d
     else s.partes.set(d.parte, d)
   }
@@ -67,6 +68,7 @@ export function cargarSesiones(carpeta) {
     for (let i = 0; i <= Math.max(-1, ...numeros); i++) if (!numeros.includes(i)) faltan.push(i)
     return {
       sesion,
+      carpeta: [...s.carpetas].join(', '),
       version: base.version,
       inicio: base.inicio,
       punteroFino: base.punteroFino,

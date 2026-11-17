@@ -9,6 +9,7 @@ Material para conducir las sesiones con participantes. El texto que se lee en vo
 | `3_INFORMACION_Y_CONSENTIMIENTO.pdf` | Participante | Se puede **mandar antes** de la sesión; se firma en la bienvenida. Desde el 2026-10-31 menciona el registro del mouse: pedirla **firmada** (el acuerdo verbal del guion no lo nombra) | 1 por participante |
 | `4_TARJETAS_PARTICIPANTE.pdf` | Participante | Durante la sesión: "La historia" (sección 2) y "Para responder" (secciones 4 y 5). **No mandarlas antes**: revelan el caso | 1 juego, reutilizable |
 | `5_PAUTA_CLASIFICACION.pdf` (+ `.md`) | Moderador y segunda persona que clasifica | Después de las sesiones, para clasificar las respuestas en voz alta (correcta / parcial / incorrecta). **Borrador del 2026-10-27, a revisar con la profesora** | — |
+| `6_PLANTILLA_RESPUESTAS.xlsx` | Moderador | Después de las sesiones, al revisar los videos: respuestas textuales, observación, métricas del mouse, clasificación (con la versión oculta), copia ciega para la 2.ª persona y resumen por versión. Hoja "Cómo usar" con el orden de trabajo. Se regenera con `fuentes/crear_plantilla_respuestas.py`. **La copia llena va solo al Drive privado, nunca al repositorio** | 1 para todo el estudio |
 
 ## Prueba remota
 

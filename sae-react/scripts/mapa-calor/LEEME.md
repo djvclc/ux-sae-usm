@@ -94,7 +94,23 @@ Repite con B.
 
 ## Métricas de todas las sesiones (para la hoja "Mouse" del Excel)
 
-Si guardaste un `.zip` por sesión, descomprímelos todos de una vez en `datos/`, cada uno en su propia subcarpeta (PowerShell, desde `sae-react\scripts\mapa-calor`):
+**Un solo comando.** Pon todos los `.zip` en una carpeta, idealmente nombrados con el ID del participante (`P01.zip`, `P02.zip`…), y desde `sae-react\scripts\mapa-calor`:
+
+```powershell
+node procesar.mjs "C:\ruta\de\los\zips"
+```
+
+El comando hace cuatro cosas:
+1. Descomprime cada zip en `datos\<nombre del zip>\`. Los que ya estaban no se tocan; si falla uno, avisa para descomprimirlo a mano.
+2. Corre `resumen.mjs` para revisar cada sesión.
+3. Corre `metricas.mjs`, que escribe `metricas.csv` (separado por `;`, se abre con Excel).
+4. Ordena la tabla por carpeta: con zips `P01…P15`, las filas quedan en el orden de la hoja "Mouse" y se pegan **de una vez** (columna D en adelante, desde "Tu familia (s)" hasta "Avisos").
+
+Sin argumento (`node procesar.mjs`) procesa solo lo que ya está en `datos/`.
+
+**Datos repetidos:** los scripts leen las subcarpetas, y una parte repetida (por ejemplo, una sesión suelta en `datos/` y además en su zip) se cuenta una sola vez.
+
+**Para descomprimir a mano** (si el comando no pudo):
 
 ```powershell
 Get-ChildItem "C:\ruta\de\los\zips\*.zip" | ForEach-Object {
@@ -102,13 +118,7 @@ Get-ChildItem "C:\ruta\de\los\zips\*.zip" | ForEach-Object {
 }
 ```
 
-Los scripts leen las subcarpetas, y una parte repetida en dos zips se cuenta una sola vez. Luego:
-
-```powershell
-node metricas.mjs
-```
-
-Muestra una tabla con una fila por sesión y escribe `metricas.csv` (separado por `;`, se abre con Excel). Las columnas desde "Tu familia (s)" hasta "Avisos" están en el mismo orden que la hoja "Mouse" de `RESPUESTAS_PRUEBA_SAE.xlsx`: busca la fila por el código de sesión, copia ese tramo y pégalo en la fila del ID que corresponde (columna D en adelante). "¿Salió del flujo?" es Sí si, después de ver el resultado, visitó otra página del sitio (por ejemplo, `/colegio`). `metricas.csv` está en `.gitignore`.
+**Columna "¿Salió del flujo?":** es Sí si, después de ver el resultado, visitó otra página del sitio (por ejemplo, `/colegio`). `metricas.csv` está en `.gitignore`.
 
 ## Mapas de calor (al final, o cuando quieras)
 

@@ -51,6 +51,10 @@ const filas = cargarSesiones(carpeta).map((s) => {
   }
 })
 
+// En el orden de las carpetas (P01, P02… si los zips se nombraron por ID), para
+// pegar todo el bloque de una vez en la hoja "Mouse"; sin carpeta, por hora.
+filas.sort((a, b) => (a.carpeta || '~' + a.codigo).localeCompare(b.carpeta || '~' + b.codigo, 'es', { numeric: true }))
+
 if (!filas.length) {
   console.log(`No hay datos en ${carpeta}`)
   process.exit(0)

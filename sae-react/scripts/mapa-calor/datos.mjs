@@ -68,7 +68,7 @@ export function cargarSesiones(carpeta) {
     for (let i = 0; i <= Math.max(-1, ...numeros); i++) if (!numeros.includes(i)) faltan.push(i)
     return {
       sesion,
-      carpeta: [...s.carpetas].join(', '),
+      carpeta: [...s.carpetas].filter((c) => c !== '.').join(', '),
       version: base.version,
       inicio: base.inicio,
       punteroFino: base.punteroFino,
